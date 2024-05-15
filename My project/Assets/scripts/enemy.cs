@@ -6,6 +6,7 @@ using UnityEngine.UIElements;
 public class enemy : MonoBehaviour
 {
    public Vector3 shamblingWay;//徘徊時のルート
+    public float sight;//プレイヤーを認識する範囲
 
     public float duration = 3.0f;//移動時間
     // 内部カウンター
@@ -44,6 +45,7 @@ public class enemy : MonoBehaviour
         
         while(true)
         {
+
             // 経過時間を更新
             elapsedTime += Time.deltaTime;
             t = elapsedTime / durationTime;
@@ -52,7 +54,13 @@ public class enemy : MonoBehaviour
             if (t >= 1.0f)
             {
                 break;//whileから抜け出す
-                //ここに攻撃ルーチン開始を入れる
+               
+            }
+
+            //ここに攻撃ルーチン開始を入れる
+            if (getRangeToPlayer() >= sight)
+            {
+               // yield return LockOn(getWayToPlayer());
             }
             yield return new WaitForEndOfFrame();//1f待つ
         }
@@ -68,9 +76,26 @@ public class enemy : MonoBehaviour
        
     }
     private IEnumerator LockOn(Vector3 wayToPlayer) {
-        //90fくらいプレイヤーをその場で見つめる。
-        //範囲外に出たらshambling再開
+        //90fくらいプレイヤーを注視する。
+        int count= 0;
+        while(true) {
+            count++;
+            //プレイヤーを見つめる処理。角度をなんかする
+            if (count >= 90) break;
+        yield return new WaitForEndOfFrame();
+        }
+
         //範囲内ならshootに移行。
+        if (getRangeToPlayer() > 0)
+        {
+            yield return shoot();
+        }
+        else
+        {
+            //範囲外に出たらshambling再開
+            yield return shambling(shamblingWay, duration);//ここキモい。
+        }
+
         yield return null;
     }
     private IEnumerator shoot() {
@@ -81,5 +106,20 @@ public class enemy : MonoBehaviour
         //範囲外に出たらshambling再開。
         yield return shambling(shamblingWay, duration); //プレイヤーがいなかったら再帰的にshambling呼び出し。
 
+    }
+    private Vector3 getWayToPlayer() {
+        Vector3 ret;
+        ret= transform.position - GameObject.Find("Player").transform.position;
+        return ret;
+    }
+    private float getRangeToPlayer() {
+        float ret=0.0f;
+        Vector3 length;
+        //プレイヤーとの距離をベクトルで作って、範囲内ならret返す。そうでないならマイナス返す。
+        length = getWayToPlayer();
+        ret=length.magnitude;
+        ret=Mathf.Abs(ret);//マイナスいらない
+        if(ret>=sight)return ret;
+        return -1.0f;
     }
 }
