@@ -1,21 +1,21 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 public class enemy : MonoBehaviour
 {
-   public Vector3 shamblingWay;//œpœj‚Ìƒ‹[ƒg
-    public float sight;//ƒvƒŒƒCƒ„[‚ğ”F¯‚·‚é”ÍˆÍ
+   public Vector3 shamblingWay;//å¾˜å¾Šæ™‚ã®ãƒ«ãƒ¼ãƒˆ
+    public float sight;//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’èªè­˜ã™ã‚‹ç¯„å›²
 
-    public float duration = 3.0f;//ˆÚ“®ŠÔ
-    // “à•”ƒJƒEƒ“ƒ^[
+    public float duration = 3.0f;//ç§»å‹•æ™‚é–“
+    // å†…éƒ¨ã‚«ã‚¦ãƒ³ã‚¿ãƒ¼
     public float elapsedTime = 0.0f;
 
     // Start is called before the first frame update
     void Start()
     {
-        float randomPos;//—”ƒxƒNƒgƒ‹ì‚é‚½‚ß‚Ìˆê“I‚È‚à‚Ì
+        float randomPos;//ä¹±æ•°ãƒ™ã‚¯ãƒˆãƒ«ä½œã‚‹ãŸã‚ã®ä¸€æ™‚çš„ãªã‚‚ã®
         randomPos= Random.Range(0.0f, 10.0f);
         shamblingWay.x = randomPos;
         randomPos = Random.Range(0.0f, 10.0f);
@@ -24,7 +24,7 @@ public class enemy : MonoBehaviour
         shamblingWay += transform.position;
         elapsedTime = 0.0f;
 
-        StartCoroutine(shambling(shamblingWay,duration*0.5f));//Å‰‚Í•Ğ“¹‚È‚Ì‚ÅˆÚ“®ŠÔ”¼•ªB
+        StartCoroutine(shambling(shamblingWay,duration*0.5f));//æœ€åˆã¯ç‰‡é“ãªã®ã§ç§»å‹•æ™‚é–“åŠåˆ†ã€‚
     }
 
     // Update is called once per frame
@@ -41,70 +41,70 @@ public class enemy : MonoBehaviour
         Vector3 playerPos;
 
         elapsedTime = 0.0f;
-        playerPos =GameObject.Find("Player").transform.position;//ƒvƒŒƒCƒ„[‚ÌˆÊ’uŠm•Û
+        playerPos =GameObject.Find("Player").transform.position;//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®ç¢ºä¿
         
         while(true)
         {
 
-            // Œo‰ßŠÔ‚ğXV
+            // çµŒéæ™‚é–“ã‚’æ›´æ–°
             elapsedTime += Time.deltaTime;
             t = elapsedTime / durationTime;
             transform.position = Vector3.Lerp(startPos, endPos, t);
-            // ˆÚ“®‚ªŠ®—¹‚µ‚½‚©ƒ`ƒFƒbƒN
+            // ç§»å‹•ãŒå®Œäº†ã—ãŸã‹ãƒã‚§ãƒƒã‚¯
             if (t >= 1.0f)
             {
-                break;//while‚©‚ç”²‚¯o‚·
+                break;//whileã‹ã‚‰æŠœã‘å‡ºã™
                
             }
 
-            //‚±‚±‚ÉUŒ‚ƒ‹[ƒ`ƒ“ŠJn‚ğ“ü‚ê‚é
+            //ã“ã“ã«æ”»æ’ƒãƒ«ãƒ¼ãƒãƒ³é–‹å§‹ã‚’å…¥ã‚Œã‚‹
             if (getRangeToPlayer() >= sight)
             {
                // yield return LockOn(getWayToPlayer());
             }
-            yield return new WaitForEndOfFrame();//1f‘Ò‚Â
+            yield return new WaitForEndOfFrame();//1få¾…ã¤
         }
 
-        int count = 0;//“à•”ƒJƒEƒ“ƒ^[
+        int count = 0;//å†…éƒ¨ã‚«ã‚¦ãƒ³ã‚¿ãƒ¼
         while (true) {
             count++;
-            if (count >= 90){//90f‘Ò‚ÂB”š‚Í‰½‚Æ‚È‚­B
-                yield return shambling((transform.position + goalPos * (-2.0f)) , duration); //ƒvƒŒƒCƒ„[‚ª‚¢‚È‚©‚Á‚½‚çÄ‹A“I‚ÉshamblingŒÄ‚Ño‚µB
+            if (count >= 90){//90få¾…ã¤ã€‚æ•°å­—ã¯ä½•ã¨ãªãã€‚
+                yield return shambling((transform.position + goalPos * (-2.0f)) , duration); //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒã„ãªã‹ã£ãŸã‚‰å†å¸°çš„ã«shamblingå‘¼ã³å‡ºã—ã€‚
             }
             yield return new WaitForEndOfFrame();
         }
        
     }
     private IEnumerator LockOn(Vector3 wayToPlayer) {
-        //90f‚­‚ç‚¢ƒvƒŒƒCƒ„[‚ğ’‹‚·‚éB
+        //90fãã‚‰ã„ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’æ³¨è¦–ã™ã‚‹ã€‚
         int count= 0;
         while(true) {
             count++;
-            //ƒvƒŒƒCƒ„[‚ğŒ©‚Â‚ß‚éˆ—BŠp“x‚ğ‚È‚ñ‚©‚·‚é
+            //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’è¦‹ã¤ã‚ã‚‹å‡¦ç†ã€‚è§’åº¦ã‚’ãªã‚“ã‹ã™ã‚‹
             if (count >= 90) break;
         yield return new WaitForEndOfFrame();
         }
 
-        //”ÍˆÍ“à‚È‚çshoot‚ÉˆÚsB
+        //ç¯„å›²å†…ãªã‚‰shootã«ç§»è¡Œã€‚
         if (getRangeToPlayer() > 0)
         {
             yield return shoot();
         }
         else
         {
-            //”ÍˆÍŠO‚Éo‚½‚çshamblingÄŠJ
-            yield return shambling(shamblingWay, duration);//‚±‚±ƒLƒ‚‚¢B
+            //ç¯„å›²å¤–ã«å‡ºãŸã‚‰shamblingå†é–‹
+            yield return shambling(shamblingWay, duration);//ã“ã“ã‚­ãƒ¢ã„ã€‚
         }
 
         yield return null;
     }
     private IEnumerator shoot() {
-        //’e”­ËB3‰ñ‚­‚ç‚¢B“s“x10f‚ÌƒƒbƒNƒIƒ“(ƒRƒ‹[ƒ`ƒ“ŒÄ‚Ño‚µ‚Å‚È‚­A‚±‚±‚Å“¯—l‚Ìˆ—‚ğ‹LÚ)A
-        //ËŒ‚§“x‚ğ—‚Æ‚µ‚½‚¢‚Ì‚Å5f‚­‚ç‚¢‘Ò‹@A”­ËBƒvƒŒƒCƒ„[‚ÌˆÊ’u‚ğ–â‚í‚¸A3‰ñŒJ‚è•Ô‚·B
-        //3”­‘Å‚¿I‚í‚Á‚½‚ç10f‘Ò‚ÂB
-        //”ÍˆÍ“à‚ÉƒvƒŒƒCƒ„[‚ª‚¢‚½‚çshoot‚É–ß‚éB
-        //”ÍˆÍŠO‚Éo‚½‚çshamblingÄŠJB
-        yield return shambling(shamblingWay, duration); //ƒvƒŒƒCƒ„[‚ª‚¢‚È‚©‚Á‚½‚çÄ‹A“I‚ÉshamblingŒÄ‚Ño‚µB
+        //å¼¾ç™ºå°„ã€‚3å›ãã‚‰ã„ã€‚éƒ½åº¦10fã®ãƒ­ãƒƒã‚¯ã‚ªãƒ³(ã‚³ãƒ«ãƒ¼ãƒãƒ³å‘¼ã³å‡ºã—ã§ãªãã€ã“ã“ã§åŒæ§˜ã®å‡¦ç†ã‚’è¨˜è¼‰)ã€
+        //å°„æ’ƒåˆ¶åº¦ã‚’è½ã¨ã—ãŸã„ã®ã§5fãã‚‰ã„å¾…æ©Ÿã€ç™ºå°„ã€‚ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®ã‚’å•ã‚ãšã€3å›ç¹°ã‚Šè¿”ã™ã€‚
+        //3ç™ºæ‰“ã¡çµ‚ã‚ã£ãŸã‚‰10få¾…ã¤ã€‚
+        //ç¯„å›²å†…ã«ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒã„ãŸã‚‰shootã«æˆ»ã‚‹ã€‚
+        //ç¯„å›²å¤–ã«å‡ºãŸã‚‰shamblingå†é–‹ã€‚
+        yield return shambling(shamblingWay, duration); //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒã„ãªã‹ã£ãŸã‚‰å†å¸°çš„ã«shamblingå‘¼ã³å‡ºã—ã€‚
 
     }
     private Vector3 getWayToPlayer() {
@@ -115,10 +115,10 @@ public class enemy : MonoBehaviour
     private float getRangeToPlayer() {
         float ret=0.0f;
         Vector3 length;
-        //ƒvƒŒƒCƒ„[‚Æ‚Ì‹——£‚ğƒxƒNƒgƒ‹‚Åì‚Á‚ÄA”ÍˆÍ“à‚È‚çret•Ô‚·B‚»‚¤‚Å‚È‚¢‚È‚çƒ}ƒCƒiƒX•Ô‚·B
+        //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨ã®è·é›¢ã‚’ãƒ™ã‚¯ãƒˆãƒ«ã§ä½œã£ã¦ã€ç¯„å›²å†…ãªã‚‰retè¿”ã™ã€‚ãã†ã§ãªã„ãªã‚‰ãƒã‚¤ãƒŠã‚¹è¿”ã™ã€‚
         length = getWayToPlayer();
         ret=length.magnitude;
-        ret=Mathf.Abs(ret);//ƒ}ƒCƒiƒX‚¢‚ç‚È‚¢
+        ret=Mathf.Abs(ret);//ãƒã‚¤ãƒŠã‚¹ã„ã‚‰ãªã„
         if(ret>=sight)return ret;
         return -1.0f;
     }

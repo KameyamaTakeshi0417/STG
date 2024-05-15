@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -30,10 +30,10 @@ public class Bullet_Base : MonoBehaviour
         while (count <= DestroyTime)
         {
           
-            // ’e‚ÌˆÊ’u‚ðXV‚·‚é
+            // å¼¾ã®ä½ç½®ã‚’æ›´æ–°ã™ã‚‹
             transform.Translate(rotate * Speed * Time.deltaTime, Space.Self);
 
-            // ’e‚ð‰ñ“]‚³‚¹‚é
+            // å¼¾ã‚’å›žè»¢ã•ã›ã‚‹
            // transform.rotation = rotate;
 
             count++;

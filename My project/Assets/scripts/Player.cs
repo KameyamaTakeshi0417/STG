@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,7 +25,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // “ü—Í‚ÌŠp“x‚ğæ“¾‚·‚é
+        // å…¥åŠ›ã®è§’åº¦ã‚’å–å¾—ã™ã‚‹
         float moveAngle = Mathf.Atan2(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal")) * Mathf.Rad2Deg;
         watch = new Vector2(Mathf.Cos(transform.rotation.eulerAngles.z * Mathf.Deg2Rad), Mathf.Sin(transform.rotation.eulerAngles.z * Mathf.Deg2Rad));
 
@@ -37,17 +37,17 @@ public class Player : MonoBehaviour
             bulletPrefab.GetComponent<Bullet_Base>().setRotate(watch);
             Destroy(bulletPrefab, 3);
         }
-        // “ü—Í‚ª‚È‚¢ê‡‚Í‰½‚à‚µ‚È‚¢
+        // å…¥åŠ›ãŒãªã„å ´åˆã¯ä½•ã‚‚ã—ãªã„
         if (Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") == 0)
         {
             rb.velocity = Vector2.zero;
             return;
         }
 
-            // ƒLƒƒƒ‰ƒNƒ^[‚ğˆÚ“®‚³‚¹‚é
+            // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚’ç§»å‹•ã•ã›ã‚‹
             rb.velocity = Quaternion.AngleAxis(moveAngle, Vector3.forward) * Vector2.right * moveSpeed;
 
-        // ƒLƒƒƒ‰ƒNƒ^[‚ÌŒü‚«‚ğ•Ï‚¦‚é
+        // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®å‘ãã‚’å¤‰ãˆã‚‹
         transform.rotation = Quaternion.AngleAxis(moveAngle, Vector3.forward);
     }
 }
