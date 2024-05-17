@@ -19,17 +19,23 @@ public class Bullet_Base : MonoBehaviour
     {
         
     }
+    //弾の撃つ角度の正規化
     public void setRotate(Vector3 rot) {
-        rotate = rot;
+        rotate = rot.normalized;
+    }
+    //弾の速度決定
+    public void setBulletSpeed(float mag){
+        rotate *= mag;
         StartCoroutine(move());
     }
+    //弾を撃ち出す
     private IEnumerator move()
     {
         int count = 0;
 
         while (count <= DestroyTime)
         {
-          
+         
             // 弾の位置を更新する
             transform.Translate(rotate * Speed * Time.deltaTime, Space.Self);
 

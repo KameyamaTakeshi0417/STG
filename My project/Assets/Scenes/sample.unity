@@ -301,12 +301,40 @@ Transform:
   m_GameObject: {fileID: 1062560674}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+<<<<<<< HEAD
   m_LocalPosition: {x: -4.58, y: 2.6, z: 0}
+=======
+  m_LocalPosition: {x: 4.4369, y: 2.3817, z: 0}
+>>>>>>> origin/main
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+<<<<<<< HEAD
+=======
+--- !u!114 &765901916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 765901912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5867ab52a18b9854788146b60bb70ca0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shamblingWay: {x: 0, y: 0, z: 0}
+  playerPos: {x: 0, y: 0, z: 0}
+  enemyIniPos: {x: 0, y: 0, z: 0}
+  enemyPos: {x: 0, y: 0, z: 0}
+  sight: 10
+  enemyRange: 3
+  duration: 3
+  elapsedTime: 0
+  bullet: {fileID: 1895039100003720943, guid: f21e58a1636bdaa4b9ef54dadf4f3608, type: 3}
+>>>>>>> origin/main
 --- !u!1 &1247846350
 GameObject:
   m_ObjectHideFlags: 0

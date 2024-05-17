@@ -16,6 +16,9 @@ public class enemy : MonoBehaviour
     public float duration = 3.0f;//移動時間
     public float elapsedTime = 0.0f;//経過時間
 
+
+    public GameObject bullet;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -124,13 +127,28 @@ public class enemy : MonoBehaviour
 
     //プレイヤーを撃つ
     private IEnumerator shoot() {
-        Destroy(gameObject);
-        //弾発射。3回くらい。都度10fのロックオン(コルーチン呼び出しでなく、ここで同様の処理を記載)、
-        //射撃制度を落としたいので5fくらい待機、発射。プレイヤーの位置を問わず、3回繰り返す。
-        //3発打ち終わったら10f待つ。
-        //範囲内にプレイヤーがいたらshootに戻る。
-        //範囲外に出たらshambling再開。
-        yield return shambling(shamblingWay, duration); //プレイヤーがいなかったら再帰的にshambling呼び出し。
+        //弾を3発撃つ
+        for( float count = 0 ;count < 3 ; count++ )
+        {
+            //弾の発射角度
+            Vector3 shootPos = playerPos - enemyPos;
+            yield return new WaitForSeconds(0.1f); //精度を落とすための待ち時間
+            GameObject bulletPrefab = Instantiate(bullet, enemyPos, Quaternion.identity); //弾の生成
+            bulletPrefab.GetComponent<Bullet_Base>().setRotate(shootPos); //弾の発射角度の決定
+            bulletPrefab.GetComponent<Bullet_Base>().setBulletSpeed(0.3f); //弾の速度決定と発射
+            Destroy(bulletPrefab, 3); //一定時間後破壊
+        
+            yield return new WaitForSeconds(0.5f); //エネミーの発射間隔
+
+            //弾を3発撃ちきる前にプレイヤーが範囲外に出たら撃ち止める
+            //if (getRangeToPlayer() <= sight)
+            //{
+            //   break;
+            //}
+        }
+            yield return new WaitForSeconds(0.5f); //エネミーの待機時間
+
+        yield return shambling(shamblingWay, duration); //再帰的にshambling呼び出し。
 
     }
 
