@@ -35,6 +35,7 @@ public class Player : MonoBehaviour
             Vector3 createPos = transform.position + new Vector3(watch.x * ratio, watch.y * ratio, watch.z);
             GameObject bulletPrefab = Instantiate(bullet, createPos, Quaternion.identity);
             bulletPrefab.GetComponent<Bullet_Base>().setRotate(watch);
+            bulletPrefab.GetComponent<Bullet_Base>().setBulletSpeed(1.0f);
             Destroy(bulletPrefab, 3);
         }
         // 入力がない場合は何もしない
