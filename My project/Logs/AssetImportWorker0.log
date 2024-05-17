@@ -549,3 +549,35 @@ AssetImportParameters requested are different than current active one (requested
   custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
   custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
   custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+========================================================================
+Received Import Request.
+  Time since last request: 384.128612 seconds.
+  path: ProjectSettings/TagManager.asset
+  artifactKey: Guid(00000000000000003000000000000000) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing ProjectSettings/TagManager.asset using Guid(00000000000000003000000000000000) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a2ed4f3eafcc2bc862c440eaeb831565') in 0.010005 seconds
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 0
+========================================================================
+Received Import Request.
+  Time since last request: 239.184261 seconds.
+  path: Assets/resources/New Material 2.mat
+  artifactKey: Guid(791c1620360d4cc429281b5f92c88e4f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/resources/New Material 2.mat using Guid(791c1620360d4cc429281b5f92c88e4f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'bf092142e5ac865666fa4ea851809439') in 0.065595 seconds
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 1
+========================================================================
+Received Import Request.
+  Time since last request: 36.893840 seconds.
+  path: Assets/resources/New Material 3.mat
+  artifactKey: Guid(eaf530a67f3f9a5418d74f676880945b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/resources/New Material 3.mat using Guid(eaf530a67f3f9a5418d74f676880945b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'bacb904b70397b3d963a3c514db93c30') in 0.012232 seconds
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 1
+========================================================================
+Received Import Request.
+  Time since last request: 79.098529 seconds.
+  path: Assets/resources/New Material 2.mat
+  artifactKey: Guid(791c1620360d4cc429281b5f92c88e4f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/resources/New Material 2.mat using Guid(791c1620360d4cc429281b5f92c88e4f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '0b97815b50f8a28a7f69e078c2548670') in 0.015980 seconds
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 1
