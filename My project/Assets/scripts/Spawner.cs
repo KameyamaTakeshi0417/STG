@@ -22,12 +22,22 @@ public class Spawner : MonoBehaviour
        private void CreateSpawnPos()
     {
         float randomPos;//乱数ベクトル作るための一時的なもの
-        
+        Vector3 scale=transform.lossyScale;
         randomPos = Random.Range(-1f, 1f);
+        if(randomPos<=0f){
+            randomPos=Random.Range(scale.x*(-1.0f),scale.x*(-0.5f));
+        }else{
+            randomPos=Random.Range(scale.x*0.5f,scale.x*1.0f);
+        }
         spawnPos.x = randomPos;
         randomPos = Random.Range(-1f, 1f);
+               if(randomPos<=0f){
+            randomPos=Random.Range(scale.y*(-1.0f),scale.y*(-0.5f));
+        }else{
+            randomPos=Random.Range(scale.y*0.5f,scale.y*1.0f);
+        }
         spawnPos.y=randomPos;
-
+spawnPos+=transform.localPosition;
         return;
     }
 private IEnumerator createEnemy(){

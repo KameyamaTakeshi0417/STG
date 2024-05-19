@@ -29,7 +29,7 @@ public GameObject boardReplacement; // Board_Replacementオブジェクト
         }
     }
 
-    void ToggleMenu()
+    public void ToggleMenu()
     {
         boardReplacement.SetActive(false);
         boardStatus.SetActive(false);

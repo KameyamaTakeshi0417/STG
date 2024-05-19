@@ -7,6 +7,9 @@ using UnityEngine.UIElements;
 
 public class enemy : MonoBehaviour
 {
+
+public float HP;
+public float pow;
     public Vector3 shamblingWay;//徘徊時のルート
     public Vector3 playerPos;//プレイヤーの位置
     public Vector3 enemyIniPos;//エネミーの初期位置
