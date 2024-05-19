@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Health : MonoBehaviour
 {
-    public float HP = 100f; // 初期HP
+    private float HP = 100f; // 初期HP
 
     // ダメージを受け取るメソッド
     public void TakeDamage(float damage)

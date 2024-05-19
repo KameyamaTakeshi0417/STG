@@ -123,6 +123,17 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &713071706 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8087700371173567224, guid: 95fbbed2dc908d948be34ff9fe795c83, type: 3}
+  m_PrefabInstance: {fileID: 4663800207711173797}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9a18750e4932154cb6a61ba15352959, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &904583355
 GameObject:
   m_ObjectHideFlags: 0
@@ -399,6 +410,10 @@ PrefabInstance:
       propertyPath: moveSpeed
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 4077790636126634624, guid: ea02c46b4f1337e439dfe303aa5ec7b0, type: 3}
+      propertyPath: BulletSpan
+      value: 60
+      objectReference: {fileID: 0}
     - target: {fileID: 4390047272584022613, guid: ea02c46b4f1337e439dfe303aa5ec7b0, type: 3}
       propertyPath: m_Name
       value: Player
@@ -428,6 +443,22 @@ PrefabInstance:
     - target: {fileID: 205214571075890631, guid: 95fbbed2dc908d948be34ff9fe795c83, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2602033633908309005, guid: 95fbbed2dc908d948be34ff9fe795c83, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 713071706}
+    - target: {fileID: 2602033633908309005, guid: 95fbbed2dc908d948be34ff9fe795c83, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ToggleMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 2602033633908309005, guid: 95fbbed2dc908d948be34ff9fe795c83, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: MenuController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2602033633908309005, guid: 95fbbed2dc908d948be34ff9fe795c83, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 3938507446461779291, guid: 95fbbed2dc908d948be34ff9fe795c83, type: 3}
       propertyPath: m_Camera

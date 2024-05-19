@@ -99,6 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e0b0ed3fe99c604f9b77ddbf925dfb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HP: 10000
   spawnPos: {x: 0, y: 0, z: 0}
   enemy: {fileID: 1720474062316131734, guid: 9fd382c894e237b45ba9c93b7a4f6db4, type: 3}
 --- !u!114 &168201023577133574
@@ -113,7 +114,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adecb30a3579caf4abf4d199f8542e7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 10000
 --- !u!61 &5830166388116100047
 BoxCollider2D:
   m_ObjectHideFlags: 0
