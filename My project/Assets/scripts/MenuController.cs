@@ -8,6 +8,7 @@ public class MenuController : MonoBehaviour
     public GameObject boardReplacement; // Board_Replacementオブジェクト
 
     private Texture2D cursorTexture; // カーソルのテクスチャ
+    
     private Vector2 cursorHotspot; // カーソルのホットスポット
 
     void Start()
