@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -15,6 +16,7 @@ public class Player : MonoBehaviour
     public bool onCoolTime;
     public Vector3 watch;
     public float lockOnRadius = 5f; // ロックオンの半径
+    public int Exp;
 
     private Transform lockOnTarget; // ロックオン対象
 
@@ -103,5 +105,9 @@ public class Player : MonoBehaviour
             count++;
             yield return new WaitForEndOfFrame();
         }
+    }
+    public void addExp(int num){
+Exp+=num;
+
     }
 }
