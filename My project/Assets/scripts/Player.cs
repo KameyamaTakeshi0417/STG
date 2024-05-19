@@ -7,7 +7,7 @@ public class Player : MonoBehaviour
     private Rigidbody2D rb;
 
     public float HP;
-    public float Pow;
+    public float pow;
     public float moveSpeed;
     public GameObject bullet;
     public float bulletSpeed;
@@ -57,6 +57,7 @@ public class Player : MonoBehaviour
             GameObject bulletPrefab = Instantiate(bullet, createPos, Quaternion.identity);
             bulletPrefab.GetComponent<Bullet_Base>().setRotate(watch);
             bulletPrefab.GetComponent<Bullet_Base>().setBulletSpeed(bulletSpeed);
+            bulletPrefab.GetComponent<Bullet_Base>().setDmg(pow);
             StartCoroutine(CoolTime());
         }
 
