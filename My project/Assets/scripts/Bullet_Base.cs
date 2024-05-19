@@ -45,7 +45,7 @@ public class Bullet_Base : MonoBehaviour
             count++;
             yield return new WaitForSeconds(0.01f);
         }
-
+Destroy(this.gameObject);
         yield break;
     }
 

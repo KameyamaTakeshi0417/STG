@@ -16,7 +16,6 @@ public class enemy : MonoBehaviour
     public float duration = 3.0f;//移動時間
     public float elapsedTime = 0.0f;//経過時間
 
-
     public GameObject bullet;
 
     // Start is called before the first frame update
@@ -29,6 +28,7 @@ public class enemy : MonoBehaviour
         elapsedTime = 0.0f;
 
         StartCoroutine(shambling(shamblingWay,duration));
+        bullet=Resources.Load<GameObject>("bullet");
     }
 
     // Update is called once per frame
@@ -136,7 +136,7 @@ public class enemy : MonoBehaviour
             GameObject bulletPrefab = Instantiate(bullet, enemyPos, Quaternion.identity); //弾の生成
             bulletPrefab.GetComponent<Bullet_Base>().setRotate(shootPos); //弾の発射角度の決定
             bulletPrefab.GetComponent<Bullet_Base>().setBulletSpeed(0.3f); //弾の速度決定と発射
-            Destroy(bulletPrefab, 3); //一定時間後破壊
+            //Destroy(bulletPrefab, 3); //一定時間後破壊
         
             yield return new WaitForSeconds(0.5f); //エネミーの発射間隔
 
