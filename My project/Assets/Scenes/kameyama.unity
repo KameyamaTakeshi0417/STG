@@ -239,8 +239,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8af5e2d06e0590149b08a6a7fb4e4444, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraPosition: {x: 0, y: 0, z: -10}
+  cameraPositionOffset: {x: 0, y: 0, z: 0}
   player: {fileID: 2074489529}
+  range: 5
+  followSpeed: 10
 --- !u!1 &1288651438
 GameObject:
   m_ObjectHideFlags: 0
@@ -444,6 +446,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 852117106447569611, guid: 95fbbed2dc908d948be34ff9fe795c83, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ActivateBoardReplacement
+      objectReference: {fileID: 0}
+    - target: {fileID: 1731761092864929238, guid: 95fbbed2dc908d948be34ff9fe795c83, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: UnActivateBoardStatus
+      objectReference: {fileID: 0}
     - target: {fileID: 2602033633908309005, guid: 95fbbed2dc908d948be34ff9fe795c83, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -460,10 +470,26 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 2859989437312228463, guid: 95fbbed2dc908d948be34ff9fe795c83, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514381088965191553, guid: 95fbbed2dc908d948be34ff9fe795c83, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: UnActivateBoardReplacement
+      objectReference: {fileID: 0}
     - target: {fileID: 3938507446461779291, guid: 95fbbed2dc908d948be34ff9fe795c83, type: 3}
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 904583357}
+    - target: {fileID: 3938507446461779291, guid: 95fbbed2dc908d948be34ff9fe795c83, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1530105413
+      objectReference: {fileID: 0}
+    - target: {fileID: 5897935466785290079, guid: 95fbbed2dc908d948be34ff9fe795c83, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7448511268771644562, guid: 95fbbed2dc908d948be34ff9fe795c83, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -547,6 +573,10 @@ PrefabInstance:
     - target: {fileID: 7706932608923492417, guid: 95fbbed2dc908d948be34ff9fe795c83, type: 3}
       propertyPath: m_Name
       value: Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 7974962993781567155, guid: 95fbbed2dc908d948be34ff9fe795c83, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ActivateBoardStatus
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

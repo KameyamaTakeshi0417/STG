@@ -54,10 +54,12 @@ public class MenuController : MonoBehaviour
         if (!menuPanel.activeSelf)
         {
             Cursor.SetCursor(cursorTexture, cursorHotspot, CursorMode.Auto); // カーソルアイコンを設定
+            Time.timeScale = 0f; // 時間のスケールを停止する
         }
         else
         {
             Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto); // カーソルアイコンをデフォルトに戻す
+            Time.timeScale = 1f; // 時間のスケールを停止する
         }
     }
 
