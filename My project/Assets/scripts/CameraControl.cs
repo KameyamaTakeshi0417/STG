@@ -5,7 +5,9 @@ public class CameraControl : MonoBehaviour
 {
     public Vector3 cameraPositionOffset;
     public GameObject player;
-public float range=5.0f;
+    public float range = 5.0f;
+    public float followSpeed = 2.0f;
+
     void Update()
     {
         ObeyPlayer();
@@ -20,9 +22,12 @@ public float range=5.0f;
         float radians = rotationZ * Mathf.Deg2Rad;
 
         // 向きベクトルを計算
-        Vector3 direction = new Vector3(Mathf.Cos(radians)*range, Mathf.Sin(radians)*range, -10f);
+        Vector3 direction = new Vector3(Mathf.Cos(radians) * range, Mathf.Sin(radians) * range, -10f);
 
-        // カメラの新しい位置を計算
-        transform.position = player.transform.position + cameraPositionOffset + direction;
+        // カメラの目標位置を計算
+        Vector3 targetPosition = player.transform.position + cameraPositionOffset + direction;
+
+        // カメラの現在位置を目標位置に向かって線形補間
+        transform.position = Vector3.Lerp(transform.position, targetPosition, followSpeed * Time.deltaTime);
     }
 }
