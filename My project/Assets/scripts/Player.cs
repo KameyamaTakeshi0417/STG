@@ -6,6 +6,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     private Rigidbody2D rb;
+    private bool isPaused = false;
 
     public float HP;
     public float pow;
@@ -28,6 +29,12 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        if (isPaused)
+        {
+            rb.velocity = Vector2.zero; // ポーズ中は動きを停止
+            return;
+        }
+
         // マウスの位置を取得
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePosition.z = 0; // Z座標は0に固定
@@ -66,6 +73,12 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (isPaused)
+        {
+            rb.velocity = Vector2.zero; // ポーズ中は動きを停止
+            return;
+        }
+
         // 入力がない場合は何もしない
         Vector2 input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         if (input == Vector2.zero)
@@ -119,5 +132,10 @@ public class Player : MonoBehaviour
     public void addExp(int num)
     {
         Exp += num;
+    }
+
+    public void SetPaused(bool paused)
+    {
+        isPaused = paused;
     }
 }

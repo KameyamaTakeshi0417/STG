@@ -8,8 +8,8 @@ public class MenuController : MonoBehaviour
     public GameObject boardReplacement; // Board_Replacementオブジェクト
 
     private Texture2D cursorTexture; // カーソルのテクスチャ
-    
     private Vector2 cursorHotspot; // カーソルのホットスポット
+    private bool isPaused = false;
 
     void Start()
     {
@@ -31,14 +31,12 @@ public class MenuController : MonoBehaviour
         {
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
-            Time.timeScale = 0; // ゲームの時間を停止
         }
         else
         {
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
             Cursor.SetCursor(cursorTexture, cursorHotspot, CursorMode.Auto); // カーソルアイコンを設定
-            Time.timeScale = 1; // ゲームの時間を再開
         }
     }
 
@@ -49,17 +47,26 @@ public class MenuController : MonoBehaviour
         boardStatus.SetActive(false);
         // パネルの表示/非表示を切り替え
         menuPanel.SetActive(!menuPanel.activeSelf);
+        
+        // ポーズ状態を切り替える
+        isPaused = menuPanel.activeSelf;
+        Time.timeScale = isPaused ? 0f : 1f;
 
         // メニューが非表示になったときにカーソルを変更
         if (!menuPanel.activeSelf)
         {
             Cursor.SetCursor(cursorTexture, cursorHotspot, CursorMode.Auto); // カーソルアイコンを設定
-            Time.timeScale = 0f; // 時間のスケールを停止する
         }
         else
         {
             Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto); // カーソルアイコンをデフォルトに戻す
-            Time.timeScale = 1f; // 時間のスケールを停止する
+        }
+
+        // プレイヤーの動きを制御するためにイベントを発行
+        Player player = FindObjectOfType<Player>();
+        if (player != null)
+        {
+            player.SetPaused(isPaused);
         }
     }
 
