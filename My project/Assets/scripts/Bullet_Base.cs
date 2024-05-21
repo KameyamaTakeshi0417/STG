@@ -1,14 +1,19 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 public class Bullet_Base : MonoBehaviour
 {
+    private Rigidbody2D rb;
     public float dmg; // 弾のダメージ量
-    public float Speed;
-    public float DestroyTime;
-    public Vector3 rotate;
+    public float Speed; //弾の出る速度
+    public float DestroyTime; //弾の存在する時間
+    public float bullettype = 0; //弾のタイプ決定
+    public float addforce = 1000; //弾のタイプ決定
+    public Vector3 rotate; //弾の発射角
+    
 
     // Start is called before the first frame update
     void Start()
@@ -26,6 +31,7 @@ public class Bullet_Base : MonoBehaviour
     }
     //弾の撃つ角度の正規化
     public void setRotate(Vector3 rot) {
+        transform.localEulerAngles = new Vector3(0,0,MathF.Atan2(rot.y,rot.x) * Mathf.Rad2Deg + 90);
         rotate = rot.normalized;
     }
     //弾の速度決定
@@ -33,24 +39,29 @@ public class Bullet_Base : MonoBehaviour
         rotate *= mag;
         StartCoroutine(move());
     }
+    //弾の特性決定
+    public void setBulletType(float type){
+        bullettype = type;
+    }
     //弾を撃ち出す
     private IEnumerator move()
     {
         int count = 0;
 
+        //弾の発射
+        rb = gameObject.GetComponent<Rigidbody2D>();
+        Vector2 force = new Vector2( rotate.x * addforce , rotate.y * addforce );
+        rb.AddForce(force);
+
         while (count <= DestroyTime)
         {
-         
             // 弾の位置を更新する
-            transform.Translate(rotate * Speed * Time.deltaTime, Space.Self);
-
-            // 弾を回転させる
-           // transform.rotation = rotate;
+            //transform.Translate(rotate * Speed * Time.deltaTime, Space.Self);
 
             count++;
             yield return new WaitForSeconds(0.01f);
         }
-Destroy(this.gameObject);
+        Destroy(this.gameObject);
         yield break;
     }
 
@@ -67,9 +78,15 @@ Destroy(this.gameObject);
                 // HPを減らす
                 health.TakeDamage(dmg);
             }
-
-            // 弾を破壊
-            Destroy(this.gameObject);
+            //貫通弾では弾を破壊しない
+            if(bullettype == 1)
+            {
+                //何もしない
+            } else
+            {
+                // 弾を破壊
+                Destroy(this.gameObject);
+            }
         }
     }
 }
