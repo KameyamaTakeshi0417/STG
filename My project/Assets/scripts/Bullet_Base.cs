@@ -69,7 +69,7 @@ Destroy(this.gameObject);
             }
 
             // 弾を破壊
-            Destroy(gameObject);
+            Destroy(this.gameObject);
         }
     }
 }

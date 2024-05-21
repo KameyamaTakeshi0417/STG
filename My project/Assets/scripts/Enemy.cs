@@ -32,6 +32,7 @@ public float pow;
 
         StartCoroutine(shambling(shamblingWay,duration));
         bullet=Resources.Load<GameObject>("bullet");
+        GetComponent<Health>().setHP(HP);
     }
 
     // Update is called once per frame
