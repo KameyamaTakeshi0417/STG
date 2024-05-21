@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraControl : MonoBehaviour
@@ -8,7 +7,9 @@ public class CameraControl : MonoBehaviour
     public float range = 5.0f;
     public float followSpeed = 2.0f;
 
-    void Update()
+    private Vector3 velocity = Vector3.zero;
+
+    void FixedUpdate()
     {
         ObeyPlayer();
     }
@@ -27,7 +28,7 @@ public class CameraControl : MonoBehaviour
         // カメラの目標位置を計算
         Vector3 targetPosition = player.transform.position + cameraPositionOffset + direction;
 
-        // カメラの現在位置を目標位置に向かって線形補間
-        transform.position = Vector3.Lerp(transform.position, targetPosition, followSpeed * Time.deltaTime);
+        // カメラの現在位置を目標位置に向かってスムーズに移動
+        transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, followSpeed * Time.fixedDeltaTime);
     }
 }

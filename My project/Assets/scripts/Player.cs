@@ -62,17 +62,26 @@ public class Player : MonoBehaviour
             bulletPrefab.GetComponent<Bullet_Base>().setDmg(pow);
             StartCoroutine(CoolTime());
         }
+    }
 
+    void FixedUpdate()
+    {
         // 入力がない場合は何もしない
-        if (Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") == 0)
+        Vector2 input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        if (input == Vector2.zero)
         {
             rb.velocity = Vector2.zero;
             return;
         }
 
+        // 入力の正規化
+        if (input.sqrMagnitude > 1)
+        {
+            input.Normalize();
+        }
+
         // キャラクターを移動させる
-        float moveAngle = Mathf.Atan2(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal")) * Mathf.Rad2Deg;
-        rb.velocity = Quaternion.AngleAxis(moveAngle, Vector3.forward) * Vector2.right * moveSpeed;
+        rb.velocity = input * moveSpeed;
     }
 
     private void LockOnEnemy(Vector3 mousePosition)
@@ -106,8 +115,9 @@ public class Player : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
     }
-    public void addExp(int num){
-Exp+=num;
 
+    public void addExp(int num)
+    {
+        Exp += num;
     }
 }
