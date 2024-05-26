@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +14,7 @@ public class MenuController : MonoBehaviour
 
     void Start()
     {
+       
         // Resourcesフォルダからカーソルのテクスチャをロード
         cursorTexture = Resources.Load<Texture2D>("target");
         cursorHotspot = new Vector2(cursorTexture.width / 2, cursorTexture.height / 2); // カーソルの中央をホットスポットに設定

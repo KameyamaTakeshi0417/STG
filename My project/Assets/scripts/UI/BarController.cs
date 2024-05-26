@@ -12,7 +12,10 @@ public class BarController : MonoBehaviour
 
     public Button increaseButton;
     public Button decreaseButton;
-
+public bool isHP, isPow,isSpd;
+public int HP, Pow,Spd;
+public int setStatus;
+public int setStatusMag;
     private int maxBarUnits=100 ; // バーの目盛りの最大単位数
 
     void Start()
@@ -30,6 +33,13 @@ public class BarController : MonoBehaviour
     {
         if (currentValue < max)
         {
+            if(isHP==true){
+                HP+=setStatus*10*setStatusMag;
+                }else if(isPow==true){
+                    Pow+=setStatus*setStatusMag;
+                    }else if(isSpd==true){
+                        Spd+=setStatus*setStatusMag;
+                        } 
             currentValue += 10; // 10単位で増加
             UpdateBar();
         }
@@ -39,6 +49,14 @@ public class BarController : MonoBehaviour
     {
         if (currentValue > min)
         {
+            if(isHP==true){
+                HP-=setStatus*10*setStatusMag;
+                }else if(isPow==true){
+                    Pow-=setStatus*setStatusMag;
+                    }else if(isSpd==true){
+                        Spd-=setStatus*setStatusMag;
+                        } 
+            setStatus-=1;
             currentValue -= 10; // 10単位で減少
             UpdateBar();
         }
