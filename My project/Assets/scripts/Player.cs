@@ -21,7 +21,7 @@ public class Player : MonoBehaviour
 
     private Transform lockOnTarget; // ロックオン対象
   public AudioSource shootAudioSource; // 弾の発射音用のAudioSource
-
+  public AudioSource getExpAudioSource; // 弾の発射音用のAudioSource
     void Start()
     {
         onCoolTime = false;
@@ -135,12 +135,14 @@ public class Player : MonoBehaviour
 
     public void addExp(int num)
     {
+        getExpAudioSource.Play();
         Exp += num;
     }
 
     public void SetPaused(bool paused)
     {
         isPaused = paused;
+        
     }
 
       void ShootBullet()
