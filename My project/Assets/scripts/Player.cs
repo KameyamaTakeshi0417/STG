@@ -20,7 +20,8 @@ public class Player : MonoBehaviour
     public int Exp;
 
     private Transform lockOnTarget; // ロックオン対象
-
+  public AudioSource shootAudioSource; // 弾の発射音用のAudioSource
+  public AudioSource getExpAudioSource; // 弾の発射音用のAudioSource
     void Start()
     {
         onCoolTime = false;
@@ -60,6 +61,9 @@ public class Player : MonoBehaviour
         // 弾の発射処理
         if (Input.GetMouseButton(0) && !onCoolTime)
         {
+            onCoolTime = true;
+            ShootBullet();
+            StartCoroutine(CoolTime());
             onCoolTime = true;
             float ratio = 1.5f;
             Vector3 createPos = transform.position + watch * ratio;
@@ -131,11 +135,26 @@ public class Player : MonoBehaviour
 
     public void addExp(int num)
     {
+        getExpAudioSource.Play();
         Exp += num;
     }
 
     public void SetPaused(bool paused)
     {
         isPaused = paused;
+        
+    }
+
+      void ShootBullet()
+    {
+        float ratio = 1.5f;
+        Vector3 createPos = transform.position + watch * ratio;
+        GameObject bulletPrefab = Instantiate(bullet, createPos, Quaternion.identity);
+        bulletPrefab.GetComponent<Bullet_Base>().setRotate(watch);
+        bulletPrefab.GetComponent<Bullet_Base>().setBulletSpeed(bulletSpeed);
+        bulletPrefab.GetComponent<Bullet_Base>().setDmg(pow);
+
+        // サウンドエフェクトの再生
+        shootAudioSource.Play();
     }
 }

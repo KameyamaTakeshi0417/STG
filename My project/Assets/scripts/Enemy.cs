@@ -19,6 +19,7 @@ public float pow;
     public float duration = 3.0f;//移動時間
     public float elapsedTime = 0.0f;//経過時間
 
+public int Exp;
     public GameObject bullet;
 
     // Start is called before the first frame update
@@ -33,6 +34,8 @@ public float pow;
         StartCoroutine(shambling(shamblingWay,duration));
         bullet=Resources.Load<GameObject>("bullet");
         GetComponent<Health>().setHP(HP);
+        Exp= UnityEngine.Random.Range(3, 5);
+        GetComponent<Health>().setExp(Exp);
     }
 
     // Update is called once per frame
