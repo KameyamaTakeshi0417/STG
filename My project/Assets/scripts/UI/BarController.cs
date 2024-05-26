@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class BarController : MonoBehaviour
 {
     public int min = 0;
-    public int max = 100;
+    public int max ;
     public int currentValue = 0;
 
     public Image barImage;
@@ -13,10 +13,11 @@ public class BarController : MonoBehaviour
     public Button increaseButton;
     public Button decreaseButton;
 
-    private int maxBarUnits = 100; // バーの目盛りの最大単位数
+    private int maxBarUnits=100 ; // バーの目盛りの最大単位数
 
     void Start()
     {
+        maxBarUnits=max;
         // ボタンのクリックイベントにリスナーを追加
         increaseButton.onClick.AddListener(IncreaseValue);
         decreaseButton.onClick.AddListener(DecreaseValue);
@@ -45,6 +46,7 @@ public class BarController : MonoBehaviour
 
     void UpdateBar()
     {
+        maxBarUnits=max;
         // バーの長さを更新
         float fillAmount = (float)currentValue / maxBarUnits;
         barImage.fillAmount = fillAmount;
