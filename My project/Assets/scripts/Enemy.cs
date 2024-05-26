@@ -8,8 +8,8 @@ using UnityEngine.UIElements;
 public class enemy : MonoBehaviour
 {
 
-public float HP;
-public float pow;
+    public float HP; //エネミーの体力
+    public float pow; //エネミーの弾のダメージ
     public Vector3 shamblingWay;//徘徊時のルート
     public Vector3 playerPos;//プレイヤーの位置
     public Vector3 enemyIniPos;//エネミーの初期位置
@@ -143,6 +143,8 @@ public int Exp;
             GameObject bulletPrefab = Instantiate(bullet, enemyPos, Quaternion.identity); //弾の生成
             bulletPrefab.GetComponent<Bullet_Base>().setRotate(shootPos); //弾の発射角度の決定
             bulletPrefab.GetComponent<Bullet_Base>().setBulletSpeed(0.3f); //弾の速度決定と発射
+            bulletPrefab.GetComponent<Bullet_Base>().setDmg(pow); //弾のダメージ決定
+            bulletPrefab.GetComponent<Bullet_Base>().setBulletType(0); //弾の特性決定 とりあえず0
             //Destroy(bulletPrefab, 3); //一定時間後破壊
         
             yield return new WaitForSeconds(0.5f); //エネミーの発射間隔

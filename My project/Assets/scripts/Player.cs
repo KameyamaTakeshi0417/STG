@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -14,6 +15,7 @@ public class Player : MonoBehaviour
     public GameObject bullet;
     public float bulletSpeed;
     public float BulletSpan; // フレーム
+    public float bullettype = 0; //弾のタイプ決定
     public bool onCoolTime;
     public Vector3 watch;
     public float lockOnRadius = 5f; // ロックオンの半径
@@ -67,10 +69,12 @@ public class Player : MonoBehaviour
             onCoolTime = true;
             float ratio = 1.5f;
             Vector3 createPos = transform.position + watch * ratio;
+            bullet = BulletTypeDecision();
             GameObject bulletPrefab = Instantiate(bullet, createPos, Quaternion.identity);
             bulletPrefab.GetComponent<Bullet_Base>().setRotate(watch);
             bulletPrefab.GetComponent<Bullet_Base>().setBulletSpeed(bulletSpeed);
             bulletPrefab.GetComponent<Bullet_Base>().setDmg(pow);
+            bulletPrefab.GetComponent<Bullet_Base>().setBulletType(bullettype);
             StartCoroutine(CoolTime());
         }
     }
@@ -156,5 +160,27 @@ public class Player : MonoBehaviour
 
         // サウンドエフェクトの再生
         shootAudioSource.Play();
+    }
+    //弾の種類の決定
+    private GameObject BulletTypeDecision()
+    {
+        GameObject ret;
+        switch(bullettype)
+        {
+            //通常弾
+            case 0:
+                ret = Resources.Load<GameObject>("bullet");
+                break;
+            //貫通弾
+            case 1:
+                ret = Resources.Load<GameObject>("bullet_pene");
+                break;
+            default:
+                //とりあえず通常弾を撃つ
+                ret = Resources.Load<GameObject>("bullet");
+                break;
+        }
+
+        return ret;
     }
 }
