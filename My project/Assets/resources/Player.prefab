@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4077790636126634624}
   - component: {fileID: 7569265279989004154}
   - component: {fileID: 2423089870525446096}
+  - component: {fileID: -4217822520560754959}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -73,8 +74,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -226196017
+  m_SortingLayer: 2
   m_SortingOrder: -1
   m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -99,13 +100,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ecce08f180dc1b4b91981b28ddf949d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 1000
-  Pow: 100
+  HP: 10000
+  pow: 100
   moveSpeed: 5
   bullet: {fileID: 1895039100003720943, guid: f21e58a1636bdaa4b9ef54dadf4f3608, type: 3}
   bulletSpeed: 1
-  BulletSpan: 1
+  BulletSpan: 60
+  onCoolTime: 0
   watch: {x: 0, y: 0, z: 0}
+  lockOnRadius: 5
 --- !u!70 &7569265279989004154
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -168,3 +171,16 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &-4217822520560754959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4390047272584022613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adecb30a3579caf4abf4d199f8542e7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HP: 10000
