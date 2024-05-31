@@ -3,15 +3,19 @@ using UnityEngine;
 public class Health : MonoBehaviour
 {
     private float HP = 100f; // 初期HP
-private int Exp;
 
+    public float currentHP;
+private int Exp;
+void Start(){
+    currentHP=HP;
+}
     // ダメージを受け取るメソッド
     public void TakeDamage(float damage)
     {
-        HP -= damage;
-        Debug.Log(gameObject.name + " took " + damage + " damage. Remaining HP: " + HP);
+        currentHP -= damage;
+        Debug.Log(gameObject.name + " took " + damage + " damage. Remaining HP: " + currentHP);
 
-        if (HP <= 0)
+        if (currentHP <= 0)
         {
             Die();
         }
@@ -23,13 +27,22 @@ private int Exp;
 public float getHP(){
     return HP;
 }
+public void setHP(float hp){
+    HP=hp;
+    return ;
+}
+public float getCurrentHP(){
+    return currentHP;
+}
+public void setCurrentHP(float set){
+    currentHP=set;
+}
 public void addHP(float hp){
     HP+=hp;
     return ;
 }
-public void setHP(float hp){
-    HP=hp;
-    return ;
+public void AddCurrentHP(float set){
+    currentHP+=set;
 }
       private Vector3 CreateExpPos()
     {

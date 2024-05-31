@@ -74,7 +74,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -226196017
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: -1
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -109,7 +109,8 @@ MonoBehaviour:
   enemyRange: 3
   duration: 3
   elapsedTime: 0
-  bullet: {fileID: 0}
+  Exp: 0
+  bullet: {fileID: 1895039100003720943, guid: f21e58a1636bdaa4b9ef54dadf4f3608, type: 3}
 --- !u!114 &-3290141349049413948
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -122,7 +123,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adecb30a3579caf4abf4d199f8542e7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 1000
 --- !u!58 &1676712397939449718
 CircleCollider2D:
   m_ObjectHideFlags: 0

@@ -40,7 +40,7 @@ public class Field : MonoBehaviour
             }
             GameObject enemy = Instantiate(enemyPrefab, transform.position, Quaternion.identity, transform);
             // オフセットを少し調整して、敵を適切に配置
-            float offset = 3f; // 適宜調整する
+            
             enemy.transform.localPosition = pos;
         }
     }
