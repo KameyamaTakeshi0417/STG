@@ -76,6 +76,7 @@
     <Compile Include="Assets\scripts\CameraControl.cs" />
     <Compile Include="Assets\scripts\Health.cs" />
     <Compile Include="Assets\scripts\Field.cs" />
+    <Compile Include="Assets\scripts\EnemyManager.cs" />
     <Compile Include="Assets\scripts\Spawner.cs" />
     <Compile Include="Assets\scripts\Bullet_Base.cs" />
   </ItemGroup>

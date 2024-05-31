@@ -46,6 +46,9 @@ TagManager:
   - name: floor
     uniqueID: 42978947
     locked: 0
+  - name: Exp
+    uniqueID: 2746725511
+    locked: 0
   - name: object
     uniqueID: 4068771279
     locked: 0

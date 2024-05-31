@@ -6,17 +6,32 @@ public class EnemyHealthBar : MonoBehaviour
     public Health enemy; // 参照する敵オブジェクト
     public Image healthBarImage; // HPバーのImageコンポーネント
     public Vector3 offset; // HPバーの位置オフセット
+private Camera mainCamera;
+void Start(){
 
-    void Update()
+      mainCamera = Camera.main;
+}
+ void Update()
     {
         if (enemy != null)
         {
-            // HPバーを更新
-            healthBarImage.fillAmount = enemy.getCurrentHP() / enemy.getHP();
-
-            // HPバーの位置を敵の上に設定
-            Vector3 screenPosition = Camera.main.WorldToScreenPoint(enemy.transform.position + offset);
-            transform.position = screenPosition;
+            if (IsVisibleFrom(enemy.GetComponent<Renderer>(), mainCamera))
+            {
+                healthBarImage.fillAmount = enemy.getCurrentHP() / enemy.getHP();
+                Vector3 screenPosition = mainCamera.WorldToScreenPoint(enemy.transform.position + offset);
+                transform.position = screenPosition;
+                healthBarImage.enabled = true;
+            }
+            else
+            {
+                healthBarImage.enabled = false;
+            }
         }
+    }
+
+    private bool IsVisibleFrom(Renderer renderer, Camera camera)
+    {
+        Plane[] planes = GeometryUtility.CalculateFrustumPlanes(camera);
+        return GeometryUtility.TestPlanesAABB(planes, renderer.bounds);
     }
 }
