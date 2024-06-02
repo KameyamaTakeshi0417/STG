@@ -15,7 +15,7 @@ public class Spawner : MonoBehaviour
     {
         hitPoint = GetComponent<Health>();
         hitPoint.setHP(HP);
-        enemyManager = GameObject.Find("gameManager").GetComponent<EnemyManager>();
+        enemyManager = GameObject.Find("HPCanvas").GetComponent<EnemyManager>();
         StartCoroutine("createEnemy");
         
     }

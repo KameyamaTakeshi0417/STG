@@ -3,22 +3,23 @@ using UnityEngine.UI;
 
 public class EnemyHealthBar : MonoBehaviour
 {
-    public Health enemy; // 参照する敵オブジェクト
+    public GameObject enemyObject; // 参照する敵オブジェクト
+    private Health enemyHealthScript;
     public Image healthBarImage; // HPバーのImageコンポーネント
     public Vector3 offset; // HPバーの位置オフセット
-private Camera mainCamera;
+    private Camera mainCamera;
 void Start(){
 
       mainCamera = Camera.main;
 }
  void Update()
     {
-        if (enemy != null)
+        if (enemyObject != null)
         {
-            if (IsVisibleFrom(enemy.GetComponent<Renderer>(), mainCamera))
+            if (IsVisibleFrom(enemyObject.GetComponent<Renderer>(), mainCamera))
             {
-                healthBarImage.fillAmount = enemy.getCurrentHP() / enemy.getHP();
-                Vector3 screenPosition = mainCamera.WorldToScreenPoint(enemy.transform.position + offset);
+                healthBarImage.fillAmount = enemyHealthScript.getCurrentHP() / enemyHealthScript.getHP();
+                Vector3 screenPosition = mainCamera.WorldToScreenPoint(enemyObject.transform.position + offset);
                 transform.position = screenPosition;
                 healthBarImage.enabled = true;
             }
@@ -33,5 +34,9 @@ void Start(){
     {
         Plane[] planes = GeometryUtility.CalculateFrustumPlanes(camera);
         return GeometryUtility.TestPlanesAABB(planes, renderer.bounds);
+    }
+    public void setEnemy(GameObject enemy){
+        enemyObject=enemy;
+        enemyHealthScript=enemy.GetComponent<Health>();
     }
 }

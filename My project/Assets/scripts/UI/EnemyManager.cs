@@ -4,35 +4,36 @@ using UnityEngine;
 public class EnemyManager : MonoBehaviour
 {
     public GameObject healthBarPrefab; // HPバーのPrefab
+public    GameObject[] enemyObjects;
 
     void Start()
     {
         // 初期配置されているエネミーの処理
-        GameObject[] enemyObjects = GameObject.FindGameObjectsWithTag("Enemy");
+       enemyObjects = GameObject.FindGameObjectsWithTag("Enemy");
         foreach (GameObject enemyObject in enemyObjects)
         {
             Health enemy = enemyObject.GetComponent<Health>();
             if (enemy != null)
             {
-                CreateHealthBarForEnemy(enemy);
+                CreateHealthBarForEnemy(enemyObject);
             }
         }
     }
 
-    public void OnEnemySpawned(GameObject enemyObject)
+    public void OnEnemySpawned(GameObject enemyObj)
     {
-        Health enemy = enemyObject.GetComponent<Health>();
-        if (enemy != null)
+        
+        if (enemyObj != null)
         {
-            CreateHealthBarForEnemy(enemy);
+            CreateHealthBarForEnemy(enemyObj);
         }
     }
 
-    void CreateHealthBarForEnemy(Health enemy)
+    void CreateHealthBarForEnemy(GameObject enemy)
     {
         GameObject healthBar = Instantiate(healthBarPrefab, transform);
         EnemyHealthBar healthBarScript = healthBar.GetComponent<EnemyHealthBar>();
-        healthBarScript.enemy = enemy;
+        healthBarScript.setEnemy(enemy);
         healthBarScript.offset = new Vector3(0, 1.5f, 0); // 適切なオフセットを設定
     }
 }
