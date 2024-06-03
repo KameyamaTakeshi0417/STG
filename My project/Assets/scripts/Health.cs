@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Health : MonoBehaviour
@@ -15,7 +16,7 @@ void Start(){
         currentHP -= damage;
         Debug.Log(gameObject.name + " took " + damage + " damage. Remaining HP: " + currentHP);
 
-        if (currentHP <= 0)
+        if (gameObject.tag=="Enemy"&&currentHP <= 0)
         {
             Die();
         }
