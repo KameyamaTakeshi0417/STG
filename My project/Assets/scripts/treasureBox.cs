@@ -16,12 +16,15 @@ public class treasureBox : MonoBehaviour
     {
         
     }
-    void OnTriggerEnter2D(Collider2D collision){
-        Debug.Log(collision.gameObject.name);
-if(collision.tag=="Player"){
- collision.GetComponent<Player>().GetItem(treasureType);   
- Destroy(this.gameObject);
-}
-
+          void OnTriggerEnter2D(Collider2D collision)
+    {
+        // 衝突したオブジェクトのタグをチェック
+        if (collision.CompareTag("Player"))
+        {
+        collision.GetComponent<Player>().GetItem(treasureType);   
+            // 破壊
+            Destroy(gameObject);
+        }
     }
+
 }
