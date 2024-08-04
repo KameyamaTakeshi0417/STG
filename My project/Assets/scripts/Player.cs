@@ -187,17 +187,17 @@ public class Player : MonoBehaviour
         switch (type)
         {
             case 1:
-pow+=1.0f;
+pow+=10.0f;
 
             break;
             case 2:
             HP+=1000;
             break;
             case 3:
-moveSpeed+=2.0f;
+moveSpeed+=20.0f;
 break;
-case4:
-bulletSpeed+=2.0f;
+case 4:
+bulletSpeed+=20.0f;
 break;
             default:
             break;

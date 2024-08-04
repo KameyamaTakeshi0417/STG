@@ -1,47 +1,56 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Field : MonoBehaviour
 {
-    public GameObject enemyPrefab; // 敵のPrefabを設定するためのパブリック変数
+    public GameObject enemyPrefab;
+    private GameObject[] enemies;
+    public FieldBoundary fieldBoundary;
 
     void Start()
     {
         SetEnemy();
+        fieldBoundary.EnableBoundary(true); // 壁を有効にする
+    }
+
+    void Update()
+    {
+        CheckEnemies();
     }
 
     void SetEnemy()
     {
         Vector3 pos = new Vector3(0, 0, 0);
-        float xOffset = 5 * (0.75f); // 幅の3/4
-        float yOffset = 5 * (0.866f); // 高さの√3/2 ≈ 0.866
+        float xOffset = 5 * (0.75f);
+        float yOffset = 5 * (0.866f);
         int enemyCount = UnityEngine.Random.Range(2, 5);
+        enemies = new GameObject[enemyCount];
 
         for (int x = 0; x < enemyCount; x++)
         {
-            // 基本の位置を計算
-            pos.x = xOffset;
-            pos.y = yOffset;
-
-            // 奇数行の場合、yPosをオフセット
-            if (x % 2 == 1)//一個ずつ位置ずらす
+            if (x % 2 == 1)
             {
                 pos.x *= -1.0f;
             }
             if (x <= 2)
-            {//3つめ以降は位置を変える
+            {
                 pos.y *= -1.0f;
             }
             if (x >= 4)
-            {//5個目真ん中にしてbreak。5以上出さないようにする...マズいか？拡張性が死ぬ可能性。
+            {
                 pos = new Vector3(0, 0, 0);
                 break;
             }
-            GameObject enemy = Instantiate(enemyPrefab, transform.position, Quaternion.identity, transform);
-            // オフセットを少し調整して、敵を適切に配置
-            
-            enemy.transform.localPosition = pos;
+            enemies[x] = Instantiate(enemyPrefab, transform.position, Quaternion.identity, transform);
+            enemies[x].transform.localPosition = pos;
+        }
+    }
+
+    void CheckEnemies()
+    {
+        if (enemies.All(e => e == null || !e.activeInHierarchy))
+        {
+            fieldBoundary.EnableBoundary(false); // 全滅時に壁を無効化
         }
     }
 }
