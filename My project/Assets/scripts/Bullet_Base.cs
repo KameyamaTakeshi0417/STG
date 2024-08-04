@@ -14,7 +14,7 @@ public class Bullet_Base : MonoBehaviour
     public float addforce = 1000; //弾のタイプ決定
     public Vector3 rotate; //弾の発射角
     
-
+public int penetorateCount;//弾丸を貫通する回数
     // Start is called before the first frame update
     void Start()
     {
@@ -42,7 +42,13 @@ public class Bullet_Base : MonoBehaviour
     //弾の特性決定
     public void setBulletType(float type){
         bullettype = type;
+        if(type!=1)setBulletPenetrate(1);
     }
+    //弾丸の貫通回数設定
+    public void setBulletPenetrate(int count){
+penetorateCount=count;
+    }
+    
     //弾を撃ち出す
     private IEnumerator move()
     {

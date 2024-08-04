@@ -183,4 +183,24 @@ public class Player : MonoBehaviour
 
         return ret;
     }
+    public void GetItem(int type){
+        switch (type)
+        {
+            case 1:
+pow+=1.0f;
+
+            break;
+            case 2:
+            HP+=1000;
+            break;
+            case 3:
+moveSpeed+=2.0f;
+break;
+case4:
+bulletSpeed+=2.0f;
+break;
+            default:
+            break;
+        }
+    }
 }

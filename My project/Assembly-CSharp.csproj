@@ -71,6 +71,7 @@
     <Compile Include="Assets\scripts\HexGrid.cs" />
     <Compile Include="Assets\scripts\RelicList.cs" />
     <Compile Include="Assets\scripts\UI\EnemyManager.cs" />
+    <Compile Include="Assets\scripts\treasureBox.cs" />
     <Compile Include="Assets\scripts\Exp.cs" />
     <Compile Include="Assets\scripts\ItemBox.cs" />
     <Compile Include="Assets\scripts\ItemDrop.cs" />
