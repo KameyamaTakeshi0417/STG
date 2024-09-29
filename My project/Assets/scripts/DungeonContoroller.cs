@@ -50,11 +50,7 @@ public class DungeonController : MonoBehaviour
     // 移動が有効かどうかをチェックする
     private bool IsMoveValid(int nextRow, int nextCol)
     {
-        // 次の行にしか移動できない
-        if (nextRow != currentRow + 1)
-        {
-            return false;
-        }
+
 
         // 隣の列または同じ列しか移動できない
         if (nextCol < 0 || nextCol > 2 || Mathf.Abs(nextCol - currentCol) > 1)
