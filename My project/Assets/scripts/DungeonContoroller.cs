@@ -6,12 +6,18 @@ public class DungeonController : MonoBehaviour
     private int currentRow = 0;
     private int currentCol;
 
+GameObject fieldObject;
+GameObject fieldPrefab;
+GameObject BOSSfield;
     void Start()
     {
         GenerateDungeon();  // ダンジョンを生成する
         currentCol = Random.Range(0, 3);  // スタート地点を1行目のランダムな列に設定
         Debug.Log("Start in Room: Row 1, Col " + (currentCol + 1));
         Debug.Log("Room value: " + dungeonGrid[currentRow, currentCol]);
+
+        fieldObject=Resources.Load<GameObject>("Floor");
+         fieldPrefab = Instantiate(fieldObject,new Vector3(0,0,0), Quaternion.identity); //フィールド生成
     }
 
     // ダンジョン生成
@@ -50,7 +56,6 @@ public class DungeonController : MonoBehaviour
     // 移動が有効かどうかをチェックする
     private bool IsMoveValid(int nextRow, int nextCol)
     {
-
 
         // 隣の列または同じ列しか移動できない
         if (nextCol < 0 || nextCol > 2 || Mathf.Abs(nextCol - currentCol) > 1)
