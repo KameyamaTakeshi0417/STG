@@ -5,12 +5,35 @@ public struct MyStruct
 {
     public int value;
 }
+public enum GameState { Menu, Playing, GameOver }
 public class GameManager : MonoBehaviour
 {// 3x19の構造体配列を定義
     private MyStruct[,] myStructArray = new MyStruct[3, 19];
+        public static GameManager Instance { get; private set; }
+
+    public int score { get; private set; }
+
+     public GameState currentState;
+     private void Awake()
+    {
+        // シングルトンパターンの実装
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        currentState = GameState.Menu;
+        score = 0;
+        // ゲームの初期化処理
          // 配列にランダムな値を設定
         FillArrayWithRandomValues();
         // 配列の内容をコンソールに出力して確認
@@ -22,7 +45,16 @@ public class GameManager : MonoBehaviour
     {
         
     }
-    
+        public void ResetGame()
+    {
+        score = 0;
+        // ゲームのリセット処理
+    }
+        public void EndGame()
+    {
+        currentState = GameState.GameOver;
+        // ゲームオーバーの処理
+    }
     void FillArrayWithRandomValues()
     {
         // Randomクラスのインスタンスを作成

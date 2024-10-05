@@ -70,6 +70,7 @@
     <Compile Include="Assets\scripts\DungeonContoroller.cs" />
     <Compile Include="Assets\scripts\UI\CameraControl.cs" />
     <Compile Include="Assets\scripts\HexGrid.cs" />
+    <Compile Include="Assets\scripts\ScoreDisplay.cs" />
     <Compile Include="Assets\scripts\RelicList.cs" />
     <Compile Include="Assets\scripts\UI\EnemyManager.cs" />
     <Compile Include="Assets\scripts\Exp.cs" />
