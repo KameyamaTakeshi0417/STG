@@ -75,7 +75,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -226196017
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: -1
   m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -101,14 +101,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HP: 10000
-  pow: 100
+  pow: 10
   moveSpeed: 5
   bullet: {fileID: 1895039100003720943, guid: f21e58a1636bdaa4b9ef54dadf4f3608, type: 3}
   bulletSpeed: 1
   BulletSpan: 60
+  bullettype: 0
   onCoolTime: 0
   watch: {x: 0, y: 0, z: 0}
   lockOnRadius: 5
+  Exp: 0
+  shootAudioSource: {fileID: 0}
+  getExpAudioSource: {fileID: 0}
 --- !u!70 &7569265279989004154
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -183,4 +187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adecb30a3579caf4abf4d199f8542e7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 10000
+  DamageObj: {fileID: 6110849580172799170, guid: 482600d1da3dcbd4b94b21c23b406955, type: 3}
+  PosObj: {fileID: 4390047272584022613}
+  AdjPos: {x: 0, y: 0, z: 0}
+  currentHP: 0

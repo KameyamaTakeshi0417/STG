@@ -123,6 +123,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adecb30a3579caf4abf4d199f8542e7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DamageObj: {fileID: 6110849580172799170, guid: 482600d1da3dcbd4b94b21c23b406955, type: 3}
+  PosObj: {fileID: 1720474062316131734}
+  AdjPos: {x: 0, y: 0, z: 0}
+  currentHP: 0
 --- !u!58 &1676712397939449718
 CircleCollider2D:
   m_ObjectHideFlags: 0

@@ -1,8 +1,17 @@
 using Unity.VisualScripting;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Health : MonoBehaviour
 {
+    [SerializeField]
+    private GameObject DamageObj;
+    [SerializeField]
+    private GameObject PosObj;
+    [SerializeField]
+    private Vector3 AdjPos;
     private float HP = 100f; // 初期HP
 
     public float currentHP;
@@ -12,7 +21,8 @@ void Start(){
 }
     // ダメージを受け取るメソッド
     public void TakeDamage(float damage)
-    {
+    {        
+        ViewDamage(damage);
         currentHP -= damage;
         Debug.Log(gameObject.name + " took " + damage + " damage. Remaining HP: " + currentHP);
 
@@ -70,5 +80,11 @@ ret+=transform.localPosition;
                // ここに死亡時の処理を書く
         Destroy(gameObject);
 
+    }
+    private void ViewDamage(float _damage)
+    {
+        GameObject _damageObj = Instantiate(DamageObj);
+        _damageObj.GetComponent<TextMesh>().text = _damage.ToString();
+        _damageObj.transform.position = PosObj.transform.position + AdjPos;
     }
 }
