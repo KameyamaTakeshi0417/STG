@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 public struct MyStruct
 {
     public int value;
@@ -14,6 +15,9 @@ public class GameManager : MonoBehaviour
     public int score { get; private set; }
 
      public GameState currentState;
+
+     public int NowRow,NowCol;
+     private string nextscene;
      private void Awake()
     {
         // シングルトンパターンの実装
@@ -38,6 +42,10 @@ public class GameManager : MonoBehaviour
         FillArrayWithRandomValues();
         // 配列の内容をコンソールに出力して確認
        // PrintArray();
+       if(SceneManager.GetActiveScene().name=="scene0")nextscene="scene1";
+       if(SceneManager.GetActiveScene().name=="scene1")nextscene="scene2";
+       if(SceneManager.GetActiveScene().name=="scene2")nextscene="scene1";
+       if(NowCol>=19)nextscene="BOSS";
     }
 
     // Update is called once per frame
@@ -84,5 +92,17 @@ PrintArray();
             }
             Debug.Log(row);
         }
+    }
+
+    public void EnterNextRoom(int num){
+NowCol+=1;
+NowRow+=num;
+
+ChangeScene();
+    }
+
+      void ChangeScene()
+    {
+        SceneManager.LoadScene(nextscene);
     }
 }
