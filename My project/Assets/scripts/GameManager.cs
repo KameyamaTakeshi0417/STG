@@ -68,6 +68,8 @@ public class GameManager : MonoBehaviour
                 myStructArray[i, j].value = random.Next(1, 6); // Nextの第二引数は上限+1を指定する
             }
         }
+PrintArray();
+
     }
 
     void PrintArray()
