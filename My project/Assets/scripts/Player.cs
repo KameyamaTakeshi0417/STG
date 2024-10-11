@@ -67,14 +67,6 @@ public class Player : MonoBehaviour
             ShootBullet();
             StartCoroutine(CoolTime());
             onCoolTime = true;
-            float ratio = 1.5f;
-            Vector3 createPos = transform.position + watch * ratio;
-            bullet = BulletTypeDecision();
-            GameObject bulletPrefab = Instantiate(bullet, createPos, Quaternion.identity);
-            bulletPrefab.GetComponent<Bullet_Base>().setRotate(watch);
-            bulletPrefab.GetComponent<Bullet_Base>().setBulletSpeed(bulletSpeed);
-            bulletPrefab.GetComponent<Bullet_Base>().setDmg(pow);
-            bulletPrefab.GetComponent<Bullet_Base>().setBulletType(bullettype);
             StartCoroutine(CoolTime());
         }
     }
@@ -157,6 +149,7 @@ public class Player : MonoBehaviour
         bulletPrefab.GetComponent<Bullet_Base>().setRotate(watch);
         bulletPrefab.GetComponent<Bullet_Base>().setBulletSpeed(bulletSpeed);
         bulletPrefab.GetComponent<Bullet_Base>().setDmg(pow);
+        //bulletPrefab.GetComponent<Bullet_Base>().setBulletType(bullettype);
 
         // サウンドエフェクトの再生
         shootAudioSource.Play();

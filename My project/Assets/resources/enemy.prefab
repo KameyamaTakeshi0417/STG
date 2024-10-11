@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5867ab52a18b9854788146b60bb70ca0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 1000
+  HP: 100
   pow: 100
   shamblingWay: {x: 0, y: 0, z: 0}
   playerPos: {x: 0, y: 0, z: 0}
