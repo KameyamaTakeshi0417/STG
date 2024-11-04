@@ -6,6 +6,7 @@ public class StepCollision : MonoBehaviour
 {
     public bool Onstep;
     public bool canEnter;
+    public int stepNum;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,8 +24,12 @@ canEnter=set;
     }
      void OnTriggerEnter2D(Collider2D collision)
     {
-if(collision.gameObject.tag=="player")
-Onstep=true;
+if(collision.CompareTag("Player")){
+    string sceneName;
+    sceneName="scene"+(stepNum.ToString());
+GameObject.Find("GameManager").GetComponent<GameManager>().changeScene(sceneName);
+
+}
 
     }
 }

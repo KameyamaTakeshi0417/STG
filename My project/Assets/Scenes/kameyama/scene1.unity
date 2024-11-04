@@ -148,7 +148,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6951001}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -653,6 +653,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Onstep: 0
   canEnter: 0
+  stepNum: 0
 --- !u!61 &326225467
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -823,6 +824,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Onstep: 0
   canEnter: 0
+  stepNum: 2
 --- !u!61 &1424605738
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -968,6 +970,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Onstep: 0
   canEnter: 0
+  stepNum: 1
 --- !u!61 &1457997601
 BoxCollider2D:
   m_ObjectHideFlags: 0

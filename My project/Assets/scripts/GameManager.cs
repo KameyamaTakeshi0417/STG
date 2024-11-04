@@ -105,4 +105,7 @@ ChangeScene();
     {
         SceneManager.LoadScene(nextscene);
     }
+    public void changeScene(string sceneName){//部屋移動タイルで使用する
+        SceneManager.LoadScene(sceneName);
+    }
 }
