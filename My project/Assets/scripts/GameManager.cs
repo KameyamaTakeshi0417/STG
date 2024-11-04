@@ -76,7 +76,7 @@ public class GameManager : MonoBehaviour
         {
             for (int j = 0; j < myStructArray.GetLength(1); j++)
             {
-                myStructArray[i, j].value = random.Next(0,sceneType-1); // Nextの第二引数は上限+1を指定する
+                myStructArray[i, j].value = random.Next(0,sceneType); // Nextの第二引数は上限+1を指定する
             }
         }
 PrintArray();
@@ -106,7 +106,7 @@ PrintArray();
         int nextCol=num;
         int nextFloor;
         if(nextRow<5){
-            nextFloor=myStructArray[nextRow,nextCol].value;
+            nextFloor=myStructArray[nextCol,nextRow].value;
         }else{
             nextFloor=4;
             NowRow=0;
