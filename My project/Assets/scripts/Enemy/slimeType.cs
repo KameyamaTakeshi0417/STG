@@ -45,7 +45,7 @@ public class slimeType : MonoBehaviour
     //プレイヤーに衝突してダメージを与えるまで追跡し続ける
     while (true)
     {
-      if (gameObject.GetComponent<Health>().getCurrentHP() <= (gameObject.GetComponent<Health>().getHP()) * 0.5f)
+      if (separateCount>0&&gameObject.GetComponent<Health>().getCurrentHP() <= (gameObject.GetComponent<Health>().getHP()) * 0.5f)
       {
         Debug.Log("体力半分");
         yield return separate();
