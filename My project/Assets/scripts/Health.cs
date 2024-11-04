@@ -3,12 +3,15 @@ using UnityEngine;
 
 public class Health : MonoBehaviour
 {
-    private float HP = 100f; // 初期HP
+    public float HP = 100f; // 初期HP
 
     public float currentHP;
 private int Exp;
 void Start(){
-    currentHP=HP;
+    
+}
+void Awake(){
+currentHP=HP;
 }
     // ダメージを受け取るメソッド
     public void TakeDamage(float damage)
