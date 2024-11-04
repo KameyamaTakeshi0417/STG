@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/kameyama/scene2.unity
     guid: 6e36d58b2bc969842a6686ded24d43d5
+  - enabled: 1
+    path: Assets/Scenes/kameyama/scene4.unity
+    guid: 1ebf9bf1a42e10343a13b45cd60ca442
   m_configObjects: {}

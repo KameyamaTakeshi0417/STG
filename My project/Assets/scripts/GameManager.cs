@@ -42,9 +42,11 @@ public class GameManager : MonoBehaviour
         FillArrayWithRandomValues();
         // 配列の内容をコンソールに出力して確認
        // PrintArray();
+/*
        if(SceneManager.GetActiveScene().name=="scene0")nextscene="scene1";
        if(SceneManager.GetActiveScene().name=="scene1")nextscene="scene2";
        if(SceneManager.GetActiveScene().name=="scene2")nextscene="scene1";
+       */
        if(NowCol>=19)nextscene="BOSS";
     }
 
@@ -65,6 +67,7 @@ public class GameManager : MonoBehaviour
     }
     void FillArrayWithRandomValues()
     {
+        int sceneType=3;
         // Randomクラスのインスタンスを作成
         System.Random random = new System.Random();
         
@@ -73,7 +76,7 @@ public class GameManager : MonoBehaviour
         {
             for (int j = 0; j < myStructArray.GetLength(1); j++)
             {
-                myStructArray[i, j].value = random.Next(1, 6); // Nextの第二引数は上限+1を指定する
+                myStructArray[i, j].value = random.Next(0,sceneType-1); // Nextの第二引数は上限+1を指定する
             }
         }
 PrintArray();
@@ -94,18 +97,23 @@ PrintArray();
         }
     }
 
-    public void EnterNextRoom(int num){
-NowCol+=1;
-NowRow+=num;
 
-ChangeScene();
-    }
 
-      void ChangeScene()
+      public void ChangeScene(int num)
     {
-        SceneManager.LoadScene(nextscene);
+        NowRow+=1;
+        int nextRow=NowRow;
+        int nextCol=num;
+        int nextFloor;
+        if(nextRow<5){
+            nextFloor=myStructArray[nextRow,nextCol].value;
+        }else{
+            nextFloor=4;
+            NowRow=0;
+        }
+        
+        
+        SceneManager.LoadScene("scene"+nextFloor);
     }
-    public void changeScene(string sceneName){//部屋移動タイルで使用する
-        SceneManager.LoadScene(sceneName);
-    }
+
 }
