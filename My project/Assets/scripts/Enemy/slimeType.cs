@@ -45,7 +45,7 @@ public class slimeType : MonoBehaviour
     //プレイヤーに衝突してダメージを与えるまで追跡し続ける
     while (true)
     {
-      if (separateCount>0&&gameObject.GetComponent<Health>().getCurrentHP() <= (gameObject.GetComponent<Health>().getHP()) * 0.5f)
+      if (separateCount > 0 && gameObject.GetComponent<Health>().getCurrentHP() <= (gameObject.GetComponent<Health>().getHP()) * 0.5f)
       {
         Debug.Log("体力半分");
         yield return separate();
@@ -62,7 +62,7 @@ public class slimeType : MonoBehaviour
   {
     //体力が半分以下になったら数秒待って、現在の体力の半分のスライムを作成する
     int count = 0;
-    const int COUNT_MAX = 3;
+    const int COUNT_MAX = 1;
     //分裂予備動作
     while (true)
     {
@@ -72,16 +72,20 @@ public class slimeType : MonoBehaviour
         break;
       }
       count++;
-      yield return new WaitForSeconds(3);
+      yield return new WaitForSeconds(COUNT_MAX);
     }
     //分裂処理
-    GameObject slime1 = Instantiate(Resources.Load<GameObject>("slime"), gameObject.transform.position - new Vector3(3, 2, 0), Quaternion.identity);
-    GameObject slime2 = Instantiate(Resources.Load<GameObject>("slime"), gameObject.transform.position - new Vector3(-3, 2, 0), Quaternion.identity);
-    slime1.GetComponent<slimeType>().separateCount = separateCount -= 1;
-    slime2.GetComponent<slimeType>().separateCount = separateCount -= 1;
-    slime1.transform.localScale = (gameObject.transform.localScale) * 0.75f;
-    slime2.transform.localScale = (gameObject.transform.localScale) * 0.75f;
+    createNewSlime(-3);
+    createNewSlime(3);
     Destroy(this.gameObject);
     yield return null;
+  }
+  private void createNewSlime(int plusMinus)
+  {
+    GameObject slime1 = Instantiate(Resources.Load<GameObject>("slime"), gameObject.transform.position - new Vector3(plusMinus, 2, 0), Quaternion.identity);
+    slime1.GetComponent<slimeType>().separateCount = separateCount - 1;
+    slime1.GetComponent<Health>().setHP(gameObject.GetComponent<Health>().getCurrentHP());
+    slime1.GetComponent<Health>().setCurrentHP(gameObject.GetComponent<Health>().getCurrentHP() );
+    slime1.transform.localScale = (gameObject.transform.localScale) * 0.75f;
   }
 }
