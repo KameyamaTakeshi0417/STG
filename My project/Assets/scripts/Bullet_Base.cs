@@ -88,6 +88,8 @@ public class Bullet_Base : MonoBehaviour
                 Destroy(this.gameObject);
             }
         }
+   
+   if(collision.CompareTag("wall")) Destroy(this.gameObject);
     }
 }
 
