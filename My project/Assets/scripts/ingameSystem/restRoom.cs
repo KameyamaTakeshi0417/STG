@@ -21,7 +21,17 @@ public class restRoom : MonoBehaviour
             useRest = true;
             Health playerHealth;
             playerHealth = GameObject.Find("Player").GetComponent<Health>();
-            playerHealth.setCurrentHP(playerHealth.getCurrentHP()+(int)playerHealth.getHP() * 0.3f);
+            int healHP;
+            healHP = (int)(playerHealth.getCurrentHP() + (int)playerHealth.getHP() * 0.3f);
+            if (healHP > playerHealth.getCurrentHP())
+            {
+                playerHealth.setCurrentHP(playerHealth.getCurrentHP());
+            }
+            else
+            {
+                playerHealth.setCurrentHP(healHP);
+            }
+
         }
     }
     private void OnTriggerStay2D(Collider2D other)
