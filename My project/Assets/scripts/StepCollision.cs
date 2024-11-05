@@ -24,7 +24,7 @@ canEnter=set;
     }
      void OnTriggerEnter2D(Collider2D collision)
     {
-if(collision.CompareTag("Player")){
+if(collision.CompareTag("Player")&&GameObject.Find("GameManager").GetComponent<GameManager>().getCleared()){
 
 GameObject.Find("GameManager").GetComponent<GameManager>().ChangeScene(stepNum);
 
