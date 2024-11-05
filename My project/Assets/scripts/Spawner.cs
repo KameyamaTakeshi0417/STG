@@ -9,13 +9,11 @@ public class Spawner : MonoBehaviour
     public GameObject enemy;
     private Health hitPoint;
     public float coolTime = 3.5f;
-    public EnemyManager enemyManager;
     // Start is called before the first frame update
     void Start()
     {
         hitPoint = GetComponent<Health>();
         hitPoint.setHP(HP);
-        enemyManager = GameObject.Find("HPCanvas").GetComponent<EnemyManager>();
         StartCoroutine("createEnemy");
         
     }
@@ -65,7 +63,6 @@ public class Spawner : MonoBehaviour
 
             CreateSpawnPos();
             createPos = transform.position + spawnPos;//次のエネミー生成位置更新
-            enemyManager.OnEnemySpawned(enemy);
             yield return new WaitForSeconds(coolTime);
         }
         yield return null;

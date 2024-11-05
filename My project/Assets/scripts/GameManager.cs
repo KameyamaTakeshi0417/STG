@@ -10,15 +10,17 @@ public enum GameState { Menu, Playing, GameOver }
 public class GameManager : MonoBehaviour
 {// 3x19の構造体配列を定義
     private MyStruct[,] myStructArray = new MyStruct[3, 19];
-        public static GameManager Instance { get; private set; }
+    public static GameManager Instance { get; private set; }
 
     public int score { get; private set; }
 
-     public GameState currentState;
+    public GameState currentState;
 
-     public int NowRow,NowCol;
-     private void Awake()
+    public int NowRow, NowCol;
+    private bool isCleared;
+    private void Awake()
     {
+        isCleared = false;
         // シングルトンパターンの実装
         if (Instance == null)
         {
@@ -37,47 +39,47 @@ public class GameManager : MonoBehaviour
         currentState = GameState.Menu;
         score = 0;
         // ゲームの初期化処理
-         // 配列にランダムな値を設定
+        // 配列にランダムな値を設定
         FillArrayWithRandomValues();
         // 配列の内容をコンソールに出力して確認
-       // PrintArray();
-/*
-       if(SceneManager.GetActiveScene().name=="scene0")nextscene="scene1";
-       if(SceneManager.GetActiveScene().name=="scene1")nextscene="scene2";
-       if(SceneManager.GetActiveScene().name=="scene2")nextscene="scene1";
-       */
+        // PrintArray();
+        /*
+               if(SceneManager.GetActiveScene().name=="scene0")nextscene="scene1";
+               if(SceneManager.GetActiveScene().name=="scene1")nextscene="scene2";
+               if(SceneManager.GetActiveScene().name=="scene2")nextscene="scene1";
+               */
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
-        public void ResetGame()
+    public void ResetGame()
     {
         score = 0;
         // ゲームのリセット処理
     }
-        public void EndGame()
+    public void EndGame()
     {
         currentState = GameState.GameOver;
         // ゲームオーバーの処理
     }
     void FillArrayWithRandomValues()
     {
-        int sceneType=3;
+        int sceneType = 3;
         // Randomクラスのインスタンスを作成
         System.Random random = new System.Random();
-        
+
         // 配列をループして1-5のランダムな値を設定
         for (int i = 0; i < myStructArray.GetLength(0); i++)
         {
             for (int j = 0; j < myStructArray.GetLength(1); j++)
             {
-                myStructArray[i, j].value = random.Next(0,sceneType); // Nextの第二引数は上限+1を指定する
+                myStructArray[i, j].value = random.Next(0, sceneType); // Nextの第二引数は上限+1を指定する
             }
         }
-PrintArray();
+        PrintArray();
 
     }
 
@@ -97,21 +99,32 @@ PrintArray();
 
 
 
-      public void ChangeScene(int num)
+    public void ChangeScene(int num)
     {
-        NowRow+=1;
-        int nextRow=NowRow;
-        int nextCol=num;
+        NowRow += 1;
+        int nextRow = NowRow;
+        int nextCol = num;
         int nextFloor;
-        if(nextRow<5){
-            nextFloor=myStructArray[nextCol,nextRow].value;
-        }else{
-            nextFloor=4;
-            NowRow=0;
+        if (nextRow < 5)
+        {
+            nextFloor = myStructArray[nextCol, nextRow].value;
         }
-        
-        
-        SceneManager.LoadScene("scene"+nextFloor);
-    }
+        else
+        {
+            nextFloor = 4;
+            NowRow = 0;
+        }
 
+
+        SceneManager.LoadScene("scene" + nextFloor);
+    }
+    public void setCleared(bool clear)
+    {
+        isCleared = clear;
+    }
+    public bool getCleared()
+    {
+        return isCleared;
+
+    }
 }

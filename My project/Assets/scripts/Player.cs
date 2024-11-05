@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
     private bool isPaused = false;
 
     public float HP;
+    public float currentHP;
     public float pow;
     public float moveSpeed;
     public GameObject bullet;
@@ -22,8 +23,8 @@ public class Player : MonoBehaviour
     public int Exp;
 
     private Transform lockOnTarget; // ロックオン対象
-  public AudioSource shootAudioSource; // 弾の発射音用のAudioSource
-  public AudioSource getExpAudioSource; // 弾の発射音用のAudioSource
+    public AudioSource shootAudioSource; // 弾の発射音用のAudioSource
+    public AudioSource getExpAudioSource; // 弾の発射音用のAudioSource
     void Start()
     {
         onCoolTime = false;
@@ -146,10 +147,10 @@ public class Player : MonoBehaviour
     public void SetPaused(bool paused)
     {
         isPaused = paused;
-        
+
     }
 
-      void ShootBullet()
+    void ShootBullet()
     {
         float ratio = 1.5f;
         Vector3 createPos = transform.position + watch * ratio;
@@ -165,7 +166,7 @@ public class Player : MonoBehaviour
     private GameObject BulletTypeDecision()
     {
         GameObject ret;
-        switch(bullettype)
+        switch (bullettype)
         {
             //通常弾
             case 0:
@@ -182,5 +183,20 @@ public class Player : MonoBehaviour
         }
 
         return ret;
+    }
+
+    public void setHP(float addpoint)
+    {
+        HP += addpoint;
+        currentHP += addpoint;
+    }
+    public void setPow(float addpoint){
+        pow+=addpoint;
+    }
+    public void setShootSpeed(float addpoint){
+        bulletSpeed+=addpoint;
+    }
+    public void setBulletType(int type){
+        bullettype=type;
     }
 }
