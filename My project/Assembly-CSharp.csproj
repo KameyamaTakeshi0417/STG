@@ -69,7 +69,9 @@
     <Compile Include="Assets\scripts\ingameSystem\Bullet_Base.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Player.cs" />
     <Compile Include="Assets\scripts\outGameSystem\HexGrid.cs" />
+    <Compile Include="Assets\scripts\UI\fadeBoard.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Item.cs" />
+    <Compile Include="Assets\scripts\ingameSystem\restRoom.cs" />
     <Compile Include="Assets\scripts\ingameSystem\HPBarController.cs" />
     <Compile Include="Assets\scripts\Enemy\Spawner.cs" />
     <Compile Include="Assets\scripts\UI\CameraControl.cs" />
@@ -79,7 +81,6 @@
     <Compile Include="Assets\scripts\UI\EnemyManager.cs" />
     <Compile Include="Assets\scripts\Enemy\Enemy.cs" />
     <Compile Include="Assets\scripts\outGameSystem\ItemDrop.cs" />
-    <Compile Include="Assets\scripts\outGameSystem\restRoom.cs" />
     <Compile Include="Assets\scripts\outGameSystem\Field.cs" />
     <Compile Include="Assets\scripts\outGameSystem\money.cs" />
     <Compile Include="Assets\scripts\outGameSystem\stageManager.cs" />
