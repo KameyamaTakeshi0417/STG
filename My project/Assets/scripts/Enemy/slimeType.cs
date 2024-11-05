@@ -15,12 +15,13 @@ public class slimeType : MonoBehaviour
   public int pow;
   public float radius = 2.0f;    // 半径（中心からの距離）
   private float angle = 0.0f; // 現在の角度
+  public int moneyCount;
   // Start is called before the first frame update
   void Awake()
   {
     Player = GameObject.Find("Player");
     myHealth = gameObject.GetComponent<Health>();
-
+    myHealth.setMoneyCount(moneyCount);
     StartCoroutine(Idle());
   }
 
