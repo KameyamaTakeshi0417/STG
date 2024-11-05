@@ -68,7 +68,6 @@
     <Compile Include="Assets\scripts\Item.cs" />
     <Compile Include="Assets\scripts\GameManager.cs" />
     <Compile Include="Assets\scripts\Enemy.cs" />
-    <Compile Include="Assets\scripts\clearedBoard.cs" />
     <Compile Include="Assets\scripts\DungeonContoroller.cs" />
     <Compile Include="Assets\scripts\UI\CameraControl.cs" />
     <Compile Include="Assets\scripts\HexGrid.cs" />
@@ -87,8 +86,10 @@
     <Compile Include="Assets\scripts\UI\EnemyHealthBar.cs" />
     <Compile Include="Assets\scripts\UI\BarController.cs" />
     <Compile Include="Assets\scripts\Enemy\ArmorBeetle.cs" />
+    <Compile Include="Assets\scripts\UI\clearedBoard.cs" />
     <Compile Include="Assets\scripts\Health.cs" />
     <Compile Include="Assets\scripts\Field.cs" />
+    <Compile Include="Assets\scripts\UI\ROUNDSTART.cs" />
     <Compile Include="Assets\scripts\EnemyChecker.cs" />
     <Compile Include="Assets\scripts\Spawner.cs" />
     <Compile Include="Assets\scripts\Bullet_Base.cs" />
