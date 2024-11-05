@@ -47,7 +47,37 @@ public class ChangeTextureOnTouch : MonoBehaviour
 
         // テクスチャをtexture2に切り替える
         spriteRenderer.sprite = texture2;
+        GameObject reward = Instantiate(Resources.Load<GameObject>("stingObj"), gameObject.transform.position, Quaternion.identity);
 
         isShaking = false;
+        yield return disappear();
+    }
+    private IEnumerator disappear()
+    {
+        float flickerDuration = 1.5f; // チカチカさせる時間
+        float flickerInterval = 0.1f; // チカチカの間隔
+
+        float elapsed = 0f;
+        bool isVisible = true;
+
+        while (elapsed < flickerDuration)
+        {
+            // アルファ値を切り替えてチカチカさせる
+            isVisible = !isVisible;
+            Color color = spriteRenderer.color;
+            color.a = isVisible ? 1.0f : 0.0f;
+            spriteRenderer.color = color;
+
+            // 次のチカチカまで待機
+            yield return new WaitForSeconds(flickerInterval);
+            elapsed += flickerInterval;
+        }
+
+        // 完全に非表示にする
+        Color finalColor = spriteRenderer.color;
+        finalColor.a = 0;
+        spriteRenderer.color = finalColor;
+        Destroy(this.gameObject);
+        yield return null;
     }
 }
