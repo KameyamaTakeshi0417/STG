@@ -110,15 +110,15 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: pipo-btleffect010_48
+      name: pipo-btleffect010_08
       rect:
         serializedVersion: 2
-        x: 1694
+        x: 1695
         y: 7
         width: 219
         height: 219
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -131,7 +131,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pipo-btleffect010_94
+      name: pipo-btleffect010_01
       rect:
         serializedVersion: 2
         x: 94
@@ -139,7 +139,7 @@ TextureImporter:
         width: 99
         height: 102
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -152,7 +152,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pipo-btleffect010_108
+      name: pipo-btleffect010_05
       rect:
         serializedVersion: 2
         x: 973
@@ -160,7 +160,7 @@ TextureImporter:
         width: 225
         height: 219
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -173,7 +173,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pipo-btleffect010_110
+      name: pipo-btleffect010_06
       rect:
         serializedVersion: 2
         x: 1212
@@ -181,7 +181,7 @@ TextureImporter:
         width: 223
         height: 214
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -194,7 +194,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pipo-btleffect010_112
+      name: pipo-btleffect010_07
       rect:
         serializedVersion: 2
         x: 1452
@@ -202,7 +202,7 @@ TextureImporter:
         width: 224
         height: 215
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -215,7 +215,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pipo-btleffect010_119
+      name: pipo-btleffect010_02
       rect:
         serializedVersion: 2
         x: 298
@@ -223,7 +223,7 @@ TextureImporter:
         width: 128
         height: 131
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -236,7 +236,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pipo-btleffect010_121
+      name: pipo-btleffect010_03
       rect:
         serializedVersion: 2
         x: 528
@@ -244,7 +244,7 @@ TextureImporter:
         width: 148
         height: 159
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -257,7 +257,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pipo-btleffect010_123
+      name: pipo-btleffect010_04
       rect:
         serializedVersion: 2
         x: 740
@@ -265,7 +265,7 @@ TextureImporter:
         width: 208
         height: 194
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -288,9 +288,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      pipo-btleffect010_0: -1980699760
-      pipo-btleffect010_1: 1818179002
-      pipo-btleffect010_10: -571675417
+      pipo-btleffect010_01: 1262144273
+      pipo-btleffect010_02: 1700935263
+      pipo-btleffect010_03: 557644701
+      pipo-btleffect010_04: 1920170043
+      pipo-btleffect010_05: -2131077050
+      pipo-btleffect010_06: -949120456
+      pipo-btleffect010_07: -1722471573
+      pipo-btleffect010_08: 1650339256
       pipo-btleffect010_100: 1373501159
       pipo-btleffect010_101: 1237731479
       pipo-btleffect010_102: 1037871392
@@ -299,24 +304,16 @@ TextureImporter:
       pipo-btleffect010_105: -1416183753
       pipo-btleffect010_106: -1935893090
       pipo-btleffect010_107: 190604388
-      pipo-btleffect010_108: -2131077050
       pipo-btleffect010_109: 1304819906
-      pipo-btleffect010_11: 368458884
-      pipo-btleffect010_110: -949120456
       pipo-btleffect010_111: -1581004274
-      pipo-btleffect010_112: -1722471573
       pipo-btleffect010_113: 683458874
       pipo-btleffect010_114: 576505474
       pipo-btleffect010_115: 1234391405
       pipo-btleffect010_116: -908503389
       pipo-btleffect010_117: 4090185
       pipo-btleffect010_118: -1306890751
-      pipo-btleffect010_119: 1700935263
-      pipo-btleffect010_12: 1249081196
       pipo-btleffect010_120: 1751802810
-      pipo-btleffect010_121: 557644701
       pipo-btleffect010_122: -874032563
-      pipo-btleffect010_123: 1920170043
       pipo-btleffect010_124: -960903269
       pipo-btleffect010_125: -99918680
       pipo-btleffect010_126: 148297299
@@ -419,7 +416,6 @@ TextureImporter:
       pipo-btleffect010_37: -1589387576
       pipo-btleffect010_38: 960699339
       pipo-btleffect010_39: -1465983337
-      pipo-btleffect010_4: 463186229
       pipo-btleffect010_40: 2145134886
       pipo-btleffect010_41: 2011463508
       pipo-btleffect010_42: -206105375
@@ -428,7 +424,6 @@ TextureImporter:
       pipo-btleffect010_45: 811190963
       pipo-btleffect010_46: 924904146
       pipo-btleffect010_47: -1481383339
-      pipo-btleffect010_48: 1650339256
       pipo-btleffect010_49: -35310589
       pipo-btleffect010_5: 972462361
       pipo-btleffect010_50: -2045010409
@@ -474,12 +469,10 @@ TextureImporter:
       pipo-btleffect010_87: 1590108163
       pipo-btleffect010_88: 966007917
       pipo-btleffect010_89: 2039704352
-      pipo-btleffect010_9: -1954540011
       pipo-btleffect010_90: 830148542
       pipo-btleffect010_91: -848318914
       pipo-btleffect010_92: -499198082
       pipo-btleffect010_93: -8014766
-      pipo-btleffect010_94: 1262144273
       pipo-btleffect010_95: -977432895
       pipo-btleffect010_96: 1892773238
       pipo-btleffect010_97: 64215802
