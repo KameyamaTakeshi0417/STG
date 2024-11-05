@@ -18,7 +18,10 @@ public class restRoom : MonoBehaviour
         if (canRest && !useRest)
         {
             GameObject.Find("fadeBoard").GetComponent<FadeBoard>().callFadeScreen();
-            useRest=true;
+            useRest = true;
+            Health playerHealth;
+            playerHealth = GameObject.Find("Player").GetComponent<Health>();
+            playerHealth.setCurrentHP(playerHealth.getCurrentHP()+(int)playerHealth.getHP() * 0.3f);
         }
     }
     private void OnTriggerStay2D(Collider2D other)
