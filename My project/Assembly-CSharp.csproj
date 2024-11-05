@@ -85,6 +85,7 @@
     <Compile Include="Assets\scripts\Enemy\ArmorBeetle.cs" />
     <Compile Include="Assets\scripts\Health.cs" />
     <Compile Include="Assets\scripts\Field.cs" />
+    <Compile Include="Assets\scripts\EnemyChecker.cs" />
     <Compile Include="Assets\scripts\Spawner.cs" />
     <Compile Include="Assets\scripts\Bullet_Base.cs" />
     <Compile Include="Assets\scripts\StepCollision.cs" />

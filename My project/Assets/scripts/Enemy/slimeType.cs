@@ -13,6 +13,8 @@ public class slimeType : MonoBehaviour
 
   public Vector3 rotate; //プレイヤーに向かった時の角度
   public int pow;
+  public float radius = 2.0f;    // 半径（中心からの距離）
+  private float angle = 0.0f; // 現在の角度
   // Start is called before the first frame update
   void Awake()
   {
@@ -46,10 +48,10 @@ public class slimeType : MonoBehaviour
     int chaseTime = UnityEngine.Random.Range(3, 7);
     Vector3 chaseWay = new Vector3(0, 0, 0);
     rb = gameObject.GetComponent<Rigidbody2D>();
+    int count = 0;
     //プレイヤーに衝突してダメージを与えるまで追跡し続ける
-    while (true)
+    while (count < 1000)
     {
-
       if (separateCount > 0 && gameObject.GetComponent<Health>().getCurrentHP() <= (gameObject.GetComponent<Health>().getHP()) * 0.5f)
       {
         Debug.Log("体力半分");
@@ -60,8 +62,27 @@ public class slimeType : MonoBehaviour
       setRotate(chaseWay);
       Vector2 force = new Vector2(rotate.x, rotate.y);
       rb.AddForce(force * chaseSpeed);
+      count++;
       yield return new WaitForEndOfFrame();
     }
+    while (true)
+    {
+      if (separateCount > 0 && gameObject.GetComponent<Health>().getCurrentHP() <= (gameObject.GetComponent<Health>().getHP()) * 0.5f)
+      {
+        Debug.Log("体力半分");
+        yield return separate();
+      }
+      if (rb.velocity.magnitude > 0.01f) // 微小な値で判定
+      {
+        rb.velocity = Vector2.Lerp(rb.velocity, Vector2.zero, 0.1f);
+      }
+      else
+      {
+        rb.velocity = Vector2.zero; // 完全に停止
+        break;
+      }
+    }
+    yield return PlayerChase();
   }
   private IEnumerator separate()
   {
@@ -84,7 +105,7 @@ public class slimeType : MonoBehaviour
     GameObject slime1 = Instantiate(Resources.Load<GameObject>("slime"), gameObject.transform.position - new Vector3(plusMinus, 2, 0), Quaternion.identity);
     slime1.GetComponent<slimeType>().separateCount = separateCount - 1;
     slime1.GetComponent<slimeType>().pow = (int)((float)pow * 0.75f);
-    slime1.GetComponent<slimeType>().chaseSpeed = chaseSpeed * 0.75f;
+    slime1.GetComponent<slimeType>().chaseSpeed = chaseSpeed * 1.25f;
     slime1.GetComponent<Health>().setHP(gameObject.GetComponent<Health>().getCurrentHP());
     slime1.GetComponent<Health>().setCurrentHP(gameObject.GetComponent<Health>().getCurrentHP());
     slime1.transform.localScale = (gameObject.transform.localScale) * 0.75f;
@@ -108,6 +129,39 @@ public class slimeType : MonoBehaviour
   {
     transform.localEulerAngles = new Vector3(0, 0, MathF.Atan2(rot.y, rot.x) * Mathf.Rad2Deg + 90);
     rotate = rot.normalized;
+
+  }
+  private IEnumerator rolling()
+  {
+    Vector3 targetLen = (transform.position - GameObject.Find("Player").transform.position);
+    radius = targetLen.magnitude;
+    GameObject centerObject = GameObject.Find("Player");
+    while (true)
+    {
+      // 徐々に180度に近づける
+      angle = Mathf.Lerp(angle, Mathf.PI, chaseSpeed * Time.deltaTime);
+
+      // 新しい位置を計算
+      float x = centerObject.transform.position.x + Mathf.Cos(angle) * radius;
+      float y = centerObject.transform.position.y + Mathf.Sin(angle) * radius;
+
+      // オブジェクトを移動
+      transform.position = new Vector2(x, y);
+
+      // 180度に到達したか確認
+      if (Mathf.Abs(angle - Mathf.PI) < 0.01f)
+      {
+        yield return PlayerChase();
+      }
+    }
+
+  }
+  public void StartMovingToOpposite()
+  {
+    // 現在位置からの角度を取得
+    Vector2 direction = transform.position - GameObject.Find("Player").transform.position;
+    angle = Mathf.Atan2(direction.y, direction.x);
+
 
   }
 }
