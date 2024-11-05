@@ -15,7 +15,7 @@ public class restRoom : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (canRest && !useRest)
+        if (Input.GetKeyDown(KeyCode.Return)&&(canRest && !useRest))
         {
             GameObject.Find("fadeBoard").GetComponent<FadeBoard>().callFadeScreen();
             useRest = true;
@@ -36,11 +36,19 @@ public class restRoom : MonoBehaviour
     }
     private void OnTriggerStay2D(Collider2D other)
     {
-        canRest = true;
+        if (other.CompareTag("Player"))
+        {
+            canRest = true;
+        }
+
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
+    private void OnTriggerExit2D(Collider2D collision)
     {
-        canRest = false;
+        if (collision.gameObject.tag==("Player"))
+        {
+            canRest = false;
+        }
+
     }
 }
