@@ -17,7 +17,6 @@ public class GameManager : MonoBehaviour
      public GameState currentState;
 
      public int NowRow,NowCol;
-     private string nextscene;
      private void Awake()
     {
         // シングルトンパターンの実装
@@ -47,7 +46,6 @@ public class GameManager : MonoBehaviour
        if(SceneManager.GetActiveScene().name=="scene1")nextscene="scene2";
        if(SceneManager.GetActiveScene().name=="scene2")nextscene="scene1";
        */
-       if(NowCol>=19)nextscene="BOSS";
     }
 
     // Update is called once per frame

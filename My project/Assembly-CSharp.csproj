@@ -82,6 +82,7 @@
     <Compile Include="Assets\scripts\UI\MenuController.cs" />
     <Compile Include="Assets\scripts\UI\EnemyHealthBar.cs" />
     <Compile Include="Assets\scripts\UI\BarController.cs" />
+    <Compile Include="Assets\scripts\Enemy\ArmorBeetle.cs" />
     <Compile Include="Assets\scripts\Health.cs" />
     <Compile Include="Assets\scripts\Field.cs" />
     <Compile Include="Assets\scripts\Spawner.cs" />
