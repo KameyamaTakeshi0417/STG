@@ -16,7 +16,10 @@ public class petalBullet : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (GameObject.Find("GameManager").GetComponent<GameManager>().getCleared())
+        {
+            Destroy(this.gameObject);
+        }
     }
     public void shoot(int shootWay)
     {
@@ -73,28 +76,28 @@ public class petalBullet : MonoBehaviour
         return ret;
     }
 
-    public void ShootInvolute(int wayClock,bool rotationWay)
+    public void ShootInvolute(int wayClock, bool rotationWay)
     {//rotWayがtrueなら反時計回り、falseなら時計回り
         Vector3 target;
-        target=getShootWayAsClock(wayClock);
-        Vector2 ret=new Vector2(target.x,target.y);
-        float checker=1;
-        if(!rotationWay)
+        target = getShootWayAsClock(wayClock);
+        Vector2 ret = new Vector2(target.x, target.y);
+        float checker = 1;
+        if (!rotationWay)
         {
-            checker=-1;
+            checker = -1;
         }
 
-        StartCoroutine(Involute(ret,checker));
+        StartCoroutine(Involute(ret, checker));
     }
-    private IEnumerator Involute(Vector2 startPos,float rotationWay)
+    private IEnumerator Involute(Vector2 startPos, float rotationWay)
     {
         float radius = 1.0f;     // 円の半径
-        float speed = bulletSpeedMag*500.0f;      // 移動速度
+        float speed = bulletSpeedMag * 500.0f;      // 移動速度
         float angle = 0.0f;     // インボリュートの角度（θ）
         int involuteTimeMax = 3000;
         int count = 0;
         Vector2 collectorPos;
-        collectorPos = GameObject.Find("PetalCollector").transform.position+((Vector3)startPos*2.0f);
+        collectorPos = GameObject.Find("PetalCollector").transform.position + ((Vector3)startPos * 2.0f);
         while (count < involuteTimeMax)
         {
             // インボリュートの現在の位置を計算し、基準位置に加算
@@ -102,7 +105,7 @@ public class petalBullet : MonoBehaviour
             transform.position = collectorPos + involutePosition;
 
             // 角度を更新して曲線上を移動
-            angle += (speed * Time.deltaTime)*rotationWay;
+            angle += (speed * Time.deltaTime) * rotationWay;
 
             count++;
             yield return new WaitForEndOfFrame();
