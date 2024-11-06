@@ -73,19 +73,25 @@ public class petalBullet : MonoBehaviour
         return ret;
     }
 
-    public void ShootInvolute(int wayClock)
-    {
+    public void ShootInvolute(int wayClock,bool rotationWay)
+    {//rotWayがtrueなら反時計回り、falseなら時計回り
         Vector3 target;
         target=getShootWayAsClock(wayClock);
         Vector2 ret=new Vector2(target.x,target.y);
-        StartCoroutine("Involute",ret);
+        float checker=1;
+        if(!rotationWay)
+        {
+            checker=-1;
+        }
+
+        StartCoroutine(Involute(ret,checker));
     }
-    private IEnumerator Involute(Vector2 startPos)
+    private IEnumerator Involute(Vector2 startPos,float rotationWay)
     {
-        float radius = 3.0f;     // 円の半径
-        float speed = 1.0f;      // 移動速度
+        float radius = 1.0f;     // 円の半径
+        float speed = bulletSpeedMag*500.0f;      // 移動速度
         float angle = 0.0f;     // インボリュートの角度（θ）
-        int involuteTimeMax = 5000;
+        int involuteTimeMax = 3000;
         int count = 0;
         Vector2 collectorPos;
         collectorPos = GameObject.Find("PetalCollector").transform.position+((Vector3)startPos*2.0f);
@@ -96,11 +102,12 @@ public class petalBullet : MonoBehaviour
             transform.position = collectorPos + involutePosition;
 
             // 角度を更新して曲線上を移動
-            angle += speed * Time.deltaTime;
+            angle += (speed * Time.deltaTime)*rotationWay;
 
             count++;
             yield return new WaitForEndOfFrame();
         }
+        yield return homing();
     }
     private Vector2 CalculateInvolutePosition(float radius, float theta)
     {
