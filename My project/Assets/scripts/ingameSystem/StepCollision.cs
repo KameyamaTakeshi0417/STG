@@ -10,25 +10,27 @@ public class StepCollision : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Onstep=false;
+        Onstep = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
-    }
-    public void setEnterable(bool set){
-canEnter=set;
 
     }
-     void OnTriggerEnter2D(Collider2D collision)
+    public void setEnterable(bool set)
     {
-if(collision.CompareTag("Player")&&GameObject.Find("GameManager").GetComponent<GameManager>().getCleared()){
+        canEnter = set;
 
-GameObject.Find("GameManager").GetComponent<GameManager>().ChangeScene(stepNum);
+    }
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player") && GameObject.Find("GameManager").GetComponent<GameManager>().getCleared())
+        {
 
-}
+            GameObject.Find("GameManager").GetComponent<GameManager>().ChangeScene(stepNum);
+
+        }
 
     }
 }
