@@ -18,6 +18,7 @@ public    GameObject[] enemyObjects;
                 CreateHealthBarForEnemy(enemyObject);
             }
         }
+        GameObject.Find("GameManager").GetComponent<GameManager>().setCleared(false);
     }
 
     public void OnEnemySpawned(GameObject enemyObj)

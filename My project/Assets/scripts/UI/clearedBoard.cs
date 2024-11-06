@@ -11,11 +11,8 @@ public class clearedBoard : MonoBehaviour
     public float fadeInDuration = 0.25f; // フェードインの時間（秒）
     public float fadeOutDuration = 0.5f; // フェードアウトの時間（秒）
     // Start is called before the first frame update
-    void Start()
-    {
 
-    }
-    void Awake()
+    void Start()
     {
         Color color = textMeshProObject.color;
         color.a = Mathf.Clamp01(0.0f); // アルファ値を0から1に制限

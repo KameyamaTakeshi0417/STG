@@ -10,12 +10,22 @@ public class FadeBoard : MonoBehaviour
 
     void Start()
     {
+        FadestartStage();
+    }
+    void Awake()
+    {
+
 
     }
     public void callFadeScreen()
     {
         // フェードイン・フェードアウトを開始
         StartCoroutine(FadeImageCoroutine());
+    }
+    public void FadestartStage()
+    {
+        // フェードアウト
+        StartCoroutine(FadeOut());
     }
     private IEnumerator FadeImageCoroutine()
     {
