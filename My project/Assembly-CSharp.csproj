@@ -82,6 +82,7 @@
     <Compile Include="Assets\scripts\UI\EnemyManager.cs" />
     <Compile Include="Assets\scripts\Enemy\Enemy.cs" />
     <Compile Include="Assets\scripts\Enemy\petalBullet.cs" />
+    <Compile Include="Assets\scripts\Enemy\EnemyBase.cs" />
     <Compile Include="Assets\scripts\outGameSystem\ItemDrop.cs" />
     <Compile Include="Assets\scripts\outGameSystem\Field.cs" />
     <Compile Include="Assets\scripts\outGameSystem\money.cs" />
