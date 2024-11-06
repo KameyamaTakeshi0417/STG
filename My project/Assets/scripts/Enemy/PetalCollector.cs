@@ -106,14 +106,43 @@ public class PetalCollector : MonoBehaviour
     }
     private IEnumerator attack0()
     {//牽制技
-        GameObject bullet = Instantiate(Resources.Load<GameObject>("petalBullet"),
-         gameObject.transform.position - new Vector3(0, 0, 0), Quaternion.identity);
-        bullet.GetComponent<petalBullet>().shoot(6);
-        yield return Idle();
+        int[] shootSet = new int[3];
+        shootSet[0] = 6;
+        shootSet[1] = 2;
+        shootSet[2] = 10;
+        for (int i = 0; i < 3; i++)
+        {
+            GameObject bullet = Instantiate(Resources.Load<GameObject>("petalBullet"),
+                     gameObject.transform.position, Quaternion.identity);
+            bullet.GetComponent<petalBullet>().shoot(shootSet[i]);
+            yield return new WaitForEndOfFrame();
+        }
+        yield return attack1();
     }
     private IEnumerator attack1()
     {//通常攻撃
-        yield return null;
+        for (int i = 0; i < 100; i++)
+        {
+            GameObject bullet = Instantiate(Resources.Load<GameObject>("petalBullet"),
+                     gameObject.transform.position, Quaternion.identity);
+            bullet.GetComponent<petalBullet>().ShootInvolute(2);
+            yield return new WaitForSeconds(0.1f);
+        }
+                for (int i = 0; i < 100; i++)
+        {
+            GameObject bullet = Instantiate(Resources.Load<GameObject>("petalBullet"),
+                     gameObject.transform.position, Quaternion.identity);
+            bullet.GetComponent<petalBullet>().ShootInvolute(6);
+            yield return new WaitForSeconds(0.1f);
+        }
+                for (int i = 0; i < 100; i++)
+        {
+            GameObject bullet = Instantiate(Resources.Load<GameObject>("petalBullet"),
+                     gameObject.transform.position, Quaternion.identity);
+            bullet.GetComponent<petalBullet>().ShootInvolute(10);
+            yield return new WaitForSeconds(0.1f);
+        }
+        yield return Idle();
     }
     private IEnumerator attack2()
     {//通常攻撃強

@@ -72,11 +72,47 @@ public class petalBullet : MonoBehaviour
 
         return ret;
     }
+
+    public void ShootInvolute(int wayClock)
+    {
+        Vector3 target;
+        target=getShootWayAsClock(wayClock);
+        Vector2 ret=new Vector2(target.x,target.y);
+        StartCoroutine("Involute",ret);
+    }
+    private IEnumerator Involute(Vector2 startPos)
+    {
+        float radius = 3.0f;     // 円の半径
+        float speed = 1.0f;      // 移動速度
+        float angle = 0.0f;     // インボリュートの角度（θ）
+        int involuteTimeMax = 5000;
+        int count = 0;
+        Vector2 collectorPos;
+        collectorPos = GameObject.Find("PetalCollector").transform.position+((Vector3)startPos*2.0f);
+        while (count < involuteTimeMax)
+        {
+            // インボリュートの現在の位置を計算し、基準位置に加算
+            Vector2 involutePosition = CalculateInvolutePosition(radius, angle);
+            transform.position = collectorPos + involutePosition;
+
+            // 角度を更新して曲線上を移動
+            angle += speed * Time.deltaTime;
+
+            count++;
+            yield return new WaitForEndOfFrame();
+        }
+    }
+    private Vector2 CalculateInvolutePosition(float radius, float theta)
+    {
+        float x = radius * (Mathf.Cos(theta) + theta * Mathf.Sin(theta));
+        float y = radius * (Mathf.Sin(theta) - theta * Mathf.Cos(theta));
+        return new Vector2(x, y);
+    }
     private IEnumerator spread(Vector3 way)
     {
         //指定された角度に展開する
         int count = 0;
-        int countClock = 30;
+        int countClock = 600;
         while (true)
         {
             count++;
@@ -84,7 +120,7 @@ public class petalBullet : MonoBehaviour
             {
                 yield return homing();
             }
-            transform.position += way*bulletSpeedMag;//可能であれば壁を認識したい。
+            transform.position += way * bulletSpeedMag;//可能であれば壁を認識したい。
             yield return new WaitForEndOfFrame();
         }
 
