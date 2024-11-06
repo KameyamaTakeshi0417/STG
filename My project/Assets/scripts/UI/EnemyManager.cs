@@ -6,7 +6,7 @@ public class EnemyManager : MonoBehaviour
     public GameObject healthBarPrefab; // HPバーのPrefab
 public    GameObject[] enemyObjects;
 
-    void Start()
+    void Awake()
     {
         // 初期配置されているエネミーの処理
        enemyObjects = GameObject.FindGameObjectsWithTag("Enemy");
