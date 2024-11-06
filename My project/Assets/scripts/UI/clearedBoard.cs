@@ -30,17 +30,13 @@ public class clearedBoard : MonoBehaviour
     }
     IEnumerator clearchecker()
     {
-        while (true)
+        while (GameObject.Find("GameManager").GetComponent<GameManager>().getCleared()==false)
         {
-            if (GameObject.Find("GameManager").GetComponent<GameManager>().getCleared())
-            {
-          yield return FadeText();
-            }
             yield return new WaitForSeconds(0.5f);
         }
-       
+        yield return FadeText();
     }
-        private IEnumerator FadeText()
+    private IEnumerator FadeText()
     {
         // フェードイン
         yield return StartCoroutine(FadeIn());
@@ -53,7 +49,7 @@ public class clearedBoard : MonoBehaviour
 
         yield return null;
     }
-     private IEnumerator FadeIn()
+    private IEnumerator FadeIn()
     {
         float elapsedTime = 0f;
 
@@ -87,5 +83,6 @@ public class clearedBoard : MonoBehaviour
             textMeshProObject.color = color;
             yield return null;
         }
+        
     }
 }
