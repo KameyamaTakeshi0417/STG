@@ -70,10 +70,10 @@ public class ArmorBeetle : MonoBehaviour
         rb.velocity = Vector2.zero;
         yield return new WaitForSeconds(1);
         //被弾したときに初期体力に等しいブロックを生成して身を守る
-        GameObject barrier = Instantiate(Resources.Load<GameObject>("barrier"), gameObject.transform.position, Quaternion.identity);
+       /* GameObject barrier = Instantiate(Resources.Load<GameObject>("barrier"), gameObject.transform.position, Quaternion.identity);
         barrier.GetComponent<Health>().setHP(gameObject.GetComponent<Health>().getHP());
         barrier.GetComponent<Health>().setCurrentHP(gameObject.GetComponent<Health>().getHP());
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(3);*/
         yield return chase();
 
     }

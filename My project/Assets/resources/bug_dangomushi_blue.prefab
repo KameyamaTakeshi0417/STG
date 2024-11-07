@@ -147,6 +147,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HP: 150
   currentHP: 0
+  hpSlider: {fileID: 0}
 --- !u!114 &6117067203040952965
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,6 +167,7 @@ MonoBehaviour:
   enemyType: 0
   pow: 10
   rotate: {x: 0, y: 0, z: 0}
+  speedMag: 1
   makeBarrier: 0
 --- !u!50 &2678831908338966904
 Rigidbody2D:

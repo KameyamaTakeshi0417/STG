@@ -144,4 +144,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HP: 200
-  currentHP: 0
+  currentHP: 200
+  hpSlider: {fileID: 0}
