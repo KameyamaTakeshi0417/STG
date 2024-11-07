@@ -26,9 +26,10 @@ public class Health : MonoBehaviour
     {
         currentHP -= damage;
         // Debug.Log(gameObject.name + " took " + damage + " damage. Remaining HP: " + currentHP);
-        hpSlider.value = (float)HP / (float)currentHP;//スライダは０〜1.0で表現するため最大HPで割って少数点数字に変換
+        hpSlider.value =currentHP;//スライダは０〜1.0で表現するため最大HPで割って少数点数字に変換
         if (gameObject.tag == "Enemy" && currentHP <= 0)
         {
+            Destroy(hpSlider);
             Die();
         }
     }
