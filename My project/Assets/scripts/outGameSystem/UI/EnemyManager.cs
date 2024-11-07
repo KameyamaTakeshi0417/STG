@@ -33,8 +33,7 @@ public    GameObject[] enemyObjects;
     void CreateHealthBarForEnemy(GameObject enemy)
     {
         GameObject healthBar = Instantiate(healthBarPrefab, transform);
-        EnemyHealthBar healthBarScript = healthBar.GetComponent<EnemyHealthBar>();
-        healthBarScript.setEnemy(enemy);
-        healthBarScript.offset = new Vector3(0, 1.5f, 0); // 適切なオフセットを設定
+        
+        
     }
 }
