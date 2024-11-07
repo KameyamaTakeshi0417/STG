@@ -35,7 +35,7 @@ public class rewardManager : MonoBehaviour
         for (int i = -1; i < numToGenerate - 1; i++)
         {
             // treasureBoxを生成し、変数に格納
-            GameObject newTreasureBox = Instantiate(treasureBox, new Vector3(i * 2, 0, 0), Quaternion.identity);
+            GameObject newTreasureBox = Instantiate(treasureBox, new Vector3((i * 7), 0, 0), Quaternion.identity);
 
             // リストに格納して後で参照可能にする
             generatedObjects.Add(newTreasureBox);

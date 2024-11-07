@@ -8,7 +8,7 @@ public class money : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        gameObject.GetComponent<Health>().setMoneyCount(moneyValue);
+//        gameObject.GetComponent<Health>().setMoneyCount(moneyValue);
     }
 
     // Update is called once per frame

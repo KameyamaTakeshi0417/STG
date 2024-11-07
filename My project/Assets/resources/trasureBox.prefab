@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8514103647836239813}
   - component: {fileID: 6283505397939413708}
   - component: {fileID: 257691465963983469}
+  - component: {fileID: 4475718222276460161}
   m_Layer: 0
   m_Name: trasureBox
   m_TagString: Untagged
@@ -102,6 +103,8 @@ MonoBehaviour:
   texture2: {fileID: 21300000, guid: 2e1dc6528b91ff647971a2b8c2086ef0, type: 3}
   shakeDuration: 0.5
   shakeMagnitude: 0.1
+  reward: {fileID: 0}
+  nowOpen: 0
 --- !u!61 &257691465963983469
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -147,3 +150,20 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 3.54, y: 3.08}
   m_EdgeRadius: 0
+--- !u!114 &4475718222276460161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3189162360207144807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85c47117fb5061d41a7db6175f8cc5a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  texture1: {fileID: 0}
+  texture2: {fileID: 0}
+  rewardObj: {fileID: 7548321008808644409, guid: b7f01ff1774b5ba4b88bbd165858506c, type: 3}
+  canGet: 0
+  checkInterval: 1

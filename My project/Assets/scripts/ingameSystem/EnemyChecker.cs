@@ -33,7 +33,7 @@ public class EnemyChecker : MonoBehaviour
     private void OnAllEnemiesDefeated()
     {
         // 敵が0になったときの処理
-        Debug.Log("All enemies have been defeated!");
+//        Debug.Log("All enemies have been defeated!");
         // 必要な処理をここに追加
         GameObject.Find("GameManager").GetComponent<GameManager>().setCleared(true);
     }

@@ -99,8 +99,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   addPow: -3
-  addShootSpeed: 1
-  addHP: 0
+  addShootSpeed: 0.05
+  addHP: -10
   bulletChangeType: 1
 --- !u!61 &2472835895813734715
 BoxCollider2D:

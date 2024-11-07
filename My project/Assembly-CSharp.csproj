@@ -78,6 +78,7 @@
     <Compile Include="Assets\scripts\ingameSystem\StepCollision.cs" />
     <Compile Include="Assets\scripts\outGameSystem\UI\EnemyHealthBar.cs" />
     <Compile Include="Assets\scripts\outGameSystem\ItemBox.cs" />
+    <Compile Include="Assets\scripts\outGameSystem\treasureBox.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Enemy\petalBullet.cs" />
     <Compile Include="Assets\scripts\outGameSystem\RelicList.cs" />
     <Compile Include="Assets\scripts\outGameSystem\UI\BarController.cs" />

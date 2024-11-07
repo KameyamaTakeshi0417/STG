@@ -53,11 +53,6 @@ public class GameManager : MonoBehaviour
         FillArrayWithRandomValues();
         // 配列の内容をコンソールに出力して確認
         // PrintArray();
-        /*
-               if(SceneManager.GetActiveScene().name=="scene0")nextscene="scene1";
-               if(SceneManager.GetActiveScene().name=="scene1")nextscene="scene2";
-               if(SceneManager.GetActiveScene().name=="scene2")nextscene="scene1";
-               */
     }
 
     // Update is called once per frame
@@ -77,21 +72,57 @@ public class GameManager : MonoBehaviour
     }
     void FillArrayWithRandomValues()
     {
-        int sceneType = 3;
+        //int sceneType = 4; // 生成する数値の範囲（0から3）
+
+        // 重み付きリストを作成。各数値とその重みを設定
+        Dictionary<int, int> weightedNumbers = new Dictionary<int, int>()
+    {
+        { 0, 55 }, // {n,m}でnが対象の数値、mが重み。合計100にするのが良いか。
+        { 1, 24 }, //0が通常戦闘部屋、1がイベント、2がエリートエネミー、3が休憩。4は宝物部屋、5はボス戦の番号となっておる。 
+        { 2, 14 },
+        { 3, 5 },
+        { 4, 2 }
+    };
+
+        // 累積重みを計算
+        int totalWeight = 0;
+        foreach (var weight in weightedNumbers.Values)
+        {
+            totalWeight += weight;
+        }
+
         // Randomクラスのインスタンスを作成
         System.Random random = new System.Random();
 
-        // 配列をループして1-5のランダムな値を設定
+        // 配列をループして重み付けによるランダムな値を設定
         for (int i = 0; i < myStructArray.GetLength(0); i++)
         {
             for (int j = 0; j < myStructArray.GetLength(1); j++)
             {
-                myStructArray[i, j].value = random.Next(0, sceneType); // Nextの第二引数は上限+1を指定する
+
+                // 0から累積重みの範囲内で乱数を取得
+                int randomValue = random.Next(0, totalWeight);
+
+                // 重みをもとに数値を選択
+                foreach (var kvp in weightedNumbers)
+                {
+                    if (randomValue < kvp.Value)
+                    {
+                        myStructArray[i, j].value = kvp.Key;
+                        break;
+                    }
+                    randomValue -= kvp.Value;
+                }
+                if (j == 10)
+                {
+                    myStructArray[i, j].value = 4;
+                }
             }
         }
-        PrintArray();
 
+        PrintArray();
     }
+
 
     void PrintArray()
     {
@@ -113,21 +144,22 @@ public class GameManager : MonoBehaviour
     {
         // シーン遷移直前に必要な処理を追加（例: 現在の状態リセット）
         isCleared = false;
-        NowRow += 1;
+
         int nextRow = NowRow;
         int nextCol = num;
         int nextFloor;
         if (nextRow < 5)
         {
             nextFloor = myStructArray[nextCol, nextRow].value;
+            NowRow += 1;
         }
         else
         {
-            nextFloor = 4;
+            nextFloor = 5;
             NowRow = 0;
         }
 
-
+        Debug.Log("loadSceneNumber:" + nextFloor);
         SceneManager.LoadScene("scene" + nextFloor);
     }
     public void setCleared(bool clear)
