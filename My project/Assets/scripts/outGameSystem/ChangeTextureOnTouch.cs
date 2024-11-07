@@ -10,7 +10,7 @@ public class ChangeTextureOnTouch : MonoBehaviour
 
     private SpriteRenderer spriteRenderer;
     private bool isShaking = false;
-
+    public GameObject reward;
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();

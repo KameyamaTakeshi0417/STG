@@ -78,6 +78,9 @@ public class Player : MonoBehaviour
             bulletPrefab.GetComponent<Bullet_Base>().setBulletType(bullettype);
             StartCoroutine(CoolTime());
         }
+        if(Input.GetKey(KeyCode.Space)){
+            //ダッシュ、もしくはクイックステップと呼称する緊急回避アクションを実装したい
+        }
     }
 
     void FixedUpdate()

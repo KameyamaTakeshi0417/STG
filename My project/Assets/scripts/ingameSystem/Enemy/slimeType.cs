@@ -37,14 +37,14 @@ public class slimeType : MonoBehaviour
     {
       if (gameObject.GetComponent<Health>().getCurrentHP() <= gameObject.GetComponent<Health>().getHP())
       {
-        yield return PlayerChase();
+        yield return ChasePlayer();
         break;
       }
       yield return new WaitForSeconds(1);
     }
     yield return null;
   }
-  private IEnumerator PlayerChase()
+  private IEnumerator ChasePlayer()
   {
     int chaseTime = UnityEngine.Random.Range(3, 7);
     Vector3 chaseWay = new Vector3(0, 0, 0);
@@ -83,7 +83,7 @@ public class slimeType : MonoBehaviour
         break;
       }
     }
-    yield return PlayerChase();
+    yield return ChasePlayer();
   }
   private IEnumerator separate()
   {
@@ -152,7 +152,7 @@ public class slimeType : MonoBehaviour
       // 180度に到達したか確認
       if (Mathf.Abs(angle - Mathf.PI) < 0.01f)
       {
-        yield return PlayerChase();
+        yield return ChasePlayer();
       }
     }
 

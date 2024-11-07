@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
-public class ArmorBeetle : MonoBehaviour
+public class Lizard : MonoBehaviour
 {
 
     public GameObject Player;
@@ -20,7 +20,7 @@ public class ArmorBeetle : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        speedMag = 1.0f;
+        
     }
     void Awake()
     {
