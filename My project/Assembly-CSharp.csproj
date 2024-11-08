@@ -69,7 +69,6 @@
     <Compile Include="Assets\scripts\outGameSystem\ScoreDisplay.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Health.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Bullet_Base.cs" />
-    <Compile Include="Assets\scripts\ingameSystem\Player.cs" />
     <Compile Include="Assets\scripts\outGameSystem\HexGrid.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Item.cs" />
     <Compile Include="Assets\scripts\ingameSystem\restRoom.cs" />
@@ -87,6 +86,7 @@
     <Compile Include="Assets\scripts\ingameSystem\Enemy\ArmorBeetle.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Enemy\PetalCollector.cs" />
     <Compile Include="Assets\scripts\outGameSystem\ItemDrop.cs" />
+    <Compile Include="Assets\scripts\ingameSystem\Player\Player.cs" />
     <Compile Include="Assets\scripts\outGameSystem\rewardManager.cs" />
     <Compile Include="Assets\scripts\outGameSystem\Field.cs" />
     <Compile Include="Assets\scripts\outGameSystem\money.cs" />
@@ -98,6 +98,7 @@
     <Compile Include="Assets\scripts\outGameSystem\Exp.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Enemy\slimeType.cs" />
     <Compile Include="Assets\scripts\outGameSystem\UI\MenuController.cs" />
+    <Compile Include="Assets\scripts\ingameSystem\Player\QuickStep.cs" />
     <Compile Include="Assets\scripts\ingameSystem\EnemyChecker.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Enemy\barrier.cs" />
     <Compile Include="Assets\scripts\outGameSystem\DungeonContoroller.cs" />
