@@ -99,6 +99,7 @@
     <Compile Include="Assets\scripts\ingameSystem\Enemy\slimeType.cs" />
     <Compile Include="Assets\scripts\outGameSystem\UI\MenuController.cs" />
     <Compile Include="Assets\scripts\ingameSystem\EnemyChecker.cs" />
+    <Compile Include="Assets\scripts\ingameSystem\Enemy\barrier.cs" />
     <Compile Include="Assets\scripts\outGameSystem\DungeonContoroller.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Enemy\Enemy.cs" />
     <Compile Include="Assets\scripts\outGameSystem\UI\HPBarFollower.cs" />

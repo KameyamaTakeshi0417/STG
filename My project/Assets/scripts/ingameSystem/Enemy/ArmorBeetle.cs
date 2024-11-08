@@ -19,16 +19,43 @@ public class ArmorBeetle : MonoBehaviour
     public bool makeBarrier;
     private GameObject canvasPrefab; // CanvasのPrefabをインスペクターで設定
     // Start is called before the first frame update
-    void Start()
-    {
-        gameObject.GetComponent<Health>().setSlideHPBar();
-    }
+
     void Awake()
     {
+        gameObject.GetComponent<Health>().setSlideHPBar();
         Player = GameObject.Find("Player");
         myHealth = gameObject.GetComponent<Health>();
         makeBarrier = false;
-        StartCoroutine(Idle());
+        Player = GameObject.Find("Player");
+        if (Player == null)
+        {
+            Debug.LogError("Player object not found!");
+        }
+
+        myHealth = gameObject.GetComponent<Health>();
+        if (myHealth == null)
+        {
+            Debug.LogError("Health component not found!");
+        }
+
+        rb = gameObject.GetComponent<Rigidbody2D>();
+        if (rb == null)
+        {
+            Debug.LogError("Rigidbody2D component not found!");
+        }
+
+        makeBarrier = false;
+
+        // 初期化がすべて正常に行われた場合のみコルーチンを開始
+        if (Player != null && myHealth != null && rb != null)
+        {
+            StartCoroutine(Idle());
+        }
+        else
+        {
+            Debug.LogError("Initialization failed. Coroutine will not be started.");
+        }
+       // StartCoroutine(Idle());
     }
 
     // Update is called once per frame
@@ -38,42 +65,55 @@ public class ArmorBeetle : MonoBehaviour
     }
     private IEnumerator Idle()
     {//ダンジョン開始即追尾開始
+    Debug.Log("StartIdle");
+        rb.velocity = Vector2.zero;
         yield return new WaitForSeconds(1);
+        if (makeBarrier == false && gameObject.GetComponent<Health>().getCurrentHP() < gameObject.GetComponent<Health>().getHP())
+        {
+
+            yield return blocking();
+
+        }
         yield return chase();
     }
     private IEnumerator chase()
     {
-        int chaseTime = UnityEngine.Random.Range(3, 7);
+        int chaseTime = 3000;//UnityEngine.Random.Range(3, 7);
+        int count = 0;
         Vector3 chaseWay = new Vector3(0, 0, 0);
         rb = gameObject.GetComponent<Rigidbody2D>();
+ Debug.Log("StartChase");
         //プレイヤーを一定時間追いかける
-        while (true)
+        while (count <= chaseTime)
         {
             if (makeBarrier == false && gameObject.GetComponent<Health>().getCurrentHP() < gameObject.GetComponent<Health>().getHP())
             {
+                rb.velocity = Vector2.zero;
                 yield return blocking();
-                break;
+
             }
             chaseWay = (Vector3)(GameObject.Find("Player").transform.position - gameObject.transform.position);
             chaseWay.Normalize();
             setRotate(chaseWay);
             Vector2 force = new Vector2(rotate.x, rotate.y);
             rb.AddForce(force * speedMag);
+            count++;
             yield return new WaitForEndOfFrame();
         }
-
-        yield return null;
+        rb.velocity = Vector2.zero;
+        yield return Idle();
     }
     private IEnumerator blocking()
     {
+         Debug.Log("StartBlock");
         makeBarrier = true;
-        rb.velocity = Vector2.zero;
-        yield return new WaitForSeconds(1);
+        
         //被弾したときに初期体力に等しいブロックを生成して身を守る
-         GameObject barrier = Instantiate(Resources.Load<GameObject>("barrier"), gameObject.transform.position, Quaternion.identity);
-         barrier.GetComponent<Health>().setHP(gameObject.GetComponent<Health>().getHP());
-         barrier.GetComponent<Health>().setCurrentHP(gameObject.GetComponent<Health>().getHP());
-         yield return new WaitForSeconds(3);
+        GameObject barrier = Instantiate(Resources.Load<GameObject>("barrier"), gameObject.transform.position, Quaternion.identity);
+        barrier.GetComponent<Health>().setHP(gameObject.GetComponent<Health>().getHP());
+        barrier.GetComponent<Health>().setCurrentHP(gameObject.GetComponent<Health>().getHP());
+        barrier.GetComponent<barrier>().startDisappear();
+        yield return new WaitForSeconds(3);
         yield return chase();
 
     }
