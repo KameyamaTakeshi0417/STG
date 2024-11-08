@@ -17,7 +17,7 @@ public class ArmorBeetle : MonoBehaviour
     public Vector3 rotate; //プレイヤーに向かった時の角度
     public float speedMag;
     public bool makeBarrier;
-    private GameObject canvasPrefab; // CanvasのPrefabをインスペクターで設定
+   
     // Start is called before the first frame update
 
     void Awake()

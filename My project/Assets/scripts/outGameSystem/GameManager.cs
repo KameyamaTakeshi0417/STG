@@ -2,14 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-public struct MyStruct
+public struct DungeonConstruct
 {
     public int value;
 }
 public enum GameState { Menu, Playing, GameOver }
 public class GameManager : MonoBehaviour
 {// 3x19の構造体配列を定義
-    private MyStruct[,] myStructArray = new MyStruct[3, 19];
+   public int battleCount = 0; // 現在のバトルカウント
+    public List<int> initialNumbers = new List<int>(); // 現在の範囲内のインデックスを格納
+    private DungeonConstruct[,] DungeonConstructArray = new DungeonConstruct[3, 19];
     public static GameManager Instance { get; private set; }
 
     public int score { get; private set; }
@@ -18,6 +20,11 @@ public class GameManager : MonoBehaviour
 
     public int NowRow, NowCol;
     public bool isCleared;
+    public void addBattleCount()
+    {
+        battleCount++;
+    }
+    public int getBattleCount() { return battleCount; }
     private void Awake()
     {
         isCleared = false;
@@ -95,9 +102,9 @@ public class GameManager : MonoBehaviour
         System.Random random = new System.Random();
 
         // 配列をループして重み付けによるランダムな値を設定
-        for (int i = 0; i < myStructArray.GetLength(0); i++)
+        for (int i = 0; i < DungeonConstructArray.GetLength(0); i++)
         {
-            for (int j = 0; j < myStructArray.GetLength(1); j++)
+            for (int j = 0; j < DungeonConstructArray.GetLength(1); j++)
             {
 
                 // 0から累積重みの範囲内で乱数を取得
@@ -108,14 +115,14 @@ public class GameManager : MonoBehaviour
                 {
                     if (randomValue < kvp.Value)
                     {
-                        myStructArray[i, j].value = kvp.Key;
+                        DungeonConstructArray[i, j].value = kvp.Key;
                         break;
                     }
                     randomValue -= kvp.Value;
                 }
                 if (j == 10)
                 {
-                    myStructArray[i, j].value = 4;
+                    DungeonConstructArray[i, j].value = 4;
                 }
             }
         }
@@ -127,12 +134,12 @@ public class GameManager : MonoBehaviour
     void PrintArray()
     {
         // 配列の内容をコンソールに出力
-        for (int i = 0; i < myStructArray.GetLength(0); i++)
+        for (int i = 0; i < DungeonConstructArray.GetLength(0); i++)
         {
             string row = "Row " + i + ": ";
-            for (int j = 0; j < myStructArray.GetLength(1); j++)
+            for (int j = 0; j < DungeonConstructArray.GetLength(1); j++)
             {
-                row += myStructArray[i, j].value + " ";
+                row += DungeonConstructArray[i, j].value + " ";
             }
             Debug.Log(row);
         }
@@ -150,7 +157,7 @@ public class GameManager : MonoBehaviour
         int nextFloor;
         if (nextRow < 5)
         {
-            nextFloor = myStructArray[nextCol, nextRow].value;
+            nextFloor = DungeonConstructArray[nextCol, nextRow].value;
             NowRow += 1;
         }
         else
@@ -170,5 +177,35 @@ public class GameManager : MonoBehaviour
     {
         return isCleared;
 
+    }
+     public void UpdateBattleCount()
+    {
+        battleCount++;
+        UpdateInitialNumbers();
+    }
+
+    // battleCountの範囲が変更されるたびに初期化するメソッド
+    public void UpdateInitialNumbers()
+    {
+        initialNumbers.Clear();
+        int startIndex, endIndex;
+
+        if (battleCount < 2)
+        {
+            startIndex = 1; // インデックス1
+            endIndex = 3;   // インデックス3
+        }
+        else
+        {
+            int range = ((battleCount - 2) / 3) * 3 + 2;
+            startIndex = range;
+            endIndex = range + 2;
+        }
+
+        // 範囲内のインデックスを初期化
+        for (int i = startIndex; i <= endIndex; i++)
+        {
+            initialNumbers.Add(i);
+        }
     }
 }

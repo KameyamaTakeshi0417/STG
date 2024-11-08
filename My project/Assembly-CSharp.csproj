@@ -92,6 +92,7 @@
     <Compile Include="Assets\scripts\outGameSystem\money.cs" />
     <Compile Include="Assets\scripts\outGameSystem\UI\CameraControl.cs" />
     <Compile Include="Assets\scripts\outGameSystem\stageManager.cs" />
+    <Compile Include="Assets\scripts\ingameSystem\Enemy\EnemyList.cs" />
     <Compile Include="Assets\scripts\outGameSystem\pointManager.cs" />
     <Compile Include="Assets\scripts\outGameSystem\GameManager.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Enemy\Lizard.cs" />

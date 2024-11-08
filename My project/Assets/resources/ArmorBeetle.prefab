@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6117067203040952965}
   - component: {fileID: 2678831908338966904}
   m_Layer: 0
-  m_Name: bug_dangomushi_blue
+  m_Name: ArmorBeetle
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
