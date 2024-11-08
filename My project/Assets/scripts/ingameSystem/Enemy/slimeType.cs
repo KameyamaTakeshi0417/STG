@@ -21,6 +21,7 @@ public class slimeType : MonoBehaviour
   {
     Player = GameObject.Find("Player");
     myHealth = gameObject.GetComponent<Health>();
+   gameObject.GetComponent<Health>().setSlideHPBar();
     myHealth.setMoneyCount(moneyCount);
     StartCoroutine(Idle());
   }

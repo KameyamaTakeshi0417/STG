@@ -55,7 +55,7 @@ public class ArmorBeetle : MonoBehaviour
         {
             Debug.LogError("Initialization failed. Coroutine will not be started.");
         }
-       // StartCoroutine(Idle());
+        // StartCoroutine(Idle());
     }
 
     // Update is called once per frame
@@ -65,8 +65,8 @@ public class ArmorBeetle : MonoBehaviour
     }
     private IEnumerator Idle()
     {//ダンジョン開始即追尾開始
-    Debug.Log("StartIdle");
-        rb.velocity = Vector2.zero;
+        Debug.Log("StartIdle");
+        stopMovingByVelocity();
         yield return new WaitForSeconds(1);
         if (makeBarrier == false && gameObject.GetComponent<Health>().getCurrentHP() < gameObject.GetComponent<Health>().getHP())
         {
@@ -82,13 +82,13 @@ public class ArmorBeetle : MonoBehaviour
         int count = 0;
         Vector3 chaseWay = new Vector3(0, 0, 0);
         rb = gameObject.GetComponent<Rigidbody2D>();
- Debug.Log("StartChase");
+        Debug.Log("StartChase");
         //プレイヤーを一定時間追いかける
         while (count <= chaseTime)
         {
             if (makeBarrier == false && gameObject.GetComponent<Health>().getCurrentHP() < gameObject.GetComponent<Health>().getHP())
             {
-                rb.velocity = Vector2.zero;
+
                 yield return blocking();
 
             }
@@ -105,15 +105,18 @@ public class ArmorBeetle : MonoBehaviour
     }
     private IEnumerator blocking()
     {
-         Debug.Log("StartBlock");
+        Debug.Log("StartBlock");
+        stopMovingByVelocity();
         makeBarrier = true;
-        
+
         //被弾したときに初期体力に等しいブロックを生成して身を守る
         GameObject barrier = Instantiate(Resources.Load<GameObject>("barrier"), gameObject.transform.position, Quaternion.identity);
         barrier.GetComponent<Health>().setHP(gameObject.GetComponent<Health>().getHP());
         barrier.GetComponent<Health>().setCurrentHP(gameObject.GetComponent<Health>().getHP());
         barrier.GetComponent<barrier>().startDisappear();
         yield return new WaitForSeconds(3);
+        Destroy(barrier);
+
         yield return chase();
 
     }
@@ -126,6 +129,11 @@ public class ArmorBeetle : MonoBehaviour
     {
         //粘液をはいてデバフを試みる
         yield return null;
+    }
+    private void stopMovingByVelocity()
+    {
+        rb.angularVelocity = 0f;
+        rb.velocity = Vector2.zero;
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
