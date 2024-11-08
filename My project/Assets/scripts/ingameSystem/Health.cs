@@ -9,27 +9,69 @@ public class Health : MonoBehaviour
     public float currentHP;
     private int Exp;
     private int moneyCount;
-    public Slider hpSlider;     //HPバー（スライダー）
+    private Slider hpSlider;     //HPバー（スライダー）
+
     void Start()
     {
         currentHP = HP;
-        hpSlider.maxValue=HP;
-        hpSlider.value = (float)currentHP;//HPバーの最初の値（最大HP）を設定
-        
+
     }
+    public void setSlideHPBar()
+    {
+        GameObject canvasInstance = Instantiate(Resources.Load<GameObject>("EnemyHPCanvas"), gameObject.transform.position, Quaternion.identity);
+        canvasInstance.GetComponent<HPBarFollower>().setTargetTransform(gameObject.transform);
+        //canvasInstance.transform.SetParent(transform);
+        canvasInstance.transform.localPosition = new Vector3(0, 2, 0); // 必要に応じてオフセットを調整
+        // HPバー(Slider)を取得
+        hpSlider = canvasInstance.transform.Find("HPBar").GetComponent<Slider>();
+
+        if (hpSlider != null)
+        {
+            hpSlider = canvasInstance.transform.Find("HPBar").GetComponent<Slider>();
+            if (hpSlider != null)
+            {
+                // HPバーの初期設定
+                hpSlider.maxValue = HP;
+                hpSlider.value = (float)currentHP; // HPバーの最初の値を現在のHPに設定
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Canvas or HPBar not found in the enemy object.");
+        }
+
+        hpSlider.maxValue = HP;
+        hpSlider.value = (float)currentHP;//HPバーの最初の値（最大HP）を設定
+
+
+    }
+
     void Awake()
     {
+
+    }
+    public void SliderUpdate()
+    {
+
+        hpSlider.value = currentHP;//スライダは０〜1.0で表現するため最大HPで割って少数点数字に変換
 
     }
     // ダメージを受け取るメソッド
     public void TakeDamage(float damage)
     {
         currentHP -= damage;
+        if (hpSlider != null)
+        {
+            SliderUpdate();
+        }
         // Debug.Log(gameObject.name + " took " + damage + " damage. Remaining HP: " + currentHP);
-        hpSlider.value =currentHP;//スライダは０〜1.0で表現するため最大HPで割って少数点数字に変換
         if (gameObject.tag == "Enemy" && currentHP <= 0)
         {
-            Destroy(hpSlider);
+            if (hpSlider != null)
+            {
+                Destroy(hpSlider);
+            }
+
             Die();
         }
     }
