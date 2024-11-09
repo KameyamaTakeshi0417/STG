@@ -190,28 +190,29 @@ public class Player : MonoBehaviour
 
         return ret;
     }
-<<<<<<< HEAD:My project/Assets/scripts/Player.cs
-    public void GetItem(int type){
+
+    public void GetItem(int type)
+    {
         switch (type)
         {
             case 1:
-pow+=10.0f;
+                pow += 10.0f;
 
-            break;
+                break;
             case 2:
-            HP+=1000;
-            break;
+                HP += 1000;
+                break;
             case 3:
-moveSpeed+=20.0f;
-break;
-case 4:
-bulletSpeed+=20.0f;
-break;
+                moveSpeed += 20.0f;
+                break;
+            case 4:
+                bulletSpeed += 20.0f;
+                break;
             default:
-            break;
+                break;
         }
-=======
 
+}
     public void setHP(float addpoint)
     {
         HP += addpoint;
@@ -231,6 +232,7 @@ break;
     public void setBulletType(int type)
     {
         bullettype = type;
->>>>>>> kameyama:My project/Assets/scripts/ingameSystem/Player/Player.cs
+
     }
+
 }

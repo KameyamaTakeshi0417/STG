@@ -59,35 +59,11 @@
     <UnityVersion>2022.3.28f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Analyzer Include="C:\Users\yukku\.vscode\extensions\visualstudiotoolsforunity.vstuc-1.0.4\Analyzers\Microsoft.Unity.Analyzers.dll" />
+    <Analyzer Include="C:\Users\kanin\.vscode\extensions\visualstudiotoolsforunity.vstuc-1.0.4\Analyzers\Microsoft.Unity.Analyzers.dll" />
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.28f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.SourceGenerators.dll" />
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.28f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
-    <Compile Include="Assets\scripts\HPBarController.cs" />
-    <Compile Include="Assets\scripts\UI\DamageUI3D.cs" />
-    <Compile Include="Assets\scripts\GameManager.cs" />
-    <Compile Include="Assets\scripts\Enemy.cs" />
-    <Compile Include="Assets\scripts\fieldManager.cs" />
-    <Compile Include="Assets\scripts\UI\CameraControl.cs" />
-    <Compile Include="Assets\scripts\HexGrid.cs" />
-    <Compile Include="Assets\scripts\RelicList.cs" />
-    <Compile Include="Assets\scripts\UI\EnemyManager.cs" />
-    <Compile Include="Assets\scripts\treasureBox.cs" />
-    <Compile Include="Assets\scripts\Exp.cs" />
-    <Compile Include="Assets\scripts\ItemBox.cs" />
-    <Compile Include="Assets\scripts\ItemDrop.cs" />
-    <Compile Include="Assets\scripts\Player.cs" />
-    <Compile Include="Assets\scripts\UI\MenuController.cs" />
-    <Compile Include="Assets\scripts\UI\EnemyHealthBar.cs" />
-    <Compile Include="Assets\scripts\UI\BarController.cs" />
-    <Compile Include="Assets\scripts\Health.cs" />
-    <Compile Include="Assets\scripts\Field.cs" />
-    <Compile Include="Assets\scripts\Spawner.cs" />
-    <Compile Include="Assets\scripts\FieldBoundary.cs" />
-    <Compile Include="Assets\scripts\Bullet_Base.cs" />
-=======
     <Compile Include="Assets\scripts\ingameSystem\Enemy\Spawner.cs" />
     <Compile Include="Assets\scripts\outGameSystem\UI\EnemyManager.cs" />
     <Compile Include="Assets\scripts\outGameSystem\ScoreDisplay.cs" />
@@ -97,6 +73,7 @@
     <Compile Include="Assets\scripts\ingameSystem\Item.cs" />
     <Compile Include="Assets\scripts\ingameSystem\restRoom.cs" />
     <Compile Include="Assets\scripts\ingameSystem\HPBarController.cs" />
+    <Compile Include="Assets\scripts\fieldManager.cs" />
     <Compile Include="Assets\scripts\outGameSystem\UI\fadeBoard.cs" />
     <Compile Include="Assets\scripts\ingameSystem\StepCollision.cs" />
     <Compile Include="Assets\scripts\outGameSystem\ItemBox.cs" />
@@ -105,6 +82,7 @@
     <Compile Include="Assets\scripts\outGameSystem\RelicList.cs" />
     <Compile Include="Assets\scripts\outGameSystem\UI\BarController.cs" />
     <Compile Include="Assets\scripts\outGameSystem\UI\ROUNDSTART.cs" />
+    <Compile Include="Assets\scripts\outGameSystem\UI\DamageUI3D.cs" />
     <Compile Include="Assets\scripts\outGameSystem\UI\clearedBoard.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Enemy\EnemyBase.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Enemy\ArmorBeetle.cs" />
@@ -125,12 +103,12 @@
     <Compile Include="Assets\scripts\outGameSystem\UI\MenuController.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Player\QuickStep.cs" />
     <Compile Include="Assets\scripts\ingameSystem\EnemyChecker.cs" />
+    <Compile Include="Assets\scripts\FieldBoundary.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Enemy\barrier.cs" />
     <Compile Include="Assets\scripts\outGameSystem\DungeonContoroller.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Enemy\Enemy.cs" />
     <Compile Include="Assets\scripts\outGameSystem\UI\HPBarFollower.cs" />
     <Compile Include="Assets\scripts\outGameSystem\ChangeTextureOnTouch.cs" />
->>>>>>> kameyama
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
@@ -494,42 +472,6 @@
     </Reference>
     <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
       <HintPath>Library\PackageCache\com.unity.visualscripting@1.9.4\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEditor.iOS.Extensions.Xcode">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.28f1\Editor\Data\PlaybackEngines\AppleTVSupport\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEditor.iOS.Extensions.Xcode">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.28f1\Editor\Data\PlaybackEngines\VisionOSPlayer\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEditor.iOS.Extensions.Common">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.28f1\Editor\Data\PlaybackEngines\VisionOSPlayer\UnityEditor.iOS.Extensions.Common.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEditor.iOS.Extensions.Xcode">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.28f1\Editor\Data\PlaybackEngines\iOSSupport\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEditor.iOS.Extensions.Common">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.28f1\Editor\Data\PlaybackEngines\iOSSupport\UnityEditor.iOS.Extensions.Common.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.Android.Types">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.28f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Types.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.Android.Gradle">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.28f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Gradle.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.Android.GradleProject">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.28f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.GradleProject.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEditor.iOS.Extensions.Xcode">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.28f1\Editor\Data\PlaybackEngines\MacStandaloneSupport\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="netstandard">
@@ -1184,8 +1126,8 @@
       <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.State.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Unity.Toolchain.Win-x86_64-Linux-x86_64">
-      <HintPath>Library\ScriptAssemblies\Unity.Toolchain.Win-x86_64-Linux-x86_64.dll</HintPath>
+    <Reference Include="Unity.2D.SpriteShape.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.2D.SpriteShape.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.2D.Tilemap.Editor">
@@ -1196,12 +1138,12 @@
       <HintPath>Library\ScriptAssemblies\Unity.2D.Animation.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Unity.2D.IK.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.2D.IK.Editor.dll</HintPath>
+    <Reference Include="Unity.Toolchain.Win-x86_64-Linux-x86_64">
+      <HintPath>Library\ScriptAssemblies\Unity.Toolchain.Win-x86_64-Linux-x86_64.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Unity.2D.SpriteShape.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.2D.SpriteShape.Editor.dll</HintPath>
+    <Reference Include="Unity.2D.IK.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.2D.IK.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
