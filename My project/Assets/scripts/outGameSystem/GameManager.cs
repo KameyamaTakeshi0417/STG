@@ -20,10 +20,7 @@ public class GameManager : MonoBehaviour
 
     public int NowRow, NowCol;
     public bool isCleared;
-    public void addBattleCount()
-    {
-        battleCount++;
-    }
+
     public int getBattleCount() { return battleCount; }
     private void Awake()
     {

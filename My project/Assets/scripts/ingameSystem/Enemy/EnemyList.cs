@@ -27,15 +27,20 @@ public struct spawnPos
     }
 }
 public class EnemyList : MonoBehaviour
-{private GameManager gameManager;
+{
+    private GameManager gameManager;
 
     // Start is called before the first frame update
-     void Start()
+    void Start()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        setEnemy(gameManager.getBattleCount());
     }
 
-
+    void Awake()
+    {
+        
+    }
     // Update is called once per frame
     void Update()
     {
