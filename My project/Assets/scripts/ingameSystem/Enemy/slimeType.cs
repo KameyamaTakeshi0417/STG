@@ -21,11 +21,14 @@ public class slimeType : MonoBehaviour
   {
     Player = GameObject.Find("Player");
     myHealth = gameObject.GetComponent<Health>();
-   gameObject.GetComponent<Health>().setSlideHPBar();
+
     myHealth.setMoneyCount(moneyCount);
     StartCoroutine(Idle());
   }
-
+  void Start()
+  {
+    gameObject.GetComponent<Health>().setSlideHPBar();
+  }
   // Update is called once per frame
   void Update()
   {
