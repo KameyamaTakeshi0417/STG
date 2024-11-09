@@ -29,4 +29,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/kameyama/scene5.unity
     guid: 1ebf9bf1a42e10343a13b45cd60ca442
+  - enabled: 1
+    path: Assets/Scenes/hayami/Hayami_DebugScene.unity
+    guid: 90a4e60672b89b649b01ee495c379587
   m_configObjects: {}

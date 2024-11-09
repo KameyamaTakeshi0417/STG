@@ -121,37 +121,39 @@ public class PetalCollector : MonoBehaviour
     }
     private IEnumerator attack1()
     {//通常攻撃
+    GameObject bullet;
+    GameObject bullet2;
     float bulletShootSpeed=0.3f;
         for (int i = 0; i < 50; i++)
         {
-            GameObject bullet = Instantiate(Resources.Load<GameObject>("petalBullet"),
+             bullet = Instantiate(Resources.Load<GameObject>("Objects/Bullet/petalBullet"),
                      gameObject.transform.position, Quaternion.identity);
             bullet.GetComponent<petalBullet>().ShootInvolute(2, true);
 
-            GameObject bullet2 = Instantiate(Resources.Load<GameObject>("petalBullet"),
-                  gameObject.transform.position, Quaternion.identity);
+             bullet2 = Instantiate(Resources.Load<GameObject>("Objects/Bullet/petalBullet"),
+                     gameObject.transform.position, Quaternion.identity);
             bullet2.GetComponent<petalBullet>().ShootInvolute(10, false);
             yield return new WaitForSeconds(bulletShootSpeed);
         }
         for (int i = 0; i < 50; i++)
         {
-            GameObject bullet = Instantiate(Resources.Load<GameObject>("petalBullet"),
+             bullet = Instantiate(Resources.Load<GameObject>("Objects/Bullet/petalBullet"),
                      gameObject.transform.position, Quaternion.identity);
             bullet.GetComponent<petalBullet>().ShootInvolute(6, true);
 
-            GameObject bullet2 = Instantiate(Resources.Load<GameObject>("petalBullet"),
-          gameObject.transform.position, Quaternion.identity);
+            bullet2 = Instantiate(Resources.Load<GameObject>("Objects/Bullet/petalBullet"),
+                     gameObject.transform.position, Quaternion.identity);
             bullet2.GetComponent<petalBullet>().ShootInvolute(0, false);
             yield return new WaitForSeconds(bulletShootSpeed);
         }
         for (int i = 0; i < 50; i++)
         {
-            GameObject bullet = Instantiate(Resources.Load<GameObject>("petalBullet"),
+             bullet = Instantiate(Resources.Load<GameObject>("Objects/Bullet/petalBullet"),
                      gameObject.transform.position, Quaternion.identity);
             bullet.GetComponent<petalBullet>().ShootInvolute(4, true);
 
-            GameObject bullet2 = Instantiate(Resources.Load<GameObject>("petalBullet"),
-           gameObject.transform.position, Quaternion.identity);
+             bullet2 = Instantiate(Resources.Load<GameObject>("Objects/Bullet/petalBullet"),
+                     gameObject.transform.position, Quaternion.identity);
             bullet2.GetComponent<petalBullet>().ShootInvolute(8, false);
             yield return new WaitForSeconds(bulletShootSpeed);
         }

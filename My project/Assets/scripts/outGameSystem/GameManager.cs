@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
         SceneManager.sceneLoaded += OnSceneLoaded; // シーンロードイベントを追加
+        
     }
     private void OnDestroy()
     {
@@ -45,6 +46,7 @@ public class GameManager : MonoBehaviour
     {
         // すべてのシーンでisClearedをfalseにリセット
         isCleared = false;
+        GameObject.Find("Player").transform.position=new Vector3(0,-10,0);
         Debug.Log($"Scene {scene.name} loaded. isCleared has been reset to false.");
     }
     // Start is called before the first frame update
