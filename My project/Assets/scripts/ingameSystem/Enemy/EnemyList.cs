@@ -83,7 +83,7 @@ public class EnemyList : MonoBehaviour
 
     public void SpawnEnemy(string name, Vector3 spawnPos)
     {
-        GameObject enemyPrefab = Resources.Load<GameObject>(name);
+        GameObject enemyPrefab = Resources.Load<GameObject>("Objects/Enemy/"+name);
         if (enemyPrefab != null)
         {
             Instantiate(enemyPrefab, spawnPos, Quaternion.identity);

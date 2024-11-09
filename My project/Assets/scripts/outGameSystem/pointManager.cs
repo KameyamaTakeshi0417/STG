@@ -28,7 +28,7 @@ public class pointManager : MonoBehaviour
         {
 
             moneyObj = Instantiate(
-              Resources.Load<GameObject>("money"), position + CreateMoneyPos(), Quaternion.identity);
+              Resources.Load<GameObject>("Objects/money"), position + CreateMoneyPos(), Quaternion.identity);
         }
     }
     private Vector3 CreateMoneyPos()

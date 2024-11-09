@@ -107,7 +107,7 @@ public class slimeType : MonoBehaviour
   }
   private void createNewSlime(int plusMinus)
   {
-    GameObject slime1 = Instantiate(Resources.Load<GameObject>("slime"), gameObject.transform.position - new Vector3(plusMinus, 2, 0), Quaternion.identity);
+    GameObject slime1 = Instantiate(Resources.Load<GameObject>("Objects/Enemy/slime"), gameObject.transform.position - new Vector3(plusMinus, 2, 0), Quaternion.identity);
     slime1.GetComponent<slimeType>().separateCount = separateCount - 1;
     slime1.GetComponent<slimeType>().pow = (int)((float)pow * 0.75f);
     slime1.GetComponent<slimeType>().chaseSpeed = chaseSpeed * 1.25f;

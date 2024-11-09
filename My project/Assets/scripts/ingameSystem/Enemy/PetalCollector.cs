@@ -112,7 +112,7 @@ public class PetalCollector : MonoBehaviour
         shootSet[2] = 10;
         for (int i = 0; i < 3; i++)
         {
-            GameObject bullet = Instantiate(Resources.Load<GameObject>("petalBullet"),
+            GameObject bullet = Instantiate(Resources.Load<GameObject>("Objects/Bullet/petalBullet"),
                      gameObject.transform.position, Quaternion.identity);
             bullet.GetComponent<petalBullet>().shoot(shootSet[i]);
             yield return new WaitForEndOfFrame();

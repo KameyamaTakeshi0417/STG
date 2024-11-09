@@ -16,7 +16,7 @@ GameObject BOSSfield;
         Debug.Log("Start in Room: Row 1, Col " + (currentCol + 1));
         Debug.Log("Room value: " + dungeonGrid[currentRow, currentCol]);
 
-        fieldObject=Resources.Load<GameObject>("Floor");
+        fieldObject=Resources.Load<GameObject>("Object/Floor");
          fieldPrefab = Instantiate(fieldObject,new Vector3(0,0,0), Quaternion.identity); //フィールド生成
     }
 

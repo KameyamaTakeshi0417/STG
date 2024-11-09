@@ -16,7 +16,7 @@ public class MenuController : MonoBehaviour
     {
        
         // Resourcesフォルダからカーソルのテクスチャをロード
-        cursorTexture = Resources.Load<Texture2D>("target");
+        cursorTexture = Resources.Load<Texture2D>("Texture/target");
         cursorHotspot = new Vector2(cursorTexture.width / 2, cursorTexture.height / 2); // カーソルの中央をホットスポットに設定
     menuPanel.SetActive(false);
     boardStatus.SetActive(false);

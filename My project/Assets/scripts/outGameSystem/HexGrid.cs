@@ -10,7 +10,7 @@ public class HexGrid : MonoBehaviour
 
     void Start()
     {
-        GameObject hexPrefab_StartFloor = Resources.Load<GameObject>("StartFloor");
+        GameObject hexPrefab_StartFloor = Resources.Load<GameObject>("Objects/StartFloor");
          Instantiate(hexPrefab_StartFloor, new Vector3(0,0,0), Quaternion.identity);
         CreateHexGrid();
     }

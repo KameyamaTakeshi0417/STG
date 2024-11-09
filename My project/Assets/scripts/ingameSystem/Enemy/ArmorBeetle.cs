@@ -113,7 +113,7 @@ public class ArmorBeetle : MonoBehaviour
         makeBarrier = true;
 
         //被弾したときに初期体力に等しいブロックを生成して身を守る
-        GameObject barrier = Instantiate(Resources.Load<GameObject>("barrier"), gameObject.transform.position, Quaternion.identity);
+        GameObject barrier = Instantiate(Resources.Load<GameObject>("Objects/Enemy/barrier"), gameObject.transform.position, Quaternion.identity);
         barrier.GetComponent<Health>().setHP(gameObject.GetComponent<Health>().getHP());
         barrier.GetComponent<Health>().setCurrentHP(gameObject.GetComponent<Health>().getHP());
         barrier.GetComponent<barrier>().startDisappear();

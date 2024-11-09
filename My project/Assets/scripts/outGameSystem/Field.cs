@@ -21,8 +21,8 @@ public class Field : MonoBehaviour
     void SetEnemy()
     {
         Vector3 pos = new Vector3(0, 0, 0);
-        float xOffset = 5 * (0.75f);
-        float yOffset = 5 * (0.866f);
+       // float xOffset = 5 * (0.75f);
+       // float yOffset = 5 * (0.866f);
         int enemyCount = UnityEngine.Random.Range(2, 5);
         enemies = new GameObject[enemyCount];
 

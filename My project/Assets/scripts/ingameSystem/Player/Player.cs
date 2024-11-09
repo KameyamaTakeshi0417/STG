@@ -178,13 +178,13 @@ public class Player : MonoBehaviour
         switch (bullettype)
         {
             case 0: // 通常弾
-                ret = Resources.Load<GameObject>("bullet");
+                ret = Resources.Load<GameObject>("Objects/Bullet/NormalBullet");
                 break;
             case 1: // 貫通弾
-                ret = Resources.Load<GameObject>("bullet_pene");
+                ret = Resources.Load<GameObject>("Objects/Bullet/PiercingBullet");
                 break;
             default: // とりあえず通常弾を撃つ
-                ret = Resources.Load<GameObject>("bullet");
+                ret = Resources.Load<GameObject>("Objects/Bullet/NormalBullet");
                 break;
         }
 

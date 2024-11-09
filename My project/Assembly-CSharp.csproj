@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\scripts\ingameSystem\Enemy\Spawner.cs" />
+    <Compile Include="Assets\scripts\ingameSystem\Bullet\GravityBullet.cs" />
     <Compile Include="Assets\scripts\outGameSystem\UI\EnemyManager.cs" />
     <Compile Include="Assets\scripts\outGameSystem\ScoreDisplay.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Health.cs" />
@@ -73,10 +74,13 @@
     <Compile Include="Assets\scripts\ingameSystem\Item.cs" />
     <Compile Include="Assets\scripts\ingameSystem\restRoom.cs" />
     <Compile Include="Assets\scripts\ingameSystem\HPBarController.cs" />
+    <Compile Include="Assets\scripts\ingameSystem\Bullet\BloomBullet.cs" />
     <Compile Include="Assets\scripts\fieldManager.cs" />
     <Compile Include="Assets\scripts\outGameSystem\UI\fadeBoard.cs" />
     <Compile Include="Assets\scripts\ingameSystem\StepCollision.cs" />
     <Compile Include="Assets\scripts\outGameSystem\ItemBox.cs" />
+    <Compile Include="Assets\scripts\ingameSystem\Bullet\EnplosionBullet.cs" />
+    <Compile Include="Assets\scripts\ingameSystem\Bullet\bulletList.cs" />
     <Compile Include="Assets\scripts\outGameSystem\treasureBox.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Enemy\petalBullet.cs" />
     <Compile Include="Assets\scripts\outGameSystem\RelicList.cs" />
@@ -85,15 +89,18 @@
     <Compile Include="Assets\scripts\outGameSystem\UI\DamageUI3D.cs" />
     <Compile Include="Assets\scripts\outGameSystem\UI\clearedBoard.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Enemy\EnemyBase.cs" />
+    <Compile Include="Assets\scripts\ingameSystem\Bullet\NormalBullet.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Enemy\ArmorBeetle.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Enemy\PetalCollector.cs" />
     <Compile Include="Assets\scripts\outGameSystem\ItemDrop.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Player\Player.cs" />
+    <Compile Include="Assets\scripts\ingameSystem\Bullet\HomingBullet.cs" />
     <Compile Include="Assets\scripts\outGameSystem\rewardManager.cs" />
     <Compile Include="Assets\scripts\outGameSystem\Field.cs" />
     <Compile Include="Assets\scripts\outGameSystem\money.cs" />
     <Compile Include="Assets\scripts\outGameSystem\UI\CameraControl.cs" />
     <Compile Include="Assets\scripts\outGameSystem\stageManager.cs" />
+    <Compile Include="Assets\scripts\ingameSystem\Bullet\PiercingBullet.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Enemy\EnemyList.cs" />
     <Compile Include="Assets\scripts\outGameSystem\pointManager.cs" />
     <Compile Include="Assets\scripts\outGameSystem\GameManager.cs" />

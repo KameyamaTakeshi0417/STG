@@ -18,7 +18,7 @@ public class Health : MonoBehaviour
     }
     public void setSlideHPBar()
     {
-        GameObject canvasInstance = Instantiate(Resources.Load<GameObject>("EnemyHPCanvas"), gameObject.transform.position, Quaternion.identity);
+        GameObject canvasInstance = Instantiate(Resources.Load<GameObject>("UI/EnemyHPCanvas"), gameObject.transform.position, Quaternion.identity);
         canvasInstance.GetComponent<HPBarFollower>().setTargetTransform(gameObject.transform);
         //canvasInstance.transform.SetParent(transform);
         canvasInstance.transform.localPosition = new Vector3(0, 2, 0); // 必要に応じてオフセットを調整
@@ -130,14 +130,14 @@ public class Health : MonoBehaviour
         {
 
             GameObject ExpObj = Instantiate(
-               Resources.Load<GameObject>("Exp"), CreateExpPos(), Quaternion.identity);
+               Resources.Load<GameObject>("Objects/Exp"), CreateExpPos(), Quaternion.identity);
         }
 
         for (int i = 0; i < moneyCount; i++)
         {
 
             GameObject moneyObj = Instantiate(
-               Resources.Load<GameObject>("money"), CreateExpPos(), Quaternion.identity);
+               Resources.Load<GameObject>("Objects/money"), CreateExpPos(), Quaternion.identity);
         }
         Debug.Log(gameObject.name + " died.");
         // ここに死亡時の処理を書く
