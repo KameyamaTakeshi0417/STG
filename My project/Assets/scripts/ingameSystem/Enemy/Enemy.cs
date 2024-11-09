@@ -32,7 +32,7 @@ public int Exp;
         elapsedTime = 0.0f;
 
         StartCoroutine(shambling(shamblingWay,duration));
-        bullet=Resources.Load<GameObject>("bullet");
+        bullet=Resources.Load<GameObject>("Objects/Bullet/Normalullet");
         GetComponent<Health>().setHP(HP);
         Exp= UnityEngine.Random.Range(3, 5);
         GetComponent<Health>().setExp(Exp);

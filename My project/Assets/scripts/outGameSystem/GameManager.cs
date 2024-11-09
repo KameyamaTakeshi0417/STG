@@ -143,7 +143,11 @@ public class GameManager : MonoBehaviour
     }
 
 
-
+ public void DebugChangeScene(string name)
+    {
+        Debug.Log(name);
+        SceneManager.LoadScene(name);
+    }
     public void ChangeScene(int num)
     {
         // シーン遷移直前に必要な処理を追加（例: 現在の状態リセット）

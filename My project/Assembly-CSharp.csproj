@@ -87,6 +87,7 @@
     <Compile Include="Assets\scripts\outGameSystem\UI\BarController.cs" />
     <Compile Include="Assets\scripts\outGameSystem\UI\ROUNDSTART.cs" />
     <Compile Include="Assets\scripts\outGameSystem\UI\DamageUI3D.cs" />
+    <Compile Include="Assets\scripts\outGameSystem\GoDebugScene.cs" />
     <Compile Include="Assets\scripts\outGameSystem\UI\clearedBoard.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Enemy\EnemyBase.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Bullet\NormalBullet.cs" />
