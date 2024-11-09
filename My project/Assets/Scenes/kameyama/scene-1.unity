@@ -1627,6 +1627,7 @@ GameObject:
   - component: {fileID: 1579541303}
   - component: {fileID: 1579541302}
   - component: {fileID: 1579541301}
+  - component: {fileID: 1579541305}
   m_Layer: 0
   m_Name: steps (3)
   m_TagString: Untagged
@@ -1762,6 +1763,22 @@ Transform:
   - {fileID: 14287222}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1579541305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1579541300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ff1fe89380e8e641b91202523261bc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Onstep: 0
+  canEnter: 0
+  stepNum: 0
+  nextScene: scene2
 --- !u!1 &1603334037 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4390047272584022613, guid: ea02c46b4f1337e439dfe303aa5ec7b0, type: 3}
