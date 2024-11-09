@@ -61,10 +61,10 @@ public class EnemyList : MonoBehaviour
 
             // 敵リストとスポーン位置を取得
             string[] enemiesToSpawn = enemyList1.enemyListArray[selectedListIndex].values;
-            Vector3[] spawnPositions = enemySpawnPos.vector3Groups[selectedListIndex];
+            Vector3[] spawnPositions = enemySpawnPos.vector3Groups[enemiesToSpawn.Length];
 
             // 敵とスポーン位置の数が異なる場合、必要に応じて調整
-            int spawnCount = Mathf.Min(enemiesToSpawn.Length, spawnPositions.Length);
+            int spawnCount = enemiesToSpawn.Length;
 
             // 指定された敵を各スポーン位置に生成
             for (int i = 0; i < spawnCount; i++)
