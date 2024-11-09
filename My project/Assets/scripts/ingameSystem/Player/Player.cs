@@ -1,11 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Net.Http.Headers;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    private static Player instance; // Singletonインスタンス
     private Rigidbody2D rb;
     private bool isPaused = false;
 
@@ -24,11 +23,27 @@ public class Player : MonoBehaviour
 
     private Transform lockOnTarget; // ロックオン対象
     public AudioSource shootAudioSource; // 弾の発射音用のAudioSource
-    public AudioSource getExpAudioSource; // 弾の発射音用のAudioSource
+    public AudioSource getExpAudioSource; // 経験値取得音用のAudioSource
+
+    void Awake()
+    {
+        // Singletonパターンの実装
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject); // シーンをまたいでもオブジェクトを破棄しない
+        }
+        else if (instance != this)
+        {
+            Destroy(gameObject); // 既存のインスタンスがある場合、新しいインスタンスを破棄
+        }
+
+        rb = GetComponent<Rigidbody2D>();
+    }
+
     void Start()
     {
         onCoolTime = false;
-        rb = GetComponent<Rigidbody2D>();
     }
 
     void Update()
@@ -67,19 +82,10 @@ public class Player : MonoBehaviour
             onCoolTime = true;
             ShootBullet();
             StartCoroutine(CoolTime());
-            onCoolTime = true;
-            float ratio = 1.5f;
-            Vector3 createPos = transform.position + watch * ratio;
-            bullet = BulletTypeDecision();
-            GameObject bulletPrefab = Instantiate(bullet, createPos, Quaternion.identity);
-            bulletPrefab.GetComponent<Bullet_Base>().setRotate(watch);
-            bulletPrefab.GetComponent<Bullet_Base>().setBulletSpeed(bulletSpeed);
-            bulletPrefab.GetComponent<Bullet_Base>().setDmg(pow);
-            bulletPrefab.GetComponent<Bullet_Base>().setBulletType(bullettype);
-            StartCoroutine(CoolTime());
         }
-        if(Input.GetKey(KeyCode.Space)){
-            //ダッシュ、もしくはクイックステップと呼称する緊急回避アクションを実装したい
+        if (Input.GetKey(KeyCode.Space))
+        {
+            // ダッシュ、もしくはクイックステップと呼称する緊急回避アクションを実装したい
         }
     }
 
@@ -150,7 +156,6 @@ public class Player : MonoBehaviour
     public void SetPaused(bool paused)
     {
         isPaused = paused;
-
     }
 
     void ShootBullet()
@@ -165,22 +170,20 @@ public class Player : MonoBehaviour
         // サウンドエフェクトの再生
         shootAudioSource.Play();
     }
-    //弾の種類の決定
+
+    // 弾の種類の決定
     private GameObject BulletTypeDecision()
     {
         GameObject ret;
         switch (bullettype)
         {
-            //通常弾
-            case 0:
+            case 0: // 通常弾
                 ret = Resources.Load<GameObject>("bullet");
                 break;
-            //貫通弾
-            case 1:
+            case 1: // 貫通弾
                 ret = Resources.Load<GameObject>("bullet_pene");
                 break;
-            default:
-                //とりあえず通常弾を撃つ
+            default: // とりあえず通常弾を撃つ
                 ret = Resources.Load<GameObject>("bullet");
                 break;
         }
@@ -193,13 +196,19 @@ public class Player : MonoBehaviour
         HP += addpoint;
         currentHP += addpoint;
     }
-    public void setPow(float addpoint){
-        pow+=addpoint;
+
+    public void setPow(float addpoint)
+    {
+        pow += addpoint;
     }
-    public void setShootSpeed(float addpoint){
-        bulletSpeed+=addpoint;
+
+    public void setShootSpeed(float addpoint)
+    {
+        bulletSpeed += addpoint;
     }
-    public void setBulletType(int type){
-        bullettype=type;
+
+    public void setBulletType(int type)
+    {
+        bullettype = type;
     }
 }
