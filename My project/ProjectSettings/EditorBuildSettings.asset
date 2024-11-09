@@ -5,7 +5,28 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/kameyama/scene-1.unity
+    guid: 784f30f7f4e8f6c4b877e53e3cd03585
+  - enabled: 1
+    path: Assets/Scenes/kameyama/scene0.unity
+    guid: 792be85d89ab4bf4ea19da76244389bf
+  - enabled: 1
+    path: Assets/Scenes/kameyama/scene1.unity
+    guid: c337e2f9d2945e644aac932badb65434
+  - enabled: 1
+    path: Assets/Scenes/kameyama/scene2.unity
+    guid: 6e36d58b2bc969842a6686ded24d43d5
+  - enabled: 1
+    path: Assets/Scenes/kameyama/scene3.unity
+    guid: 16ec5e82a19c8ee4db9408ad062849ed
+  - enabled: 1
+    path: Assets/Scenes/kameyama/scene4.unity
+    guid: 6b0a95bdf233d6c47a237af8972d38a2
+  - enabled: 1
+    path: Assets/Scenes/kameyama/scene5.unity
+    guid: 1ebf9bf1a42e10343a13b45cd60ca442
   m_configObjects: {}

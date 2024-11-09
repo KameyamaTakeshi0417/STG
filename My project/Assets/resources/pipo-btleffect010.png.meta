@@ -1,0 +1,485 @@
+fileFormatVersion: 2
+guid: 1cd3f6996e43fb2448e65744058b060b
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: pipo-btleffect010_08
+      rect:
+        serializedVersion: 2
+        x: 1695
+        y: 7
+        width: 219
+        height: 219
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a39fd1e1a230b7d4996a35415de864fb
+      internalID: 1650339256
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pipo-btleffect010_01
+      rect:
+        serializedVersion: 2
+        x: 94
+        y: 68
+        width: 99
+        height: 102
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e20c16e87fc6dff4687053a2ebe213ab
+      internalID: 1262144273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pipo-btleffect010_05
+      rect:
+        serializedVersion: 2
+        x: 973
+        y: 14
+        width: 225
+        height: 219
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dada5b33653bcdb44ac7ac2ad8d0a781
+      internalID: -2131077050
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pipo-btleffect010_06
+      rect:
+        serializedVersion: 2
+        x: 1212
+        y: 12
+        width: 223
+        height: 214
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e100a4858d027c44eb3afb2702cd7c2c
+      internalID: -949120456
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pipo-btleffect010_07
+      rect:
+        serializedVersion: 2
+        x: 1452
+        y: 12
+        width: 224
+        height: 215
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 10ebf72d25af4b949954f2139a6fb642
+      internalID: -1722471573
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pipo-btleffect010_02
+      rect:
+        serializedVersion: 2
+        x: 298
+        y: 57
+        width: 128
+        height: 131
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6d0cea7c400dac54c8028dca95426e8b
+      internalID: 1700935263
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pipo-btleffect010_03
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 46
+        width: 148
+        height: 159
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dd78f880755efa64ab39495f1230411e
+      internalID: 557644701
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pipo-btleffect010_04
+      rect:
+        serializedVersion: 2
+        x: 740
+        y: 20
+        width: 208
+        height: 194
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e821296839708bf4b8eee2bb956a4369
+      internalID: 1920170043
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      pipo-btleffect010_01: 1262144273
+      pipo-btleffect010_02: 1700935263
+      pipo-btleffect010_03: 557644701
+      pipo-btleffect010_04: 1920170043
+      pipo-btleffect010_05: -2131077050
+      pipo-btleffect010_06: -949120456
+      pipo-btleffect010_07: -1722471573
+      pipo-btleffect010_08: 1650339256
+      pipo-btleffect010_100: 1373501159
+      pipo-btleffect010_101: 1237731479
+      pipo-btleffect010_102: 1037871392
+      pipo-btleffect010_103: -448546530
+      pipo-btleffect010_104: 1569692427
+      pipo-btleffect010_105: -1416183753
+      pipo-btleffect010_106: -1935893090
+      pipo-btleffect010_107: 190604388
+      pipo-btleffect010_109: 1304819906
+      pipo-btleffect010_111: -1581004274
+      pipo-btleffect010_113: 683458874
+      pipo-btleffect010_114: 576505474
+      pipo-btleffect010_115: 1234391405
+      pipo-btleffect010_116: -908503389
+      pipo-btleffect010_117: 4090185
+      pipo-btleffect010_118: -1306890751
+      pipo-btleffect010_120: 1751802810
+      pipo-btleffect010_122: -874032563
+      pipo-btleffect010_124: -960903269
+      pipo-btleffect010_125: -99918680
+      pipo-btleffect010_126: 148297299
+      pipo-btleffect010_127: -187440875
+      pipo-btleffect010_128: -145531050
+      pipo-btleffect010_129: 940783610
+      pipo-btleffect010_13: -1199843082
+      pipo-btleffect010_130: 1963142841
+      pipo-btleffect010_131: 1458407391
+      pipo-btleffect010_132: 1343549039
+      pipo-btleffect010_133: -1138303311
+      pipo-btleffect010_134: -1533494008
+      pipo-btleffect010_135: -2139798004
+      pipo-btleffect010_136: -381259934
+      pipo-btleffect010_137: 1750613513
+      pipo-btleffect010_138: -1374326792
+      pipo-btleffect010_139: 633048406
+      pipo-btleffect010_14: -1239694254
+      pipo-btleffect010_140: -1399798213
+      pipo-btleffect010_141: -1913258993
+      pipo-btleffect010_142: -1827181000
+      pipo-btleffect010_143: 1006033131
+      pipo-btleffect010_144: 1208297280
+      pipo-btleffect010_145: 131174575
+      pipo-btleffect010_146: 1732649636
+      pipo-btleffect010_147: 624120902
+      pipo-btleffect010_148: 1479168674
+      pipo-btleffect010_149: -436505932
+      pipo-btleffect010_15: 1212439369
+      pipo-btleffect010_150: 172204322
+      pipo-btleffect010_151: 443879535
+      pipo-btleffect010_152: 1474224367
+      pipo-btleffect010_153: 1799641265
+      pipo-btleffect010_154: 960793680
+      pipo-btleffect010_155: 866880842
+      pipo-btleffect010_156: -1155313909
+      pipo-btleffect010_157: 321498469
+      pipo-btleffect010_158: 1120700331
+      pipo-btleffect010_159: 934236851
+      pipo-btleffect010_16: -825270194
+      pipo-btleffect010_160: 1368997821
+      pipo-btleffect010_161: -1525832776
+      pipo-btleffect010_162: 1824936191
+      pipo-btleffect010_163: 43938172
+      pipo-btleffect010_164: 1893708255
+      pipo-btleffect010_165: -429655661
+      pipo-btleffect010_166: -31556664
+      pipo-btleffect010_167: -1733656809
+      pipo-btleffect010_168: 494078605
+      pipo-btleffect010_169: -1304710255
+      pipo-btleffect010_17: 1958406509
+      pipo-btleffect010_170: 1080618211
+      pipo-btleffect010_171: 1228448787
+      pipo-btleffect010_172: 1427733589
+      pipo-btleffect010_173: 653253460
+      pipo-btleffect010_174: 1530757400
+      pipo-btleffect010_175: 2138502110
+      pipo-btleffect010_176: -1062482999
+      pipo-btleffect010_177: 461917774
+      pipo-btleffect010_178: 744696589
+      pipo-btleffect010_179: -1652177322
+      pipo-btleffect010_18: 695164476
+      pipo-btleffect010_180: -679322547
+      pipo-btleffect010_181: -1653315658
+      pipo-btleffect010_182: -71410519
+      pipo-btleffect010_183: 804400419
+      pipo-btleffect010_184: 2131903002
+      pipo-btleffect010_185: -413311471
+      pipo-btleffect010_186: 1149075366
+      pipo-btleffect010_187: -1370471634
+      pipo-btleffect010_188: -1408801245
+      pipo-btleffect010_189: 603115063
+      pipo-btleffect010_19: 326913878
+      pipo-btleffect010_190: 1445700872
+      pipo-btleffect010_191: 1985018121
+      pipo-btleffect010_192: -1444696538
+      pipo-btleffect010_193: 405737272
+      pipo-btleffect010_194: 1007955617
+      pipo-btleffect010_195: -1305137922
+      pipo-btleffect010_196: 67742939
+      pipo-btleffect010_2: 1653062386
+      pipo-btleffect010_20: -1326097316
+      pipo-btleffect010_21: 764890314
+      pipo-btleffect010_22: 1142658515
+      pipo-btleffect010_23: -586942544
+      pipo-btleffect010_24: 419108564
+      pipo-btleffect010_25: 683617021
+      pipo-btleffect010_26: -803012175
+      pipo-btleffect010_27: 2019952192
+      pipo-btleffect010_28: -1689050705
+      pipo-btleffect010_29: 561923554
+      pipo-btleffect010_3: 1019995305
+      pipo-btleffect010_30: 1807391392
+      pipo-btleffect010_31: 129641301
+      pipo-btleffect010_32: 510679133
+      pipo-btleffect010_33: 274531246
+      pipo-btleffect010_34: -1975936787
+      pipo-btleffect010_35: 1964379962
+      pipo-btleffect010_36: 1194360134
+      pipo-btleffect010_37: -1589387576
+      pipo-btleffect010_38: 960699339
+      pipo-btleffect010_39: -1465983337
+      pipo-btleffect010_40: 2145134886
+      pipo-btleffect010_41: 2011463508
+      pipo-btleffect010_42: -206105375
+      pipo-btleffect010_43: 48543446
+      pipo-btleffect010_44: 1103761209
+      pipo-btleffect010_45: 811190963
+      pipo-btleffect010_46: 924904146
+      pipo-btleffect010_47: -1481383339
+      pipo-btleffect010_49: -35310589
+      pipo-btleffect010_5: 972462361
+      pipo-btleffect010_50: -2045010409
+      pipo-btleffect010_51: -1992120793
+      pipo-btleffect010_52: -455115356
+      pipo-btleffect010_53: -1766599710
+      pipo-btleffect010_54: 1899483500
+      pipo-btleffect010_55: 222241208
+      pipo-btleffect010_56: -1797216291
+      pipo-btleffect010_57: 1952704427
+      pipo-btleffect010_58: 664952362
+      pipo-btleffect010_59: 488193870
+      pipo-btleffect010_6: -1612727000
+      pipo-btleffect010_60: 823168161
+      pipo-btleffect010_61: -835671582
+      pipo-btleffect010_62: 1196636725
+      pipo-btleffect010_63: 1524681110
+      pipo-btleffect010_64: -1128671044
+      pipo-btleffect010_65: 1830383262
+      pipo-btleffect010_66: -1097161078
+      pipo-btleffect010_67: 2061437480
+      pipo-btleffect010_68: 197072021
+      pipo-btleffect010_69: 863999601
+      pipo-btleffect010_7: 273332361
+      pipo-btleffect010_70: -757168424
+      pipo-btleffect010_71: -1771722641
+      pipo-btleffect010_72: -219363862
+      pipo-btleffect010_73: 1949178630
+      pipo-btleffect010_74: -147660594
+      pipo-btleffect010_75: 785256759
+      pipo-btleffect010_76: 1680096944
+      pipo-btleffect010_77: -2111737500
+      pipo-btleffect010_78: -2110602557
+      pipo-btleffect010_79: 1301339638
+      pipo-btleffect010_8: -342810918
+      pipo-btleffect010_80: 1840249571
+      pipo-btleffect010_81: 727398154
+      pipo-btleffect010_82: -1542512603
+      pipo-btleffect010_83: -1592730538
+      pipo-btleffect010_84: -1631723662
+      pipo-btleffect010_85: 826826553
+      pipo-btleffect010_86: 1659902980
+      pipo-btleffect010_87: 1590108163
+      pipo-btleffect010_88: 966007917
+      pipo-btleffect010_89: 2039704352
+      pipo-btleffect010_90: 830148542
+      pipo-btleffect010_91: -848318914
+      pipo-btleffect010_92: -499198082
+      pipo-btleffect010_93: -8014766
+      pipo-btleffect010_95: -977432895
+      pipo-btleffect010_96: 1892773238
+      pipo-btleffect010_97: 64215802
+      pipo-btleffect010_98: 367299152
+      pipo-btleffect010_99: 1474282116
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
