@@ -166,7 +166,7 @@ public class Player : MonoBehaviour
         Vector3 createPos = transform.position + watch * ratio;
         GameObject bulletPrefab = Instantiate(bullet, createPos, Quaternion.identity);
         bulletPrefab.GetComponent<Bullet_Base>().setRotate(watch);
-        bulletPrefab.GetComponent<Bullet_Base>().setCase(myCase);
+       // bulletPrefab.GetComponent<Bullet_Base>().setCase(myCase);
         bulletPrefab.GetComponent<Bullet_Base>().setBulletSpeed(bulletSpeed);
         bulletPrefab.GetComponent<Bullet_Base>().setDmg(pow);
 

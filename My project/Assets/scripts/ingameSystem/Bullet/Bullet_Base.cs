@@ -14,7 +14,6 @@ public class Bullet_Base : MonoBehaviour
     public float addforce = 1000; //弾のタイプ決定
     public Vector3 rotate; //弾の発射角
 
-    public int penetorateCount;//弾丸を貫通する回数
     public Case_Base myCase;
     public int rarelity;//オブジェクトの挙動が変わるもの
     private Primer_Base primerEffect;
@@ -43,15 +42,12 @@ public class Bullet_Base : MonoBehaviour
     public void setBulletSpeed(float mag)
     {
         rotate *= mag;
-        //StartCoroutine(move());
+        StartCoroutine(move());
     }
     //弾の特性決定
 
     //弾丸の貫通回数設定
-    public void setBulletPenetrate(int count)
-    {
-        penetorateCount = count;
-    }
+
     public void setCase(Case_Base targetCase, int rarelity)
     {
         myCase = targetCase;
@@ -64,12 +60,6 @@ public class Bullet_Base : MonoBehaviour
     public void Fire()
     {
       StartCoroutine(move());
-
-        // 発射中にケースの効果を適用
-        if (myCase != null)
-        {
-            myCase.ApplyCaseEffect(gameObject);
-        }
     }
 
     //弾を撃ち出す
@@ -79,13 +69,13 @@ public class Bullet_Base : MonoBehaviour
 
         //弾の発射
         rb = gameObject.GetComponent<Rigidbody2D>();
-        Vector2 force = new Vector2(rotate.x * addforce, rotate.y * addforce);
+        Vector2 force = new Vector2(rotate.x , rotate.y)* addforce;
         rb.AddForce(force);
 
         while (count <= DestroyTime)
         {
             // 弾の位置を更新する
-            transform.Translate(rotate * Speed * Time.deltaTime, Space.Self);
+            //transform.Translate(rotate * Speed * Time.deltaTime, Space.Self);
 
             count++;
             yield return new WaitForSeconds(0.01f);

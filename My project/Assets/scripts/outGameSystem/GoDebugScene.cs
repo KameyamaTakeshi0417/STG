@@ -27,8 +27,10 @@ public class GoDebugScene : MonoBehaviour
     }
     void OnTriggerEnter2D(Collider2D collision)
     {
+if(collision.gameObject.CompareTag("Player")){
+           GameObject.Find("GameManager").GetComponent<GameManager>().DebugChangeScene(nextScene);
 
-            GameObject.Find("GameManager").GetComponent<GameManager>().DebugChangeScene(nextScene);
-
+}
+ 
     }
 }
