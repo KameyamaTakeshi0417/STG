@@ -11,10 +11,8 @@ public class Bullet_Base : MonoBehaviour
     public float Speed; //弾の出る速度
     public float DestroyTime; //弾の存在する時間
     public float bullettype = 0; //弾のタイプ決定
-    public float addforce = 1000; //弾のタイプ決定
     public Vector3 rotate; //弾の発射角
 
-    public Case_Base myCase;
     public int rarelity;//オブジェクトの挙動が変わるもの
     private Primer_Base primerEffect;
     // Start is called before the first frame update
@@ -29,7 +27,6 @@ public class Bullet_Base : MonoBehaviour
     }
     public void setDmg(float damage)
     {
-
         dmg = damage;
     }
     //弾の撃つ角度の正規化
@@ -41,27 +38,31 @@ public class Bullet_Base : MonoBehaviour
     //弾の速度決定
     public void setBulletSpeed(float mag)
     {
-        rotate *= mag;
-        StartCoroutine(move());
+
     }
     //弾の特性決定
 
     //弾丸の貫通回数設定
 
-    public void setCase(Case_Base targetCase, int rarelity)
-    {
-        myCase = targetCase;
-    }
-    public void Initialize(Case_Base InitCase, Primer_Base primerEffect)
-    {
-        this.myCase = InitCase;
-        this.primerEffect = primerEffect;
-    }
-    public void Fire()
-    {
-      StartCoroutine(move());
-    }
 
+    public void setStatus(Vector3 Prot, float pSpeed, float pDmg)
+    {
+        rotate = Prot;
+        Speed = pSpeed;
+        dmg = pDmg;
+    }
+    public void shoot()
+    {
+        StartCoroutine(move());
+
+    }
+    public void fire()
+    {
+        
+        gameObject.GetComponent<Case_Base>().setStatus(rotate, Speed, dmg);
+        gameObject.GetComponent<Case_Base>().ApplyCaseEffect(this.gameObject);
+        
+    }
     //弾を撃ち出す
     protected virtual IEnumerator move()
     {
@@ -69,14 +70,12 @@ public class Bullet_Base : MonoBehaviour
 
         //弾の発射
         rb = gameObject.GetComponent<Rigidbody2D>();
-        Vector2 force = new Vector2(rotate.x , rotate.y)* addforce;
+        Vector2 force = new Vector2(rotate.x, rotate.y) * Speed;
         rb.AddForce(force);
 
         while (count <= DestroyTime)
         {
             // 弾の位置を更新する
-            //transform.Translate(rotate * Speed * Time.deltaTime, Space.Self);
-
             count++;
             yield return new WaitForSeconds(0.01f);
         }
@@ -84,9 +83,13 @@ public class Bullet_Base : MonoBehaviour
         yield break;
     }
 
-    public void startMove()
+    public void callHitEffect()
     {
-
+        StartCoroutine(hitEffect());
+    }
+    protected IEnumerator hitEffect()
+    {
+        yield return null;
     }
     protected virtual void OnTriggerEnter2D(Collider2D collision)
     {

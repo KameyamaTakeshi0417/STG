@@ -21,7 +21,7 @@ public class NormalBullet : Bullet_Base
 
         //弾の発射
         rb = gameObject.GetComponent<Rigidbody2D>();
-        Vector2 force = new Vector2(rotate.x * addforce, rotate.y * addforce);
+        Vector2 force = new Vector2(rotate.x, rotate.y)*Speed;
         rb.AddForce(force);
 
         while (count <= DestroyTime)

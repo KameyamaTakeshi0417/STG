@@ -165,34 +165,13 @@ public class Player : MonoBehaviour
         float ratio = 1.5f;
         Vector3 createPos = transform.position + watch * ratio;
         GameObject bulletPrefab = Instantiate(bullet, createPos, Quaternion.identity);
-        bulletPrefab.GetComponent<Bullet_Base>().setRotate(watch);
-       // bulletPrefab.GetComponent<Bullet_Base>().setCase(myCase);
-        bulletPrefab.GetComponent<Bullet_Base>().setBulletSpeed(bulletSpeed);
-        bulletPrefab.GetComponent<Bullet_Base>().setDmg(pow);
-
+        bulletPrefab.GetComponent<Bullet_Base>().setStatus(watch, bulletSpeed, pow);
+        bulletPrefab.AddComponent<Case_Base>();
+        bulletPrefab.GetComponent<Bullet_Base>().fire();
         // サウンドエフェクトの再生
         shootAudioSource.Play();
     }
     public Vector3 getRotate() { return watch; }
-    // 弾の種類の決定
-    private GameObject BulletTypeDecision()
-    {
-        GameObject ret;
-        switch (bullettype)
-        {
-            case 0: // 通常弾
-                ret = Resources.Load<GameObject>("Objects/Bullet/NormalBullet");
-                break;
-            case 1: // 貫通弾
-                ret = Resources.Load<GameObject>("Objects/Bullet/PiercingBullet");
-                break;
-            default: // とりあえず通常弾を撃つ
-                ret = Resources.Load<GameObject>("Objects/Bullet/NormalBullet");
-                break;
-        }
-
-        return ret;
-    }
 
     public void setHP(float addpoint)
     {

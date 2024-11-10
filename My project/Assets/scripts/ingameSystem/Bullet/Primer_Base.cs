@@ -25,7 +25,7 @@ public class Primer_Base : MonoBehaviour
     protected virtual IEnumerator Fire()
     {
         //弾丸を生成する
-        targetBulletScript.startMove();
+       
         //発射時の効果をここに記載する
 
         yield break;
