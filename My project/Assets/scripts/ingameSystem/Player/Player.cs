@@ -24,7 +24,9 @@ public class Player : MonoBehaviour
     private Transform lockOnTarget; // ロックオン対象
     public AudioSource shootAudioSource; // 弾の発射音用のAudioSource
     public AudioSource getExpAudioSource; // 経験値取得音用のAudioSource
-
+    private Bullet_Base myBullet;
+    private Case_Base myCase;
+    private Primer_Base myPrimer;
     void Awake()
     {
         // Singletonパターンの実装
@@ -164,13 +166,14 @@ public class Player : MonoBehaviour
         Vector3 createPos = transform.position + watch * ratio;
         GameObject bulletPrefab = Instantiate(bullet, createPos, Quaternion.identity);
         bulletPrefab.GetComponent<Bullet_Base>().setRotate(watch);
+        bulletPrefab.GetComponent<Bullet_Base>().setCase(myCase);
         bulletPrefab.GetComponent<Bullet_Base>().setBulletSpeed(bulletSpeed);
         bulletPrefab.GetComponent<Bullet_Base>().setDmg(pow);
 
         // サウンドエフェクトの再生
         shootAudioSource.Play();
     }
-
+    public Vector3 getRotate() { return watch; }
     // 弾の種類の決定
     private GameObject BulletTypeDecision()
     {
@@ -191,28 +194,6 @@ public class Player : MonoBehaviour
         return ret;
     }
 
-    public void GetItem(int type)
-    {
-        switch (type)
-        {
-            case 1:
-                pow += 10.0f;
-
-                break;
-            case 2:
-                HP += 1000;
-                break;
-            case 3:
-                moveSpeed += 20.0f;
-                break;
-            case 4:
-                bulletSpeed += 20.0f;
-                break;
-            default:
-                break;
-        }
-
-}
     public void setHP(float addpoint)
     {
         HP += addpoint;
