@@ -30,9 +30,9 @@ public class HomingCase : Case_Base
         {
             targetWay = targetEnemy.transform.position - transform.position;
             Vector3.Normalize(targetWay);
-            force = new Vector2(targetWay.x, targetWay.y) * Speed;
+            force = new Vector2(targetWay.x, targetWay.y) * (Speed*0.001f);
         }
-        rb.AddForce(force);
+        rb.velocity=force;
 
         while (count <= DestroyTime)
         {
@@ -44,8 +44,8 @@ public class HomingCase : Case_Base
                 rb.velocity=Vector3.zero;
                 targetWay = targetEnemy.transform.position - transform.position;
                 Vector3.Normalize(targetWay);
-                force = new Vector2(targetWay.x, targetWay.y) * (Speed*0.01f);
-                rb.AddForce(force);
+                force = new Vector2(targetWay.x, targetWay.y) * (Speed*0.001f);
+                rb.velocity=force;
             }
             count++;
             yield return new WaitForSeconds(0.01f);

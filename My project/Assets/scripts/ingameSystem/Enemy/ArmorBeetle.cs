@@ -23,7 +23,10 @@ public class ArmorBeetle : MonoBehaviour
     void Awake()
     {
 
-        Player = GameObject.Find("Player");
+    
+    }
+    void Start()
+    {    Player = GameObject.Find("Player");
         myHealth = gameObject.GetComponent<Health>();
         makeBarrier = false;
         Player = GameObject.Find("Player");
@@ -56,9 +59,6 @@ public class ArmorBeetle : MonoBehaviour
             Debug.LogError("Initialization failed. Coroutine will not be started.");
         }
          StartCoroutine(Idle());
-    }
-    void Start()
-    {
         gameObject.GetComponent<Health>().setSlideHPBar();
     }
     // Update is called once per frame
