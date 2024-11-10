@@ -23,29 +23,29 @@ public class HomingCase : Case_Base
         Rigidbody2D rb;
         //弾の発射
         rb = gameObject.GetComponent<Rigidbody2D>();
-        targetEnemy=GameObject.Find("Player").GetComponent<Player>().getTargetEnemy();
+        targetEnemy = GameObject.Find("Player").GetComponent<Player>().getTargetEnemy();
         Vector3 targetWay = new Vector3(0, 0, 0);
         Vector2 force = new Vector2(rotate.x, rotate.y) * Speed;
         if (targetEnemy != null)
         {
             targetWay = targetEnemy.transform.position - transform.position;
             Vector3.Normalize(targetWay);
-            force = new Vector2(targetWay.x, targetWay.y) * (Speed*0.001f);
+            force = new Vector2(targetWay.x, targetWay.y) * (Speed * 0.001f);
         }
-        rb.velocity=force;
+        rb.velocity = force;
 
         while (count <= DestroyTime)
         {
             // 弾の位置を更新する
             if (targetEnemy != null)
             {
-                 targetEnemy=GameObject.Find("Player").GetComponent<Player>().getTargetEnemy();
+                targetEnemy = GameObject.Find("Player").GetComponent<Player>().getTargetEnemy();
 
-                rb.velocity=Vector3.zero;
+                rb.velocity = Vector3.zero;
                 targetWay = targetEnemy.transform.position - transform.position;
                 Vector3.Normalize(targetWay);
-                force = new Vector2(targetWay.x, targetWay.y) * (Speed*0.001f);
-                rb.velocity=force;
+                force = new Vector2(targetWay.x, targetWay.y) * (Speed * 0.001f);
+                rb.velocity = force;
             }
             count++;
             yield return new WaitForSeconds(0.01f);

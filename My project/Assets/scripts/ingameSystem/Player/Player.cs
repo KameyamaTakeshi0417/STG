@@ -26,8 +26,8 @@ public class Player : MonoBehaviour
     public AudioSource shootAudioSource; // 弾の発射音用のAudioSource
     public AudioSource getExpAudioSource; // 経験値取得音用のAudioSource
     private Bullet_Base myBullet;
-    private Case_Base myCase;
     private Primer_Base myPrimer;
+    public string useCaseName;
     void Awake()
     {
         // Singletonパターンの実装
@@ -165,11 +165,13 @@ public class Player : MonoBehaviour
 
     void ShootBullet()
     {
+        useCaseName="ExplosionCase";
         float ratio = 1.5f;
-        Vector3 createPos = transform.position + watch * ratio;
+        //発射方向に向かってプレイヤーから一定距離を置いて生成する
+        Vector3 createPos = transform.position + (watch * ratio);
         GameObject bulletPrefab = Instantiate(bullet, createPos, Quaternion.identity);
         bulletPrefab.GetComponent<Bullet_Base>().setStatus(watch, bulletSpeed, pow);
-        bulletPrefab.AddComponent<HomingCase>();
+        GameObject.Find("GameManager").GetComponent<ComponentAdder>().AddCaseByName(useCaseName,bulletPrefab);
         bulletPrefab.GetComponent<Bullet_Base>().fire();
         // サウンドエフェクトの再生
         shootAudioSource.Play();

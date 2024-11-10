@@ -80,13 +80,13 @@
     <Compile Include="Assets\scripts\ingameSystem\StepCollision.cs" />
     <Compile Include="Assets\scripts\outGameSystem\ItemBox.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Bullet\弾丸(Bullet)\WheelBladeBullet.cs" />
-    <Compile Include="Assets\scripts\ingameSystem\Bullet\弾丸(Bullet)\EnplosionBullet.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Bullet\bulletList.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Player\EquipBullet.cs" />
     <Compile Include="Assets\scripts\outGameSystem\treasureBox.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Bullet\薬莢(Case)\HomingCase.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Enemy\petalBullet.cs" />
     <Compile Include="Assets\scripts\outGameSystem\RelicList.cs" />
+    <Compile Include="Assets\scripts\ingameSystem\Bullet\弾丸(Bullet)\ExplosionBullet.cs" />
     <Compile Include="Assets\scripts\outGameSystem\UI\BarController.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Bullet\薬莢(Case)\ExplosionCase.cs" />
     <Compile Include="Assets\scripts\outGameSystem\UI\ROUNDSTART.cs" />
@@ -113,6 +113,7 @@
     <Compile Include="Assets\scripts\outGameSystem\stageManager.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Bullet\Primer_Base.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Bullet\雷管(Primer)\ExplosionPrimer.cs" />
+    <Compile Include="Assets\scripts\outGameSystem\ComponentAdder.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Bullet\弾丸(Bullet)\VoltBullet.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Enemy\EnemyList.cs" />
     <Compile Include="Assets\scripts\outGameSystem\pointManager.cs" />
