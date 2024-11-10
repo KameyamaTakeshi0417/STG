@@ -22,6 +22,7 @@ public class Player : MonoBehaviour
     public int Exp;
 
     private Transform lockOnTarget; // ロックオン対象
+    private GameObject targetEnemy;
     public AudioSource shootAudioSource; // 弾の発射音用のAudioSource
     public AudioSource getExpAudioSource; // 経験値取得音用のAudioSource
     private Bullet_Base myBullet;
@@ -128,12 +129,13 @@ public class Player : MonoBehaviour
             float distance = Vector3.Distance(mousePosition, enemy.transform.position);
             if (distance < closestDistance)
             {
+                targetEnemy = enemy;
                 closestDistance = distance;
                 lockOnTarget = enemy.transform;
             }
         }
     }
-
+    public GameObject getTargetEnemy() { return targetEnemy; }
     private IEnumerator CoolTime()
     {
         int count = 0;
@@ -166,7 +168,7 @@ public class Player : MonoBehaviour
         Vector3 createPos = transform.position + watch * ratio;
         GameObject bulletPrefab = Instantiate(bullet, createPos, Quaternion.identity);
         bulletPrefab.GetComponent<Bullet_Base>().setStatus(watch, bulletSpeed, pow);
-        bulletPrefab.AddComponent<Case_Base>();
+        bulletPrefab.AddComponent<HomingCase>();
         bulletPrefab.GetComponent<Bullet_Base>().fire();
         // サウンドエフェクトの再生
         shootAudioSource.Play();
