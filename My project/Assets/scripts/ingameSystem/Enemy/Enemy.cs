@@ -144,7 +144,7 @@ public int Exp;
             bulletPrefab.GetComponent<Bullet_Base>().setRotate(shootPos); //弾の発射角度の決定
             bulletPrefab.GetComponent<Bullet_Base>().setBulletSpeed(0.3f); //弾の速度決定と発射
             bulletPrefab.GetComponent<Bullet_Base>().setDmg(pow); //弾のダメージ決定
-            bulletPrefab.GetComponent<Bullet_Base>().setBulletType(0); //弾の特性決定 とりあえず0
+
             //Destroy(bulletPrefab, 3); //一定時間後破壊
         
             yield return new WaitForSeconds(0.5f); //エネミーの発射間隔
