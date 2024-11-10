@@ -7,21 +7,21 @@ public class NormalBullet : Bullet_Base
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
-        protected override IEnumerator move()
+    protected override IEnumerator move()
     {
         int count = 0;
 
         //弾の発射
         rb = gameObject.GetComponent<Rigidbody2D>();
-        Vector2 force = new Vector2(rotate.x, rotate.y)*Speed;
+        Vector2 force = new Vector2(rotate.x, rotate.y) * Speed;
         rb.AddForce(force);
 
         while (count <= DestroyTime)
@@ -35,7 +35,7 @@ public class NormalBullet : Bullet_Base
         Destroy(this.gameObject);
         yield break;
     }
-       protected override void OnTriggerEnter2D(Collider2D collision)
+    protected override void OnTriggerEnter2D(Collider2D collision)
     {
         // 衝突したオブジェクトのタグをチェック
         if (collision.CompareTag("Enemy") || collision.CompareTag("Player"))
@@ -46,11 +46,13 @@ public class NormalBullet : Bullet_Base
             {
                 // HPを減らす
                 health.TakeDamage(dmg);
+                GameObject bulletPrefab = Instantiate(Resources.Load<GameObject>("Objects/Effect_Explosion"), transform.position, Quaternion.identity);
+                bulletPrefab.GetComponent<Effect_Explosion>().startExplosion(30, 50);
             }
-   
-                // 弾を破壊
-                Destroy(this.gameObject);
-            
+
+            // 弾を破壊
+            Destroy(this.gameObject);
+
         }
 
         if (collision.CompareTag("wall")) Destroy(this.gameObject);

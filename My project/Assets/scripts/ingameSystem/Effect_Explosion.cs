@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class Effect_Explosion : MonoBehaviour
 {
-    private float dmg=1f;
-    private int explosionTime=100;
+    private float dmg = 30f;
+    private int explosionTime = 50;
     private Vector3 scale = new Vector3(1, 1, 0);
+    int damagedCount = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,16 +19,17 @@ public class Effect_Explosion : MonoBehaviour
     {
 
     }
-    public void startExplosion(float setdmg,int setExplosionTime)
+    public void startExplosion(float setdmg, int setExplosionTime)
     {
         dmg = setdmg;
-        explosionTime=setExplosionTime;
+        explosionTime = setExplosionTime;
         StartCoroutine(startExplosion());
     }
     private IEnumerator startExplosion()
     {
-        int count=0;
-        while(count<explosionTime){
+        int count = 0;
+        while (count < explosionTime)
+        {
 
             count++;
             yield return new WaitForEndOfFrame();
@@ -37,9 +39,13 @@ public class Effect_Explosion : MonoBehaviour
     }
     protected void OnTriggerEnter2D(Collider2D collision)
     {
-        if (gameObject.CompareTag("Enemy"))
+        if (collision.CompareTag("Enemy"))
         {
-            collision.GetComponent<Health>().TakeDamage(dmg);
+            if (damagedCount <= 3)
+            {
+                collision.GetComponent<Health>().TakeDamage(dmg);
+            }
+
         }
     }
 }

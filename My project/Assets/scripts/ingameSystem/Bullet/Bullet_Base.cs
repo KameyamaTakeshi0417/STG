@@ -103,16 +103,9 @@ public class Bullet_Base : MonoBehaviour
                 // HPを減らす
                 health.TakeDamage(dmg);
             }
-            //貫通弾では弾を破壊しない
-            if (bullettype == 1)
-            {
-                //何もしない
-            }
-            else
-            {
+
                 // 弾を破壊
                 Destroy(this.gameObject);
-            }
         }
 
         if (collision.CompareTag("wall")) Destroy(this.gameObject);
