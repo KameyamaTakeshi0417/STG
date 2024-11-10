@@ -17,16 +17,18 @@ public class ArmorBeetle : MonoBehaviour
     public Vector3 rotate; //プレイヤーに向かった時の角度
     public float speedMag;
     public bool makeBarrier;
-
+    private string thisObjName;
     // Start is called before the first frame update
 
     void Awake()
     {
 
-    
+
     }
     void Start()
-    {    Player = GameObject.Find("Player");
+    {
+        thisObjName=gameObject.name;
+        Player = GameObject.Find("Player");
         myHealth = gameObject.GetComponent<Health>();
         makeBarrier = false;
         Player = GameObject.Find("Player");
@@ -58,7 +60,7 @@ public class ArmorBeetle : MonoBehaviour
         {
             Debug.LogError("Initialization failed. Coroutine will not be started.");
         }
-         StartCoroutine(Idle());
+        StartCoroutine(Idle());
         gameObject.GetComponent<Health>().setSlideHPBar();
     }
     // Update is called once per frame

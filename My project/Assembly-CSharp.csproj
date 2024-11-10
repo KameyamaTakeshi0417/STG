@@ -104,6 +104,7 @@
     <Compile Include="Assets\scripts\ingameSystem\Bullet\薬莢(Case)\NormalCase.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Player\Player.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Bullet\Bullet_Base.cs" />
+    <Compile Include="Assets\scripts\ingameSystem\Bullet\雷管(Primer)\SpreadPrimer.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Bullet\弾丸(Bullet)\PiercingBullet.cs" />
     <Compile Include="Assets\scripts\outGameSystem\rewardManager.cs" />
     <Compile Include="Assets\scripts\outGameSystem\Field.cs" />
@@ -126,6 +127,7 @@
     <Compile Include="Assets\scripts\ingameSystem\Bullet\Case_Base.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Player\QuickStep.cs" />
     <Compile Include="Assets\scripts\ingameSystem\EnemyChecker.cs" />
+    <Compile Include="Assets\scripts\ingameSystem\Effect_Explosion.cs" />
     <Compile Include="Assets\scripts\FieldBoundary.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Enemy\barrier.cs" />
     <Compile Include="Assets\scripts\outGameSystem\DungeonContoroller.cs" />
