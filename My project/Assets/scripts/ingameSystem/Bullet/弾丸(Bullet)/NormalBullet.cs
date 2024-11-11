@@ -27,8 +27,6 @@ public class NormalBullet : Bullet_Base
             {
                 // HPを減らす
                 health.TakeDamage((dmg + (dmg * (rarelity * AddDamageRatio))));
-                GameObject voltPrefab = Instantiate(Resources.Load<GameObject>("Objects/Effect_Volt"), collision.transform.position, Quaternion.identity);
-                voltPrefab.GetComponent<Effect_Volt>().startVolt(30 , 50,2 );
             }
 
             // 弾を破壊
