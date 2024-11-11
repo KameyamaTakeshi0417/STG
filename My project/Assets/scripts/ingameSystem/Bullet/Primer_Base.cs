@@ -7,6 +7,9 @@ public class Primer_Base : MonoBehaviour
     GameObject targetBulletObj;
     Case_Base targetCase;
     Bullet_Base targetBulletScript;
+    protected float pow;
+    protected float speed;
+    protected int rarelity;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,9 +28,12 @@ public class Primer_Base : MonoBehaviour
     protected virtual IEnumerator Fire()
     {
         //弾丸を生成する
-       
+
         //発射時の効果をここに記載する
 
         yield break;
     }
+    public float getDmg() { return pow; }
+    public float getSpeed() { return speed; }
+    public int getRarelity() { return rarelity; }
 }

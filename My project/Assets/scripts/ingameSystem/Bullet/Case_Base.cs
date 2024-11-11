@@ -67,4 +67,7 @@ public class Case_Base : MonoBehaviour
     {
         myBullet = bulletObj;
     }
+        public float getDmg() { return dmg; }
+    public float getSpeed() { return Speed; }
+    public int getRarelity() { return rarelity; }
 }

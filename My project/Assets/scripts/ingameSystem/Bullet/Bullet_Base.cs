@@ -58,10 +58,10 @@ public class Bullet_Base : MonoBehaviour
     }
     public void fire()
     {
-        
+
         gameObject.GetComponent<Case_Base>().setStatus(rotate, Speed, dmg);
         gameObject.GetComponent<Case_Base>().ApplyCaseEffect(this.gameObject);
-        
+
     }
     //弾を撃ち出す
     protected virtual IEnumerator move()
@@ -104,11 +104,14 @@ public class Bullet_Base : MonoBehaviour
                 health.TakeDamage(dmg);
             }
 
-                // 弾を破壊
-                Destroy(this.gameObject);
+            // 弾を破壊
+            Destroy(this.gameObject);
         }
 
         if (collision.CompareTag("wall")) Destroy(this.gameObject);
     }
+    public float getDmg() { return dmg; }
+    public float getSpeed() { return Speed; }
+    public int getRarelity() { return rarelity; }
 }
 
