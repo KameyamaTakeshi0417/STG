@@ -5,10 +5,10 @@ using UnityEngine;
 public class Voltpropagation_Effect : MonoBehaviour
 {
     // Start is called before the first frame update
-    public int IterationCount; // 繰り返し回数
+    public int IterationCount = 1; // 繰り返し回数
     private float dmg = 30f;
     private int voltTime = 50;
-    private Queue<GameObject> hitQueue = new Queue<GameObject>(); // 当たったオブジェクトを格納するキュー
+    public Queue<GameObject> hitQueue = new Queue<GameObject>(); // 当たったオブジェクトを格納するキュー
 
     void OnTriggerEnter2D(Collider2D collision)
     {
@@ -21,13 +21,15 @@ public class Voltpropagation_Effect : MonoBehaviour
             // CreateVolt関数を呼び出し
             GameObject voltPrefab = Instantiate(Resources.Load<GameObject>("Objects/Effect_Volt"), collision.transform.position, Quaternion.identity);
 
-            voltPrefab.GetComponent<Effect_Volt>().startVolt(dmg*0.45f, voltTime, IterationCount - 1, hitQueue);
+            voltPrefab.GetComponent<Effect_Volt>().startVolt(dmg, voltTime, IterationCount - 1, hitQueue);
         }
     }
 
     // CreateVolt関数
     public void CreateVolt(Queue<GameObject> queue, int remainingIterations)
     {
+        hitQueue = queue;
+        IterationCount = remainingIterations;
         if (remainingIterations > 0)
         {
             // キュー内のオブジェクトに対して何らかの処理を行う

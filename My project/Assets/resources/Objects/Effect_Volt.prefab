@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6205464908932542079}
   - component: {fileID: 7737893352781934837}
   - component: {fileID: 4421164382963660935}
+  - component: {fileID: -2685486121459416717}
   m_Layer: 0
   m_Name: Effect_Volt
   m_TagString: Untagged
@@ -99,6 +100,41 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   VoltZone: {fileID: 9060683149120301583}
+--- !u!58 &-2685486121459416717
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5623270919964311519}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.71
 --- !u!1 &9060683149120301583
 GameObject:
   m_ObjectHideFlags: 0
@@ -232,4 +268,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ed3e2c3900ace6448e3c7feb91eeb4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IterationCount: 0
+  IterationCount: 1

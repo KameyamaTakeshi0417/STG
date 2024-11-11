@@ -5,15 +5,15 @@ using UnityEngine;
 public class Effect_Volt : MonoBehaviour
 {
     private float dmg = 30f;
-    private int voltTime = 50;
+    private int voltTime = 75;
     private Vector3 scale = new Vector3(1, 1, 0);
     int shockCount = 2;
-    private Queue<GameObject> hitQueue = new Queue<GameObject>(); // 当たったオブジェクトを格納するキュー
+    public Queue<GameObject> hitQueue = new Queue<GameObject>(); // 当たったオブジェクトを格納するキュー
     public GameObject VoltZone;
     // Start is called before the first frame update
     void Start()
     {
-
+        VoltZone.GetComponent<Voltpropagation_Effect>().CreateVolt(hitQueue, shockCount);
     }
 
     // Update is called once per frame
@@ -21,14 +21,12 @@ public class Effect_Volt : MonoBehaviour
     {
 
     }
-    public void setQueue(Queue<GameObject> queue)
-    {
-        hitQueue = queue;
-    }
-    public void startVolt(float setdmg, int setShockTime, int shockCount,Queue<GameObject> queue=null)
+
+    public void startVolt(float setdmg, int setShockTime, int setShockCount, Queue<GameObject> queue = null)
     {
         dmg = setdmg;
         voltTime = setShockTime;
+        shockCount = setShockCount;
         StartCoroutine(startVolt());
     }
     private IEnumerator startVolt()
@@ -47,12 +45,17 @@ public class Effect_Volt : MonoBehaviour
     {
         if (collision.CompareTag("Enemy"))
         {
+            shockCount -= 1;
             if (shockCount > 0)
             {
                 hitQueue.Enqueue(collision.gameObject); // キューにオブジェクトを追加
                 collision.GetComponent<Health>().TakeDamage(dmg);
                 VoltZone.GetComponent<Voltpropagation_Effect>().CreateVolt(hitQueue, shockCount);
 
+            }
+            if (shockCount < 0)
+            {
+                Destroy(this.gameObject);
             }
 
         }

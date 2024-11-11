@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PowerCase : MonoBehaviour
+public class PowerCase : Case_Base
 {
     // Start is called before the first frame update
     void Start()

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NormalCase : MonoBehaviour
+public class NormalCase : Case_Base
 {
     // Start is called before the first frame update
     void Start()

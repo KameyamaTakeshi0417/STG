@@ -43,7 +43,7 @@ public class Effect_Explosion : MonoBehaviour
         {
             if (damagedCount >0)
             {
-                collision.GetComponent<Health>().TakeDamage(dmg);
+                collision.gameObject.GetComponent<Health>().TakeDamage(dmg);
                 damagedCount-=1;
             }
 
