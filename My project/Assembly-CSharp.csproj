@@ -123,6 +123,7 @@
     <Compile Include="Assets\scripts\ingameSystem\Enemy\Lizard.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Bullet\弾丸(Bullet)\NormalBullet.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Bullet\雷管(Primer)\PowerPrimer.cs" />
+    <Compile Include="Assets\scripts\ingameSystem\AttackEffect\Voltpropagation_Effect.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Bullet\薬莢(Case)\PiercingCase.cs" />
     <Compile Include="Assets\scripts\outGameSystem\Exp.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Enemy\slimeType.cs" />

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class NormalBullet : Bullet_Base
 {
-    public float AddDamageRatio=0.3f;
+    public float AddDamageRatio = 0.3f;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,8 +26,9 @@ public class NormalBullet : Bullet_Base
             if (health != null)
             {
                 // HPを減らす
-                health.TakeDamage((dmg+(dmg*(rarelity*AddDamageRatio))));
-                
+                health.TakeDamage((dmg + (dmg * (rarelity * AddDamageRatio))));
+                GameObject voltPrefab = Instantiate(Resources.Load<GameObject>("Objects/Effect_Volt"), collision.transform.position, Quaternion.identity);
+                voltPrefab.GetComponent<Effect_Volt>().startVolt(dmg * 0.45f, 50,2 );
             }
 
             // 弾を破壊
