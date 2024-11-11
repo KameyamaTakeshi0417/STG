@@ -56,7 +56,7 @@ public class Effect_Volt : MonoBehaviour
             {
                 shockCount -= 1;
                 hitQueue.Enqueue(collision.gameObject); // キューにオブジェクトを追加
-                collision.GetComponent<Health>().TakeDamage(dmg);
+                collision.gameObject.GetComponent<Health>().TakeDamage(dmg);
                 VoltZone.GetComponent<Voltpropagation_Effect>().CreateVolt(hitQueue, shockCount);
 
             }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GravityBullet : MonoBehaviour
+public class GravityBullet : Bullet_Base
 {
     // Start is called before the first frame update
     void Start()
