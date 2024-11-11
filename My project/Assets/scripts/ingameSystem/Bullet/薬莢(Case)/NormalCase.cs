@@ -15,6 +15,7 @@ public class NormalCase : Case_Base
     {
         
     }
+    //最終的にはこれを装備している弾は威力増加させたい
        protected override IEnumerator move()
     {
 

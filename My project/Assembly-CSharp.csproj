@@ -68,7 +68,6 @@
     <Compile Include="Assets\scripts\outGameSystem\UI\EnemyManager.cs" />
     <Compile Include="Assets\scripts\outGameSystem\ScoreDisplay.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Health.cs" />
-    <Compile Include="Assets\scripts\ingameSystem\Bullet\薬莢(Case)\PowerCase.cs" />
     <Compile Include="Assets\scripts\outGameSystem\HexGrid.cs" />
     <Compile Include="Assets\scripts\ingameSystem\Item.cs" />
     <Compile Include="Assets\scripts\ingameSystem\restRoom.cs" />
