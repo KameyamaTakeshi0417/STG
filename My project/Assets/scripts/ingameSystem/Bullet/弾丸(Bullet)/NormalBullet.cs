@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class NormalBullet : Bullet_Base
 {
+    public float AddDamageRatio=0.3f;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,7 +26,7 @@ public class NormalBullet : Bullet_Base
             if (health != null)
             {
                 // HPを減らす
-                health.TakeDamage(dmg);
+                health.TakeDamage((dmg+(dmg*(rarelity*AddDamageRatio))));
                 
             }
 

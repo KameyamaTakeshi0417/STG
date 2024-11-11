@@ -41,9 +41,10 @@ public class Effect_Explosion : MonoBehaviour
     {
         if (collision.CompareTag("Enemy"))
         {
-            if (damagedCount <= 3)
+            if (damagedCount >0)
             {
                 collision.GetComponent<Health>().TakeDamage(dmg);
+                damagedCount-=1;
             }
 
         }
