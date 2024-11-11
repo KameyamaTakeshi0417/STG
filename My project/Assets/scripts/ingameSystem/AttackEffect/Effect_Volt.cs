@@ -22,13 +22,19 @@ public class Effect_Volt : MonoBehaviour
 
     }
 
-    public void startVolt(float setdmg, int setShockTime, int setShockCount, Queue<GameObject> queue = null)
+    public void startVolt(float setdmg, int setVoltTime, int setShockCount, Queue<GameObject> queue = null)
     {
         dmg = setdmg;
-        voltTime = setShockTime;
+        voltTime = setVoltTime;
         shockCount = setShockCount;
         StartCoroutine(startVolt());
     }
+    public float getDmg()
+    {
+        return dmg;
+    }
+    public int getVoltTime() { return voltTime; }
+    public int getShockCount() { return shockCount; }
     private IEnumerator startVolt()
     {
         int count = 0;
@@ -45,9 +51,10 @@ public class Effect_Volt : MonoBehaviour
     {
         if (collision.CompareTag("Enemy"))
         {
-            shockCount -= 1;
+
             if (shockCount > 0)
             {
+                shockCount -= 1;
                 hitQueue.Enqueue(collision.gameObject); // キューにオブジェクトを追加
                 collision.GetComponent<Health>().TakeDamage(dmg);
                 VoltZone.GetComponent<Voltpropagation_Effect>().CreateVolt(hitQueue, shockCount);

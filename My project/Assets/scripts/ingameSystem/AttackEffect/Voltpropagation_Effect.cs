@@ -9,7 +9,15 @@ public class Voltpropagation_Effect : MonoBehaviour
     private float dmg = 30f;
     private int voltTime = 50;
     public Queue<GameObject> hitQueue = new Queue<GameObject>(); // 当たったオブジェクトを格納するキュー
-
+    public GameObject parent;
+    void Start()
+    {
+        Effect_Volt parentsScript;
+        parentsScript = parent.GetComponent<Effect_Volt>();
+        dmg = parentsScript.getDmg();
+        voltTime = parentsScript.getVoltTime();
+        IterationCount = parentsScript.getShockCount();
+    }
     void OnTriggerEnter2D(Collider2D collision)
     {
         // キューに存在していないオブジェクトのみ追加し、IterationCountが0でない場合に処理を行う
