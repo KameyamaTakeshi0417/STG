@@ -10,6 +10,7 @@ public class Case_Base : MonoBehaviour
     public Vector3 rotate; //弾の発射角
     public int rarelity;
     public float dmg; // 弾のダメージ量
+    public string CaseName;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,6 +22,7 @@ public class Case_Base : MonoBehaviour
     {
 
     }
+    public string getName() { return CaseName; }
     public void setStatus(Vector3 Prot, float pSpeed, float pDmg)
     {
         rotate = Prot;
@@ -58,7 +60,7 @@ public class Case_Base : MonoBehaviour
     }
     public virtual void ApplyCaseEffect(GameObject bullet)
     {
-        
+
         StartCoroutine(move());
         // 弾丸が移動中の効果を実装
         Debug.Log("Case effect applied during bullet flight.");
@@ -67,7 +69,7 @@ public class Case_Base : MonoBehaviour
     {
         myBullet = bulletObj;
     }
-        public float getDmg() { return dmg; }
+    public float getDmg() { return dmg; }
     public float getSpeed() { return Speed; }
     public int getRarelity() { return rarelity; }
 }

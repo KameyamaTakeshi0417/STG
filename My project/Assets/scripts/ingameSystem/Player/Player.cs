@@ -25,9 +25,9 @@ public class Player : MonoBehaviour
     private GameObject targetEnemy;
     public AudioSource shootAudioSource; // 弾の発射音用のAudioSource
     public AudioSource getExpAudioSource; // 経験値取得音用のAudioSource
-    private Bullet_Base myBullet;
-    private Primer_Base myPrimer;
+ 
     public string useCaseName;
+    
     void Awake()
     {
         // Singletonパターンの実装

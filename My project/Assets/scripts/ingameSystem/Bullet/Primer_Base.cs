@@ -10,12 +10,13 @@ public class Primer_Base : MonoBehaviour
     protected float pow;
     protected float speed;
     protected int rarelity;
+    public string primerName;
     // Start is called before the first frame update
     void Start()
     {
 
     }
-
+    public string getName() { return primerName; }
     // Update is called once per frame
     void Update()
     {
