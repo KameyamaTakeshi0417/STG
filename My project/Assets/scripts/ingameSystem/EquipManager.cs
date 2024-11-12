@@ -5,7 +5,7 @@ using UnityEngine;
 public class EquipManager : MonoBehaviour
 {
     // Start is called before the first frame update
-   public GameObject activeBullet; // 実際にプレイヤーに反映されるBullet
+    public GameObject activeBullet; // 実際にプレイヤーに反映されるBullet
     public GameObject stockBullet; // ストックとして保持するBullet
 
     public GameObject activeCase; // 実際にプレイヤーに反映されるCase
@@ -16,7 +16,6 @@ public class EquipManager : MonoBehaviour
 
     public float totalPower; // 装備による加算後のパワー
     public float totalSpeed; // 装備による加算後のスピード
-    public int totalRarelity; // 装備の総レアリティ
 
     void Start()
     {
@@ -52,7 +51,7 @@ public class EquipManager : MonoBehaviour
                 Debug.LogWarning("Invalid item type");
                 break;
         }
-        
+
         CalculateStats(); // 新しい装備に応じてステータスを再計算
     }
 
@@ -61,7 +60,7 @@ public class EquipManager : MonoBehaviour
         // 初期化
         totalPower = 0;
         totalSpeed = 0;
-        totalRarelity = 0;
+
 
         // アクティブなBullet, Case, Primerのステータスを加算
         if (activeBullet != null)
@@ -71,7 +70,7 @@ public class EquipManager : MonoBehaviour
             {
                 totalPower += bulletScript.getDmg();
                 totalSpeed += bulletScript.getSpeed();
-                totalRarelity += bulletScript.getRarelity();
+
             }
         }
 
@@ -82,7 +81,7 @@ public class EquipManager : MonoBehaviour
             {
                 totalPower += caseScript.getDmg();
                 totalSpeed += caseScript.getSpeed();
-                totalRarelity += caseScript.getRarelity();
+
             }
         }
 
@@ -93,12 +92,14 @@ public class EquipManager : MonoBehaviour
             {
                 totalPower += primerScript.getDmg();
                 totalSpeed += primerScript.getSpeed();
-                totalRarelity += primerScript.getRarelity();
+
             }
         }
 
         Debug.Log("Total Power: " + totalPower);
         Debug.Log("Total Speed: " + totalSpeed);
-        Debug.Log("Total Rarelity: " + totalRarelity);
     }
+    public GameObject getActiveBullet() { return activeBullet; }
+    public GameObject getActiveCase() { return activeCase; }
+    public GameObject getActivePrimer() { return activePrimer; }
 }

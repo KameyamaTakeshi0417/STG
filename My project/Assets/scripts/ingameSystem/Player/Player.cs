@@ -165,7 +165,7 @@ public class Player : MonoBehaviour
 
     void ShootBullet()
     {
-        useCaseName="VoltCase";
+        useCaseName=GameObject.Find("GameManager").GetComponent<EquipManager>().getActiveCase().GetComponent<Case_Base>().getName();
         float ratio = 1.5f;
         //発射方向に向かってプレイヤーから一定距離を置いて生成する
         Vector3 createPos = transform.position + (watch * ratio);

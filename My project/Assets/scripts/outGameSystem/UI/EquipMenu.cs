@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EquipBullet : MonoBehaviour
+public class EquipMenu : MonoBehaviour
 {
     public Bullet_Base myBullet;
     public Primer_Base myPrimer;
@@ -30,8 +30,8 @@ public class EquipBullet : MonoBehaviour
     {
         myPrimer = targetPrimer;
     }
-    public Bullet_Base getBullet(){return myBullet;}
-    public Case_Base getCase(){return myCase;}
-    public Primer_Base getPrimer(){return myPrimer;}
-    
+    public Bullet_Base getBullet() { return myBullet; }
+    public Case_Base getCase() { return myCase; }
+    public Primer_Base getPrimer() { return myPrimer; }
+
 }
