@@ -7,6 +7,9 @@ public class EquipMenu : MonoBehaviour
     public Bullet_Base myBullet;
     public Primer_Base myPrimer;
     public Case_Base myCase;
+    public GameObject gameManager;
+    private EquipManager attachedEquipManager;
+    private ItemBag attachedItemBag;
     // Start is called before the first frame update
     void Start()
     {
