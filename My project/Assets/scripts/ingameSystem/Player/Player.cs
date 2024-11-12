@@ -22,9 +22,12 @@ public class Player : MonoBehaviour
     public int Exp;
 
     private Transform lockOnTarget; // ロックオン対象
+    private GameObject targetEnemy;
     public AudioSource shootAudioSource; // 弾の発射音用のAudioSource
     public AudioSource getExpAudioSource; // 経験値取得音用のAudioSource
-
+ 
+    public string useCaseName;
+    
     void Awake()
     {
         // Singletonパターンの実装
@@ -43,6 +46,7 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        
         onCoolTime = false;
     }
 
@@ -126,12 +130,13 @@ public class Player : MonoBehaviour
             float distance = Vector3.Distance(mousePosition, enemy.transform.position);
             if (distance < closestDistance)
             {
+                targetEnemy = enemy;
                 closestDistance = distance;
                 lockOnTarget = enemy.transform;
             }
         }
     }
-
+    public GameObject getTargetEnemy() { return targetEnemy; }
     private IEnumerator CoolTime()
     {
         int count = 0;
@@ -160,59 +165,19 @@ public class Player : MonoBehaviour
 
     void ShootBullet()
     {
+       // useCaseName=GameObject.Find("GameManager").GetComponent<EquipManager>().getActiveCase().GetComponent<Case_Base>().getName();
         float ratio = 1.5f;
-        Vector3 createPos = transform.position + watch * ratio;
+        //発射方向に向かってプレイヤーから一定距離を置いて生成する
+        Vector3 createPos = transform.position + (watch * ratio);
         GameObject bulletPrefab = Instantiate(bullet, createPos, Quaternion.identity);
-        bulletPrefab.GetComponent<Bullet_Base>().setRotate(watch);
-        bulletPrefab.GetComponent<Bullet_Base>().setBulletSpeed(bulletSpeed);
-        bulletPrefab.GetComponent<Bullet_Base>().setDmg(pow);
-
+        bulletPrefab.GetComponent<Bullet_Base>().setStatus(watch, bulletSpeed, pow);
+        GameObject.Find("GameManager").GetComponent<ComponentAdder>().AddCaseByName(useCaseName,bulletPrefab);
+        bulletPrefab.GetComponent<Bullet_Base>().fire();
         // サウンドエフェクトの再生
         shootAudioSource.Play();
     }
+    public Vector3 getRotate() { return watch; }
 
-    // 弾の種類の決定
-    private GameObject BulletTypeDecision()
-    {
-        GameObject ret;
-        switch (bullettype)
-        {
-            case 0: // 通常弾
-                ret = Resources.Load<GameObject>("Objects/Bullet/NormalBullet");
-                break;
-            case 1: // 貫通弾
-                ret = Resources.Load<GameObject>("Objects/Bullet/PiercingBullet");
-                break;
-            default: // とりあえず通常弾を撃つ
-                ret = Resources.Load<GameObject>("Objects/Bullet/NormalBullet");
-                break;
-        }
-
-        return ret;
-    }
-
-    public void GetItem(int type)
-    {
-        switch (type)
-        {
-            case 1:
-                pow += 10.0f;
-
-                break;
-            case 2:
-                HP += 1000;
-                break;
-            case 3:
-                moveSpeed += 20.0f;
-                break;
-            case 4:
-                bulletSpeed += 20.0f;
-                break;
-            default:
-                break;
-        }
-
-}
     public void setHP(float addpoint)
     {
         HP += addpoint;

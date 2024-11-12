@@ -17,12 +17,17 @@ public class ArmorBeetle : MonoBehaviour
     public Vector3 rotate; //プレイヤーに向かった時の角度
     public float speedMag;
     public bool makeBarrier;
-
+ 
     // Start is called before the first frame update
 
     void Awake()
     {
 
+
+    }
+    void Start()
+    {
+       
         Player = GameObject.Find("Player");
         myHealth = gameObject.GetComponent<Health>();
         makeBarrier = false;
@@ -55,10 +60,7 @@ public class ArmorBeetle : MonoBehaviour
         {
             Debug.LogError("Initialization failed. Coroutine will not be started.");
         }
-        // StartCoroutine(Idle());
-    }
-    void Start()
-    {
+        StartCoroutine(Idle());
         gameObject.GetComponent<Health>().setSlideHPBar();
     }
     // Update is called once per frame
@@ -69,37 +71,41 @@ public class ArmorBeetle : MonoBehaviour
     private IEnumerator Idle()
     {//ダンジョン開始即追尾開始
         Debug.Log("StartIdle");
+        StopCoroutine(chase());
         stopMovingByVelocity();
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.5f);
         if (makeBarrier == false && gameObject.GetComponent<Health>().getCurrentHP() < gameObject.GetComponent<Health>().getHP())
         {
 
             yield return blocking();
 
         }
-        yield return chase();
+        StartCoroutine(chase());
     }
+    Coroutine currentCoroutine;
     private IEnumerator chase()
     {
         int chaseTime = 3000;//UnityEngine.Random.Range(3, 7);
         int count = 0;
+        stopMovingByVelocity();
         Vector3 chaseWay = new Vector3(0, 0, 0);
         rb = gameObject.GetComponent<Rigidbody2D>();
         Debug.Log("StartChase");
+        chaseWay = (Vector3)(GameObject.Find("Player").transform.position - gameObject.transform.position);
+        Vector2 force = new Vector2(rotate.x, rotate.y);
+        rb.AddForce(force * speedMag);
         //プレイヤーを一定時間追いかける
         while (count <= chaseTime)
         {
             if (makeBarrier == false && gameObject.GetComponent<Health>().getCurrentHP() < gameObject.GetComponent<Health>().getHP())
             {
-
                 yield return blocking();
 
             }
-            chaseWay = (Vector3)(GameObject.Find("Player").transform.position - gameObject.transform.position);
+
             chaseWay.Normalize();
             setRotate(chaseWay);
-            Vector2 force = new Vector2(rotate.x, rotate.y);
-            rb.AddForce(force * speedMag);
+
             count++;
             yield return new WaitForEndOfFrame();
         }
@@ -111,7 +117,7 @@ public class ArmorBeetle : MonoBehaviour
         Debug.Log("StartBlock");
         stopMovingByVelocity();
         makeBarrier = true;
-
+        StopCoroutine(chase());
         //被弾したときに初期体力に等しいブロックを生成して身を守る
         GameObject barrier = Instantiate(Resources.Load<GameObject>("Objects/Enemy/barrier"), gameObject.transform.position, Quaternion.identity);
         barrier.GetComponent<Health>().setHP(gameObject.GetComponent<Health>().getHP());
@@ -120,7 +126,7 @@ public class ArmorBeetle : MonoBehaviour
         yield return new WaitForSeconds(3);
         Destroy(barrier);
 
-        yield return chase();
+
 
     }
     private IEnumerator attacking()

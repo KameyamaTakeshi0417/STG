@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8012226728060144426}
   - component: {fileID: 5198347656691870225}
   - component: {fileID: 4495537895871079448}
-  - component: {fileID: 5993370161491333612}
+  - component: {fileID: -4999140368411241701}
   m_Layer: 0
   m_Name: piercingBullet
   m_TagString: Untagged
@@ -76,7 +76,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
   m_Color: {r: 0, g: 0.46880388, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -146,10 +146,10 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 0.11}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0.5, y: 0.28866667}
     oldSize: {x: 1, y: 1}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
@@ -157,9 +157,9 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.3, y: 1}
+  m_Size: {x: 0.61, y: 0.87}
   m_EdgeRadius: 0
---- !u!114 &5993370161491333612
+--- !u!114 &-4999140368411241701
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -168,12 +168,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 3095739216751408760}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70d6ba0d861724f44af1d7c5356b966b, type: 3}
+  m_Script: {fileID: 11500000, guid: 7fd7164055f7e69449ea17faba9796bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dmg: 1
-  Speed: 100
-  DestroyTime: 100
+  dmg: 0
+  Speed: 0
+  DestroyTime: 0
   bullettype: 0
-  addforce: 1000
   rotate: {x: 0, y: 0, z: 0}
+  rarelity: 1
