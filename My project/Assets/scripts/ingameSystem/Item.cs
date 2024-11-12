@@ -7,7 +7,9 @@ public class Item : MonoBehaviour
     public float addPow;
     public float addShootSpeed;
     public float addHP;
-    public int bulletChangeType;//弾種変更アイテムなら1以上の特定の数値を、そうでない場合は-1を指定する
+    public string itemName;
+    public int rarelity;
+    public ItemData itemData;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,21 +22,24 @@ public class Item : MonoBehaviour
 
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
+        if (Input.GetKey(KeyCode.Return))
         {
-            // HPを持つコンポーネントを取得
-            Player playerscript = collision.gameObject.GetComponent<Player>();
-            playerscript.setHP(addHP);
-            playerscript.setPow(addPow);
-            playerscript.setShootSpeed(addShootSpeed);
-            
-            if (bulletChangeType > 0)
-            {
-                playerscript.setBulletType(bulletChangeType);
-            }
+            InItemBag();
         }
+    }
+
+    private void InItemBag()
+    {
+        GameObject manager = GameObject.Find("GameManager");
+        manager.GetComponent<ItemManager>().AddItemData(itemData);
         Destroy(this.gameObject);
+    }
+
+    public Item(string name, int value)//コンストラクタ。新しく生成されるときに引数として使えるやつ。すっかり忘れてたわ
+    {
+        itemName = name;
+        rarelity = value;
     }
 }

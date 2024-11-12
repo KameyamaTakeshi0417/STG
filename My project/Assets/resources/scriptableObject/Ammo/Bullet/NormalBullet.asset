@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9515393f8f7d6e341a37fca635464325, type: 3}
+  m_Name: NormalBullet
+  m_EditorClassIdentifier: 
+  itemName: 
+  itemRarelity: 0
+  itemHP: 0
+  itemPower: 0
+  itemSpeed: 0
+  itemDamage: 0
+  itemLange: 0
+  itemSpan: 0
+  itemPrefab: {fileID: 0}
+  itemUI: {fileID: 0}
+  flavorText1: 
+  flavorText2: 
+  flavorText3: 

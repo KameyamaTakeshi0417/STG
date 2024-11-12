@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5353672568270869909}
   - component: {fileID: 8301577367495001705}
   m_Layer: 0
-  m_Name: VoltCase
+  m_Name: VoltCaseUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

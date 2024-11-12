@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3588644437043086193}
   - component: {fileID: 5889233957179109961}
   m_Layer: 0
-  m_Name: HomingCase
+  m_Name: HomingCaseUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
