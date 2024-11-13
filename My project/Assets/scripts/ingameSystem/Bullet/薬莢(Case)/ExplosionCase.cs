@@ -32,4 +32,9 @@ public class ExplosionCase : Case_Base
         Destroy(this.gameObject);
         yield break;
     }
+        public override void setScriptableData(){
+        mydata.setDataItemInfo("Explosion_Case",1);
+        mydata.setDataforPlayer(0,0,0);
+        mydata.setDataforBullet(dmg,Speed,0);
+    }
 }

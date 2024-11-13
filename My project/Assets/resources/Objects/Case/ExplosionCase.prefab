@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 5704332565141934114}
   - component: {fileID: 3418294830112630126}
   - component: {fileID: 8887409407087118764}
-  - component: {fileID: -4157063035142910373}
   m_Layer: 0
   m_Name: ExplosionCase
   m_TagString: Untagged
@@ -54,6 +53,7 @@ MonoBehaviour:
   rarelity: 1
   dmg: 30
   CaseName: ExplosionCase
+  mydata: {fileID: 11400000, guid: f41d2f6a97425894ead5e8859af126c0, type: 2}
 --- !u!212 &3418294830112630126
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -151,23 +151,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 2.6572406, y: 1.9289242}
   m_EdgeRadius: 0
---- !u!114 &-4157063035142910373
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 808915423798542513}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d12c5f6375517814abf2a5852c836f57, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  addPow: 10
-  addShootSpeed: 1
-  addHP: 0
-  itemName: ExplosionBullet
-  itemValue: 1
 --- !u!1 &1992546291383023133
 GameObject:
   m_ObjectHideFlags: 0

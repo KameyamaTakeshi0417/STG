@@ -1,8 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
-
+using System.Linq; 
 public class ItemManager : MonoBehaviour
 {
+    void Start(){
+
+    }
     public List<ItemData> itemList = new List<ItemData>();
 
     // アイテムをリストに追加

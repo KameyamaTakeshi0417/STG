@@ -11,6 +11,7 @@ public class Case_Base : MonoBehaviour
     public int rarelity;
     public float dmg; // 弾のダメージ量
     public string CaseName;
+    public ItemData mydata;
     // Start is called before the first frame update
     void Start()
     {
@@ -72,4 +73,9 @@ public class Case_Base : MonoBehaviour
     public float getDmg() { return dmg; }
     public float getSpeed() { return Speed; }
     public int getRarelity() { return rarelity; }
+    public virtual void setScriptableData(){
+        mydata.setDataItemInfo("Bullet_Base",1);
+        mydata.setDataforPlayer(0,0,0);
+        mydata.setDataforBullet(dmg,Speed,0);
+    }
 }
