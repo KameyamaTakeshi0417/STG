@@ -185,7 +185,7 @@ public class Player : MonoBehaviour
         // 弾丸の生成
         float ratio = 1.5f;
         Vector3 createPos = transform.position + (watch * ratio);
-        GameObject bulletPrefab = Instantiate(activeBullet.GetComponent<ItemPickUp>().bulletObj, createPos, Quaternion.identity);
+        GameObject bulletPrefab = Instantiate(activeBullet.GetComponent<ItemPickUp>().targetObj, createPos, Quaternion.identity);
 
         // 弾丸の基本ステータスを設定
         Bullet_Base bulletScript = bulletPrefab.GetComponent<Bullet_Base>();
@@ -197,7 +197,7 @@ public class Player : MonoBehaviour
         // ケースの効果を弾丸にアタッチ
         if (activeCase != null)
         {
-            Case_Base caseScript = activeCase.GetComponent<ItemPickUp>().bulletObj.GetComponent<Case_Base>();
+            Case_Base caseScript = activeCase.GetComponent<ItemPickUp>().targetObj.GetComponent<Case_Base>();
             System.Type caseType = caseScript.GetType();
             bulletPrefab.AddComponent(caseType);
             Debug.Log("Successfully added case script of type: " + caseType.Name);
@@ -206,7 +206,7 @@ public class Player : MonoBehaviour
         // プライマーの効果を発動
         if (activePrimer != null)
         {
-            Primer_Base primerScript = activeBullet.GetComponent<ItemPickUp>().bulletObj.GetComponent<Primer_Base>();
+            Primer_Base primerScript = activePrimer.GetComponent<ItemPickUp>().targetObj.GetComponent<Primer_Base>();
             primerScript.StrikePrimer();
         }
 

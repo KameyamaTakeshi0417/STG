@@ -8,7 +8,7 @@ public class ItemPickUp : MonoBehaviour
     public ItemData itemData; // アイテムの情報を持つ ScriptableObject
     public string itemType;   // アイテムの種類（Bullet, Case, Primer）
     public int itemRarelity;
-    public GameObject bulletObj;
+    public GameObject targetObj;
     public string accessAddress;
     private void OnTriggerEnter2D(Collider2D collision)
     {

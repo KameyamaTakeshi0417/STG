@@ -101,7 +101,7 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: f41d2f6a97425894ead5e8859af126c0, type: 2}
   itemType: Case
   itemRarelity: 1
-  bulletObj: {fileID: 808915423798542513, guid: 0debbcb84918494419a9b6d5b6e67162, type: 3}
+  targetObj: {fileID: 808915423798542513, guid: 0debbcb84918494419a9b6d5b6e67162, type: 3}
   accessAddress: Objects/Reward/ExplosionCase_RewardObject
 --- !u!61 &8293380040888585499
 BoxCollider2D:
