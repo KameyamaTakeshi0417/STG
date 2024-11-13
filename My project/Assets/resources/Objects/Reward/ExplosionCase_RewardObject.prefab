@@ -102,7 +102,7 @@ MonoBehaviour:
   itemType: Case
   itemRarelity: 1
   bulletObj: {fileID: 808915423798542513, guid: 0debbcb84918494419a9b6d5b6e67162, type: 3}
-  accessAddress: Objects/Reward/ExplosionBullet_RewardObject
+  accessAddress: Objects/Reward/ExplosionCase_RewardObject
 --- !u!61 &8293380040888585499
 BoxCollider2D:
   m_ObjectHideFlags: 0

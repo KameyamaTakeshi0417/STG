@@ -195,14 +195,16 @@ public class Player : MonoBehaviour
         }
 
         // ケースの効果を弾丸にアタッチ
-        if (activeCase != null )
+        if (activeCase != null)
         {
-            Case_Base caseScript =activeBullet.GetComponent<ItemPickUp>().bulletObj.GetComponent<Case_Base>();
-            bulletPrefab.AddComponent(typeof(Case_Base));
+            Case_Base caseScript = activeCase.GetComponent<ItemPickUp>().bulletObj.GetComponent<Case_Base>();
+            System.Type caseType = caseScript.GetType();
+            bulletPrefab.AddComponent(caseType);
+            Debug.Log("Successfully added case script of type: " + caseType.Name);
         }
 
         // プライマーの効果を発動
-        if (activePrimer != null )
+        if (activePrimer != null)
         {
             Primer_Base primerScript = activeBullet.GetComponent<ItemPickUp>().bulletObj.GetComponent<Primer_Base>();
             primerScript.StrikePrimer();
@@ -232,4 +234,4 @@ public class Player : MonoBehaviour
     {
         bulletSpeed += addpoint;
     }
-} 
+}
