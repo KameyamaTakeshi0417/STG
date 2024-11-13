@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdc1d11f8b03bd7408208e278235dbf6, type: 3}
   m_Name: NormalBullet
   m_EditorClassIdentifier: 
-  itemName: 
-  itemRarelity: 0
+  itemName: NormalBullet
+  itemRarelity: 1
   itemHP: 0
-  itemPower: 0
-  itemSpeed: 0
-  itemDamage: 0
-  itemLange: 0
-  itemSpan: 0
+  itemPower: 10
+  itemSpeed: 0.01
+  itemDamage: 10
+  itemLange: 1
+  itemSpan: 1
   itemPrefab: {fileID: 0}
   itemUI: {fileID: 0}
   flavorText1: 

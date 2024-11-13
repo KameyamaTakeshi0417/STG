@@ -3611,10 +3611,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 848afaf256ae42144affa29391f44eb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  activeBullet: {fileID: 0}
   activeCase: {fileID: 0}
   activePrimer: {fileID: 0}
-  subBullet: {fileID: 0}
   subCase: {fileID: 0}
   subPrimer: {fileID: 0}
 --- !u!114 &736362690
@@ -3642,7 +3640,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efb96b9d6a218844e8198992b0060ff7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  acquiredAmmoList: []
+  AmmoObjectList: []
 --- !u!1 &880627573
 GameObject:
   m_ObjectHideFlags: 0
@@ -4273,6 +4271,67 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1001 &1007482442
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1533693221546898036, guid: 9db976b2efa2fce47af968ea17c0ebc8, type: 3}
+      propertyPath: accessAddress
+      value: Objects/Reward/ExplosionBullet_RewardObject
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 9db976b2efa2fce47af968ea17c0ebc8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2.827209
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 9db976b2efa2fce47af968ea17c0ebc8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -6.6285033
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 9db976b2efa2fce47af968ea17c0ebc8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 9db976b2efa2fce47af968ea17c0ebc8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 9db976b2efa2fce47af968ea17c0ebc8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 9db976b2efa2fce47af968ea17c0ebc8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 9db976b2efa2fce47af968ea17c0ebc8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 9db976b2efa2fce47af968ea17c0ebc8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 9db976b2efa2fce47af968ea17c0ebc8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 9db976b2efa2fce47af968ea17c0ebc8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4825919582345253749, guid: 9db976b2efa2fce47af968ea17c0ebc8, type: 3}
+      propertyPath: m_Name
+      value: ExplosionBullet_RewardObject
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9db976b2efa2fce47af968ea17c0ebc8, type: 3}
 --- !u!1 &1129157502
 GameObject:
   m_ObjectHideFlags: 0
@@ -8703,3 +8762,4 @@ SceneRoots:
   - {fileID: 1153690383}
   - {fileID: 1821330274}
   - {fileID: 665641017}
+  - {fileID: 1007482442}

@@ -3,37 +3,37 @@ using UnityEngine;
 
 public class EquipManager : MonoBehaviour
 {
-    private ItemData activeBullet;  // メイン装備している弾丸
-    public ItemData activeCase;    // メイン装備しているケース
-    public ItemData activePrimer;  // メイン装備しているプライマー
+    private GameObject activeBullet;  // メイン装備している弾丸
+    public GameObject activeCase;    // メイン装備しているケース
+    public GameObject activePrimer;  // メイン装備しているプライマー
 
-    private ItemData subBullet;     // サブ装備している弾丸
-    public ItemData subCase;       // サブ装備しているケース
-    public ItemData subPrimer;     // サブ装備しているプライマー
+    private GameObject subBullet;     // サブ装備している弾丸
+    public GameObject subCase;       // サブ装備しているケース
+    public GameObject subPrimer;     // サブ装備しているプライマー
 
     private bool useMainEquip = true; // 現在メイン装備を使用しているかどうか
     void Awake() // AwakeはMonoBehaviourのオブジェクトが生成された直後に呼ばれます
     {
-        subBullet = Resources.Load<ItemData>("Assets/scripts/scriptableObject/Ammo/Bullet/NormalBullet");
-        subCase = Resources.Load<ItemData>("scripts/scriptableObject/Ammo/NormalCase");
-        subPrimer = Resources.Load<ItemData>("scripts/scriptableObject/Ammo/NormalPrimer");
+        subBullet = Resources.Load<GameObject>("resources/Objects/Reward/NormalBullet");
+        subCase = Resources.Load<GameObject>("resources/Objects/Reward/NormalBullet");
+        subPrimer = Resources.Load<GameObject>("resources/Objects/Reward/NormalBullet");
         if (activeBullet == null)
         {
-            activeBullet = Resources.Load<ItemData>("scripts/scriptableObject/Ammo/Bullet/NormalBullet");
+            activeBullet = Resources.Load<GameObject>("resources/Objects/Reward/NormalBullet");
             
         }
         if (activeCase == null)
         {
-            activeCase = Resources.Load<ItemData>("scripts/scriptableObject/Ammo/NormalCase");
+            activeCase = Resources.Load<GameObject>("resources/Objects/Reward/NormalBullet");
         }
         if (activePrimer == null)
         {
-            activePrimer = Resources.Load<ItemData>("scripts/scriptableObject/Ammo/NormalPrimer");
+            activePrimer = Resources.Load<GameObject>("resources/Objects/Reward/NormalBullet");
         }
         if(activeBullet==null){Debug.Log("activeBullet Null");}
         if(subBullet==null){Debug.Log("subBullet Null");}
     }
-    public void EquipItem(ItemData item, string type)
+    public void EquipItem(GameObject item, string type)
     {
         switch (type)
         {
@@ -67,17 +67,17 @@ public class EquipManager : MonoBehaviour
         Debug.Log(useMainEquip ? "Main Equip Active" : "Sub Equip Active");
     }
 
-    public ItemData GetActiveBullet()
+    public GameObject GetActiveBullet()
     {
         return useMainEquip ? activeBullet : subBullet;
     }
 
-    public ItemData GetActiveCase()
+    public GameObject GetActiveCase()
     {
         return useMainEquip ? activeCase : subCase;
     }
 
-    public ItemData GetActivePrimer()
+    public GameObject GetActivePrimer()
     {
         return useMainEquip ? activePrimer : subPrimer;
     }

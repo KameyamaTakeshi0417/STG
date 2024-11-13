@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ItemPickUp : MonoBehaviour
@@ -15,14 +16,19 @@ public class ItemPickUp : MonoBehaviour
         {
             // プレイヤーに触れた場合、インベントリに追加し装備を更新
             EquipManager equipManager = GameObject.Find("GameManager").GetComponent<EquipManager>();
+            InventoryManager inventoryManager=GameObject.Find("GameManager").GetComponent<InventoryManager>();
             if (equipManager != null)
             {
-                equipManager.EquipItem(itemData, itemType);
+                GameObject targetObj=Resources.Load<GameObject>(accessAddress);
+                equipManager.EquipItem(targetObj, itemType);
+                inventoryManager.AddAmmo(targetObj);
+
                 Debug.Log("Picked up: " + itemData.itemName);
+                 Destroy(gameObject);
             }
 
             // 自身を破壊
-            Destroy(gameObject);
+           
         }
     }
     public ItemPickUp(int rarelity)

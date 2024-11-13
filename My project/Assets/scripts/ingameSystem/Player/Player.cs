@@ -172,11 +172,11 @@ public class Player : MonoBehaviour
     void ShootBullet()
     {
         // 現在装備している弾丸、ケース、プライマーを取得
-        ItemData activeBullet = equipManager.GetActiveBullet();
-        ItemData activeCase = equipManager.GetActiveCase();
-        ItemData activePrimer = equipManager.GetActivePrimer();
+        GameObject activeBullet = equipManager.GetActiveBullet();
+        GameObject activeCase = equipManager.GetActiveCase();
+        GameObject activePrimer = equipManager.GetActivePrimer();
 
-        if (activeBullet == null || activeBullet.itemPrefab == null)
+        if (activeBullet == null)
         {
             Debug.LogWarning("No active bullet equipped.");
             return;
@@ -185,7 +185,7 @@ public class Player : MonoBehaviour
         // 弾丸の生成
         float ratio = 1.5f;
         Vector3 createPos = transform.position + (watch * ratio);
-        GameObject bulletPrefab = Instantiate(activeBullet.itemPrefab, createPos, Quaternion.identity);
+        GameObject bulletPrefab = Instantiate(activeBullet.GetComponent<ItemPickUp>().bulletObj, createPos, Quaternion.identity);
 
         // 弾丸の基本ステータスを設定
         Bullet_Base bulletScript = bulletPrefab.GetComponent<Bullet_Base>();
@@ -195,16 +195,16 @@ public class Player : MonoBehaviour
         }
 
         // ケースの効果を弾丸にアタッチ
-        if (activeCase != null && activeCase.itemPrefab.GetComponent<Case_Base>() != null)
+        if (activeCase != null )
         {
-            Case_Base caseScript = activeCase.itemPrefab.GetComponent<Case_Base>();
+            Case_Base caseScript =activeBullet.GetComponent<ItemPickUp>().bulletObj.GetComponent<Case_Base>();
             bulletPrefab.AddComponent(caseScript.GetType());
         }
 
         // プライマーの効果を発動
-        if (activePrimer != null && activePrimer.itemPrefab.GetComponent<Primer_Base>() != null)
+        if (activePrimer != null )
         {
-            Primer_Base primerScript = activePrimer.itemPrefab.GetComponent<Primer_Base>();
+            Primer_Base primerScript = activeBullet.GetComponent<ItemPickUp>().bulletObj.GetComponent<Primer_Base>();
             primerScript.StrikePrimer();
         }
 
