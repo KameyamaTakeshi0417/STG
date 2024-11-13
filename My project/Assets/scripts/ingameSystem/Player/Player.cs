@@ -198,7 +198,7 @@ public class Player : MonoBehaviour
         if (activeCase != null )
         {
             Case_Base caseScript =activeBullet.GetComponent<ItemPickUp>().bulletObj.GetComponent<Case_Base>();
-            bulletPrefab.AddComponent(caseScript.GetType());
+            bulletPrefab.AddComponent(typeof(Case_Base));
         }
 
         // プライマーの効果を発動
