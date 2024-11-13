@@ -3,14 +3,13 @@ using UnityEngine;
 
 public class InventoryManager : MonoBehaviour
 {
-    public List<AmmoInstance> acquiredAmmoList = new List<AmmoInstance>();
+    public List<GameObject> AmmoObjectList = new List<GameObject>();
 
     // Ammoをインベントリに追加
-    public void AddAmmo(ItemData ammoData, int rarity)
+    public void AddAmmo(GameObject ammoData)
     {
-        AmmoInstance newAmmo = new AmmoInstance(ammoData, rarity);
-        acquiredAmmoList.Add(newAmmo);
-
-        Debug.Log($"Added {newAmmo.ammoData.itemName} with rarity {newAmmo.rarity} to inventory.");
+        AmmoObjectList.Add(ammoData);
+        ammoData.GetComponent<ItemPickUp>().itemRarelity = AmmoObjectList.IndexOf(ammoData);
+        //        Debug.Log($"Added {newAmmo.ammoData.itemName} with rarity {newAmmo.rarity} to inventory.");
     }
 }

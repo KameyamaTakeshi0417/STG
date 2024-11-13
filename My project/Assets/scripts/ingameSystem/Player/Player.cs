@@ -12,10 +12,8 @@ public class Player : MonoBehaviour
     public float currentHP;
     public float pow;
     public float moveSpeed;
-    public GameObject bullet;
     public float bulletSpeed;
     public float BulletSpan; // フレーム
-    public float bullettype = 0; //弾のタイプ決定
     public bool onCoolTime;
     public Vector3 watch;
     public float lockOnRadius = 5f; // ロックオンの半径
@@ -25,9 +23,9 @@ public class Player : MonoBehaviour
     private GameObject targetEnemy;
     public AudioSource shootAudioSource; // 弾の発射音用のAudioSource
     public AudioSource getExpAudioSource; // 経験値取得音用のAudioSource
- 
-    public string useCaseName;
-    
+
+    private EquipManager equipManager; // プレイヤーの装備を管理
+
     void Awake()
     {
         // Singletonパターンの実装
@@ -42,11 +40,11 @@ public class Player : MonoBehaviour
         }
 
         rb = GetComponent<Rigidbody2D>();
+        equipManager = GameObject.Find("GameManager").GetComponent<EquipManager>();
     }
 
     void Start()
     {
-        
         onCoolTime = false;
     }
 
@@ -90,6 +88,12 @@ public class Player : MonoBehaviour
         if (Input.GetKey(KeyCode.Space))
         {
             // ダッシュ、もしくはクイックステップと呼称する緊急回避アクションを実装したい
+        }
+
+        // 装備の切り替え
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            equipManager.ToggleEquip();
         }
     }
 
@@ -136,7 +140,9 @@ public class Player : MonoBehaviour
             }
         }
     }
+
     public GameObject getTargetEnemy() { return targetEnemy; }
+
     private IEnumerator CoolTime()
     {
         int count = 0;
@@ -165,17 +171,50 @@ public class Player : MonoBehaviour
 
     void ShootBullet()
     {
-       // useCaseName=GameObject.Find("GameManager").GetComponent<EquipManager>().getActiveCase().GetComponent<Case_Base>().getName();
+        // 現在装備している弾丸、ケース、プライマーを取得
+        ItemData activeBullet = equipManager.GetActiveBullet();
+        ItemData activeCase = equipManager.GetActiveCase();
+        ItemData activePrimer = equipManager.GetActivePrimer();
+
+        if (activeBullet == null || activeBullet.itemPrefab == null)
+        {
+            Debug.LogWarning("No active bullet equipped.");
+            return;
+        }
+
+        // 弾丸の生成
         float ratio = 1.5f;
-        //発射方向に向かってプレイヤーから一定距離を置いて生成する
         Vector3 createPos = transform.position + (watch * ratio);
-        GameObject bulletPrefab = Instantiate(bullet, createPos, Quaternion.identity);
-        bulletPrefab.GetComponent<Bullet_Base>().setStatus(watch, bulletSpeed, pow);
-        GameObject.Find("GameManager").GetComponent<ComponentAdder>().AddCaseByName(useCaseName,bulletPrefab);
-        bulletPrefab.GetComponent<Bullet_Base>().fire();
+        GameObject bulletPrefab = Instantiate(activeBullet.itemPrefab, createPos, Quaternion.identity);
+
+        // 弾丸の基本ステータスを設定
+        Bullet_Base bulletScript = bulletPrefab.GetComponent<Bullet_Base>();
+        if (bulletScript != null)
+        {
+            bulletScript.setStatus(watch, bulletSpeed, pow);
+        }
+
+        // ケースの効果を弾丸にアタッチ
+        if (activeCase != null && activeCase.itemPrefab.GetComponent<Case_Base>() != null)
+        {
+            Case_Base caseScript = activeCase.itemPrefab.GetComponent<Case_Base>();
+            bulletPrefab.AddComponent(caseScript.GetType());
+        }
+
+        // プライマーの効果を発動
+        if (activePrimer != null && activePrimer.itemPrefab.GetComponent<Primer_Base>() != null)
+        {
+            Primer_Base primerScript = activePrimer.itemPrefab.GetComponent<Primer_Base>();
+            primerScript.StrikePrimer();
+        }
+
+        // 弾丸の発射
+        bulletScript?.fire();
+
         // サウンドエフェクトの再生
         shootAudioSource.Play();
     }
+
     public Vector3 getRotate() { return watch; }
 
     public void setHP(float addpoint)
@@ -193,11 +232,4 @@ public class Player : MonoBehaviour
     {
         bulletSpeed += addpoint;
     }
-
-    public void setBulletType(int type)
-    {
-        bullettype = type;
-
-    }
-
-}
+} 

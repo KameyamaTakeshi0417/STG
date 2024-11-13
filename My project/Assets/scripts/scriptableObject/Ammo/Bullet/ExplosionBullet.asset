@@ -9,18 +9,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9515393f8f7d6e341a37fca635464325, type: 3}
-  m_Name: NormalBullet
+  m_Script: {fileID: 11500000, guid: bdc1d11f8b03bd7408208e278235dbf6, type: 3}
+  m_Name: ExplosionBullet
   m_EditorClassIdentifier: 
   itemName: 
-  itemRarelity: 0
+  itemRarelity: 1
   itemHP: 0
   itemPower: 0
   itemSpeed: 0
   itemDamage: 0
   itemLange: 0
   itemSpan: 0
-  itemPrefab: {fileID: 0}
+  itemPrefab: {fileID: 8920081789732665918, guid: 4fb15000d1481cf46af317a74f162a22, type: 3}
   itemUI: {fileID: 0}
   flavorText1: 
   flavorText2: 

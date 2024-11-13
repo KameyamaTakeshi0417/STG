@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9515393f8f7d6e341a37fca635464325, type: 3}
-  m_Name: ExplosionBullet
+  m_Script: {fileID: 11500000, guid: bdc1d11f8b03bd7408208e278235dbf6, type: 3}
+  m_Name: NormalBullet
   m_EditorClassIdentifier: 
   itemName: 
   itemRarelity: 0
@@ -24,3 +24,4 @@ MonoBehaviour:
   itemUI: {fileID: 0}
   flavorText1: 
   flavorText2: 
+  flavorText3: 
