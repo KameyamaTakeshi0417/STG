@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
 public class EquipManager : MonoBehaviour
 {
     public GameObject activeBullet;  // メイン装備している弾丸
@@ -12,6 +12,7 @@ public class EquipManager : MonoBehaviour
     public GameObject subPrimer;     // サブ装備しているプライマー
 
     private bool useMainEquip = true; // 現在メイン装備を使用しているかどうか
+    public static event Action OnEquipChanged; // 装備が変更されたときに発生するイベント
     void Awake() // AwakeはMonoBehaviourのオブジェクトが生成された直後に呼ばれます
     {
         subBullet = Resources.Load<GameObject>("Objects/Reward/NormalBullet");
@@ -81,5 +82,12 @@ public class EquipManager : MonoBehaviour
     {
         return useMainEquip ? activePrimer : subPrimer;
     }
+  public void EquipItem(ItemData newItem)
+    {
+        // 装備を更新する処理
+        // ここで装備アイテムを更新します
 
+        // 装備変更イベントを発生させる
+        OnEquipChanged?.Invoke();
+    }
 }

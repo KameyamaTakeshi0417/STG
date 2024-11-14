@@ -2,13 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-
+using Unity.UI;
+using Microsoft.Unity.VisualStudio.Editor;
 public class ItemPickUp : MonoBehaviour
 {
     public ItemData itemData; // アイテムの情報を持つ ScriptableObject
     public string itemType;   // アイテムの種類（Bullet, Case, Primer）
     public int itemRarelity;
     public GameObject targetObj;
+    public Image useUI;
     public string accessAddress;
     private void OnTriggerEnter2D(Collider2D collision)
     {

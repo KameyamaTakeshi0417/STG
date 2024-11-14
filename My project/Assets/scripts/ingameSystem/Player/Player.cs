@@ -179,11 +179,13 @@ public class Player : MonoBehaviour
         GameObject activeCase = equipManager.GetActiveCase();
         GameObject activePrimer = equipManager.GetActivePrimer();
         GameObject bulletPrefab;
+        float ratio = 1.5f;
+        Vector3 createPos = transform.position + (watch * ratio);
         if (activeBullet == null)
         {
             Debug.LogWarning("No active bullet equipped.");
-             bulletPrefab = Instantiate(
-                Resources.Load<GameObject>("Objects/Reward/NormalBullet"),
+            bulletPrefab = Instantiate(
+                Resources.Load<GameObject>("Objects/Bullet/NormalBullet"),
                 createPos,
                 Quaternion.identity
             );
@@ -191,8 +193,7 @@ public class Player : MonoBehaviour
         else
         {
             // 弾丸の生成
-            float ratio = 1.5f;
-            Vector3 createPos = transform.position + (watch * ratio);
+
             bulletPrefab = Instantiate(
                 activeBullet.GetComponent<ItemPickUp>().targetObj,
                 createPos,
@@ -209,24 +210,25 @@ public class Player : MonoBehaviour
         else
         {
             //何もついていないとき、通常弾生成
-        
         }
- Case_Base caseScript ;
+        Case_Base caseScript;
+        System.Type caseType;
         // ケースの効果を弾丸にアタッチ
         if (activeCase != null)
         {
-            caseScript = activeCase
-                .GetComponent<ItemPickUp>()
-                .targetObj.GetComponent<Case_Base>();
-            System.Type caseType = caseScript.GetType();
+            caseScript = activeCase.GetComponent<ItemPickUp>().targetObj.GetComponent<Case_Base>();
+            caseType = caseScript.GetType();
             bulletPrefab.AddComponent(caseType);
             Debug.Log("Successfully added case script of type: " + caseType.Name);
         }
         else
         {
             //何もついてないとき、通常薬莢装備
-                 caseScript = Resources.Load<GameObject>("Objects/Reward/NormalBullet").GetComponent<Case_Base>();
-            
+            caseScript = Resources
+                .Load<GameObject>("Objects/Case/NormalCase")
+                .GetComponent<Case_Base>();
+                 caseType= caseScript.GetType();
+                 bulletPrefab.AddComponent(caseType);
         }
 
         // プライマーの効果を発動
