@@ -1,42 +1,34 @@
-using System.Collections.Generic;
-using UnityEngine;
 using System;
+using UnityEngine;
+using UnityEngine.UI;
+
 public class EquipManager : MonoBehaviour
 {
-    public GameObject activeBullet;  // メイン装備している弾丸
-    public GameObject activeCase;    // メイン装備しているケース
-    public GameObject activePrimer;  // メイン装備しているプライマー
+    public GameObject activeBullet;
+    public GameObject activeCase;
+    public GameObject activePrimer;
 
-    public GameObject subBullet;     // サブ装備している弾丸
-    public GameObject subCase;       // サブ装備しているケース
-    public GameObject subPrimer;     // サブ装備しているプライマー
+    public GameObject subBullet;
+    public GameObject subCase;
+    public GameObject subPrimer;
 
-    private bool useMainEquip = true; // 現在メイン装備を使用しているかどうか
-    public static event Action OnEquipChanged; // 装備が変更されたときに発生するイベント
-    void Awake() // AwakeはMonoBehaviourのオブジェクトが生成された直後に呼ばれます
+    private bool useMainEquip = true;
+    public static event EquipChangedHandler OnEquipChanged;
+    public delegate void EquipChangedHandler(string updatedCategory, Sprite newSprite);
+
+    void Awake()
     {
-        subBullet = Resources.Load<GameObject>("Objects/Reward/NormalBullet");
-        subCase = Resources.Load<GameObject>("Objects/Reward/NormalBullet");
-        subPrimer = Resources.Load<GameObject>("Objects/Reward/NormalBullet");
-        if (activeBullet == null)
-        {
-            activeBullet = Resources.Load<GameObject>("Objects/Reward/NormalBullet");
-            
-        }
-        if (activeCase == null)
-        {
-            activeCase = Resources.Load<GameObject>("Objects/Reward/NormalBullet");
-        }
-        if (activePrimer == null)
-        {
-            activePrimer = Resources.Load<GameObject>("Objects/Reward/NormalBullet");
-        }
-        if(activeBullet==null){Debug.Log("activeBullet Null");}
-        if(subBullet==null){Debug.Log("subBullet Null");}
+        // 初期装備のロード処理
+        activeBullet = Resources.Load<GameObject>("Objects/Reward/NormalBullet");
+        activeCase = Resources.Load<GameObject>("Objects/Reward/NormalCase");
+        activePrimer = Resources.Load<GameObject>("Objects/Reward/NormalPrimer");
     }
-    public void EquipItem(GameObject item, string type)
+
+    public void EquipItem(GameObject item, Sprite newItemSprite, string category)
     {
-        switch (type)
+        // 装備が変更された際にイベントを発行
+        OnEquipChanged?.Invoke(category, newItemSprite);
+        switch (category)
         {
             case "Bullet":
                 if (useMainEquip)
@@ -60,6 +52,15 @@ public class EquipManager : MonoBehaviour
                 Debug.LogWarning("Invalid item type for equip");
                 break;
         }
+        // 新しいスプライトを設定
+        UIImageChanger[] imageChangers = FindObjectsOfType<UIImageChanger>();
+        foreach (UIImageChanger imageChanger in imageChangers)
+        {
+            if (imageChanger.itemCategory == category)
+            {
+                imageChanger.newSprite = newItemSprite;
+            }
+        }
     }
 
     public void ToggleEquip()
@@ -68,26 +69,9 @@ public class EquipManager : MonoBehaviour
         Debug.Log(useMainEquip ? "Main Equip Active" : "Sub Equip Active");
     }
 
-    public GameObject GetActiveBullet()
-    {
-        return useMainEquip ? activeBullet : subBullet;
-    }
+    public GameObject GetActiveBullet() => useMainEquip ? activeBullet : subBullet;
 
-    public GameObject GetActiveCase()
-    {
-        return useMainEquip ? activeCase : subCase;
-    }
+    public GameObject GetActiveCase() => useMainEquip ? activeCase : subCase;
 
-    public GameObject GetActivePrimer()
-    {
-        return useMainEquip ? activePrimer : subPrimer;
-    }
-  public void EquipItem(ItemData newItem)
-    {
-        // 装備を更新する処理
-        // ここで装備アイテムを更新します
-
-        // 装備変更イベントを発生させる
-        OnEquipChanged?.Invoke();
-    }
+    public GameObject GetActivePrimer() => useMainEquip ? activePrimer : subPrimer;
 }
