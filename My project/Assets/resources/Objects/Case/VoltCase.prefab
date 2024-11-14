@@ -53,6 +53,7 @@ MonoBehaviour:
   rarelity: 1
   dmg: 30
   CaseName: VoltCase
+  mydata: {fileID: 11400000, guid: f41d2f6a97425894ead5e8859af126c0, type: 2}
 --- !u!212 &1896654761009209727
 SpriteRenderer:
   m_ObjectHideFlags: 0

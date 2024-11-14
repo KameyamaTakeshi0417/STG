@@ -141,7 +141,10 @@ public class Player : MonoBehaviour
         }
     }
 
-    public GameObject getTargetEnemy() { return targetEnemy; }
+    public GameObject getTargetEnemy()
+    {
+        return targetEnemy;
+    }
 
     private IEnumerator CoolTime()
     {
@@ -175,17 +178,27 @@ public class Player : MonoBehaviour
         GameObject activeBullet = equipManager.GetActiveBullet();
         GameObject activeCase = equipManager.GetActiveCase();
         GameObject activePrimer = equipManager.GetActivePrimer();
-
+        GameObject bulletPrefab;
         if (activeBullet == null)
         {
             Debug.LogWarning("No active bullet equipped.");
-            return;
+             bulletPrefab = Instantiate(
+                Resources.Load<GameObject>("Objects/Reward/NormalBullet"),
+                createPos,
+                Quaternion.identity
+            );
         }
-
-        // 弾丸の生成
-        float ratio = 1.5f;
-        Vector3 createPos = transform.position + (watch * ratio);
-        GameObject bulletPrefab = Instantiate(activeBullet.GetComponent<ItemPickUp>().targetObj, createPos, Quaternion.identity);
+        else
+        {
+            // 弾丸の生成
+            float ratio = 1.5f;
+            Vector3 createPos = transform.position + (watch * ratio);
+            bulletPrefab = Instantiate(
+                activeBullet.GetComponent<ItemPickUp>().targetObj,
+                createPos,
+                Quaternion.identity
+            );
+        }
 
         // 弾丸の基本ステータスを設定
         Bullet_Base bulletScript = bulletPrefab.GetComponent<Bullet_Base>();
@@ -193,20 +206,35 @@ public class Player : MonoBehaviour
         {
             bulletScript.setStatus(watch, bulletSpeed, pow);
         }
-
+        else
+        {
+            //何もついていないとき、通常弾生成
+        
+        }
+ Case_Base caseScript ;
         // ケースの効果を弾丸にアタッチ
         if (activeCase != null)
         {
-            Case_Base caseScript = activeCase.GetComponent<ItemPickUp>().targetObj.GetComponent<Case_Base>();
+            caseScript = activeCase
+                .GetComponent<ItemPickUp>()
+                .targetObj.GetComponent<Case_Base>();
             System.Type caseType = caseScript.GetType();
             bulletPrefab.AddComponent(caseType);
             Debug.Log("Successfully added case script of type: " + caseType.Name);
+        }
+        else
+        {
+            //何もついてないとき、通常薬莢装備
+                 caseScript = Resources.Load<GameObject>("Objects/Reward/NormalBullet").GetComponent<Case_Base>();
+            
         }
 
         // プライマーの効果を発動
         if (activePrimer != null)
         {
-            Primer_Base primerScript = activePrimer.GetComponent<ItemPickUp>().targetObj.GetComponent<Primer_Base>();
+            Primer_Base primerScript = activePrimer
+                .GetComponent<ItemPickUp>()
+                .targetObj.GetComponent<Primer_Base>();
             primerScript.StrikePrimer();
         }
 
@@ -217,7 +245,10 @@ public class Player : MonoBehaviour
         shootAudioSource.Play();
     }
 
-    public Vector3 getRotate() { return watch; }
+    public Vector3 getRotate()
+    {
+        return watch;
+    }
 
     public void setHP(float addpoint)
     {
