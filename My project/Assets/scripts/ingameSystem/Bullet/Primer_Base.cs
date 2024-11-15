@@ -12,17 +12,13 @@ public class Primer_Base : MonoBehaviour
     protected int rarelity;
     public string primerName;
     // Start is called before the first frame update
-    void Start()
-    {
-
-    }
     public string getName() { return primerName; }
     // Update is called once per frame
     void Update()
     {
 
     }
-    public void StrikePrimer()
+    public virtual void StrikePrimer()
     {
         StartCoroutine(Fire());
     }

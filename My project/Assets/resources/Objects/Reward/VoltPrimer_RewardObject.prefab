@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7536853282545680794}
   - component: {fileID: 1916286870448690094}
   m_Layer: 0
-  m_Name: VoltPrimer_RewardObject 1
+  m_Name: VoltPrimer_RewardObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

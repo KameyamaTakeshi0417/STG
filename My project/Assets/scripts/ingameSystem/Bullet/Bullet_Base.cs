@@ -14,7 +14,6 @@ public class Bullet_Base : MonoBehaviour
     public Vector3 rotate; //弾の発射角
 
     public int rarelity;//オブジェクトの挙動が変わるもの
-    private Primer_Base primerEffect;
     public string bulletName;
     // Start is called before the first frame update
     void Start()

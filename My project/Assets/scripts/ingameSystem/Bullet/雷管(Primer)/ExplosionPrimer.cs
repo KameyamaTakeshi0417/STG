@@ -5,15 +5,10 @@ using UnityEngine;
 public class ExplosionPrimer : Primer_Base
 {
     // Start is called before the first frame update
-
-    protected override IEnumerator Fire()
+    public override void StrikePrimer()
     {
-        
-        GameObject bulletPrefab = Instantiate(Resources.Load<GameObject>("Objects/Effect_Explosion"), gameObject.transform.position, Quaternion.identity);
+        GameObject bulletPrefab = Instantiate(Resources.Load<GameObject>("Objects/Effect_Explosion"), GameObject.Find("Player").transform.position,  GameObject.Find("Player").transform.rotation);
         bulletPrefab.GetComponent<Effect_Explosion>().startExplosion(30, 50);
-
-       
-
-        yield break;
     }
+
 }

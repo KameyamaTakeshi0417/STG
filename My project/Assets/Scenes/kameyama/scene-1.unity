@@ -1055,7 +1055,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59caf8f1b7fad3843be223ccb855eb99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetImage: {fileID: 0}
+  targetImage: {fileID: 218335376}
   newSprite: {fileID: 0}
   itemCategory: Bullet
 --- !u!114 &218335376
@@ -2335,6 +2335,63 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!1001 &421734749
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1848921993184177636, guid: 7fb65c411ef93c0428e3cf735f0ea027, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 3.2477262
+      objectReference: {fileID: 0}
+    - target: {fileID: 1848921993184177636, guid: 7fb65c411ef93c0428e3cf735f0ea027, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -5.0664535
+      objectReference: {fileID: 0}
+    - target: {fileID: 1848921993184177636, guid: 7fb65c411ef93c0428e3cf735f0ea027, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1848921993184177636, guid: 7fb65c411ef93c0428e3cf735f0ea027, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1848921993184177636, guid: 7fb65c411ef93c0428e3cf735f0ea027, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1848921993184177636, guid: 7fb65c411ef93c0428e3cf735f0ea027, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1848921993184177636, guid: 7fb65c411ef93c0428e3cf735f0ea027, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1848921993184177636, guid: 7fb65c411ef93c0428e3cf735f0ea027, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1848921993184177636, guid: 7fb65c411ef93c0428e3cf735f0ea027, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1848921993184177636, guid: 7fb65c411ef93c0428e3cf735f0ea027, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7064059390813096083, guid: 7fb65c411ef93c0428e3cf735f0ea027, type: 3}
+      propertyPath: m_Name
+      value: VoltPrimer_RewardObject 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 7fb65c411ef93c0428e3cf735f0ea027, type: 3}
 --- !u!1 &425232912
 GameObject:
   m_ObjectHideFlags: 0
@@ -8271,7 +8328,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59caf8f1b7fad3843be223ccb855eb99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetImage: {fileID: 0}
+  targetImage: {fileID: 1987161134}
   newSprite: {fileID: 0}
   itemCategory: Case
 --- !u!114 &1987161134
@@ -8690,7 +8747,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59caf8f1b7fad3843be223ccb855eb99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetImage: {fileID: 0}
+  targetImage: {fileID: 2087764751}
   newSprite: {fileID: 0}
   itemCategory: Primer
 --- !u!114 &2087764751
@@ -9139,3 +9196,4 @@ SceneRoots:
   - {fileID: 1821330274}
   - {fileID: 634468923}
   - {fileID: 917897055}
+  - {fileID: 421734749}
