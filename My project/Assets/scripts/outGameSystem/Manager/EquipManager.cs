@@ -58,6 +58,7 @@ public class EquipManager : MonoBehaviour
         Sprite tmpSprite = item.GetComponent<SpriteRenderer>().sprite;
         OnEquipChanged?.Invoke(tmpCategory, tmpSprite);
         bool subChanged = false;
+        EquipStackDecide decideScript = gameObject.GetComponent<EquipStackDecide>();
         switch (tmpCategory)
         {
             case "Bullet":
@@ -66,6 +67,9 @@ public class EquipManager : MonoBehaviour
                         activeBullet = item;
                     else if (subBullet == null)
                         subBullet = item;
+                    else
+                        decideScript.StartSelection(activeBullet, subBullet, item);
+
                 subChanged = true;
                 break;
             case "Case":
@@ -74,6 +78,8 @@ public class EquipManager : MonoBehaviour
                         activeCase = item;
                     else if (subCase == null)
                         subCase = item;
+                    else
+                        decideScript.StartSelection(activeCase, subCase, item);
                 subChanged = true;
                 break;
             case "Primer":
@@ -82,7 +88,66 @@ public class EquipManager : MonoBehaviour
                         activePrimer = item;
                     else if (subPrimer == null)
                         subPrimer = item;
+                    else
+                        decideScript.StartSelection(activePrimer, subPrimer, item);
                 subChanged = true;
+                break;
+            default:
+                Debug.LogWarning("Invalid item type for equip");
+                break;
+        }
+        if (subChanged == true)
+        {
+            return;
+        }
+        // 新しいスプライトを設定
+        UIImageChanger[] imageChangers = FindObjectsOfType<UIImageChanger>();
+        foreach (UIImageChanger imageChanger in imageChangers)
+        {
+            if (imageChanger.itemCategory == tmpCategory)
+            {
+                imageChanger.newSprite = tmpSprite;
+            }
+        }
+    }
+
+    public void EquipItemtoMain(GameObject item)
+    {
+        // 装備が変更された際にイベントを発行
+        string tmpCategory = item.GetComponent<ItemPickUp>().itemType;
+        Sprite tmpSprite = item.GetComponent<SpriteRenderer>().sprite;
+        OnEquipChanged?.Invoke(tmpCategory, tmpSprite);
+        bool subChanged = false;
+        EquipStackDecide decideScript = gameObject.GetComponent<EquipStackDecide>();
+        switch (tmpCategory)
+        {
+            case "Bullet":
+                if (activeBullet != null)
+                {
+                    activeBullet = item;
+                }
+                else { }
+
+                break;
+            case "Case":
+                if (activeCase != null)
+                {
+                    activeCase = item;
+                }
+                else
+                {
+                    decideScript.StartSelection(activeCase, subCase, item);
+                }
+                break;
+            case "Primer":
+                if (activePrimer != null)
+                {
+                    activePrimer = item;
+                }
+                else
+                {
+                    decideScript.StartSelection(activePrimer, subPrimer, item);
+                }
                 break;
             default:
                 Debug.LogWarning("Invalid item type for equip");

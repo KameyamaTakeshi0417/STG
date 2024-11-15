@@ -18,6 +18,7 @@ public class ItemPickUp : MonoBehaviour
             // プレイヤーに触れた場合、インベントリに追加し装備を更新
             EquipManager equipManager = GameObject.Find("GameManager").GetComponent<EquipManager>();
             InventoryManager inventoryManager=GameObject.Find("GameManager").GetComponent<InventoryManager>();
+         
             if (equipManager != null)
             {
                 GameObject targetObj=Resources.Load<GameObject>(accessAddress);
