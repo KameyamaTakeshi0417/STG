@@ -20,15 +20,10 @@ public class Primer_Base : MonoBehaviour
     }
     public virtual void StrikePrimer()
     {
-        StartCoroutine(Fire());
-    }
-    protected virtual IEnumerator Fire()
-    {
-        //弾丸を生成する
+          //弾丸を生成する
 
         //発射時の効果をここに記載する
 
-        yield break;
     }
     public float getDmg() { return pow; }
     public float getSpeed() { return speed; }

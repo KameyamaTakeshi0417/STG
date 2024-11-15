@@ -21,7 +21,7 @@ public class ItemPickUp : MonoBehaviour
             if (equipManager != null)
             {
                 GameObject targetObj=Resources.Load<GameObject>(accessAddress);
-                equipManager.EquipItem(targetObj,targetObj.GetComponent<SpriteRenderer>().sprite, itemType);
+                equipManager.EquipItem(targetObj);
 
                 inventoryManager.AddAmmo(targetObj);
 
