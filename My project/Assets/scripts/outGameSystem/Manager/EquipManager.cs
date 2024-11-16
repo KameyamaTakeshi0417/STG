@@ -28,7 +28,7 @@ public class EquipManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown("1"))
+        if (Input.GetKeyDown("3"))
         {
             tmpObj = activeBullet;
             activeBullet = subBullet;
@@ -42,7 +42,7 @@ public class EquipManager : MonoBehaviour
             subCase = tmpObj;
             EquipItemtoMain(activeCase);
         }
-        if (Input.GetKeyDown("3"))
+        if (Input.GetKeyDown("1"))
         {
             tmpObj = activePrimer;
             activePrimer = subPrimer;
@@ -72,7 +72,7 @@ public class EquipManager : MonoBehaviour
                     else if (subBullet == null)
                         subBullet = item;
                     else
-                        subChanged = true;
+                        decideScript.StartSelection(activeBullet, subBullet, item);
                 break;
             case "Case":
                 if (useMainEquip)
@@ -86,7 +86,7 @@ public class EquipManager : MonoBehaviour
                     else if (subCase == null)
                         subCase = item;
                     else
-                        subChanged = true;
+                        decideScript.StartSelection(activeCase, subCase, item);
                 break;
             case "Primer":
                 if (useMainEquip)
@@ -100,7 +100,7 @@ public class EquipManager : MonoBehaviour
                     else if (subPrimer == null)
                         subPrimer = item;
                     else
-                        subChanged = true;
+                        decideScript.StartSelection(activePrimer, subPrimer, item);
                 break;
             default:
                 Debug.LogWarning("Invalid item type for equip");
@@ -141,7 +141,7 @@ public class EquipManager : MonoBehaviour
                 }
                 else
                 {
-                    // decideScript.StartSelection(activeCase, subCase, item);
+                    // 
                 }
                 break;
             case "Primer":
