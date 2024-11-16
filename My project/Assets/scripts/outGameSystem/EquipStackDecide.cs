@@ -22,6 +22,7 @@ public class EquipStackDecide : MonoBehaviour
     {
         // target 選択処理を準備
         // 選択ボタンに、targetObject や activetarget を使った処理を割り当て
+        freezeGame();
         SetupSelectionButtons(mainObject, subtarget, targetObject);
     }
 
@@ -32,7 +33,7 @@ public class EquipStackDecide : MonoBehaviour
         GameObject targetObject
     )
     {
-        freezeGame();
+        
         // ボタン1に activetarget を選択する処理を割り当てる
         Button activeObjectButton = selectionPanel
             .transform.Find("activeObjectButton")

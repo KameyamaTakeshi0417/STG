@@ -33,21 +33,21 @@ public class EquipManager : MonoBehaviour
             tmpObj = activeBullet;
             activeBullet = subBullet;
             subBullet = tmpObj;
-            EquipItem(activeBullet);
+            EquipItemtoMain(activeBullet);
         }
         if (Input.GetKeyDown("2"))
         {
             tmpObj = activeCase;
             activeCase = subCase;
             subCase = tmpObj;
-            EquipItem(activeCase);
+            EquipItemtoMain(activeCase);
         }
         if (Input.GetKeyDown("3"))
         {
             tmpObj = activePrimer;
             activePrimer = subPrimer;
             subPrimer = tmpObj;
-            EquipItem(activePrimer);
+            EquipItemtoMain(activePrimer);
         }
     }
 
@@ -56,7 +56,7 @@ public class EquipManager : MonoBehaviour
         // 装備が変更された際にイベントを発行
         string tmpCategory = item.GetComponent<ItemPickUp>().itemType;
         Sprite tmpSprite = item.GetComponent<SpriteRenderer>().sprite;
-        OnEquipChanged?.Invoke(tmpCategory, tmpSprite);
+
         bool subChanged = false;
         EquipStackDecide decideScript = gameObject.GetComponent<EquipStackDecide>();
         switch (tmpCategory)
@@ -64,33 +64,43 @@ public class EquipManager : MonoBehaviour
             case "Bullet":
                 if (useMainEquip)
                     if (activeBullet == null)
+                    {
                         activeBullet = item;
+                        // 新しいスプライトを設定
+                        imageChange(item);
+                    }
                     else if (subBullet == null)
                         subBullet = item;
                     else
-                        decideScript.StartSelection(activeBullet, subBullet, item);
-
-                subChanged = true;
+                        subChanged = true;
                 break;
             case "Case":
                 if (useMainEquip)
                     if (activeCase == null)
+                    {
+                        // 新しいスプライトを設定
+
+                        imageChange(item);
                         activeCase = item;
+                    }
                     else if (subCase == null)
                         subCase = item;
                     else
-                        decideScript.StartSelection(activeCase, subCase, item);
-                subChanged = true;
+                        subChanged = true;
                 break;
             case "Primer":
                 if (useMainEquip)
                     if (activePrimer == null)
+                    {
+                        // 新しいスプライトを設定
+
+                        imageChange(item);
                         activePrimer = item;
+                    }
                     else if (subPrimer == null)
                         subPrimer = item;
                     else
-                        decideScript.StartSelection(activePrimer, subPrimer, item);
-                subChanged = true;
+                        subChanged = true;
                 break;
             default:
                 Debug.LogWarning("Invalid item type for equip");
@@ -99,15 +109,6 @@ public class EquipManager : MonoBehaviour
         if (subChanged == true)
         {
             return;
-        }
-        // 新しいスプライトを設定
-        UIImageChanger[] imageChangers = FindObjectsOfType<UIImageChanger>();
-        foreach (UIImageChanger imageChanger in imageChangers)
-        {
-            if (imageChanger.itemCategory == tmpCategory)
-            {
-                imageChanger.newSprite = tmpSprite;
-            }
         }
     }
 
@@ -125,6 +126,8 @@ public class EquipManager : MonoBehaviour
                 if (activeBullet != null)
                 {
                     activeBullet = item;
+                    // 新しいスプライトを設定
+                    imageChange(item);
                 }
                 else { }
 
@@ -133,20 +136,24 @@ public class EquipManager : MonoBehaviour
                 if (activeCase != null)
                 {
                     activeCase = item;
+                    // 新しいスプライトを設定
+                    imageChange(item);
                 }
                 else
                 {
-                    decideScript.StartSelection(activeCase, subCase, item);
+                    // decideScript.StartSelection(activeCase, subCase, item);
                 }
                 break;
             case "Primer":
                 if (activePrimer != null)
                 {
                     activePrimer = item;
+                    // 新しいスプライトを設定
+                    imageChange(item);
                 }
                 else
                 {
-                    decideScript.StartSelection(activePrimer, subPrimer, item);
+                    //  decideScript.StartSelection(activePrimer, subPrimer, item);
                 }
                 break;
             default:
@@ -157,8 +164,14 @@ public class EquipManager : MonoBehaviour
         {
             return;
         }
-        // 新しいスプライトを設定
+    }
+
+    public void imageChange(GameObject targetObj)
+    {
+        string tmpCategory = targetObj.GetComponent<ItemPickUp>().itemType;
         UIImageChanger[] imageChangers = FindObjectsOfType<UIImageChanger>();
+        Sprite tmpSprite = targetObj.GetComponent<SpriteRenderer>().sprite;
+        OnEquipChanged?.Invoke(tmpCategory, tmpSprite);
         foreach (UIImageChanger imageChanger in imageChangers)
         {
             if (imageChanger.itemCategory == tmpCategory)
