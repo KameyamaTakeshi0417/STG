@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bdc1d11f8b03bd7408208e278235dbf6, type: 3}
-  m_Name: ExplosionBullet
+  m_Name: VoltBullet
   m_EditorClassIdentifier: 
   itemName: 
   itemRarelity: 1
@@ -22,6 +22,6 @@ MonoBehaviour:
   itemSpan: 0
   itemPrefab: {fileID: 8920081789732665918, guid: 4fb15000d1481cf46af317a74f162a22, type: 3}
   itemUI: {fileID: 0}
-  flavorText1: "\u5C0F\u30C0\u30E1\u30FC\u30B8\u306E\u7206\u767A\u3092\u751F\u6210\u3059\u308B\u3002"
-  flavorText2: "\u7206\u767A\u3068\u306F\u30A8\u30CD\u30EB\u30AE\u30FC\u306E\u89E3\u653E\u3067\u3042\u308B\u3002"
-  flavorText3: "\u306A\u3089\u3070\u751F\u547D\u306E\u7206\u767A\u306F\u3001\u305D\u306E\u9593\u969B\u306B\u3053\u305D\u6700\u3082\u5F37\u304F\u306A\u308B\u3060\u308D\u3046\u3002"
+  flavorText1: "\u5C0F\u30C0\u30E1\u30FC\u30B8\u306E\u611F\u96FB\u3092\u751F\u6210\u3059\u308B\u3002"
+  flavorText2: "\u53E4\u6765\u3088\u308A\u5929\u306E\u5149\u306F\u795E\u306E\u5FA1\u696D\u3068\u3055\u308C\u308B\u3002"
+  flavorText3: "\u5730\u306B\u843D\u3068\u3055\u308C\u308B\u7A32\u59BB\u306F\u795E\u306E\u6012\u308A\u305D\u306E\u3082\u306E\u306A\u306E\u3060\u308D\u3046\u304B\u3002"

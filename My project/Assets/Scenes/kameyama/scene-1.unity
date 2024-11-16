@@ -435,7 +435,6 @@ GameObject:
   - component: {fileID: 108298553}
   - component: {fileID: 108298552}
   - component: {fileID: 108298551}
-  - component: {fileID: 108298555}
   m_Layer: 0
   m_Name: EquipSelectCanvas
   m_TagString: Untagged
@@ -503,7 +502,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: 1530105413
   m_SortingOrder: 200
   m_TargetDisplay: 0
 --- !u!224 &108298554
@@ -521,29 +520,13 @@ RectTransform:
   - {fileID: 536712866}
   - {fileID: 433663380}
   - {fileID: 995945690}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 736362684}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &108298555
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 108298550}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6fcbf11ff9449484892719d4c0fb29e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selectionPanel: {fileID: 108298550}
-  mainEquipImage: {fileID: 995945689}
-  subEquipImage: {fileID: 433663379}
-  targetEquipImage: {fileID: 536712865}
 --- !u!1 &130441647
 GameObject:
   m_ObjectHideFlags: 0
@@ -4050,6 +4033,7 @@ GameObject:
   - component: {fileID: 736362690}
   - component: {fileID: 736362691}
   - component: {fileID: 736362692}
+  - component: {fileID: 736362693}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -4089,6 +4073,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 366093525}
+  - {fileID: 108298554}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &736362685
@@ -4199,10 +4184,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fcbf11ff9449484892719d4c0fb29e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectionPanel: {fileID: 108298550}
   mainEquipImage: {fileID: 995945689}
   subEquipImage: {fileID: 433663379}
   targetEquipImage: {fileID: 536712865}
+  selectionCanvas: {fileID: 108298550}
+--- !u!114 &736362693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 736362682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fcbf11ff9449484892719d4c0fb29e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainEquipImage: {fileID: 995945689}
+  subEquipImage: {fileID: 433663379}
+  targetEquipImage: {fileID: 536712865}
+  selectionCanvas: {fileID: 108298550}
 --- !u!1 &789625029
 GameObject:
   m_ObjectHideFlags: 0
@@ -10034,7 +10035,6 @@ SceneRoots:
   - {fileID: 1572245903}
   - {fileID: 736362684}
   - {fileID: 1821330274}
-  - {fileID: 108298554}
   - {fileID: 428712508}
   - {fileID: 1329045727}
   - {fileID: 16253300}

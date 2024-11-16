@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bdc1d11f8b03bd7408208e278235dbf6, type: 3}
-  m_Name: NormalBullet
+  m_Name: BloomBullet
   m_EditorClassIdentifier: 
   itemName: NormalBullet
   itemRarelity: 1
@@ -22,6 +22,6 @@ MonoBehaviour:
   itemSpan: 1
   itemPrefab: {fileID: 0}
   itemUI: {fileID: 0}
-  flavorText1: "\u5F3E\u306B\u8FFD\u52A0\u30C0\u30E1\u30FC\u30B8\u304C\u767A\u751F\u3059\u308B\u3002"
-  flavorText2: "\u30AB\u30A4\u30AB\u306B\u6700\u521D\u304B\u3089\u4E0E\u3048\u3089\u308C\u305F\u5F3E\u3002"
-  flavorText3: "\u7279\u8272\u304C\u306A\u3044\u306E\u306F\u3001\u307E\u3060\u30AB\u30A4\u30AB\u304C\u4F55\u8005\u3067\u3082\u306A\u3044\u304B\u3089\u306A\u306E\u3060\u308D\u3046\u304B\u3002"
+  flavorText1: "\u7740\u5F3E\u6642\u306B\u958B\u82B1\u3092\u767A\u751F\u3055\u305B\u308B\u3002"
+  flavorText2: "\u6700\u3082\u53EF\u6190\u3067\u6700\u3082\u71BE\u70C8\u306A\u5F3E\u3002"
+  flavorText3: "\u4E00\u5EA6\u5F53\u305F\u308C\u3070\u795E\u3067\u3059\u3089\u50B7\u3092\u8CA0\u3046\u3002\u6CC1\u3084\u7363\u3092\u3084\u3002"

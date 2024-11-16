@@ -165,7 +165,59 @@ public class EquipManager : MonoBehaviour
             return;
         }
     }
+  public void EquipItemtoSub(GameObject item)
+    {
+        // 装備が変更された際にイベントを発行
+        string tmpCategory = item.GetComponent<ItemPickUp>().itemType;
+        Sprite tmpSprite = item.GetComponent<SpriteRenderer>().sprite;
+        OnEquipChanged?.Invoke(tmpCategory, tmpSprite);
+        bool subChanged = false;
+        EquipStackDecide decideScript = gameObject.GetComponent<EquipStackDecide>();
+        switch (tmpCategory)
+        {
+            case "Bullet":
+                if (subBullet != null)
+                {
+                    subBullet = item;
+                    // 新しいスプライトを設定
+                    imageChange(item);
+                }
+                else { }
 
+                break;
+            case "Case":
+                if (subCase != null)
+                {
+                    subCase = item;
+                    // 新しいスプライトを設定
+                    imageChange(item);
+                }
+                else
+                {
+                    // 
+                }
+                break;
+            case "Primer":
+                if (subPrimer != null)
+                {
+                    subPrimer = item;
+                    // 新しいスプライトを設定
+                    imageChange(item);
+                }
+                else
+                {
+                    //  decideScript.StartSelection(activePrimer, subPrimer, item);
+                }
+                break;
+            default:
+                Debug.LogWarning("Invalid item type for equip");
+                break;
+        }
+        if (subChanged == true)
+        {
+            return;
+        }
+    }
     public void imageChange(GameObject targetObj)
     {
         string tmpCategory = targetObj.GetComponent<ItemPickUp>().itemType;

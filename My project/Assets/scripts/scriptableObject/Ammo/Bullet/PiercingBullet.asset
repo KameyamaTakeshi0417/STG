@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bdc1d11f8b03bd7408208e278235dbf6, type: 3}
-  m_Name: NormalBullet
+  m_Name: PiercingBullet
   m_EditorClassIdentifier: 
   itemName: NormalBullet
   itemRarelity: 1
@@ -22,6 +22,6 @@ MonoBehaviour:
   itemSpan: 1
   itemPrefab: {fileID: 0}
   itemUI: {fileID: 0}
-  flavorText1: "\u5F3E\u306B\u8FFD\u52A0\u30C0\u30E1\u30FC\u30B8\u304C\u767A\u751F\u3059\u308B\u3002"
-  flavorText2: "\u30AB\u30A4\u30AB\u306B\u6700\u521D\u304B\u3089\u4E0E\u3048\u3089\u308C\u305F\u5F3E\u3002"
-  flavorText3: "\u7279\u8272\u304C\u306A\u3044\u306E\u306F\u3001\u307E\u3060\u30AB\u30A4\u30AB\u304C\u4F55\u8005\u3067\u3082\u306A\u3044\u304B\u3089\u306A\u306E\u3060\u308D\u3046\u304B\u3002"
+  flavorText1: "\u8CAB\u901A\u80FD\u529B\u3092\u4ED8\u4E0E\u3059\u308B\u3002"
+  flavorText2: "\u304B\u3064\u3066\u306E\u4FB5\u7565\u6226\u4E89\u306E\u6298\u3001\u6B21\u5973\u30EF\u30AB\u30B0\u30B5\u306F\u3053\u306E\u5F3E\u4E38\u306B\u3088\u3063\u3066"
+  flavorText3: "\u6575\u306E\u93A7\u3092\u8CAB\u304D\u3001\u52DD\u6A5F\u3092\u3064\u304B\u3093\u3060\u306E\u3060\u3068\u3044\u3046\u3002"
