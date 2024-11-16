@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EquipUIManager : _Manager_Base
 {
@@ -22,9 +23,65 @@ public class EquipUIManager : _Manager_Base
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape)) { 
-            
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            selectionCanvas.SetActive(true);
+            setImageEquipMenu();
         }
+    }
+
+    public void closeUI()
+    {
+        selectionCanvas.SetActive(false);
+    }
+
+    protected void setImageEquipMenu()
+    {
+        if (gameObject.GetComponent<EquipManager>().activeBullet != null)
+        {
+            activeBullet.GetComponent<Image>().sprite = setImage(
+                gameObject.GetComponent<EquipManager>().activeBullet
+            );
+        }
+        if (gameObject.GetComponent<EquipManager>().activeCase != null)
+        {
+            activeCase.GetComponent<Image>().sprite = setImage(
+                gameObject.GetComponent<EquipManager>().activeCase
+            );
+        }
+
+        if (gameObject.GetComponent<EquipManager>().activePrimer != null)
+        {
+            activePrimer.GetComponent<Image>().sprite = setImage(
+                gameObject.GetComponent<EquipManager>().activePrimer
+            );
+        }
+
+        if (gameObject.GetComponent<EquipManager>().subBullet != null)
+        {
+            subBullet.GetComponent<Image>().sprite = setImage(
+                gameObject.GetComponent<EquipManager>().subBullet
+            );
+        }
+
+        if (gameObject.GetComponent<EquipManager>().subCase != null)
+        {
+            subCase.GetComponent<Image>().sprite = setImage(
+                gameObject.GetComponent<EquipManager>().subCase
+            );
+        }
+
+        if (gameObject.GetComponent<EquipManager>().subPrimer != null)
+        {
+            subPrimer.GetComponent<Image>().sprite = setImage(
+                gameObject.GetComponent<EquipManager>().subPrimer
+            );
+        }
+    }
+
+    private Sprite setImage(GameObject targetUI)
+    {
+        return targetUI.GetComponent<SpriteRenderer>().sprite;
     }
 
     public void EquipItem(GameObject item)
