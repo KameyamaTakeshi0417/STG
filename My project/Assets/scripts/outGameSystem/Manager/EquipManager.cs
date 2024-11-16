@@ -2,19 +2,10 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class EquipManager : MonoBehaviour
+public class EquipManager : _Manager_Base
 {
-    public GameObject activeBullet;
-    public GameObject activeCase;
-    public GameObject activePrimer;
-
-    public GameObject subBullet;
-    public GameObject subCase;
-    public GameObject subPrimer;
-
-    private bool useMainEquip = true;
-    public static event EquipChangedHandler OnEquipChanged;
     public delegate void EquipChangedHandler(string updatedCategory, Sprite newSprite);
+    public static event EquipChangedHandler OnEquipChanged;
 
     void Awake()
     {
@@ -23,8 +14,6 @@ public class EquipManager : MonoBehaviour
         activeCase = Resources.Load<GameObject>("Objects/Reward/NormalCase");
         activePrimer = Resources.Load<GameObject>("Objects/Reward/NormalPrimer");
     }
-
-    GameObject tmpObj;
 
     void Update()
     {
@@ -141,7 +130,7 @@ public class EquipManager : MonoBehaviour
                 }
                 else
                 {
-                    // 
+                    //
                 }
                 break;
             case "Primer":
@@ -165,12 +154,13 @@ public class EquipManager : MonoBehaviour
             return;
         }
     }
-  public void EquipItemtoSub(GameObject item)
+
+    public void EquipItemtoSub(GameObject item)
     {
         // 装備が変更された際にイベントを発行
         string tmpCategory = item.GetComponent<ItemPickUp>().itemType;
         Sprite tmpSprite = item.GetComponent<SpriteRenderer>().sprite;
-      //  OnEquipChanged?.Invoke(tmpCategory, tmpSprite);
+        //  OnEquipChanged?.Invoke(tmpCategory, tmpSprite);
         bool subChanged = false;
         EquipStackDecide decideScript = gameObject.GetComponent<EquipStackDecide>();
         switch (tmpCategory)
@@ -180,7 +170,7 @@ public class EquipManager : MonoBehaviour
                 {
                     subBullet = item;
                     // 新しいスプライトを設定
-                 //   imageChange(item);
+                    //   imageChange(item);
                 }
                 else { }
 
@@ -190,11 +180,11 @@ public class EquipManager : MonoBehaviour
                 {
                     subCase = item;
                     // 新しいスプライトを設定
-                   // imageChange(item);
+                    // imageChange(item);
                 }
                 else
                 {
-                    // 
+                    //
                 }
                 break;
             case "Primer":
@@ -202,7 +192,7 @@ public class EquipManager : MonoBehaviour
                 {
                     subPrimer = item;
                     // 新しいスプライトを設定
-                   // imageChange(item);
+                    // imageChange(item);
                 }
                 else
                 {
@@ -218,6 +208,7 @@ public class EquipManager : MonoBehaviour
             return;
         }
     }
+
     public void imageChange(GameObject targetObj)
     {
         string tmpCategory = targetObj.GetComponent<ItemPickUp>().itemType;
