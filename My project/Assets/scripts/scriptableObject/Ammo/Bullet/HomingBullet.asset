@@ -1,27 +1,3 @@
-%YAML 1.1
-%TAG !u! tag:unity3d.com,2011:
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdc1d11f8b03bd7408208e278235dbf6, type: 3}
-  m_Name: HomingBullet
-  m_EditorClassIdentifier: 
-  itemName: NormalBullet
-  itemRarelity: 1
-  itemHP: 0
-  itemPower: 10
-  itemSpeed: 0.01
-  itemDamage: 10
-  itemLange: 1
-  itemSpan: 1
-  itemPrefab: {fileID: 0}
-  itemUI: {fileID: 0}
-  flavorText1: "\u5F3E\u4E38\u306B\u9B42\u3092\u8FBC\u3081\u8FFD\u5C3E\u52B9\u679C\u3092\u4ED8\u4E0E\u3059\u308B\u3002"
-  flavorText2: "\u5F3E\u306B\u8FBC\u3081\u3089\u308C\u305F\u610F\u5FD7\u306F\u6BBA\u610F\u3092\u4EE5\u3066\u6575\u3092\u8FFD\u3046\u3002"
-  flavorText3: "\u5F3E\u306E\u6301\u3064\u7D14\u7C8B\u306A\u60AA\u610F\u3092\u3057\u3066\u3001\u3053\u306E\u529B\u306F\u9B54\u5F3E\u3068\u547C\u3070\u308C\u305F\u3002"
+version https://git-lfs.github.com/spec/v1
+oid sha256:aa228459861d2d80695d938dcf4f3a99b822773995c71a6667d618c44a2e4d33
+size 1010

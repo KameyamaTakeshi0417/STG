@@ -170,7 +170,7 @@ public class EquipManager : MonoBehaviour
         // 装備が変更された際にイベントを発行
         string tmpCategory = item.GetComponent<ItemPickUp>().itemType;
         Sprite tmpSprite = item.GetComponent<SpriteRenderer>().sprite;
-        OnEquipChanged?.Invoke(tmpCategory, tmpSprite);
+      //  OnEquipChanged?.Invoke(tmpCategory, tmpSprite);
         bool subChanged = false;
         EquipStackDecide decideScript = gameObject.GetComponent<EquipStackDecide>();
         switch (tmpCategory)
@@ -180,7 +180,7 @@ public class EquipManager : MonoBehaviour
                 {
                     subBullet = item;
                     // 新しいスプライトを設定
-                    imageChange(item);
+                 //   imageChange(item);
                 }
                 else { }
 
@@ -190,7 +190,7 @@ public class EquipManager : MonoBehaviour
                 {
                     subCase = item;
                     // 新しいスプライトを設定
-                    imageChange(item);
+                   // imageChange(item);
                 }
                 else
                 {
@@ -202,7 +202,7 @@ public class EquipManager : MonoBehaviour
                 {
                     subPrimer = item;
                     // 新しいスプライトを設定
-                    imageChange(item);
+                   // imageChange(item);
                 }
                 else
                 {

@@ -56,7 +56,7 @@ public class EquipStackDecide : MonoBehaviour
         if (subButton != null)
         {
             subButton.onClick.RemoveAllListeners();
-            subButton.onClick.AddListener(() => equipManager.EquipItemtoMain(targetObject));
+            subButton.onClick.AddListener(() => equipManager.EquipItemtoSub(targetObject));
             subButton.onClick.AddListener(() => continueGame());
         }
 
