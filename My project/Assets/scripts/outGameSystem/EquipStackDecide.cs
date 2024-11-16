@@ -36,7 +36,7 @@ public class EquipStackDecide : MonoBehaviour
         EquipManager equipManager = gameObject.GetComponent<EquipManager>();
         if (equipManager != null)
         {
-            equipManager.EquipItemtoMain(targetObject);
+         //   equipManager.EquipItemtoMain(targetObject);
         }
         Selecttarget(mainEquipImage, mainObject);
         Selecttarget(subEquipImage, subObject);
@@ -47,7 +47,8 @@ public class EquipStackDecide : MonoBehaviour
         if (mainButton != null)
         {
             mainButton.onClick.RemoveAllListeners();
-            mainButton.onClick.AddListener(() => equipManager.EquipItemtoMain(mainObject));
+             mainButton.onClick.AddListener(() => Selecttarget(mainEquipImage, mainObject));
+            mainButton.onClick.AddListener(() => equipManager.EquipItemtoMain(targetObject));
             mainButton.onClick.AddListener(() => continueGame());
         }
 
@@ -55,7 +56,7 @@ public class EquipStackDecide : MonoBehaviour
         if (subButton != null)
         {
             subButton.onClick.RemoveAllListeners();
-            subButton.onClick.AddListener(() => equipManager.EquipItemtoMain(subObject));
+            subButton.onClick.AddListener(() => equipManager.EquipItemtoMain(targetObject));
             subButton.onClick.AddListener(() => continueGame());
         }
 
@@ -63,7 +64,7 @@ public class EquipStackDecide : MonoBehaviour
         if (targetButton != null)
         {
             targetButton.onClick.RemoveAllListeners();
-            targetButton.onClick.AddListener(() => equipManager.EquipItemtoMain(targetObject));
+           // targetButton.onClick.AddListener(() => equipManager.EquipItemtoMain(targetObject));
             targetButton.onClick.AddListener(() => continueGame());
         }
 
