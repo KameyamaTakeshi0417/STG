@@ -9,16 +9,23 @@ public class Health : MonoBehaviour
     public float currentHP;
     private int Exp;
     private int moneyCount;
-    private Slider hpSlider;     //HPバー（スライダー）
-
+    private Slider hpSlider; //HPバー（スライダー）
+    private HPBar_Base m_handler;
+    public delegate void HPChangedHandler();
+    public static event HPChangedHandler OnHPChanged;
     void Start()
     {
         currentHP = HP;
-
+        m_handler = gameObject.GetComponent<HPBar_Base>();
     }
+
     public void setSlideHPBar()
     {
-        GameObject canvasInstance = Instantiate(Resources.Load<GameObject>("UI/EnemyHPCanvas"), gameObject.transform.position, Quaternion.identity);
+        GameObject canvasInstance = Instantiate(
+            Resources.Load<GameObject>("UI/EnemyHPCanvas"),
+            gameObject.transform.position,
+            Quaternion.identity
+        );
         canvasInstance.GetComponent<HPBarFollower>().setTargetTransform(gameObject.transform);
         //canvasInstance.transform.SetParent(transform);
         canvasInstance.transform.localPosition = new Vector3(0, 2, 0); // 必要に応じてオフセットを調整
@@ -27,7 +34,6 @@ public class Health : MonoBehaviour
 
         if (hpSlider != null)
         {
-            hpSlider = canvasInstance.transform.Find("HPBar").GetComponent<Slider>();
             if (hpSlider != null)
             {
                 // HPバーの初期設定
@@ -39,23 +45,15 @@ public class Health : MonoBehaviour
         {
             Debug.LogWarning("Canvas or HPBar not found in the enemy object.");
         }
-
-        hpSlider.maxValue = HP;
-        hpSlider.value = (float)currentHP;//HPバーの最初の値（最大HP）を設定
-
-
     }
 
-    void Awake()
-    {
+    void Awake() { }
 
-    }
     public void SliderUpdate()
     {
-
-        hpSlider.value = currentHP;//スライダは０〜1.0で表現するため最大HPで割って少数点数字に変換
-
+        hpSlider.value = currentHP; //スライダは０〜1.0で表現するため最大HPで割って少数点数字に変換
     }
+
     // ダメージを受け取るメソッド
     public void TakeDamage(float damage)
     {
@@ -75,42 +73,49 @@ public class Health : MonoBehaviour
             Die();
         }
     }
+
     public void setExp(int exp)
     {
         Exp = exp;
-
     }
+
     public float getHP()
     {
         return HP;
     }
+
     public void setHP(float hp)
     {
         HP = hp;
         return;
     }
+
     public float getCurrentHP()
     {
         return currentHP;
     }
+
     public void setCurrentHP(float set)
     {
         currentHP = set;
     }
+
     public void addHP(float hp)
     {
         HP += hp;
         return;
     }
+
     public void AddCurrentHP(float set)
     {
         currentHP += set;
     }
+
     private Vector3 CreateExpPos()
     {
         Vector3 ret;
         ret = new Vector3(0, 0, 0);
-        float randomPos;//乱数ベクトル作るための一時的なもの
+        float randomPos; //乱数ベクトル作るための一時的なもの
         randomPos = Random.Range(-2f, 2f);
         ret.x = randomPos;
         randomPos = Random.Range(-2f, 2f);
@@ -118,31 +123,34 @@ public class Health : MonoBehaviour
         ret += transform.localPosition;
         return ret;
     }
+
     public void setMoneyCount(int count)
     {
         moneyCount = count;
     }
+
     // HPが0になった時の処理
     void Die()
     {
-
         for (int i = 0; i < Exp; i++)
         {
-
             GameObject ExpObj = Instantiate(
-               Resources.Load<GameObject>("Objects/Exp"), CreateExpPos(), Quaternion.identity);
+                Resources.Load<GameObject>("Objects/Exp"),
+                CreateExpPos(),
+                Quaternion.identity
+            );
         }
 
         for (int i = 0; i < moneyCount; i++)
         {
-
             GameObject moneyObj = Instantiate(
-               Resources.Load<GameObject>("Objects/money"), CreateExpPos(), Quaternion.identity);
+                Resources.Load<GameObject>("Objects/money"),
+                CreateExpPos(),
+                Quaternion.identity
+            );
         }
         Debug.Log(gameObject.name + " died.");
         // ここに死亡時の処理を書く
         Destroy(gameObject);
-
     }
-    
 }

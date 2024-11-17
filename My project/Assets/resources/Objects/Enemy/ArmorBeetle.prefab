@@ -146,7 +146,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HP: 150
-  currentHP: 0
+  currentHP: 150
 --- !u!114 &6117067203040952965
 MonoBehaviour:
   m_ObjectHideFlags: 0

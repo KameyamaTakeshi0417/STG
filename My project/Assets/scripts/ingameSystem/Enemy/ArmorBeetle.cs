@@ -23,7 +23,40 @@ public class ArmorBeetle : MonoBehaviour
     void Awake()
     {
 
+     Player = GameObject.Find("Player");
+        myHealth = gameObject.GetComponent<Health>();
+        makeBarrier = false;
+        Player = GameObject.Find("Player");
+        if (Player == null)
+        {
+            Debug.LogError("Player object not found!");
+        }
 
+        myHealth = gameObject.GetComponent<Health>();
+        if (myHealth == null)
+        {
+            Debug.LogError("Health component not found!");
+        }
+
+        rb = gameObject.GetComponent<Rigidbody2D>();
+        if (rb == null)
+        {
+            Debug.LogError("Rigidbody2D component not found!");
+        }
+
+        makeBarrier = false;
+
+        // 初期化がすべて正常に行われた場合のみコルーチンを開始
+        if (Player != null && myHealth != null && rb != null)
+        {
+            StartCoroutine(Idle());
+        }
+        else
+        {
+            Debug.LogError("Initialization failed. Coroutine will not be started.");
+        }
+        StartCoroutine(Idle());
+        gameObject.GetComponent<Health>().setSlideHPBar();
     }
     void Start()
     {

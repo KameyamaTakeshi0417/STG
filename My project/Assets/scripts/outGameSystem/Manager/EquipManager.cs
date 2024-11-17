@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class EquipManager : _Manager_Base
 {
-    public delegate void EquipChangedHandler(string updatedCategory, Sprite newSprite);
+    public delegate void EquipChangedHandler(string updatedCategory, Sprite newSprite);//UIImageChangerにある
     public static event EquipChangedHandler OnEquipChanged;
 
     void Awake()

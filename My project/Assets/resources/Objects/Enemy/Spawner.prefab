@@ -117,7 +117,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HP: 100
-  currentHP: 0
+  currentHP: 100
 --- !u!61 &5830166388116100047
 BoxCollider2D:
   m_ObjectHideFlags: 0
