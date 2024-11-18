@@ -6,14 +6,17 @@ using UnityEngine.UI;
 public class PlayerHPBar : HPBar_Base
 {
     public GameObject playerObj;
+    public delegate void HPChangedHandler();
+    public static event HPChangedHandler OnPlayerHPChanged;
+
     void OnEnable()
     {
-        Health.OnHPChanged += setSlideHPBar;
+        PlayerHealth.OnPlayerHPChanged += HPUpdate;
     }
 
     void OnDisable()
     {
-        Health.OnHPChanged -= setSlideHPBar;
+        PlayerHealth.OnPlayerHPChanged -= HPUpdate;
     }
 
     // Start is called before the first frame update
@@ -28,19 +31,18 @@ public class PlayerHPBar : HPBar_Base
 
     private void HPUpdate()
     {
-        HP = playerObj.GetComponent<Health>().HP;
-        currentHP = playerObj.GetComponent<Health>().currentHP;
+        HP = playerObj.GetComponent<PlayerHealth>().HP;
+        currentHP = playerObj.GetComponent<PlayerHealth>().currentHP;
         // HPバーの初期設定
         hpSlider.maxValue = HP;
         hpSlider.value = (float)currentHP; // HPバーの最初の値を現在のHPに設定
+        // HPバー(Slider)を取得
+        hpSlider = HPBar.transform.Find("PlayerHPBar").GetComponent<Slider>();
+        setSlideHPBar();
     }
 
     public override void setSlideHPBar()
     {
-        HPUpdate();
-        // HPバー(Slider)を取得
-        hpSlider = HPBar.transform.Find("PlayerHPBar").GetComponent<Slider>();
-
         if (hpSlider != null)
         {
             if (hpSlider != null)
@@ -54,5 +56,6 @@ public class PlayerHPBar : HPBar_Base
         {
             Debug.LogWarning("Canvas or HPBar not found in the enemy object.");
         }
+        HPUpdate();
     }
 }

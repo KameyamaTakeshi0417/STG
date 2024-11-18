@@ -2,17 +2,11 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Health : MonoBehaviour
+public class Health : _Health_Base
 {
-    public float HP = 100f; // 初期HP
-
-    public float currentHP;
-    private int Exp;
-    private int moneyCount;
-    private Slider hpSlider; //HPバー（スライダー）
-    private HPBar_Base m_handler;
-    public delegate void HPChangedHandler();
+     public delegate void HPChangedHandler();
     public static event HPChangedHandler OnHPChanged;
+
     void Start()
     {
         currentHP = HP;
@@ -49,13 +43,10 @@ public class Health : MonoBehaviour
 
     void Awake() { }
 
-    public void SliderUpdate()
-    {
-        hpSlider.value = currentHP; //スライダは０〜1.0で表現するため最大HPで割って少数点数字に変換
-    }
+
 
     // ダメージを受け取るメソッド
-    public void TakeDamage(float damage)
+    public override void TakeDamage(float damage)
     {
         currentHP -= damage;
         if (hpSlider != null)
@@ -74,42 +65,6 @@ public class Health : MonoBehaviour
         }
     }
 
-    public void setExp(int exp)
-    {
-        Exp = exp;
-    }
-
-    public float getHP()
-    {
-        return HP;
-    }
-
-    public void setHP(float hp)
-    {
-        HP = hp;
-        return;
-    }
-
-    public float getCurrentHP()
-    {
-        return currentHP;
-    }
-
-    public void setCurrentHP(float set)
-    {
-        currentHP = set;
-    }
-
-    public void addHP(float hp)
-    {
-        HP += hp;
-        return;
-    }
-
-    public void AddCurrentHP(float set)
-    {
-        currentHP += set;
-    }
 
     private Vector3 CreateExpPos()
     {

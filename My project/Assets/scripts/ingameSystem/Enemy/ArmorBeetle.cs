@@ -1,200 +1,133 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
+
 public class ArmorBeetle : MonoBehaviour
 {
-
     public GameObject Player;
     public float chaseSpeed;
     public Health myHealth;
     private Rigidbody2D rb;
 
     public int blockPoint;
-    public bool enemyType;//それぞれ攻撃か妨害かを選べる
+    public bool enemyType; //それぞれ攻撃か妨害かを選べる
     public int pow;
     public Vector3 rotate; //プレイヤーに向かった時の角度
     public float speedMag;
     public bool makeBarrier;
- 
-    // Start is called before the first frame update
+
+    Coroutine currentCoroutine;
 
     void Awake()
     {
-
-     Player = GameObject.Find("Player");
+        Player = GameObject.Find("Player");
         myHealth = gameObject.GetComponent<Health>();
         makeBarrier = false;
-        Player = GameObject.Find("Player");
-        if (Player == null)
-        {
-            Debug.LogError("Player object not found!");
-        }
-
-        myHealth = gameObject.GetComponent<Health>();
-        if (myHealth == null)
-        {
-            Debug.LogError("Health component not found!");
-        }
 
         rb = gameObject.GetComponent<Rigidbody2D>();
-        if (rb == null)
+
+        if (Player == null || myHealth == null || rb == null)
         {
-            Debug.LogError("Rigidbody2D component not found!");
+            Debug.LogError("Initialization failed.");
+            return;
         }
 
-        makeBarrier = false;
-
-        // 初期化がすべて正常に行われた場合のみコルーチンを開始
-        if (Player != null && myHealth != null && rb != null)
-        {
-            StartCoroutine(Idle());
-        }
-        else
-        {
-            Debug.LogError("Initialization failed. Coroutine will not be started.");
-        }
-        StartCoroutine(Idle());
         gameObject.GetComponent<Health>().setSlideHPBar();
+
+        // 最初のコルーチンを開始
+        currentCoroutine = StartCoroutine(Idle());
     }
-    void Start()
-    {
-       
-        Player = GameObject.Find("Player");
-        myHealth = gameObject.GetComponent<Health>();
-        makeBarrier = false;
-        Player = GameObject.Find("Player");
-        if (Player == null)
-        {
-            Debug.LogError("Player object not found!");
-        }
 
-        myHealth = gameObject.GetComponent<Health>();
-        if (myHealth == null)
-        {
-            Debug.LogError("Health component not found!");
-        }
-
-        rb = gameObject.GetComponent<Rigidbody2D>();
-        if (rb == null)
-        {
-            Debug.LogError("Rigidbody2D component not found!");
-        }
-
-        makeBarrier = false;
-
-        // 初期化がすべて正常に行われた場合のみコルーチンを開始
-        if (Player != null && myHealth != null && rb != null)
-        {
-            StartCoroutine(Idle());
-        }
-        else
-        {
-            Debug.LogError("Initialization failed. Coroutine will not be started.");
-        }
-        StartCoroutine(Idle());
-        gameObject.GetComponent<Health>().setSlideHPBar();
-    }
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
     private IEnumerator Idle()
-    {//ダンジョン開始即追尾開始
+    {
         Debug.Log("StartIdle");
-        StopCoroutine(chase());
         stopMovingByVelocity();
         yield return new WaitForSeconds(0.5f);
-        if (makeBarrier == false && gameObject.GetComponent<Health>().getCurrentHP() < gameObject.GetComponent<Health>().getHP())
+
+        if (!makeBarrier && myHealth.getCurrentHP() < myHealth.getHP())
         {
-
-            yield return blocking();
-
+            currentCoroutine = StartCoroutine(blocking());
         }
-        StartCoroutine(chase());
+        else
+        {
+            currentCoroutine = StartCoroutine(chase());
+        }
     }
-    Coroutine currentCoroutine;
+
     private IEnumerator chase()
     {
-        int chaseTime = 3000;//UnityEngine.Random.Range(3, 7);
-        int count = 0;
-        stopMovingByVelocity();
-        Vector3 chaseWay = new Vector3(0, 0, 0);
-        rb = gameObject.GetComponent<Rigidbody2D>();
         Debug.Log("StartChase");
-        chaseWay = (Vector3)(GameObject.Find("Player").transform.position - gameObject.transform.position);
-        Vector2 force = new Vector2(rotate.x, rotate.y);
-        rb.AddForce(force * speedMag);
-        //プレイヤーを一定時間追いかける
+        int chaseTime = 300;
+        int count = 0;
+
         while (count <= chaseTime)
         {
-            if (makeBarrier == false && gameObject.GetComponent<Health>().getCurrentHP() < gameObject.GetComponent<Health>().getHP())
-            {
-                yield return blocking();
-
-            }
-
+            // プレイヤーに向かう
+            Vector3 chaseWay = Player.transform.position - transform.position;
             chaseWay.Normalize();
             setRotate(chaseWay);
+            rb.velocity = chaseWay * speedMag;
+
+            if (!makeBarrier && myHealth.getCurrentHP() < myHealth.getHP())
+            {
+                // ブロック状態に移行する
+                stopMovingByVelocity();
+                currentCoroutine = StartCoroutine(blocking());
+                yield break;
+            }
 
             count++;
             yield return new WaitForEndOfFrame();
         }
-        rb.velocity = Vector2.zero;
-        yield return Idle();
+
+        // チェイスが終わったらアイドルに戻る
+        stopMovingByVelocity();
+        currentCoroutine = StartCoroutine(Idle());
     }
+
     private IEnumerator blocking()
     {
         Debug.Log("StartBlock");
         stopMovingByVelocity();
         makeBarrier = true;
-        StopCoroutine(chase());
-        //被弾したときに初期体力に等しいブロックを生成して身を守る
-        GameObject barrier = Instantiate(Resources.Load<GameObject>("Objects/Enemy/barrier"), gameObject.transform.position, Quaternion.identity);
-        barrier.GetComponent<Health>().setHP(gameObject.GetComponent<Health>().getHP());
-        barrier.GetComponent<Health>().setCurrentHP(gameObject.GetComponent<Health>().getHP());
+
+        // バリア生成
+        GameObject barrier = Instantiate(Resources.Load<GameObject>("Objects/Enemy/barrier"), transform.position, Quaternion.identity);
+        barrier.GetComponent<Health>().setHP(myHealth.getHP());
+        barrier.GetComponent<Health>().setCurrentHP(myHealth.getHP());
         barrier.GetComponent<barrier>().startDisappear();
-        yield return new WaitForSeconds(3);
+
+        // 一定時間待機
+        yield return new WaitForSeconds(5);
+
         Destroy(barrier);
+        //makeBarrier = false;
 
+        // 次の状態へ移行
+        currentCoroutine = StartCoroutine(Idle());
+    }
 
-
-    }
-    private IEnumerator attacking()
-    {
-        //いつもより素早く動いて接触によるダメージを試みる
-        yield return null;
-    }
-    private IEnumerator debuffing()
-    {
-        //粘液をはいてデバフを試みる
-        yield return null;
-    }
     private void stopMovingByVelocity()
     {
         rb.angularVelocity = 0f;
         rb.velocity = Vector2.zero;
     }
-    private void OnTriggerEnter2D(Collider2D collision)
+
+    void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.CompareTag("Player"))
+        if (collision.gameObject.tag == "Player")
         {
-            // HPを持つコンポーネントを取得
-            Health health = collision.GetComponent<Health>();
+            PlayerHealth health = collision.gameObject.GetComponent<PlayerHealth>();
             if (health != null)
             {
-                // HPを減らす
                 health.TakeDamage(pow);
             }
         }
-
     }
+
     public void setRotate(Vector3 rot)
     {
-        transform.localEulerAngles = new Vector3(0, 0, MathF.Atan2(rot.y, rot.x) * Mathf.Rad2Deg + 90);
+        transform.localEulerAngles = new Vector3(0, 0, Mathf.Atan2(rot.y, rot.x) * Mathf.Rad2Deg + 90);
         rotate = rot.normalized;
-
     }
 }

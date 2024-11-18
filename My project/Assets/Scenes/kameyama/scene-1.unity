@@ -3991,6 +3991,63 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1001 &1040942236
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1705315127825525464, guid: 3366ae580e668ee44827948c817df447, type: 3}
+      propertyPath: m_Name
+      value: ArmorBeetle
+      objectReference: {fileID: 0}
+    - target: {fileID: 8208444607352037410, guid: 3366ae580e668ee44827948c817df447, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8208444607352037410, guid: 3366ae580e668ee44827948c817df447, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8208444607352037410, guid: 3366ae580e668ee44827948c817df447, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8208444607352037410, guid: 3366ae580e668ee44827948c817df447, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8208444607352037410, guid: 3366ae580e668ee44827948c817df447, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8208444607352037410, guid: 3366ae580e668ee44827948c817df447, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8208444607352037410, guid: 3366ae580e668ee44827948c817df447, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8208444607352037410, guid: 3366ae580e668ee44827948c817df447, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8208444607352037410, guid: 3366ae580e668ee44827948c817df447, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8208444607352037410, guid: 3366ae580e668ee44827948c817df447, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3366ae580e668ee44827948c817df447, type: 3}
 --- !u!1 &1093313056
 GameObject:
   m_ObjectHideFlags: 0
@@ -6604,12 +6661,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -4217822520560754959, guid: ea02c46b4f1337e439dfe303aa5ec7b0, type: 3}
+      propertyPath: HP
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: -4217822520560754959, guid: ea02c46b4f1337e439dfe303aa5ec7b0, type: 3}
       propertyPath: hpSlider
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: -4217822520560754959, guid: ea02c46b4f1337e439dfe303aa5ec7b0, type: 3}
       propertyPath: currentHP
-      value: 10000
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 3729972331255071290, guid: ea02c46b4f1337e439dfe303aa5ec7b0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6652,6 +6713,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4077790636126634624, guid: ea02c46b4f1337e439dfe303aa5ec7b0, type: 3}
+      propertyPath: HP
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 4077790636126634624, guid: ea02c46b4f1337e439dfe303aa5ec7b0, type: 3}
       propertyPath: pow
       value: 10
       objectReference: {fileID: 0}
@@ -6659,6 +6724,10 @@ PrefabInstance:
       propertyPath: bullet
       value: 
       objectReference: {fileID: 3095739216751408760, guid: 34c4f06ad861dfe418a3868fe7e43462, type: 3}
+    - target: {fileID: 4077790636126634624, guid: ea02c46b4f1337e439dfe303aa5ec7b0, type: 3}
+      propertyPath: currentHP
+      value: 200
+      objectReference: {fileID: 0}
     - target: {fileID: 4077790636126634624, guid: ea02c46b4f1337e439dfe303aa5ec7b0, type: 3}
       propertyPath: moveSpeed
       value: 10
@@ -7211,6 +7280,7 @@ SceneRoots:
   - {fileID: 1572245903}
   - {fileID: 736362684}
   - {fileID: 1821330274}
+  - {fileID: 1040942236}
   - {fileID: 428712508}
   - {fileID: 1329045727}
   - {fileID: 16253300}
