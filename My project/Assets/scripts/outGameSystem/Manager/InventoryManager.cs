@@ -9,7 +9,12 @@ public class InventoryManager : MonoBehaviour
     public void AddAmmo(GameObject ammoData)
     {
         AmmoObjectList.Add(ammoData);
-//        ammoData.GetComponent<ItemPickUp>().itemRarelity = AmmoObjectList.IndexOf(ammoData);
+        //        ammoData.GetComponent<ItemPickUp>().itemRarelity = AmmoObjectList.IndexOf(ammoData);
         //        Debug.Log($"Added {newAmmo.ammoData.itemName} with rarity {newAmmo.rarity} to inventory.");
+    }
+
+    public void AddItem(GameObject relicData)
+    {
+        AmmoObjectList.Add(relicData);
     }
 }

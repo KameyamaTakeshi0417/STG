@@ -21,7 +21,7 @@ public class treasureBox : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if ((Input.GetKey(KeyCode.Return)) && nowOpen)
+        if ((Input.GetKeyDown(KeyCode.Return)) && nowOpen)
         {
             developReward();
         }
@@ -38,8 +38,10 @@ public class treasureBox : MonoBehaviour
     }
     public void developReward()
     {
+        
         GameObject reward = Instantiate(rewardObj, gameObject.transform.position, Quaternion.identity);
         gameObject.GetComponent<ChangeTextureOnTouch>().disappearObject();
+        Destroy(this.gameObject);
     }
 
 }

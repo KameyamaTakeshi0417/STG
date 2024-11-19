@@ -13,34 +13,40 @@ public class Bullet_Base : MonoBehaviour
     public float bullettype = 0; //弾のタイプ決定
     public Vector3 rotate; //弾の発射角
 
-    public int rarelity;//オブジェクトの挙動が変わるもの
+    public int rarelity; //オブジェクトの挙動が変わるもの
     public string bulletName;
+    public float addDmg; //ダメージ倍率のかからない固定ダメージ
+
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() { }
 
+    public string getBulletName()
+    {
+        return bulletName;
     }
-    public string getBulletName(){return bulletName;}
+
     // Update is called once per frame
-    void Update()
-    {
+    void Update() { }
 
-    }
     public void setDmg(float damage)
     {
         dmg = damage;
     }
+
     //弾の撃つ角度の正規化
     public void setRotate(Vector3 rot)
     {
-        transform.localEulerAngles = new Vector3(0, 0, MathF.Atan2(rot.y, rot.x) * Mathf.Rad2Deg + 90);
+        transform.localEulerAngles = new Vector3(
+            0,
+            0,
+            MathF.Atan2(rot.y, rot.x) * Mathf.Rad2Deg + 90
+        );
         rotate = rot.normalized;
     }
-    //弾の速度決定
-    public void setBulletSpeed(float mag)
-    {
 
-    }
+    //弾の速度決定
+    public void setBulletSpeed(float mag) { }
+
     //弾の特性決定
 
     //弾丸の貫通回数設定
@@ -52,18 +58,18 @@ public class Bullet_Base : MonoBehaviour
         Speed = pSpeed;
         dmg = pDmg;
     }
+
     public void shoot()
     {
         StartCoroutine(move());
-
     }
+
     public void fire()
     {
-
         gameObject.GetComponent<Case_Base>().setStatus(rotate, Speed, dmg);
         gameObject.GetComponent<Case_Base>().ApplyCaseEffect(this.gameObject);
-
     }
+
     //弾を撃ち出す
     protected virtual IEnumerator move()
     {
@@ -88,10 +94,12 @@ public class Bullet_Base : MonoBehaviour
     {
         StartCoroutine(hitEffect());
     }
+
     protected IEnumerator hitEffect()
     {
         yield return null;
     }
+
     protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
         // 衝突したオブジェクトのタグをチェック
@@ -109,10 +117,30 @@ public class Bullet_Base : MonoBehaviour
             Destroy(this.gameObject);
         }
 
-        if (collision.CompareTag("wall")) Destroy(this.gameObject);
+        if (collision.CompareTag("wall"))
+            Destroy(this.gameObject);
     }
-    public float getDmg() { return dmg; }
-    public float getSpeed() { return Speed; }
-    public int getRarelity() { return rarelity; }
-}
 
+    protected float damageCaluculator(float pow, float mag)
+    {
+        float ret = 0f;
+        ret = addDmg + (pow + dmg) * mag;
+
+        return ret;
+    }
+
+    public float getDmg()
+    {
+        return dmg;
+    }
+
+    public float getSpeed()
+    {
+        return Speed;
+    }
+
+    public int getRarelity()
+    {
+        return rarelity;
+    }
+}

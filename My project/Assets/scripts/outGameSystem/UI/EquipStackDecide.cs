@@ -4,12 +4,12 @@ using UnityEditor.Tilemaps;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class EquipStackDecide : MonoBehaviour
+public class EquipStackDecide : _PopUpDecideUI_Base
 {
     public GameObject mainEquipImage;
     public GameObject subEquipImage;
     public GameObject targetEquipImage;
-    public GameObject selectionCanvas; // 選択用の Canvas
+
 
     void Start()
     {
@@ -69,20 +69,6 @@ public class EquipStackDecide : MonoBehaviour
         }
 
         
-    }
-
-    public void freezeGame()
-    {
-        Time.timeScale = 0f; // ゲームの時間を停止
-    }
-
-    public void continueGame()
-    {
-        Time.timeScale = 1f; // ゲームの時間を再開
-        if (selectionCanvas != null)
-        {
-            selectionCanvas.SetActive(false); // 選択 UI を非表示にする
-        }
     }
 
     // target を選択した際の処理
