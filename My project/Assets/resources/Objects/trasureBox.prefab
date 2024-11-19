@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6283505397939413708}
   - component: {fileID: 257691465963983469}
   - component: {fileID: 4475718222276460161}
+  - component: {fileID: -3218279916388626097}
   m_Layer: 0
   m_Name: trasureBox
   m_TagString: Untagged
@@ -165,3 +166,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rewardObj: {fileID: 4825919582345253749, guid: 9db976b2efa2fce47af968ea17c0ebc8, type: 3}
   checkInterval: 1
+--- !u!114 &-3218279916388626097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3189162360207144807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31655f08b7c5fe047b4f7f436ed2ad00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectionCanvas: {fileID: 0}
+  ImageBoardBase: {fileID: 2242417691602790165, guid: 8cc9f3eddb5cad047a2c3f5217b59b14, type: 3}

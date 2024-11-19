@@ -8,8 +8,18 @@ public class RewardStackDecide : _PopUpDecideUI_Base
 {
     public GameObject ImageBoardBase;
 
+    void Awake()
+    {
+        Transform parentTransform = GameObject.Find("GameManager").transform;
+        Transform targetChild = parentTransform.Find("RewardSelectCanvas");
+        selectionCanvas = targetChild.gameObject;
+    }
+
     void Start()
     {
+        Transform parentTransform = GameObject.Find("GameManager").transform;
+        Transform targetChild = parentTransform.Find("RewardSelectCanvas");
+        selectionCanvas = targetChild.gameObject;
         if (selectionCanvas != null)
         {
             selectionCanvas.SetActive(false); // 初期状態で選択 UI を非表示にしておく
@@ -56,7 +66,7 @@ public class RewardStackDecide : _PopUpDecideUI_Base
                 selectionCanvas.transform.position,
                 Quaternion.identity
             );
-            setAsChildUI(firstRewardImage, firstReward,Vector2.zero);
+            setAsChildUI(firstRewardImage, firstReward, Vector2.zero);
         }
         else if (secondReward != null && thirdReward == null)
         {
@@ -66,13 +76,13 @@ public class RewardStackDecide : _PopUpDecideUI_Base
                 selectionCanvas.transform.position,
                 Quaternion.identity
             );
-            setAsChildUI(firstRewardImage, firstReward,new Vector2(-3, 0));
+            setAsChildUI(firstRewardImage, firstReward, new Vector2(-3, 0));
             secondRewardImage = Instantiate(
                 Resources.Load<GameObject>("Objects/Reward/RewardBasicBoard"),
                 selectionCanvas.transform.position,
                 Quaternion.identity
             );
-            setAsChildUI(secondRewardImage,secondReward, new Vector2(3, 0));
+            setAsChildUI(secondRewardImage, secondReward, new Vector2(3, 0));
         }
         else if (thirdReward != null && fourthReward == null)
         {
@@ -82,14 +92,14 @@ public class RewardStackDecide : _PopUpDecideUI_Base
                 selectionCanvas.transform.position,
                 Quaternion.identity
             );
-            setAsChildUI(firstRewardImage,firstReward, Vector2.left * 4);
+            setAsChildUI(firstRewardImage, firstReward, Vector2.left * 4);
 
             secondRewardImage = Instantiate(
                 Resources.Load<GameObject>("Objects/Reward/RewardBasicBoard"),
                 selectionCanvas.transform.position,
                 Quaternion.identity
             );
-            setAsChildUI(secondRewardImage,secondReward, Vector3.zero);
+            setAsChildUI(secondRewardImage, secondReward, Vector3.zero);
             Selecttarget(secondRewardImage, secondReward);
 
             thirdRewardImage = Instantiate(
@@ -97,7 +107,7 @@ public class RewardStackDecide : _PopUpDecideUI_Base
                 selectionCanvas.transform.position,
                 Quaternion.identity
             );
-            setAsChildUI(thirdRewardImage,thirdReward, Vector2.right * 4);
+            setAsChildUI(thirdRewardImage, thirdReward, Vector2.right * 4);
             Selecttarget(thirdRewardImage, thirdReward);
         }
         else if (fourthReward != null)
@@ -108,31 +118,49 @@ public class RewardStackDecide : _PopUpDecideUI_Base
                 selectionCanvas.transform.position,
                 Quaternion.identity
             );
-            setAsChildUI(firstRewardImage, firstReward,Vector2.left * 6, new Vector3(0.75f, 0.75f, 1f));
+            setAsChildUI(
+                firstRewardImage,
+                firstReward,
+                Vector2.left * 6,
+                new Vector3(0.75f, 0.75f, 1f)
+            );
 
             secondRewardImage = Instantiate(
                 Resources.Load<GameObject>("Objects/Reward/RewardBasicBoard"),
                 selectionCanvas.transform.position,
                 Quaternion.identity
             );
-            setAsChildUI(secondRewardImage,secondReward, Vector3.left * 3, new Vector3(0.75f, 0.75f, 1f));
+            setAsChildUI(
+                secondRewardImage,
+                secondReward,
+                Vector3.left * 3,
+                new Vector3(0.75f, 0.75f, 1f)
+            );
 
             thirdRewardImage = Instantiate(
                 Resources.Load<GameObject>("Objects/Reward/RewardBasicBoard"),
                 selectionCanvas.transform.position,
                 Quaternion.identity
             );
-            setAsChildUI(thirdRewardImage, thirdReward,Vector2.right * 3, new Vector3(0.75f, 0.75f, 1f));
+            setAsChildUI(
+                thirdRewardImage,
+                thirdReward,
+                Vector2.right * 3,
+                new Vector3(0.75f, 0.75f, 1f)
+            );
 
             fourthRewardImage = Instantiate(
                 Resources.Load<GameObject>("Objects/Reward/RewardBasicBoard"),
                 selectionCanvas.transform.position,
                 Quaternion.identity
             );
-            setAsChildUI(fourthRewardImage, fourthReward,Vector2.right * 6, new Vector3(0.75f, 0.75f, 1f));
+            setAsChildUI(
+                fourthRewardImage,
+                fourthReward,
+                Vector2.right * 6,
+                new Vector3(0.75f, 0.75f, 1f)
+            );
         }
-
-
     }
 
     // target を選択した際の処理
