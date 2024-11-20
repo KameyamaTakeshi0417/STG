@@ -6,24 +6,16 @@ using UnityEngine.UI;
 
 public class RewardStackDecide : _PopUpDecideUI_Base
 {
-    public GameObject ImageBoardBase;
-
-    void Awake()
-    {
-        Transform parentTransform = GameObject.Find("GameManager").transform;
-        Transform targetChild = parentTransform.Find("RewardSelectCanvas");
-        selectionCanvas = targetChild.gameObject;
-    }
+   // public GameObject ImageBoardBase;
 
     void Start()
     {
-        Transform parentTransform = GameObject.Find("GameManager").transform;
-        Transform targetChild = parentTransform.Find("RewardSelectCanvas");
-        selectionCanvas = targetChild.gameObject;
-        if (selectionCanvas != null)
-        {
-            selectionCanvas.SetActive(false); // 初期状態で選択 UI を非表示にしておく
-        }
+        /*
+       Transform parentTransform = GameObject.Find("GameManager").transform;
+       Transform targetChild = parentTransform.Find("RewardSelectCanvas");
+       selectionCanvas = targetChild.gameObject;
+*/
+
     }
 
     // 選択画面を開始する
@@ -43,7 +35,7 @@ public class RewardStackDecide : _PopUpDecideUI_Base
     }
 
     // 選択を設定する
-    private void SetupSelection(
+    public void SetupSelection(
         GameObject firstReward = null,
         GameObject secondReward = null,
         GameObject thirdReward = null,
@@ -161,6 +153,7 @@ public class RewardStackDecide : _PopUpDecideUI_Base
                 new Vector3(0.75f, 0.75f, 1f)
             );
         }
+   
     }
 
     // target を選択した際の処理

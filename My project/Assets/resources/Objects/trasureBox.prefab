@@ -166,6 +166,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rewardObj: {fileID: 4825919582345253749, guid: 9db976b2efa2fce47af968ea17c0ebc8, type: 3}
   checkInterval: 1
+  rewardUIObj: {fileID: 2084623247214189244, guid: 0f877a76e02f5d443afbcf0a92d89330, type: 3}
 --- !u!114 &-3218279916388626097
 MonoBehaviour:
   m_ObjectHideFlags: 0

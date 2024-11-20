@@ -11,7 +11,8 @@ public class Player : MonoBehaviour
     public float HP;
     public float currentHP;
     public float pow;
-    public float DamageMag=1.0f;
+    public float DamageMag=1.0f;//非固定ダメージの倍率
+
     public float moveSpeed;
     public float bulletSpeed;
     public float BulletSpan; // フレーム

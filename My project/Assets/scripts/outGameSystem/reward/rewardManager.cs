@@ -9,26 +9,18 @@ public class rewardManager : MonoBehaviour
 
     // Start is called before the first frame update
     private int[] normalRewardArray = new int[300];
-    private int[] specialRewardArray = new int[5];
+    private int[] specialRewardArray = new int[12];
+    public delegate void RewardTakeHandler();
+    public static event RewardTakeHandler BoxisOpened;
+    public int currentIndex;
 
     void Start()
     {
-        GameObject.Find("GameManager").GetComponent<GameManager>().setCleared(false);
-        // 定期的に敵の数をチェックするコルーチンを開始
-        StartCoroutine(clearchecker());
+        FillNormalRewarArray();
     }
 
     // Update is called once per frame
     void Update() { }
-
-    IEnumerator clearchecker()
-    {
-        while (GameObject.Find("GameManager").GetComponent<GameManager>().getCleared() == false)
-        {
-            yield return new WaitForSeconds(0.5f);
-        }
-        yield return showReward(3);
-    }
 
     IEnumerator showReward(int numToGenerate)
     {
@@ -79,7 +71,7 @@ public class rewardManager : MonoBehaviour
             { 2, 7 }, //レアAmmo
             { 3, 18 }, //ノーマルレリック
             { 4, 9 }, //アンコモンレリック
-            { 4, 3 }, //レアレリック
+            { 5, 3 }, //レアレリック
         };
 
         // 累積重みを計算
@@ -94,7 +86,7 @@ public class rewardManager : MonoBehaviour
 
         // 配列をループして重み付けによるランダムな値を設定
 
-        for (int j = 0; j < normalRewardArray.GetLength(1); j++)
+        for (int j = 0; j < normalRewardArray.Length; j++)
         {
             // 0から累積重みの範囲内で乱数を取得
             int randomValue = random.Next(0, totalWeight);
@@ -112,17 +104,46 @@ public class rewardManager : MonoBehaviour
         }
         PrintArray();
     }
-        void PrintArray()
+
+    void PrintArray()
     {
         // 配列の内容をコンソールに出力
-    
-             string row="rewardIndex: ";
-            for (int j = 0; j < normalRewardArray.GetLength(1); j++)
-            {
-                row += normalRewardArray[j] + " ";
-            }
-            Debug.Log(row);
-        
+
+        string row = "rewardIndex: ";
+        for (int j = 0; j < normalRewardArray.GetLength(1); j++)
+        {
+            row += normalRewardArray[j] + " ";
+        }
+        Debug.Log(row);
     }
 
+    public int[] getRewardValues(int callValue)
+    {
+        // 配列から値を取得してログに出力する
+        int length = normalRewardArray.Length;
+
+        // インデックスが配列の範囲を超えないように制限する
+        if (currentIndex + (callValue - 1) < length)
+        {
+            int[] result = new int[callValue];
+
+            for (int i = 0; i < callValue; i++)
+            {
+                result[i] = normalRewardArray[currentIndex + i];
+                Debug.Log("Reward Value: " + result[i]);
+            }
+
+            // 次のインデックスの更新（callValueずつ進む）
+            currentIndex += callValue;
+
+            return result;
+        }
+        else
+        {
+            Debug.Log("End of rewards array.");
+
+            // 配列の終わりに達した場合は空の配列を返す
+            return new int[0];
+        }
+    }
 }

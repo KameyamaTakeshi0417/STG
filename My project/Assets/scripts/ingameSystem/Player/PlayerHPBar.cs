@@ -37,8 +37,11 @@ public class PlayerHPBar : HPBar_Base
         hpSlider.maxValue = HP;
         hpSlider.value = (float)currentHP; // HPバーの最初の値を現在のHPに設定
         // HPバー(Slider)を取得
-        hpSlider = HPBar.transform.Find("PlayerHPBar").GetComponent<Slider>();
-        setSlideHPBar();
+        if (hpSlider != null)
+        {
+            hpSlider = HPBar.transform.Find("PlayerHPBar").GetComponent<Slider>();
+            setSlideHPBar();
+        }
     }
 
     public override void setSlideHPBar()

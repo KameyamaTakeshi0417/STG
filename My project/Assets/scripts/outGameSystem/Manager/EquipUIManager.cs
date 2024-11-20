@@ -12,7 +12,7 @@ public class EquipUIManager : _Manager_Base
     public static event EquipChangedHandler OnEquipChanged;
 
     // Start is called before the first frame update
-    protected override void Start()
+    void Start()
     {
         if (selectionCanvas != null)
         {

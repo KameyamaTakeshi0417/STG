@@ -14,10 +14,10 @@ public class _Manager_Base : MonoBehaviour
     public GameObject subPrimer;
     protected GameObject tmpObj;
     protected bool useMainEquip = true;
-    
 
     // Start is called before the first frame update
-    protected virtual void Start()
+
+    protected void canvasIsfalse()
     {
         if (selectionCanvas != null)
         {
@@ -25,5 +25,14 @@ public class _Manager_Base : MonoBehaviour
         }
     }
 
+    protected void freezeGame()
+    {
+        Time.timeScale = 0f; // ゲームの時間を停止
+    }
+
+    protected void UnfreezeGame()
+    {
+        Time.timeScale = 1f; // ゲームの時間を停止
+    }
     // Update is called once per frame
 }

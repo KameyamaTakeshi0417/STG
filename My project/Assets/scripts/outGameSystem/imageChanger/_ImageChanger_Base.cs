@@ -1,23 +1,17 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
-public class UIImageChanger : MonoBehaviour
+public class _ImageChanger_Base : MonoBehaviour
 {
+    
     public Image targetImage; // 対象の Image コンポーネント
     public Sprite newSprite;  // 新しい画像
     public string itemCategory; // アイテムのカテゴリ（Bullet, Case, Primerなど）
+    // Start is called before the first frame update
 
-    void OnEnable()
-    {
-        EquipManager.OnEquipChanged += ChangeTextureByEquipManager;
-    }
 
-    void OnDisable()
-    {
-        EquipManager.OnEquipChanged -= ChangeTextureByEquipManager;
-    }
-
-    public void ChangeTextureByEquipManager(string changedItemCategory, Sprite newSprite)
+    public virtual void ChangeTexture(string changedItemCategory, Sprite newSprite)
     {
         if (changedItemCategory == itemCategory && targetImage != null && newSprite != null)
         {
