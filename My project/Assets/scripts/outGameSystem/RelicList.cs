@@ -32,7 +32,7 @@ public class RelicList : MonoBehaviour
         {
             Relics[i] = PlayerPrefs.GetInt("Relic" + i, 0) == 1;
         }
-        Debug.Log("Relics loaded");
+      //  Debug.Log("Relics loaded");
     }
 
     // Update is called once per frame

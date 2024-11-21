@@ -51,6 +51,7 @@ public class treasureBox : MonoBehaviour
             new Vector3(0,0,0),
             Quaternion.identity
         );
+      //  rewardUI.GetComponent<rewardUIManager>().
         
     }
 

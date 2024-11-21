@@ -9,7 +9,10 @@ public class rewardUIManager : _Manager_Base
     public Camera targetCamera; // 対象のカメラ
     public rewardManager targetRewardManager; // RewardManagerの参照
     private int RewardCount = 3; // 現在のインデックス
+    public GameObject spriteObj;
     public int[] targetIndex;
+    public List<GameObject> temporaryList = new List<GameObject>();
+    public List<GameObject> rewardObjects = new List<GameObject>();
 
     void Start()
     {
@@ -19,33 +22,32 @@ public class rewardUIManager : _Manager_Base
         if (canvas != null)
         {
             canvas.worldCamera = Camera.main;
+            Debug.Log("startRewarUI");
         }
         else
         {
             Debug.LogError("Canvas component not found on this GameObject.");
         }
+        temporaryList.Clear();
         freezeGame();
         // 配列から値を3つずつ取得してログに出力する処理
         setRewardUI(targetRewardManager.getRewardValues(RewardCount));
     }
 
     // Update is called once per frame
-    void Update() { }
-
-    public void ContinueGame()
-    {
-        UnfreezeGame();
-    }
 
     protected void setRewardUI(int[] targetIndex)
     {
-        GameObject[] targetObj = new GameObject[targetIndex.Length];
+        rewardObjects.Clear();
         for (int i = 0; i < targetIndex.Length; i++)
         {
-            //   Random.InitState((int)Random.value);
-            targetObj[i] = getObjByIndex(targetIndex[i]);
+            GameObject rewardObject = getObjByIndex(targetIndex[i]);
+            if (rewardObject != null)
+            {
+                rewardObjects.Add(rewardObject);
+            }
         }
-        SetupSelection(targetObj[0], targetObj[1], targetObj[2], targetObj[3]);
+        SetupSelection(rewardObjects);
     }
 
     public GameObject getObjByIndex(int index)
@@ -58,21 +60,25 @@ public class rewardUIManager : _Manager_Base
         //3=ノーマルレリック
         //4=アンコモンレリック
         //5=レアレリック
+        Random.InitState((int)System.DateTime.Now.Ticks);
         string createAmmoObj =
-            "Objects/Reward/" + AmmoTypeArray[Random.Range(0, AmmoTypeArray.Length - 1)];
+            "Objects/Reward/" + AmmoTypeArray[Random.Range(0, AmmoTypeArray.Length)];
         createAmmoObj +=
-            AmmoCategoryArray[Random.Range(0, AmmoCategoryArray.Length - 1)] + "_RewardObject";
-        Debug.Log(createAmmoObj);
+            AmmoCategoryArray[Random.Range(0, AmmoCategoryArray.Length)] + "_RewardObject";
+
+        GameObject prefab = Resources.Load<GameObject>(createAmmoObj);
+        temporaryList.Add(prefab);
         switch (index)
         {
             case 1:
                 //アンコモンアモ　弾のレアリティをここで決めるのか。4-6。
                 rarelityValue = Random.Range(4, 7);
-
+                prefab.GetComponent<ItemPickUp>().itemRarelity = rarelityValue;
                 break;
             case 2:
                 //レアアモ レアリティを7-9
                 rarelityValue = Random.Range(7, 10);
+                prefab.GetComponent<ItemPickUp>().itemRarelity = rarelityValue;
                 break;
             //いったんバレットのみの出力を試す。これできたらレリック作る
             case 3: //ノーマルレリック
@@ -85,98 +91,73 @@ public class rewardUIManager : _Manager_Base
             default:
                 //コモンアモ作成 1-3の値を付与する
                 rarelityValue = Random.Range(1, 4);
+                prefab.GetComponent<ItemPickUp>().itemRarelity = rarelityValue;
                 break;
         }
+        Debug.Log(createAmmoObj + "rarelity" + prefab.GetComponent<ItemPickUp>().itemRarelity);
+        ret = prefab;
         return ret;
     }
 
-    public void setToButtonDestroy()
-    {
-        Destroy(this.gameObject);
-    }
-
     // 選択を設定する
-    public void SetupSelection(
-        GameObject firstReward = null,
-        GameObject secondReward = null,
-        GameObject thirdReward = null,
-        GameObject fourthReward = null
-    )
+    public void SetupSelection(List<GameObject> rewards)
     {
-        if (selectionCanvas != null)
-            selectionCanvas.SetActive(true); // 選択 UI を表示
+        GameObject ui = Instantiate(
+            spriteObj,
+            this.gameObject.transform.position,
+            Quaternion.identity
+        );
+        Debug.Log("setupSelectionStart" + ui.name);
         freezeGame();
-        GameObject firstRewardImage = null;
-        GameObject secondRewardImage = null;
-        GameObject thirdRewardImage = null;
-        GameObject fourthRewardImage = null;
-        if (firstReward == null)
+        int LayoutMag=50;
+        switch (rewards.Count)
         {
-            //報酬なしの表示ボードを出す処理
-        }
-        else if (firstReward != null && secondReward == null)
-        {
-            //報酬1こだけの処理
-            CreateUIObj(firstRewardImage, firstReward, Vector2.zero);
-        }
-        else if (secondReward != null && thirdReward == null)
-        {
-            //報酬にこの処理
-            CreateUIObj(firstRewardImage, firstReward, Vector2.left * 3);
-            CreateUIObj(secondRewardImage, secondReward, Vector2.right * 3);
-        }
-        else if (thirdReward != null && fourthReward == null)
-        {
-            //報酬三この処理
-            CreateUIObj(firstRewardImage, firstReward, Vector2.left * 4);
-            CreateUIObj(secondRewardImage, secondReward, Vector3.zero);
-            CreateUIObj(thirdRewardImage, thirdReward, Vector2.right * 4);
-        }
-        else if (fourthReward != null)
-        {
-            //報酬フルの処理
-            CreateUIObj(
-                firstRewardImage,
-                firstReward,
-                Vector2.left * 6,
-                new Vector3(0.75f, 0.75f, 1f)
-            );
-            CreateUIObj(
-                secondRewardImage,
-                secondReward,
-                Vector3.left * 3,
-                new Vector3(0.75f, 0.75f, 1f)
-            );
-            CreateUIObj(
-                thirdRewardImage,
-                thirdReward,
-                Vector2.right * 3,
-                new Vector3(0.75f, 0.75f, 1f)
-            );
-            CreateUIObj(
-                fourthRewardImage,
-                fourthReward,
-                Vector2.right * 5,
-                new Vector3(0.75f, 0.75f, 1f)
-            );
+            case 1:
+                CreateUIObj(rewards[0], Vector2.zero);
+                break;
+            case 2:
+                CreateUIObj(rewards[0], Vector2.left * 3*LayoutMag);
+                CreateUIObj(rewards[1], Vector2.right * 3*LayoutMag);
+                break;
+            case 3:
+                CreateUIObj(rewards[0], Vector2.left * 4*LayoutMag);
+                CreateUIObj(rewards[1], Vector3.zero);
+                CreateUIObj(rewards[2], Vector2.right * 4*LayoutMag);
+                Debug.Log("setupSelection_End");
+                break;
+            case 4:
+                CreateUIObj(rewards[0], Vector2.left * 6*LayoutMag, new Vector3(0.75f, 0.75f, 1f));
+                CreateUIObj(rewards[1], Vector3.left * 3*LayoutMag, new Vector3(0.75f, 0.75f, 1f));
+                CreateUIObj(rewards[2], Vector2.right * 3*LayoutMag, new Vector3(0.75f, 0.75f, 1f));
+                CreateUIObj(rewards[3], Vector2.right * 5*LayoutMag, new Vector3(0.75f, 0.75f, 1f));
+                break;
         }
     }
 
     // target を選択した際の処理
 
-    void CreateUIObj(GameObject Obj, GameObject RObj, Vector2 pos, Vector3 scale = default)
+    GameObject CreateUIObj(GameObject RObj, Vector2 pos, Vector3 scale = default)
     {
+        Debug.Log("CreateUIObj_Start");
+        GameObject Obj = null;
         if (scale == default)
         {
             scale = Vector3.one;
         }
         Obj = Instantiate(
-            Resources.Load<GameObject>("Objects/Reward/RewardBasicBoard"),
-            selectionCanvas.transform.position,
+            Resources.Load<GameObject>("Objects/Reward/Relic/RewardBasicBoard"),
+            this.gameObject.transform.localPosition,
             Quaternion.identity
         );
+        if (Obj == null)
+        {
+            Debug.LogError("Prefab could not be loaded. Please check the path.");
+            return null;
+        }
+        Debug.Log("CreateUIObj_End");
         setAsChildUI(Obj, RObj, pos);
         Selecttarget(Obj, RObj);
+        return Obj;
     }
 
     private void setAsChildUI(
@@ -193,7 +174,7 @@ public class rewardUIManager : _Manager_Base
         }
         InventoryManager inventoryManager = gameObject.GetComponent<InventoryManager>();
         // キャンバスの子オブジェクトに設定
-        targetUIObj.transform.SetParent(selectionCanvas.transform, false);
+        targetUIObj.transform.SetParent(this.gameObject.transform, false);
 
         // RectTransformの初期設定を行う（キャンバス内で適切に配置されるようにする）
         RectTransform rectTransform = targetUIObj.GetComponent<RectTransform>();
@@ -230,14 +211,17 @@ public class rewardUIManager : _Manager_Base
     public void continueGame()
     {
         Time.timeScale = 1f; // ゲームの時間を再開
-        if (selectionCanvas != null)
-        {
-            selectionCanvas.SetActive(false); // 選択 UI を非表示にする
-        }
+
+        Destroy(this.gameObject); // 選択 UI を非表示にする
+    }
+
+    public void setToButtonDestroy()
+    {
+        Destroy(this.gameObject);
     }
 
     //弾丸の種類をここに記そう
-    public static string[] AmmoTypeArray = { "Normal", "Homing", "Pearcing", "Volt", "Explosion" }; //BloomBullet,OmniBulletは入れないかも
+    public static string[] AmmoTypeArray = { "Normal", "Homing", "Piercing", "Volt", "Explosion" }; //BloomBullet,OmniBulletは入れないかも
     public static string[] AmmoCategoryArray = { "Bullet", "Case", "Primer" };
 
     //仮レリックはコンボA,コンボB、単体で使うものを実装した。

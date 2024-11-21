@@ -147,7 +147,6 @@ GameObject:
   - component: {fileID: 3774646407939794965}
   - component: {fileID: 4089461569181546344}
   - component: {fileID: 6621536461635481265}
-  - component: {fileID: -3869285232209347395}
   m_Layer: 0
   m_Name: RewardSelectCanvas
   m_TagString: Untagged
@@ -250,7 +249,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4460941f042f28441a0c0e44277040eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectionCanvas: {fileID: 0}
+  selectionCanvas: {fileID: 2084623247214189244}
   activeBullet: {fileID: 0}
   activeCase: {fileID: 0}
   activePrimer: {fileID: 0}
@@ -260,20 +259,8 @@ MonoBehaviour:
   targetCamera: {fileID: 0}
   targetRewardManager: {fileID: 0}
   targetIndex: 
---- !u!114 &-3869285232209347395
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2084623247214189244}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31655f08b7c5fe047b4f7f436ed2ad00, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selectionCanvas: {fileID: 0}
-  ImageBoardBase: {fileID: 2242417691602790165, guid: 8cc9f3eddb5cad047a2c3f5217b59b14, type: 3}
+  temporaryList: []
+  spriteObj: {fileID: 2242417691602790165, guid: 8cc9f3eddb5cad047a2c3f5217b59b14, type: 3}
 --- !u!1 &5592412723944908343
 GameObject:
   m_ObjectHideFlags: 0

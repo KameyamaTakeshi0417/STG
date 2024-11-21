@@ -64,7 +64,7 @@ public class Case_Base : MonoBehaviour
 
         StartCoroutine(move());
         // 弾丸が移動中の効果を実装
-        Debug.Log("Case effect applied during bullet flight.");
+//        Debug.Log("Case effect applied during bullet flight.");
     }
     public void setBulletObj(GameObject bulletObj)
     {
