@@ -1,0 +1,77 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class equipMenuManager : MonoBehaviour
+{
+    // Start is called before the first frame update
+    void Start()
+    {
+        rewardManager targetRewardManager = GameObject
+            .Find("GameManager")
+            .GetComponent<rewardManager>();
+        // 対象のカメラをメインカメラに設定
+        Canvas canvas = gameObject.GetComponent<Canvas>();
+        if (canvas != null)
+        {
+            canvas.worldCamera = Camera.main;
+            Debug.Log("startRewarUI");
+        }
+        else
+        {
+            Debug.LogError("Canvas component not found on this GameObject.");
+        }
+    }
+
+    // Update is called once per frame
+    void OnEnable()
+    {
+        AssignCamera();
+    }
+
+    void AssignCamera()
+    {
+        Canvas canvas = gameObject.GetComponent<Canvas>();
+        if (canvas != null)
+        {
+
+            Camera mainCamera = FindMainCameraInActiveScene();
+            if (mainCamera != null)
+            {
+                canvas.worldCamera = Camera.main;
+                Debug.Log("Camera assigned successfully.");
+            }
+            else
+            {
+                Debug.LogWarning("MainCamera not found in scene.");
+            }
+        }
+        else
+        {
+            Debug.LogError("Canvas component not found on this GameObject.");
+        }
+    }
+ public Camera FindMainCameraInActiveScene()
+    {
+        Scene activeScene = SceneManager.GetActiveScene();
+        Debug.Log("nowScene:"+activeScene.name);
+        GameObject[] rootObjects = activeScene.GetRootGameObjects();
+
+        foreach (GameObject rootObject in rootObjects)
+        {
+            if (rootObject.name == "MainCamera")
+            {
+                Camera cameraComponent = rootObject.GetComponent<Camera>();
+                if (cameraComponent != null)
+                {
+                    Debug.Log("Found MainCamera in active scene.");
+                    return cameraComponent;
+                }
+            }
+        }
+
+        Debug.LogWarning("MainCamera not found in active scene.");
+        return null;
+    }
+}

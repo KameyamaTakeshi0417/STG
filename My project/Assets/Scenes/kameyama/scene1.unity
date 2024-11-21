@@ -253,7 +253,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &125733985
+--- !u!1 &207243860
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -261,10 +261,10 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 125733989}
-  - component: {fileID: 125733988}
-  - component: {fileID: 125733987}
-  - component: {fileID: 125733986}
+  - component: {fileID: 207243864}
+  - component: {fileID: 207243863}
+  - component: {fileID: 207243862}
+  - component: {fileID: 207243861}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -272,13 +272,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &125733986
+--- !u!114 &207243861
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 125733985}
+  m_GameObject: {fileID: 207243860}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8af5e2d06e0590149b08a6a7fb4e4444, type: 3}
@@ -288,21 +288,21 @@ MonoBehaviour:
   player: {fileID: 0}
   range: 5
   followSpeed: 2
---- !u!81 &125733987
+--- !u!81 &207243862
 AudioListener:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 125733985}
+  m_GameObject: {fileID: 207243860}
   m_Enabled: 1
---- !u!20 &125733988
+--- !u!20 &207243863
 Camera:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 125733985}
+  m_GameObject: {fileID: 207243860}
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
@@ -331,7 +331,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 8.35
+  orthographic size: 14.33
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -347,13 +347,13 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!4 &125733989
+--- !u!4 &207243864
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 125733985}
+  m_GameObject: {fileID: 207243860}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -10}
@@ -701,7 +701,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 1
-  m_Camera: {fileID: 125733988}
+  m_Camera: {fileID: 0}
   m_PlaneDistance: 3.3
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -1036,10 +1036,10 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 125733989}
   - {fileID: 1222306519}
   - {fileID: 6951004}
   - {fileID: 775107301}
   - {fileID: 1045569311}
   - {fileID: 362791220}
   - {fileID: 2048210040}
+  - {fileID: 207243864}

@@ -25,9 +25,14 @@ public class EquipUIManager : _Manager_Base
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            selectionCanvas.SetActive(true);
-            setImageEquipMenu();
+            CallEquipUI();
         }
+    }
+
+    public void CallEquipUI()
+    {
+        selectionCanvas.SetActive(true);
+        setImageEquipMenu();
     }
 
     public void closeUI()

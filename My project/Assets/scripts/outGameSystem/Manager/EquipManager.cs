@@ -1,10 +1,11 @@
-using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class EquipManager : _Manager_Base
 {
-    public delegate void EquipChangedHandler(string updatedCategory, Sprite newSprite);//UIImageChangerにある
+    public delegate void EquipChangedHandler(string updatedCategory, Sprite newSprite); //UIImageChangerにある
     public static event EquipChangedHandler OnEquipChanged;
 
     void Awake()
@@ -14,6 +15,8 @@ public class EquipManager : _Manager_Base
         activeCase = Resources.Load<GameObject>("Objects/Reward/NormalCase");
         activePrimer = Resources.Load<GameObject>("Objects/Reward/NormalPrimer");
     }
+
+    
 
     void Update()
     {
