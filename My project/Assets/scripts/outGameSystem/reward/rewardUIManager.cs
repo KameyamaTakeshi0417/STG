@@ -129,7 +129,7 @@ public class rewardUIManager : _Manager_Base
                 CreateUIObj(rewards[0], Vector2.left * 6*LayoutMag, new Vector3(0.75f, 0.75f, 1f));
                 CreateUIObj(rewards[1], Vector3.left * 3*LayoutMag, new Vector3(0.75f, 0.75f, 1f));
                 CreateUIObj(rewards[2], Vector2.right * 3*LayoutMag, new Vector3(0.75f, 0.75f, 1f));
-                CreateUIObj(rewards[3], Vector2.right * 5*LayoutMag, new Vector3(0.75f, 0.75f, 1f));
+                CreateUIObj(rewards[3], Vector2.right * 5, new Vector3(0.75f, 0.75f, 1f));
                 break;
         }
     }
@@ -172,7 +172,7 @@ public class rewardUIManager : _Manager_Base
         {
             targetScale = Vector3.one;
         }
-        InventoryManager inventoryManager = gameObject.GetComponent<InventoryManager>();
+        InventoryManager inventoryManager = GameObject.Find("GameManager").GetComponent<InventoryManager>();
         // キャンバスの子オブジェクトに設定
         targetUIObj.transform.SetParent(this.gameObject.transform, false);
 

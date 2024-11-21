@@ -11,7 +11,7 @@ public class Player : MonoBehaviour
     public float HP;
     public float currentHP;
     public float pow;
-    public float DamageMag=1.0f;//非固定ダメージの倍率
+    public float DamageMag = 1.0f; //非固定ダメージの倍率
 
     public float moveSpeed;
     public float bulletSpeed;
@@ -81,21 +81,11 @@ public class Player : MonoBehaviour
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
 
         // 弾の発射処理
-        if (Input.GetMouseButton(0) && !onCoolTime)
+        if (Time.timeScale != 0f && (Input.GetMouseButton(0) && !onCoolTime))
         {
             onCoolTime = true;
             ShootBullet();
             StartCoroutine(CoolTime());
-        }
-        if (Input.GetKey(KeyCode.Space))
-        {
-            // ダッシュ、もしくはクイックステップと呼称する緊急回避アクションを実装したい
-        }
-
-        // 装備の切り替え
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            equipManager.ToggleEquip();
         }
     }
 
@@ -229,8 +219,8 @@ public class Player : MonoBehaviour
             caseScript = Resources
                 .Load<GameObject>("Objects/Case/NormalCase")
                 .GetComponent<Case_Base>();
-                 caseType= caseScript.GetType();
-                 bulletPrefab.AddComponent(caseType);
+            caseType = caseScript.GetType();
+            bulletPrefab.AddComponent(caseType);
         }
 
         // プライマーの効果を発動
@@ -269,5 +259,4 @@ public class Player : MonoBehaviour
     {
         bulletSpeed += addpoint;
     }
-
 }
