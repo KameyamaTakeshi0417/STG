@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -30,12 +31,18 @@ public class equipMenuManager : MonoBehaviour
         AssignCamera();
     }
 
+    public void closeUI()
+    {
+        this.gameObject.SetActive(false);
+        Time.timeScale = 1f;
+        
+    }
+
     void AssignCamera()
     {
         Canvas canvas = gameObject.GetComponent<Canvas>();
         if (canvas != null)
         {
-
             Camera mainCamera = FindMainCameraInActiveScene();
             if (mainCamera != null)
             {
@@ -52,10 +59,11 @@ public class equipMenuManager : MonoBehaviour
             Debug.LogError("Canvas component not found on this GameObject.");
         }
     }
- public Camera FindMainCameraInActiveScene()
+
+    public Camera FindMainCameraInActiveScene()
     {
         Scene activeScene = SceneManager.GetActiveScene();
-        Debug.Log("nowScene:"+activeScene.name);
+        Debug.Log("nowScene:" + activeScene.name);
         GameObject[] rootObjects = activeScene.GetRootGameObjects();
 
         foreach (GameObject rootObject in rootObjects)

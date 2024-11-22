@@ -52,11 +52,6 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        if (isPaused)
-        {
-            rb.velocity = Vector2.zero; // ポーズ中は動きを停止
-            return;
-        }
 
         // マウスの位置を取得
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -91,11 +86,7 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (isPaused)
-        {
-            rb.velocity = Vector2.zero; // ポーズ中は動きを停止
-            return;
-        }
+
 
         // 入力がない場合は何もしない
         Vector2 input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));

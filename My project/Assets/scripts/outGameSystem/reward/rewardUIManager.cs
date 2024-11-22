@@ -109,27 +109,29 @@ public class rewardUIManager : _Manager_Base
         );
         Debug.Log("setupSelectionStart" + ui.name);
         freezeGame();
-        int LayoutMag=50;
+
+        Vector3 scaleMag=Vector3.one*500f;
+        int LayoutMag=100;
         switch (rewards.Count)
         {
             case 1:
-                CreateUIObj(rewards[0], Vector2.zero);
+                CreateUIObj(rewards[0], Vector2.zero,scaleMag);
                 break;
             case 2:
-                CreateUIObj(rewards[0], Vector2.left * 3*LayoutMag);
-                CreateUIObj(rewards[1], Vector2.right * 3*LayoutMag);
+                CreateUIObj(rewards[0], Vector2.left * 3*LayoutMag,scaleMag);
+                CreateUIObj(rewards[1], Vector2.right * 3*LayoutMag,scaleMag);
                 break;
             case 3:
-                CreateUIObj(rewards[0], Vector2.left * 4*LayoutMag);
-                CreateUIObj(rewards[1], Vector3.zero);
-                CreateUIObj(rewards[2], Vector2.right * 4*LayoutMag);
+                CreateUIObj(rewards[0], Vector2.left * 4*LayoutMag,scaleMag);
+                CreateUIObj(rewards[1], Vector3.zero,scaleMag);
+                CreateUIObj(rewards[2], Vector2.right * 4*LayoutMag,scaleMag);
                 Debug.Log("setupSelection_End");
                 break;
             case 4:
-                CreateUIObj(rewards[0], Vector2.left * 6*LayoutMag, new Vector3(0.75f, 0.75f, 1f));
-                CreateUIObj(rewards[1], Vector3.left * 3*LayoutMag, new Vector3(0.75f, 0.75f, 1f));
-                CreateUIObj(rewards[2], Vector2.right * 3*LayoutMag, new Vector3(0.75f, 0.75f, 1f));
-                CreateUIObj(rewards[3], Vector2.right * 5, new Vector3(0.75f, 0.75f, 1f));
+                CreateUIObj(rewards[0], Vector2.left * 6*LayoutMag, scaleMag*0.75f);
+                CreateUIObj(rewards[1], Vector3.left * 3*LayoutMag, scaleMag*0.75f);
+                CreateUIObj(rewards[2], Vector2.right * 3*LayoutMag, scaleMag*0.75f);
+                CreateUIObj(rewards[3], Vector2.right * 5*LayoutMag, scaleMag*0.75f);
                 break;
         }
     }

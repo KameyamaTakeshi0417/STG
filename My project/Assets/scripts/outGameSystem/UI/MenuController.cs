@@ -67,11 +67,7 @@ public class MenuController : MonoBehaviour
         }
 
         // プレイヤーの動きを制御するためにイベントを発行
-        Player player = FindObjectOfType<Player>();
-        if (player != null)
-        {
-            player.SetPaused(isPaused);
-        }
+
     }
 
     public void ActivateBoardReplacement()

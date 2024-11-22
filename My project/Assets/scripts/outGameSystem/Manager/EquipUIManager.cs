@@ -31,6 +31,7 @@ public class EquipUIManager : _Manager_Base
 
     public void CallEquipUI()
     {
+        Time.timeScale = 0f;
         selectionCanvas.SetActive(true);
         setImageEquipMenu();
     }
@@ -38,6 +39,7 @@ public class EquipUIManager : _Manager_Base
     public void closeUI()
     {
         selectionCanvas.SetActive(false);
+        Time.timeScale = 1f;
     }
 
     protected void setImageEquipMenu()
