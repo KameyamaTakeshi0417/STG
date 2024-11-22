@@ -35,7 +35,6 @@ public class equipMenuManager : MonoBehaviour
     {
         this.gameObject.SetActive(false);
         Time.timeScale = 1f;
-        
     }
 
     void AssignCamera()
@@ -81,5 +80,9 @@ public class equipMenuManager : MonoBehaviour
 
         Debug.LogWarning("MainCamera not found in active scene.");
         return null;
+    }
+
+    public void callEquipScrollBar(string Category) { 
+        //UIの名前から変更対象を決める。
     }
 }
