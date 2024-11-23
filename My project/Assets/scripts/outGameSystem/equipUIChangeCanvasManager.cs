@@ -3,33 +3,39 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 public class equipUIChangeCanvasManager : MonoBehaviour
 {
-   // Start is called before the first frame update
+    // Start is called before the first frame update
 
     public GameObject scrollUI; // スクロールバーUIの親要素
     public GameObject elementPrefab; // 各要素のプレハブ
     public string targetObjCategory;
+    public string AmmoType;
+    private bool isInitialized = false; // 初期化されたかどうかを確認するフラグ
 
-    void Start()
+    public void Initialize(string category)
     {
+        targetObjCategory = category;
+        isInitialized = true; // 初期化完了
+    }
+
+    void Awake()
+    {
+        // Awake は Start より先に呼ばれる
         Canvas canvas = gameObject.GetComponent<Canvas>();
         if (canvas != null)
         {
             canvas.worldCamera = Camera.main;
-            Debug.Log("startRewarUI");
+            Debug.Log("Canvas is set with the main camera.");
         }
         else
         {
             Debug.LogError("Canvas component not found on this GameObject.");
         }
-        if (scrollUI == null || elementPrefab == null)
-        {
-            Debug.LogError("必要なコンポーネントが設定されていません");
-            return;
-        }
+    }
 
+    void Start()
+    {
         // 各ゲームオブジェクトをスクロールUIに追加
         foreach (
             GameObject obj in GameObject
@@ -38,7 +44,10 @@ public class equipUIChangeCanvasManager : MonoBehaviour
                 .AmmoObjectList
         )
         {
-            CreateScrollElement(obj);
+            if (obj.GetComponent<ItemPickUp>().itemType == AmmoType)
+            {
+                CreateScrollElement(obj);
+            }
         }
     }
 

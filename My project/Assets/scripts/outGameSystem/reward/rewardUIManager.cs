@@ -16,7 +16,7 @@ public class rewardUIManager : _Manager_Base
 
     void Start()
     {
-        targetRewardManager = GameObject.Find("GameManager").GetComponent<rewardManager>();
+        targetRewardManager = FindGameManager().GetComponent<rewardManager>();
         // 対象のカメラをメインカメラに設定
         Canvas canvas = gameObject.GetComponent<Canvas>();
         if (canvas != null)
@@ -110,28 +110,28 @@ public class rewardUIManager : _Manager_Base
         Debug.Log("setupSelectionStart" + ui.name);
         freezeGame();
 
-        Vector3 scaleMag=Vector3.one*500f;
-        int LayoutMag=100;
+        Vector3 scaleMag = Vector3.one * 500f;
+        int LayoutMag = 100;
         switch (rewards.Count)
         {
             case 1:
-                CreateUIObj(rewards[0], Vector2.zero,scaleMag);
+                CreateUIObj(rewards[0], Vector2.zero, scaleMag);
                 break;
             case 2:
-                CreateUIObj(rewards[0], Vector2.left * 3*LayoutMag,scaleMag);
-                CreateUIObj(rewards[1], Vector2.right * 3*LayoutMag,scaleMag);
+                CreateUIObj(rewards[0], Vector2.left * 3 * LayoutMag, scaleMag);
+                CreateUIObj(rewards[1], Vector2.right * 3 * LayoutMag, scaleMag);
                 break;
             case 3:
-                CreateUIObj(rewards[0], Vector2.left * 4*LayoutMag,scaleMag);
-                CreateUIObj(rewards[1], Vector3.zero,scaleMag);
-                CreateUIObj(rewards[2], Vector2.right * 4*LayoutMag,scaleMag);
+                CreateUIObj(rewards[0], Vector2.left * 4 * LayoutMag, scaleMag);
+                CreateUIObj(rewards[1], Vector3.zero, scaleMag);
+                CreateUIObj(rewards[2], Vector2.right * 4 * LayoutMag, scaleMag);
                 Debug.Log("setupSelection_End");
                 break;
             case 4:
-                CreateUIObj(rewards[0], Vector2.left * 6*LayoutMag, scaleMag*0.75f);
-                CreateUIObj(rewards[1], Vector3.left * 3*LayoutMag, scaleMag*0.75f);
-                CreateUIObj(rewards[2], Vector2.right * 3*LayoutMag, scaleMag*0.75f);
-                CreateUIObj(rewards[3], Vector2.right * 5*LayoutMag, scaleMag*0.75f);
+                CreateUIObj(rewards[0], Vector2.left * 6 * LayoutMag, scaleMag * 0.75f);
+                CreateUIObj(rewards[1], Vector3.left * 3 * LayoutMag, scaleMag * 0.75f);
+                CreateUIObj(rewards[2], Vector2.right * 3 * LayoutMag, scaleMag * 0.75f);
+                CreateUIObj(rewards[3], Vector2.right * 5 * LayoutMag, scaleMag * 0.75f);
                 break;
         }
     }
@@ -174,7 +174,9 @@ public class rewardUIManager : _Manager_Base
         {
             targetScale = Vector3.one;
         }
-        InventoryManager inventoryManager = GameObject.Find("GameManager").GetComponent<InventoryManager>();
+        GameObject managerObj = FindGameManager();
+        InventoryManager inventoryManager = managerObj.GetComponent<InventoryManager>();
+        EquipManager equipManager = managerObj.GetComponent<EquipManager>();
         // キャンバスの子オブジェクトに設定
         targetUIObj.transform.SetParent(this.gameObject.transform, false);
 
@@ -192,7 +194,10 @@ public class rewardUIManager : _Manager_Base
         {
             targetButton.onClick.RemoveAllListeners();
             targetButton.onClick.AddListener(() => Selecttarget(targetUIObj, targetRewardObj));
-            targetButton.onClick.AddListener(() => inventoryManager.AddItem(targetUIObj));
+            targetButton.onClick.AddListener(
+                () => inventoryManager.AddItem(Instantiate(targetRewardObj))
+            );
+            targetButton.onClick.AddListener(() => equipManager.EquipItem(targetRewardObj));
             targetButton.onClick.AddListener(() => continueGame());
         }
     }
@@ -220,6 +225,24 @@ public class rewardUIManager : _Manager_Base
     public void setToButtonDestroy()
     {
         Destroy(this.gameObject);
+    }
+
+    GameObject FindGameManager()
+    {
+        // すべての GameObject を取得する
+        GameObject[] allGameObjects = FindObjectsOfType<GameObject>();
+
+        foreach (GameObject obj in allGameObjects)
+        {
+            // DontDestroyOnLoad にあるオブジェクトで、名前が "GameManager" のものを探す
+            if (obj.scene.name == "DontDestroyOnLoad" && obj.name == "GameManager")
+            {
+                return obj;
+            }
+        }
+
+        // 見つからなかった場合は null を返す
+        return null;
     }
 
     //弾丸の種類をここに記そう

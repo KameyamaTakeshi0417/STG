@@ -24,6 +24,7 @@ public class treasureBox : MonoBehaviour
         if ((Input.GetKeyDown(KeyCode.Return)) && nowOpen)
         {
             showUI();
+            Destroy(this.gameObject);
         }
     }
 

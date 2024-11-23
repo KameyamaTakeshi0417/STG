@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class equipMenuManager : MonoBehaviour
 {
+    GameObject selectEquipScrollUI;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -82,7 +84,10 @@ public class equipMenuManager : MonoBehaviour
         return null;
     }
 
-    public void callEquipScrollBar(string Category) { 
-        //UIの名前から変更対象を決める。
+    public void callEquipScrollBar(string categoryName)
+    {
+        //activeかsubか設定しておく
+        GameObject UIPrefab = Instantiate(selectEquipScrollUI, Vector3.zero, Quaternion.identity);
+        UIPrefab.GetComponent<equipUIChangeCanvasManager>().Initialize(categoryName); // ここで targetObjCategory を設定
     }
 }
