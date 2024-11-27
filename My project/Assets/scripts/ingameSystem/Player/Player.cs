@@ -81,7 +81,7 @@ public class Player : MonoBehaviour
 
         // プレイヤーの向きを変更
         float angle = Mathf.Atan2(watch.y, watch.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+      //  transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
 
         // 弾の発射処理
         if (Time.timeScale != 0f && (Input.GetMouseButton(0) && !onCoolTime))
