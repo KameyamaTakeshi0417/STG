@@ -87,7 +87,7 @@ public class Player : MonoBehaviour
         if (Time.timeScale != 0f && (Input.GetMouseButton(0) && !onCoolTime))
         {
             onCoolTime = true;
-            ShootBullet();
+          //  ShootBullet();
             StartCoroutine(CoolTime());
         }
     }
