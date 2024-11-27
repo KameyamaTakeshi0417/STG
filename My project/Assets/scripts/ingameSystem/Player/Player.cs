@@ -27,6 +27,7 @@ public class Player : MonoBehaviour
     public AudioSource getExpAudioSource; // 経験値取得音用のAudioSource
 
     private EquipManager equipManager; // プレイヤーの装備を管理
+    private Animator animator; // Animator コンポーネントを追加
 
     void Awake()
     {
@@ -42,6 +43,7 @@ public class Player : MonoBehaviour
         }
 
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>(); // Animator を取得
         equipManager = GameObject.Find("GameManager").GetComponent<EquipManager>();
     }
 
@@ -81,15 +83,17 @@ public class Player : MonoBehaviour
 
         // プレイヤーの向きを変更
         float angle = Mathf.Atan2(watch.y, watch.x) * Mathf.Rad2Deg;
-      //  transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+        //  transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
 
         // 弾の発射処理
         if (Time.timeScale != 0f && (Input.GetMouseButton(0) && !onCoolTime))
         {
             onCoolTime = true;
-          //  ShootBullet();
+            //  ShootBullet();
             StartCoroutine(CoolTime());
         }
+        // Animator パラメータの更新
+        UpdateAnimatorParameters();
     }
 
     void FixedUpdate()
@@ -165,6 +169,23 @@ public class Player : MonoBehaviour
     public void SetPaused(bool paused)
     {
         isPaused = paused;
+    }
+
+    private void UpdateAnimatorParameters()
+    {
+        // マウスの位置を取得
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePosition.z = 0; // Z座標は0に固定
+
+        // マウス位置のX座標をAnimatorパラメータに設定
+        float mouseXPosition = mousePosition.x;
+
+        // プレイヤーの移動ベクトルの大きさを計算
+        float moveVectorMag = rb.velocity.magnitude;
+
+        // Animator パラメータを設定
+        animator.SetFloat("mouseXPosition", mouseXPosition);
+        animator.SetFloat("moveVectorMag", moveVectorMag);
     }
 
     void ShootBullet()
