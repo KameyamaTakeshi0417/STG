@@ -101,7 +101,7 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: f41d2f6a97425894ead5e8859af126c0, type: 2}
   itemType: Case
   itemRarelity: 1
-  targetObj: {fileID: 3924603122212602460, guid: 07ecccb4634d61941884d997ee0646d1, type: 3}
+  targetObj: {fileID: 8791454875908682115, guid: 9af2f54a695fa2142bf8cf8a65f800dc, type: 3}
   accessAddress: Objects/Reward/HomingCase_RewardObject
 --- !u!61 &1237558717838923399
 BoxCollider2D:
