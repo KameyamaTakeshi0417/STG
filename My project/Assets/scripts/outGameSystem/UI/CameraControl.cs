@@ -50,14 +50,27 @@ public class CameraControl : MonoBehaviour
         ObeyPlayer();
     }
 
-    void ObeyPlayer()
-    {
-        // プレイヤーに対するカメラの相対位置を設定
-        targetPosition = player.transform.position + new Vector3(0, 0, -10);
+void ObeyPlayer()
+{
+    // マウスのスクリーン座標を取得
+    Vector3 mousePosition = Input.mousePosition;
 
-        // カメラの現在位置を目標位置に向かってスムーズに移動
-        transform.position = Vector3.Lerp(transform.position, targetPosition, followSpeed * Time.fixedDeltaTime);
-    }
+    // マウス位置をビューポート座標に変換し、0から1の範囲に制限（範囲外なら0または1に制限）
+    float clampedViewportX = Mathf.Clamp(mousePosition.x / Screen.width, 0f, 1f);
+    float clampedViewportY = Mathf.Clamp(mousePosition.y / Screen.height, 0f, 1f);
+
+    // ビューポート座標をワールド座標に変換
+    Vector3 clampedWorldPosition = Camera.main.ViewportToWorldPoint(new Vector3(clampedViewportX, clampedViewportY, -Camera.main.transform.position.z));
+    clampedWorldPosition.z = -10f; // カメラのZ位置を維持
+
+    // プレイヤーの位置とクランプしたマウス位置の中間を計算
+    targetPosition = (player.transform.position + clampedWorldPosition) / 2;
+
+    // カメラの現在位置を目標位置に向かってスムーズに移動
+    transform.position = Vector3.Lerp(transform.position, targetPosition, followSpeed * Time.fixedDeltaTime);
+}
+
+
 
     void AdjustCameraSize()
     {

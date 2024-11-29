@@ -89,7 +89,7 @@ public class ShooterHandler : MonoBehaviour
         GameObject activeCase = equipManager.GetActiveCase();
         GameObject activePrimer = equipManager.GetActivePrimer();
         GameObject bulletPrefab;
-        float ratio = 1.5f;
+        float ratio = 0.5f;
         Vector3 createPos = targetObj.transform.position + (watch * ratio);
 
         if (activeBullet == null)

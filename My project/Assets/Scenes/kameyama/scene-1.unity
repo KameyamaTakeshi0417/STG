@@ -3537,7 +3537,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1603334037}
   followSpeed: 2
-  noInputTimeThreshold: 10
+  noInputTimeThreshold: 5
   moveToPlayerDuration: 2
   moveAwayFromPlayerDuration: 0.5
   targetZoomInSize: 5

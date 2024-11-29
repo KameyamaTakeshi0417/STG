@@ -29,10 +29,10 @@ public class NormalCase : Case_Base
         {
             // 弾の位置を更新する
             count++;
-            yield return new WaitForSeconds(0.01f);
+            yield return new WaitForEndOfFrame();
         }
 
-        Destroy(myBullet);
+        Destroy(this.gameObject);
         yield break;
     }
 }
