@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: fde52aadd1517dd4f9b259881d04f579
+guid: 47405688b5e4f9741a839a29d6614f0d
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -43,8 +43,8 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
-  spriteExtrude: 1
+  spriteMode: 1
+  spriteExtrude: 0
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
@@ -108,70 +108,7 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: "\u30C0\u30C3\u30B7\u30E5256Left_0"
-      rect:
-        serializedVersion: 2
-        x: 63
-        y: 24
-        width: 143
-        height: 198
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f5c83dfdb40e6d14794beb5af0b9171a
-      internalID: -1835278228
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: "\u30C0\u30C3\u30B7\u30E5256Left_1"
-      rect:
-        serializedVersion: 2
-        x: 319
-        y: 24
-        width: 143
-        height: 198
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 527e694b98a9d5d42bef42f5033a7652
-      internalID: 1877296898
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: "\u30C0\u30C3\u30B7\u30E5256Left_2"
-      rect:
-        serializedVersion: 2
-        x: 575
-        y: 24
-        width: 143
-        height: 198
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ed326948db7550f4f8fe824dcd68a203
-      internalID: 2032200748
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
+    sprites: []
     outline: []
     physicsShape: []
     bones: []
@@ -182,10 +119,7 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable:
-      "\u30C0\u30C3\u30B7\u30E5256Left_0": -1835278228
-      "\u30C0\u30C3\u30B7\u30E5256Left_1": 1877296898
-      "\u30C0\u30C3\u30B7\u30E5256Left_2": 2032200748
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
