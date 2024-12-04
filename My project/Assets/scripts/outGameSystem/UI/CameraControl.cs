@@ -4,7 +4,7 @@ public class CameraControl : MonoBehaviour
 {
     public Vector3 cameraPositionOffset;
     public GameObject player;
-    public float range = 5.0f;
+    public float range = 0.0f;
     public float followSpeed = 2.0f;
 
     private Vector3 velocity = Vector3.zero;
