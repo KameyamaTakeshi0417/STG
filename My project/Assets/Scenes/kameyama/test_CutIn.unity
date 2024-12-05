@@ -314,7 +314,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 7c29803e5f6f0154ab467ba1fa964ca8, type: 3}
+  m_Sprite: {fileID: 21300000, guid: db3cc268dac769e43a0ee21040ca4640, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -814,20 +814,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameText: {fileID: 610750307}
   talkText: {fileID: 693892603}
-  nextButton: {fileID: 0}
-  leftCharacter: {fileID: 0}
-  rightCharacter: {fileID: 0}
+  nextButton: {fileID: 1772070631}
+  leftCharacter: {fileID: 843886616}
+  rightCharacter: {fileID: 644911797}
   storyDataList:
   - Name: "\u30AB\u30A4\u30AB"
     Talk: "\u4F53\u9A13\u7248\u306F\u3053\u3053\u307E\u3067\u3060\u3088\u3002\n\u3082\u3046\u3061\u3087\u3063\u3068\u9762\u767D\u3044\u30B2\u30FC\u30E0\u306B\u3059\u308B\u304B\u3089\u3001\n\u3082\u3046\u3061\u3087\u3063\u3068\u5F85\u3063\u3066\u3066\u8CB0\u3048\u308B\u3068\u5B09\u3057\u3044\u306A\u3002"
     Place: 
-    Left: 
+    Left: Texture/chara/player_Idle
     Center: 
     Right: 
   - Name: "\u30AB\u30A4\u30AB"
     Talk: "Sacred Sakura Showdown\u3001\n\u307E\u3060\u307E\u3060\u958B\u767A\u4E2D\u3002\n\u5FDC\u63F4\u3088\u308D\u3057\u304F\u306D\u3002"
     Place: 
-    Left: 
+    Left: Texture/chara/player_Smile
     Center: 
     Right: 
 --- !u!1 &1772070629
@@ -1054,6 +1054,7 @@ GameObject:
   - component: {fileID: 2136468088}
   - component: {fileID: 2136468087}
   - component: {fileID: 2136468086}
+  - component: {fileID: 2136468090}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1146,6 +1147,31 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &2136468090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2136468085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40d61aba5f1b7da4abc105de17f2752c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  storyDataList:
+  - Name: "\u30AB\u30A4\u30AB"
+    Talk: "\u4F53\u9A13\u7248\u306F\u3053\u3053\u307E\u3067\u3060\u3088\u3002\n\u3082\u3046\u3061\u3087\u3063\u3068\u9762\u767D\u3044\u30B2\u30FC\u30E0\u306B\u3059\u308B\u304B\u3089\u3001\n\u3082\u3046\u3061\u3087\u3063\u3068\u5F85\u3063\u3066\u3066\u8CB0\u3048\u308B\u3068\u5B09\u3057\u3044\u306A\u3002"
+    Place: 
+    Left: Assets/resources/Texture/chara/player_Idle
+    Center: 
+    Right: 
+  - Name: "\u30AB\u30A4\u30AB"
+    Talk: "Sacred Sakura Showdown\u3001\n\u307E\u3060\u307E\u3060\u958B\u767A\u4E2D\u3002\n\u5FDC\u63F4\u3088\u308D\u3057\u304F\u306D\u3002"
+    Place: 
+    Left: Assets/resources/Texture/chara/player_Smile
+    Center: 
+    Right: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
