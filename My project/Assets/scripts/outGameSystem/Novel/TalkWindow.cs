@@ -42,14 +42,7 @@ public class TalkWindow : MonoBehaviour
     // 会話の開始.
     public void TalkStart()
     {
-        // ストーリーのテストデータ (後でストーリーデータをロードする処理に置き換えます)
-        storyDataList.Add(
-            new StoryData() { Name = "キャラクターA", Talk = "こんにちは、私の名前はAです。" }
-        );
-        storyDataList.Add(
-            new StoryData() { Name = "キャラクターB", Talk = "こんにちは、Aさん。元気ですか？" }
-        );
-
+     //   Time.timeScale = 0f; // ゲームの時間を停止
         DisplayCurrentStory();
     }
 
@@ -110,6 +103,8 @@ public class TalkWindow : MonoBehaviour
     // 会話の終了処理
     private void EndConversation()
     {
+        transform.root.gameObject.SetActive(false);
+       //  Time.timeScale = 1f; // ゲームの時間を停止
         // 会話終了後の処理 (ウィンドウを閉じる、次のイベントに進むなど)
         Debug.Log("会話が終了しました");
     }

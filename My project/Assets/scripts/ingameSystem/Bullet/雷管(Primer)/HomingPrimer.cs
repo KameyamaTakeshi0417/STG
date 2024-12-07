@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HomingBullet : Primer_Base
+public class HomingPrimer : Primer_Base
 {
     // Start is called before the first frame update
     public override void StrikePrimer()
