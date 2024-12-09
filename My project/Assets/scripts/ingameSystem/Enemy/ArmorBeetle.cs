@@ -92,7 +92,11 @@ public class ArmorBeetle : MonoBehaviour
         makeBarrier = true;
 
         // バリア生成
-        GameObject barrier = Instantiate(Resources.Load<GameObject>("Objects/Enemy/barrier"), transform.position, Quaternion.identity);
+        GameObject barrier = Instantiate(
+            Resources.Load<GameObject>("Objects/Enemy/barrier"),
+            transform.position,
+            Quaternion.identity
+        );
         barrier.GetComponent<Health>().setHP(myHealth.getHP());
         barrier.GetComponent<Health>().setCurrentHP(myHealth.getHP());
         barrier.GetComponent<barrier>().startDisappear();
@@ -127,7 +131,11 @@ public class ArmorBeetle : MonoBehaviour
 
     public void setRotate(Vector3 rot)
     {
-        transform.localEulerAngles = new Vector3(0, 0, Mathf.Atan2(rot.y, rot.x) * Mathf.Rad2Deg + 90);
+        transform.localEulerAngles = new Vector3(
+            0,
+            0,
+            Mathf.Atan2(rot.y, rot.x) * Mathf.Rad2Deg + 90
+        );
         rotate = rot.normalized;
     }
 }

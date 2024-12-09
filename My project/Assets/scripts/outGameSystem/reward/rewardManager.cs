@@ -130,7 +130,7 @@ public class rewardManager : MonoBehaviour
             for (int i = 0; i < callValue; i++)
             {
                 result[i] = normalRewardArray[currentIndex + i];
-//                Debug.Log("Reward Value: " + result[i]);
+                //                Debug.Log("Reward Value: " + result[i]);
             }
 
             // 次のインデックスの更新（callValueずつ進む）

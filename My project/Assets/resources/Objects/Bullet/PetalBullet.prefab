@@ -27,7 +27,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.0152, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 2, z: 1}
+  m_LocalScale: {x: 5.15, y: 4.72, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1023276911772429033}
@@ -70,8 +70,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -226196017
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 13b19f52365b4aa428d51abd6d235819, type: 3}
   m_Color: {r: 0.88530576, g: 0.6698113, b: 1, a: 0.49411765}
@@ -221,3 +221,6 @@ MonoBehaviour:
   cycleCount: 0
   cycleCountMax: 3
   bulletSpeedMag: 0.005
+  involuteTimeMax: 1000
+  involuteRadius: 1
+  damage: 10

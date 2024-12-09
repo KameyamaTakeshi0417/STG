@@ -8,6 +8,7 @@ public class petalBullet : MonoBehaviour
     public float bulletSpeedMag;
     public int involuteTimeMax = 1000;
     public float involuteRadius = 1.0f;
+    public float damage;
 
     void Awake()
     {
@@ -108,7 +109,7 @@ public class petalBullet : MonoBehaviour
             float rotationAngle =
                 Mathf.Atan2(involutePosition.y, involutePosition.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(
-                new Vector3(0, 0, rotationAngle + 90 * rotationWay)
+                new Vector3(0, 0, rotationAngle + 270 * rotationWay)
             );
 
             angle += (speed * Time.deltaTime) * rotationWay;
@@ -147,7 +148,7 @@ public class petalBullet : MonoBehaviour
     private IEnumerator homing()
     {
         int count = 0;
-        int countClock = 3000;
+        int countClock = 1000;
 
         while (true)
         {
@@ -158,7 +159,7 @@ public class petalBullet : MonoBehaviour
             float rotationAngle = Mathf.Atan2(moveWay.y, moveWay.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotationAngle + 90));
 
-            transform.position += moveWay * (bulletSpeedMag);
+            transform.position += moveWay * (bulletSpeedMag * 2.0f);
             count++;
 
             if (count >= countClock)
@@ -200,6 +201,13 @@ public class petalBullet : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
+            // HPを持つコンポーネントを取得
+            _Health_Base health = collision.GetComponent<_Health_Base>();
+            if (health != null)
+            {
+                // HPを減らす
+                health.TakeDamage(damage);
+            }
             Destroy(this.gameObject);
         }
     }

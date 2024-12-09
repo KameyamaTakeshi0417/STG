@@ -1,10 +1,10 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
 public class ChangeTextureOnTouch : MonoBehaviour
 {
-    public Sprite texture1;  // 最初のテクスチャ
-    public Sprite texture2;  // 切り替え後のテクスチャ
+    public Sprite texture1; // 最初のテクスチャ
+    public Sprite texture2; // 切り替え後のテクスチャ
     public float shakeDuration = 0.5f; // ピクピクする時間
     public float shakeMagnitude = 0.1f; // ピクピクの強さ
 
@@ -13,36 +13,39 @@ public class ChangeTextureOnTouch : MonoBehaviour
     public GameObject reward;
     public bool nowOpen;
     public bool nowTouch;
+
     void Start()
     {
         nowOpen = false;
-        nowTouch=false;
+        nowTouch = false;
         spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.sprite = texture1; // 初期テクスチャを設定
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        
         if (other.CompareTag("Player") && !isShaking)
         {
-            nowTouch=true;
+            nowTouch = true;
             StartCoroutine(ShakeAndChangeTexture());
         }
     }
+
     void OnTriggerExit2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
-            nowTouch=false;
+            nowTouch = false;
             spriteRenderer.sprite = texture1;
             gameObject.GetComponent<treasureBox>().setNowOpen(true);
         }
     }
+
     public void disappearObject()
     {
         StartCoroutine("disappear");
     }
+
     private IEnumerator ShakeAndChangeTexture()
     {
         isShaking = true;
@@ -52,18 +55,22 @@ public class ChangeTextureOnTouch : MonoBehaviour
         // ピクピクと動かす処理
         while (elapsed < shakeDuration)
         {
-            if (nowTouch==false)
+            if (nowTouch == false)
             {
                 transform.position = originalPosition;
 
                 // テクスチャをtexture2に切り替える
                 spriteRenderer.sprite = texture1;
-                 isShaking = false;
-                 yield break;
+                isShaking = false;
+                yield break;
             }
             float offsetX = Random.Range(-1f, 1f) * shakeMagnitude;
             float offsetY = Random.Range(-1f, 1f) * shakeMagnitude;
-            transform.position = new Vector3(originalPosition.x + offsetX, originalPosition.y + offsetY, originalPosition.z);
+            transform.position = new Vector3(
+                originalPosition.x + offsetX,
+                originalPosition.y + offsetY,
+                originalPosition.z
+            );
 
             elapsed += Time.deltaTime;
             yield return null;
@@ -78,8 +85,9 @@ public class ChangeTextureOnTouch : MonoBehaviour
         gameObject.GetComponent<treasureBox>().setNowOpen(true);
         isShaking = false;
 
-        yield break;//return disappear();
+        yield break; //return disappear();
     }
+
     private IEnumerator disappear()
     {
         float flickerDuration = 1.5f; // チカチカさせる時間
