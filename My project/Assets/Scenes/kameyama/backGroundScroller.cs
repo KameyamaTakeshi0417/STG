@@ -4,69 +4,83 @@ using UnityEngine;
 
 public class BackgroundScroller : MonoBehaviour
 {
-    public float scrollSpeed = 2.0f; // 背景のスクロール速度
-    public float resetPositionY = -10.0f; // 背景がリセットされるY座標
-    public float startPositionY = 20.0f; // 背景が再配置される開始位置Y座標
-    public float appearFinalPositionY = 30f; // 最終的にDがたどり着くY座標
-    public int copseLoopCount = 2; // copseをループさせる回数
+    public float scrollSpeed = 2.0f; // Background scroll speed
+    public float resetPositionY = -10.0f; // Position to reset backgrounds
+    public float startPositionY = 20.0f; // Start position of backgrounds
+    public float appearFinalPositionY = 30f; // Final position of the last background
+    public int copseLoopCount = 2; // Number of loops for the copse backgrounds
 
     public GameObject backgroundA;
     public GameObject backgroundB;
     public GameObject backgroundC;
 
-    public GameObject copse; // 雑木林
-    public GameObject field; // 広場
-    public GameObject player; // プレイヤーの参照
+    public GameObject copseBG_1; // First copse background
+    public GameObject copseBG_2; // Second copse background
+    public GameObject copseBG_3; // Third copse background
+    public GameObject field; // Final field background
+    public GameObject player; // Player reference
 
     private List<GameObject> backgrounds;
-    public bool isCleared = false; // ゲームクリア状態
-    private bool isTransitioning = false; // 遷移中かどうか
-      public Camera mainCamera; // メインカメラ
+    private List<GameObject> copseBackgrounds;
+    public bool isCleared = false; // Game cleared state
+    private bool isTransitioning = false; // Whether transitioning to the final phase
 
     void Start()
     {
-        // 背景オブジェクトをリストにまとめる
         backgrounds = new List<GameObject> { backgroundA, backgroundB, backgroundC };
-        copse.SetActive(false); // 遷移用背景は初期非表示
-        field.SetActive(false); // 最終背景も初期非表示
+        copseBackgrounds = new List<GameObject> { copseBG_1, copseBG_2, copseBG_3 };
+
+        foreach (var copse in copseBackgrounds)
+        {
+            copse.SetActive(false);
+        }
+
+        field.SetActive(false); // Final field background initially inactive
+
         StartCoroutine(ScrollBackgrounds());
-    }
-
-    void Update()
-    {
-
     }
 
     IEnumerator ScrollBackgrounds()
     {
-        foreach (GameObject bg in backgrounds)
+        while (!isCleared)
         {
-             Vector3 worldSize = bg.GetComponent<SpriteRenderer>().bounds.size;
-
-        // ワールド座標をスクリーンサイズに変換
-        Vector3 screenSize = mainCamera.WorldToScreenPoint(worldSize);
-
-        // 画面上のサイズ（幅と高さ）を出力
-        
-            // 背景を下に移動
-            bg.transform.position += Vector3.down * scrollSpeed * Time.deltaTime;
-
-            // 背景がリセット位置に達したら再配置
-            if (bg.transform.position.y <= resetPositionY+(worldSize.y*0.5f))
+            foreach (GameObject bg in backgrounds)
             {
-                // 背景を他の背景の上に繋げるように配置
-                GameObject highestBg = GetHighestBackground();
-                bg.transform.position = new Vector3(
-                    highestBg.transform.position.x,
-                    highestBg.transform.position.y + (startPositionY - resetPositionY),
-                    highestBg.transform.position.z
-                );
+                Vector3 worldSize = GetObjectWorldSize(bg);
+
+                bg.transform.position += Vector3.down * scrollSpeed * Time.deltaTime;
+
+                if (bg.transform.position.y <= resetPositionY - (worldSize.y * 0.5f))
+                {
+                    GameObject highestBg = GetHighestBackground();
+                    bg.transform.position = new Vector3(
+                        highestBg.transform.position.x,
+                        highestBg.transform.position.y + worldSize.y,
+                        highestBg.transform.position.z
+                    );
+                }
             }
+            yield return new WaitForEndOfFrame();
         }
-        yield break;
+
+        yield return TransitionToCopseBackgrounds();
     }
 
-    // 最も上に位置する背景を取得する
+    Vector3 GetObjectWorldSize(GameObject obj)
+    {
+        var renderer = obj.GetComponent<SpriteRenderer>();
+        if (renderer != null)
+        {
+            return renderer.bounds.size;
+        }
+        else
+        {
+            // Default size if no SpriteRenderer exists
+            Debug.LogWarning($"SpriteRenderer not found on {obj.name}. Using default size.");
+            return new Vector3(10, 10, 0); // Example default size
+        }
+    }
+
     GameObject GetHighestBackground()
     {
         GameObject highestBg = backgrounds[0];
@@ -80,64 +94,76 @@ public class BackgroundScroller : MonoBehaviour
         return highestBg;
     }
 
-    private IEnumerator TransitionToFinalBackground()
+    private IEnumerator TransitionToCopseBackgrounds()
     {
         isTransitioning = true;
 
-
-        // copse（雑木林）を開始し、A-Cの最後の背景につなげる
-        copse.SetActive(true);
-        GameObject lastBg = GetHighestBackground();
-        copse.transform.position = new Vector3(
-            lastBg.transform.position.x,
-            lastBg.transform.position.y + (startPositionY - resetPositionY),
-            lastBg.transform.position.z
-        );
-
-        for (int i = 0; i < copseLoopCount; i++)
-        {
-            while (copse.transform.position.y > resetPositionY)
-            {
-                copse.transform.position += Vector3.down * scrollSpeed * Time.deltaTime;
-                yield return null;
-            }
-            // copseを再配置
-            copse.transform.position = new Vector3(
-                copse.transform.position.x,
-                startPositionY,
-                copse.transform.position.z
-            );
-        }
-        // 通常背景を停止
         foreach (GameObject bg in backgrounds)
         {
             bg.SetActive(false);
         }
 
-        // copseを停止し、field（広場）を開始
-        copse.SetActive(false);
+        foreach (var copse in copseBackgrounds)
+        {
+            copse.SetActive(true);
+        }
+
+        for (int loop = 0; loop < copseLoopCount; loop++)
+        {
+            foreach (var copse in copseBackgrounds)
+            {
+                Vector3 worldSize = GetObjectWorldSize(copse);
+
+                while (copse.transform.position.y > resetPositionY)
+                {
+                    copse.transform.position += Vector3.down * scrollSpeed * Time.deltaTime;
+                    yield return null;
+                }
+
+                GameObject highestCopse = GetHighestCopse();
+                copse.transform.position = new Vector3(
+                    highestCopse.transform.position.x,
+                    highestCopse.transform.position.y + worldSize.y,
+                    highestCopse.transform.position.z
+                );
+            }
+        }
+
+        foreach (var copse in copseBackgrounds)
+        {
+            copse.SetActive(false);
+        }
+
         field.SetActive(true);
-        field.transform.position = new Vector3(
-            copse.transform.position.x,
-            copse.transform.position.y + (startPositionY - resetPositionY),
-            copse.transform.position.z
+
+        Vector3 finalPosition = new Vector3(
+            field.transform.position.x,
+            appearFinalPositionY,
+            field.transform.position.z
         );
 
-        // 最終背景を目標位置に向かってスクロール
         while (field.transform.position.y > appearFinalPositionY)
         {
             field.transform.position += Vector3.down * scrollSpeed * Time.deltaTime;
             yield return null;
         }
 
-        // 最終背景の位置を固定
-        field.transform.position = new Vector3(
-            field.transform.position.x,
-            appearFinalPositionY,
-            field.transform.position.z
-        );
+        field.transform.position = finalPosition;
 
         isTransitioning = false;
+    }
+
+    GameObject GetHighestCopse()
+    {
+        GameObject highestCopse = copseBackgrounds[0];
+        foreach (GameObject copse in copseBackgrounds)
+        {
+            if (copse.transform.position.y > highestCopse.transform.position.y)
+            {
+                highestCopse = copse;
+            }
+        }
+        return highestCopse;
     }
 
     public void SetCleared(bool cleared)
