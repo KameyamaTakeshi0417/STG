@@ -34,6 +34,6 @@ public class ExplosionBullet : Bullet_Base
         }
 
         if (collision.CompareTag("wall"))
-            Destroy(this.gameObject);
+            DestroyCheck();
     }
 }

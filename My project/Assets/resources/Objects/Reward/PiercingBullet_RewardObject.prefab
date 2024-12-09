@@ -72,8 +72,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -226196017
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 93f4d052544b83c459ad54ba684ea99d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -102,7 +102,7 @@ MonoBehaviour:
   itemType: Bullet
   itemRarelity: 1
   targetObj: {fileID: 3095739216751408760, guid: 34c4f06ad861dfe418a3868fe7e43462, type: 3}
-  accessAddress: Objects/Reward/NormalBullet_RewardObject
+  accessAddress: Objects/Reward/PiercingBullet_RewardObject
 --- !u!61 &8293380040888585499
 BoxCollider2D:
   m_ObjectHideFlags: 0

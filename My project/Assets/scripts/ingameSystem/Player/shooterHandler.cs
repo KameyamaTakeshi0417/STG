@@ -91,20 +91,18 @@ public class ShooterHandler : MonoBehaviour
         GameObject bulletPrefab;
         float ratio = 0.5f;
         Vector3 createPos = targetObj.transform.position + (watch * ratio);
-        /*
-               // プレイヤーに向けてオブジェクトの向きを変更
-               Vector3 moveWay = GameObject.Find("Player").transform.position - transform.position;
-               moveWay.Normalize();
-               float rotationAngle = Mathf.Atan2(moveWay.y, moveWay.x) * Mathf.Rad2Deg;
-               transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotationAngle + 90));
-       */
+        Vector3 NcreatePos = Vector3.Normalize(watch);
+        // オブジェクトの向きを変更
+        float rotationAngle = Mathf.Atan2(watch.y, watch.x) * Mathf.Rad2Deg;
+        // transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotationAngle));
+
         if (activeBullet == null)
         {
             Debug.LogWarning("No active bullet equipped.");
             bulletPrefab = Instantiate(
                 Resources.Load<GameObject>("Objects/Bullet/NormalBullet"),
                 createPos,
-                Quaternion.Euler(watch)
+                Quaternion.Euler(new Vector3(0, 0, rotationAngle + 270))
             );
         }
         else
@@ -113,7 +111,7 @@ public class ShooterHandler : MonoBehaviour
             bulletPrefab = Instantiate(
                 activeBullet.GetComponent<ItemPickUp>().targetObj,
                 createPos,
-                Quaternion.identity
+                Quaternion.Euler(new Vector3(0, 0, rotationAngle + 270))
             );
         }
 

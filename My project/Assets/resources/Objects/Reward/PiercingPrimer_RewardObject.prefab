@@ -102,7 +102,7 @@ MonoBehaviour:
   itemType: Primer
   itemRarelity: 1
   targetObj: {fileID: 7064059390813096083}
-  accessAddress: Objects/Reward/NormalPrimer_RewardObject
+  accessAddress: Objects/Reward/PiercingPrimer_RewardObject
 --- !u!61 &1916286870448690094
 BoxCollider2D:
   m_ObjectHideFlags: 0

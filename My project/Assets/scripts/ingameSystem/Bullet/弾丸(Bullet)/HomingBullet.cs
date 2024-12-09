@@ -21,18 +21,20 @@ public class HomingBullet : Bullet_Base
             Rigidbody2D enemyRb = collision.GetComponent<Rigidbody2D>();
             if (enemyRb != null)
             {
-                Vector3 directionToPlayer = (transform.position - collision.transform.position).normalized;
+                Vector3 directionToPlayer = (
+                    transform.position - collision.transform.position
+                ).normalized;
                 enemyRb.AddForce(directionToPlayer * pullForce, ForceMode2D.Impulse);
             }
 
             // 弾を破壊
-            Destroy(this.gameObject);
+            DestroyCheck();
         }
 
         // 壁に当たった場合は弾を破壊
         if (collision.CompareTag("wall"))
         {
-            Destroy(this.gameObject);
+            DestroyCheck();
         }
     }
 }

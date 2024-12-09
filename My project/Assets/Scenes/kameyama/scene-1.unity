@@ -3267,7 +3267,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_BackGroundColor: {r: 0.8792453, g: 0.81592095, b: 0.6951015, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -6027,6 +6027,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1889179656}
   m_CullTransparentMesh: 1
+--- !u!1001 &1907175339
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.5427009
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -2.6971493
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4825919582345253749, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
+      propertyPath: m_Name
+      value: PiercingBullet_RewardObject
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
 --- !u!1 &1937096380
 GameObject:
   m_ObjectHideFlags: 0
@@ -6614,7 +6671,8 @@ PrefabInstance:
       propertyPath: m_SortingOrder
       value: 10
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -4217822520560754959, guid: ea02c46b4f1337e439dfe303aa5ec7b0, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 3729972331255071290, guid: ea02c46b4f1337e439dfe303aa5ec7b0, type: 3}
@@ -7436,3 +7494,4 @@ SceneRoots:
   - {fileID: 8867567768286216145}
   - {fileID: 811810137}
   - {fileID: 1410913311}
+  - {fileID: 1907175339}

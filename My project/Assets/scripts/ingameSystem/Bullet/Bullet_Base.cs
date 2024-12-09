@@ -16,6 +16,7 @@ public class Bullet_Base : MonoBehaviour
     public int rarelity; //オブジェクトの挙動が変わるもの
     public string bulletName;
     public float addDmg; //ダメージ倍率のかからない固定ダメージ
+    public int piercingCount = 0;
 
     // Start is called before the first frame update
     void Start() { }
@@ -98,6 +99,16 @@ public class Bullet_Base : MonoBehaviour
     protected IEnumerator hitEffect()
     {
         yield return null;
+    }
+
+    protected void DestroyCheck()
+    {
+        piercingCount--;
+
+        if (piercingCount <= 0)
+        {
+            Destroy(this.gameObject);
+        }
     }
 
     protected virtual void OnTriggerEnter2D(Collider2D collision)

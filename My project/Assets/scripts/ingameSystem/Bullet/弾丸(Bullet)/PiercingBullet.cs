@@ -5,11 +5,11 @@ using UnityEngine;
 public class PiercingBullet : Bullet_Base
 {
     // Start is called before the first frame update
-    int piercingCount = 2;
+
 
     void Start()
     {
-        piercingCount = rarelity;
+        piercingCount = rarelity + 1;
     }
 
     void Awake()
@@ -31,16 +31,11 @@ public class PiercingBullet : Bullet_Base
             {
                 // HPを減らす
                 health.TakeDamage(dmg);
-                if (piercingCount <= 0)
-                {
-                    // 弾を破壊
-                    Destroy(this.gameObject);
-                }
-                piercingCount -= 1;
+                DestroyCheck();
             }
         }
 
         if (collision.CompareTag("wall"))
-            Destroy(this.gameObject);
+            DestroyCheck();
     }
 }

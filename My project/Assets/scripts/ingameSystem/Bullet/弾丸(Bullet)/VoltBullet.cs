@@ -30,10 +30,10 @@ public class VoltBullet : Bullet_Base
             }
 
             // 弾を破壊
-            Destroy(this.gameObject);
+            DestroyCheck();
         }
 
         if (collision.CompareTag("wall"))
-            Destroy(this.gameObject);
+            DestroyCheck();
     }
 }

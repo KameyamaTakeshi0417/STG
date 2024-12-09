@@ -5,17 +5,13 @@ using UnityEngine;
 public class NormalBullet : Bullet_Base
 {
     public float AddDamageRatio = 0.3f;
-    // Start is called before the first frame update
-    void Start()
-    {
 
-    }
+    // Start is called before the first frame update
+    void Start() { }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() { }
 
-    }
     protected override void OnTriggerEnter2D(Collider2D collision)
     {
         // 衝突したオブジェクトのタグをチェック
@@ -30,10 +26,10 @@ public class NormalBullet : Bullet_Base
             }
 
             // 弾を破壊
-            Destroy(this.gameObject);
-
+            DestroyCheck();
         }
 
-        if (collision.CompareTag("wall")) Destroy(this.gameObject);
+        if (collision.CompareTag("wall"))
+            DestroyCheck();
     }
 }

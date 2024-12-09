@@ -102,7 +102,7 @@ MonoBehaviour:
   itemType: Case
   itemRarelity: 1
   targetObj: {fileID: 4825919582345253749}
-  accessAddress: Objects/Reward/NormalCase_RewardObject
+  accessAddress: Objects/Reward/PiercingCase_RewardObject
 --- !u!61 &8293380040888585499
 BoxCollider2D:
   m_ObjectHideFlags: 0
