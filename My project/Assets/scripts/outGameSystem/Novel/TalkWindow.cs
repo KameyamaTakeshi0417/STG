@@ -42,7 +42,7 @@ public class TalkWindow : MonoBehaviour
     // 会話の開始.
     public void TalkStart()
     {
-     //   Time.timeScale = 0f; // ゲームの時間を停止
+        //   Time.timeScale = 0f; // ゲームの時間を停止
         DisplayCurrentStory();
     }
 
@@ -104,7 +104,7 @@ public class TalkWindow : MonoBehaviour
     private void EndConversation()
     {
         transform.root.gameObject.SetActive(false);
-       //  Time.timeScale = 1f; // ゲームの時間を停止
+        //  Time.timeScale = 1f; // ゲームの時間を停止
         // 会話終了後の処理 (ウィンドウを閉じる、次のイベントに進むなど)
         Debug.Log("会話が終了しました");
     }

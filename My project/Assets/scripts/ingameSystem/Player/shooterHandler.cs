@@ -91,14 +91,20 @@ public class ShooterHandler : MonoBehaviour
         GameObject bulletPrefab;
         float ratio = 0.5f;
         Vector3 createPos = targetObj.transform.position + (watch * ratio);
-
+        /*
+               // プレイヤーに向けてオブジェクトの向きを変更
+               Vector3 moveWay = GameObject.Find("Player").transform.position - transform.position;
+               moveWay.Normalize();
+               float rotationAngle = Mathf.Atan2(moveWay.y, moveWay.x) * Mathf.Rad2Deg;
+               transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotationAngle + 90));
+       */
         if (activeBullet == null)
         {
             Debug.LogWarning("No active bullet equipped.");
             bulletPrefab = Instantiate(
                 Resources.Load<GameObject>("Objects/Bullet/NormalBullet"),
                 createPos,
-                Quaternion.identity
+                Quaternion.Euler(watch)
             );
         }
         else
@@ -157,5 +163,4 @@ public class ShooterHandler : MonoBehaviour
         // サウンドエフェクトの再生
         shootAudioSource.Play();
     }
-    
 }

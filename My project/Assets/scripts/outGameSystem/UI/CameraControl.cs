@@ -9,10 +9,11 @@ public class CameraControl : MonoBehaviour
 
     private Vector3 velocity = Vector3.zero;
 
-void Awake(){
-player=GameObject.Find("Player");
+    void Awake()
+    {
+        player = GameObject.Find("Player");
+    }
 
-}
     void FixedUpdate()
     {
         ObeyPlayer();
@@ -27,12 +28,21 @@ player=GameObject.Find("Player");
         float radians = rotationZ * Mathf.Deg2Rad;
 
         // 向きベクトルを計算
-        Vector3 direction = new Vector3(Mathf.Cos(radians) * range, Mathf.Sin(radians) * range, -10f);
+        Vector3 direction = new Vector3(
+            Mathf.Cos(radians) * range,
+            Mathf.Sin(radians) * range,
+            -10f
+        );
 
         // カメラの目標位置を計算
         Vector3 targetPosition = player.transform.position + cameraPositionOffset + direction;
 
         // カメラの現在位置を目標位置に向かってスムーズに移動
-        transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, followSpeed * Time.fixedDeltaTime);
+        transform.position = Vector3.SmoothDamp(
+            transform.position,
+            targetPosition,
+            ref velocity,
+            followSpeed * Time.fixedDeltaTime
+        );
     }
 }

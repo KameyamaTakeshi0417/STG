@@ -152,10 +152,9 @@ public class petalBullet : MonoBehaviour
 
         while (true)
         {
+            // プレイヤーに向けてオブジェクトの向きを変更
             Vector3 moveWay = GameObject.Find("Player").transform.position - transform.position;
             moveWay.Normalize();
-
-            // プレイヤーに向けてオブジェクトの向きを変更
             float rotationAngle = Mathf.Atan2(moveWay.y, moveWay.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotationAngle + 90));
 

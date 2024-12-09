@@ -5,17 +5,12 @@ using UnityEngine;
 public class PiercingCase : Case_Base
 {
     // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    void Start() { }
 
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
-          protected override IEnumerator move()
+    void Update() { }
+
+    protected override IEnumerator move()
     {
         //最終的には1秒待機して2.5倍速で相手に突っ込んでほしい
 
@@ -23,7 +18,7 @@ public class PiercingCase : Case_Base
         Rigidbody2D rb;
         //弾の発射
         rb = gameObject.GetComponent<Rigidbody2D>();
-        Vector2 force = new Vector2(rotate.x, rotate.y) * (Speed*1.5f);
+        Vector2 force = new Vector2(rotate.x, rotate.y) * (Speed * 1.5f);
         rb.AddForce(force);
         while (count <= DestroyTime)
         {

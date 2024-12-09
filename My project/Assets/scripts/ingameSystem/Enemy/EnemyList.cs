@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 [System.Serializable]
 public struct enemyList
 {
     public string[] values; // データを格納する配列
+
     public enemyList(string[] initialValues)
     {
         values = new string[initialValues.Length];
@@ -14,9 +16,11 @@ public struct enemyList
         }
     }
 }
+
 public struct spawnPos
 {
     public Vector3[] values; // データを格納する配列
+
     public spawnPos(Vector3[] initialValues)
     {
         values = new Vector3[initialValues.Length];
@@ -26,6 +30,7 @@ public struct spawnPos
         }
     }
 }
+
 public class EnemyList : MonoBehaviour
 {
     private GameManager gameManager;
@@ -37,15 +42,11 @@ public class EnemyList : MonoBehaviour
         setEnemy(gameManager.getBattleCount());
     }
 
-    void Awake()
-    {
-        
-    }
-    // Update is called once per frame
-    void Update()
-    {
+    void Awake() { }
 
-    }
+    // Update is called once per frame
+    void Update() { }
+
     public void setEnemy(int battleCount)
     {
         // 初期インデックスの更新
@@ -83,7 +84,7 @@ public class EnemyList : MonoBehaviour
 
     public void SpawnEnemy(string name, Vector3 spawnPos)
     {
-        GameObject enemyPrefab = Resources.Load<GameObject>("Objects/Enemy/"+name);
+        GameObject enemyPrefab = Resources.Load<GameObject>("Objects/Enemy/" + name);
         if (enemyPrefab != null)
         {
             Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
@@ -93,36 +94,110 @@ public class EnemyList : MonoBehaviour
             Debug.LogWarning("Prefab with name " + name + " not found in Resources.");
         }
     }
-
 }
 
 public static class enemyList1
 {
-
     public static enemyList[] enemyListArray = new enemyList[]
     {
-        new enemyList(new string[] { "Spawner", "Spawner","Spawner" }),
-        new enemyList(new string[] { "ArmorBeetle", "ArmorBeetle","ArmorBeetle","ArmorBeetle" }),
+        new enemyList(new string[] { "Spawner", "Spawner", "Spawner" }),
+        new enemyList(new string[] { "ArmorBeetle", "ArmorBeetle", "ArmorBeetle", "ArmorBeetle" }),
         new enemyList(new string[] { "slime" }),
         new enemyList(new string[] { "slime", "ArmorBeetle", "ArmorBeetle" }),
-        new enemyList(new string[] { "slime","slime" }),
-        new enemyList(new string[] { "ArmorBeetle", "ArmorBeetle","ArmorBeetle","ArmorBeetle","ArmorBeetle", "ArmorBeetle","ArmorBeetle","ArmorBeetle" }),
+        new enemyList(new string[] { "slime", "slime" }),
+        new enemyList(
+            new string[]
+            {
+                "ArmorBeetle",
+                "ArmorBeetle",
+                "ArmorBeetle",
+                "ArmorBeetle",
+                "ArmorBeetle",
+                "ArmorBeetle",
+                "ArmorBeetle",
+                "ArmorBeetle",
+            }
+        ),
     };
 }
+
 public static class enemySpawnPos
 {
     // 1〜10個のVector3を格納するリスト
     public static List<Vector3[]> vector3Groups = new List<Vector3[]>
     {
-        new Vector3[] { new Vector3(0, 0, 0) },// 配列1
-        new Vector3[] { new Vector3(-3, 0, 0),new Vector3(3, 0,0) },// 配列2
+        new Vector3[] { new Vector3(0, 0, 0) }, // 配列1
+        new Vector3[] { new Vector3(-3, 0, 0), new Vector3(3, 0, 0) }, // 配列2
         new Vector3[] { new Vector3(-4, 0, 0), new Vector3(0, 0, 0), new Vector3(4, 0, 0) }, // 配列3
-        new Vector3[] { new Vector3(-6, 2, 0), new Vector3(6, 2, 0), new Vector3(-2, 0, 0), new Vector3(2, 0, 0)  },
-        new Vector3[] { new Vector3(-5, 2, 0), new Vector3(0, 2, 0), new Vector3(5, 0, 0), new Vector3(-2, 0, 0),new Vector3(2, 0, 0)  },
-        new Vector3[] { new Vector3(-6, 2, 0), new Vector3(0, 2, 0), new Vector3(6, 0, 0), new Vector3(-6, 0, 0),new Vector3(0, 0, 0),new Vector3(6, 0, 0)  },
-        new Vector3[] { new Vector3(-6, 2, 0), new Vector3(-3, 2, 0), new Vector3(3, 2, 0), new Vector3(6, 2, 0),new Vector3(-5, 0, 0),new Vector3(0, 0, 0),new Vector3(5, 0, 0)  },
-        new Vector3[] { new Vector3(-6, 2, 0), new Vector3(-3, 2, 0), new Vector3(3, 2, 0), new Vector3(6, 2, 0),new Vector3(-6, 0, 0),new Vector3(3, 0, 0),new Vector3(3, 0, 0),new Vector3(6, 0, 0)  },
-        new Vector3[] { new Vector3(-8, 2, 0), new Vector3(-4, 2, 0), new Vector3(0, 2, 0), new Vector3(4, 2, 0),new Vector3(8, 2, 0),new Vector3(-6, 0, 0),new Vector3(3, 0, 0),new Vector3(3, 0, 0),new Vector3(6, 0, 0)  },
-        new Vector3[] { new Vector3(-8, 2, 0), new Vector3(-4, 2, 0), new Vector3(0, 2, 0), new Vector3(4, 2, 0),new Vector3(8, 2, 0), new Vector3(-8,0, 0), new Vector3(-4,0, 0), new Vector3(0,0, 0), new Vector3(4,0, 0),new Vector3(8,0, 0)},
+        new Vector3[]
+        {
+            new Vector3(-6, 2, 0),
+            new Vector3(6, 2, 0),
+            new Vector3(-2, 0, 0),
+            new Vector3(2, 0, 0),
+        },
+        new Vector3[]
+        {
+            new Vector3(-5, 2, 0),
+            new Vector3(0, 2, 0),
+            new Vector3(5, 0, 0),
+            new Vector3(-2, 0, 0),
+            new Vector3(2, 0, 0),
+        },
+        new Vector3[]
+        {
+            new Vector3(-6, 2, 0),
+            new Vector3(0, 2, 0),
+            new Vector3(6, 0, 0),
+            new Vector3(-6, 0, 0),
+            new Vector3(0, 0, 0),
+            new Vector3(6, 0, 0),
+        },
+        new Vector3[]
+        {
+            new Vector3(-6, 2, 0),
+            new Vector3(-3, 2, 0),
+            new Vector3(3, 2, 0),
+            new Vector3(6, 2, 0),
+            new Vector3(-5, 0, 0),
+            new Vector3(0, 0, 0),
+            new Vector3(5, 0, 0),
+        },
+        new Vector3[]
+        {
+            new Vector3(-6, 2, 0),
+            new Vector3(-3, 2, 0),
+            new Vector3(3, 2, 0),
+            new Vector3(6, 2, 0),
+            new Vector3(-6, 0, 0),
+            new Vector3(3, 0, 0),
+            new Vector3(3, 0, 0),
+            new Vector3(6, 0, 0),
+        },
+        new Vector3[]
+        {
+            new Vector3(-8, 2, 0),
+            new Vector3(-4, 2, 0),
+            new Vector3(0, 2, 0),
+            new Vector3(4, 2, 0),
+            new Vector3(8, 2, 0),
+            new Vector3(-6, 0, 0),
+            new Vector3(3, 0, 0),
+            new Vector3(3, 0, 0),
+            new Vector3(6, 0, 0),
+        },
+        new Vector3[]
+        {
+            new Vector3(-8, 2, 0),
+            new Vector3(-4, 2, 0),
+            new Vector3(0, 2, 0),
+            new Vector3(4, 2, 0),
+            new Vector3(8, 2, 0),
+            new Vector3(-8, 0, 0),
+            new Vector3(-4, 0, 0),
+            new Vector3(0, 0, 0),
+            new Vector3(4, 0, 0),
+            new Vector3(8, 0, 0),
+        },
     };
 }

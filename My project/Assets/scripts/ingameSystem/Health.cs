@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class Health : _Health_Base
 {
-     public delegate void HPChangedHandler();
+    public delegate void HPChangedHandler();
     public static event HPChangedHandler OnHPChanged;
 
     void Start()
@@ -43,8 +43,6 @@ public class Health : _Health_Base
 
     void Awake() { }
 
-
-
     // ダメージを受け取るメソッド
     public override void TakeDamage(float damage)
     {
@@ -64,7 +62,6 @@ public class Health : _Health_Base
             Die();
         }
     }
-
 
     private Vector3 CreateExpPos()
     {

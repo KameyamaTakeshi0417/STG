@@ -195,7 +195,14 @@ public class rewardUIManager : _Manager_Base
             targetButton.onClick.RemoveAllListeners();
             targetButton.onClick.AddListener(() => Selecttarget(targetUIObj, targetRewardObj));
             targetButton.onClick.AddListener(
-                () => inventoryManager.AddItem(Instantiate(targetRewardObj,new Vector3(1000f,1000f,1000f),Quaternion.identity))
+                () =>
+                    inventoryManager.AddItem(
+                        Instantiate(
+                            targetRewardObj,
+                            new Vector3(1000f, 1000f, 1000f),
+                            Quaternion.identity
+                        )
+                    )
             );
             targetButton.onClick.AddListener(() => equipManager.EquipItem(targetRewardObj));
             targetButton.onClick.AddListener(() => continueGame());

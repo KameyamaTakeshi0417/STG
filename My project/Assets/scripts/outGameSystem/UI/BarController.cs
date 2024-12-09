@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class BarController : MonoBehaviour
 {
     public int min = 0;
-    public int max ;
+    public int max;
     public int currentValue = 0;
 
     public Image barImage;
@@ -12,15 +12,19 @@ public class BarController : MonoBehaviour
 
     public Button increaseButton;
     public Button decreaseButton;
-public bool isHP, isPow,isSpd;
-public int HP, Pow,Spd;
-public int setStatus;
-public int setStatusMag;
-    private int maxBarUnits=100 ; // バーの目盛りの最大単位数
+    public bool isHP,
+        isPow,
+        isSpd;
+    public int HP,
+        Pow,
+        Spd;
+    public int setStatus;
+    public int setStatusMag;
+    private int maxBarUnits = 100; // バーの目盛りの最大単位数
 
     void Start()
     {
-        maxBarUnits=max;
+        maxBarUnits = max;
         // ボタンのクリックイベントにリスナーを追加
         increaseButton.onClick.AddListener(IncreaseValue);
         decreaseButton.onClick.AddListener(DecreaseValue);
@@ -33,13 +37,18 @@ public int setStatusMag;
     {
         if (currentValue < max)
         {
-            if(isHP==true){
-                HP+=setStatus*10*setStatusMag;
-                }else if(isPow==true){
-                    Pow+=setStatus*setStatusMag;
-                    }else if(isSpd==true){
-                        Spd+=setStatus*setStatusMag;
-                        } 
+            if (isHP == true)
+            {
+                HP += setStatus * 10 * setStatusMag;
+            }
+            else if (isPow == true)
+            {
+                Pow += setStatus * setStatusMag;
+            }
+            else if (isSpd == true)
+            {
+                Spd += setStatus * setStatusMag;
+            }
             currentValue += 10; // 10単位で増加
             UpdateBar();
         }
@@ -49,14 +58,19 @@ public int setStatusMag;
     {
         if (currentValue > min)
         {
-            if(isHP==true){
-                HP-=setStatus*10*setStatusMag;
-                }else if(isPow==true){
-                    Pow-=setStatus*setStatusMag;
-                    }else if(isSpd==true){
-                        Spd-=setStatus*setStatusMag;
-                        } 
-            setStatus-=1;
+            if (isHP == true)
+            {
+                HP -= setStatus * 10 * setStatusMag;
+            }
+            else if (isPow == true)
+            {
+                Pow -= setStatus * setStatusMag;
+            }
+            else if (isSpd == true)
+            {
+                Spd -= setStatus * setStatusMag;
+            }
+            setStatus -= 1;
             currentValue -= 10; // 10単位で減少
             UpdateBar();
         }
@@ -64,7 +78,7 @@ public int setStatusMag;
 
     void UpdateBar()
     {
-        maxBarUnits=max;
+        maxBarUnits = max;
         // バーの長さを更新
         float fillAmount = (float)currentValue / maxBarUnits;
         barImage.fillAmount = fillAmount;

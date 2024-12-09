@@ -22,7 +22,7 @@ public class RelicList : MonoBehaviour
             PlayerPrefs.SetInt("Relic" + i, Relics[i] ? 1 : 0);
         }
         PlayerPrefs.Save();
-         Debug.Log("Relics saved");
+        Debug.Log("Relics saved");
     }
 
     // 遺物の状態をロード
@@ -32,12 +32,9 @@ public class RelicList : MonoBehaviour
         {
             Relics[i] = PlayerPrefs.GetInt("Relic" + i, 0) == 1;
         }
-      //  Debug.Log("Relics loaded");
+        //  Debug.Log("Relics loaded");
     }
 
     // Update is called once per frame
-    void Update()
-    {
- 
-    }
+    void Update() { }
 }

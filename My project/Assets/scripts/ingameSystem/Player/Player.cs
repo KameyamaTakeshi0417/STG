@@ -178,7 +178,7 @@ public class Player : MonoBehaviour
         mousePosition.z = 0; // Z座標は0に固定
 
         // マウス位置のX座標をAnimatorパラメータに設定
-        float mouseXPosition =rb.velocity.x;// mousePosition.x;
+        float mouseXPosition = rb.velocity.x; // mousePosition.x;
 
         // プレイヤーの移動ベクトルの大きさを計算
         float moveVectorMag = rb.velocity.magnitude;

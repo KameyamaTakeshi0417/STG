@@ -1,15 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+
 public class clearedBoard : MonoBehaviour
 {
-    public TMP_Text textMeshProObject;  // アルファ値を設定するTextMeshProオブジェクト
-    public float alpha = 1.0f;          // アルファ値 (0.0 - 1.0)
+    public TMP_Text textMeshProObject; // アルファ値を設定するTextMeshProオブジェクト
+    public float alpha = 1.0f; // アルファ値 (0.0 - 1.0)
 
     public float fadeInDuration = 0.25f; // フェードインの時間（秒）
     public float fadeOutDuration = 0.5f; // フェードアウトの時間（秒）
+
     // Start is called before the first frame update
 
     void Start()
@@ -21,18 +23,17 @@ public class clearedBoard : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() { }
 
-    }
     IEnumerator clearchecker()
     {
-        while (GameObject.Find("GameManager").GetComponent<GameManager>().getCleared()==false)
+        while (GameObject.Find("GameManager").GetComponent<GameManager>().getCleared() == false)
         {
             yield return new WaitForSeconds(0.5f);
         }
         yield return FadeText();
     }
+
     private IEnumerator FadeText()
     {
         // フェードイン
@@ -46,6 +47,7 @@ public class clearedBoard : MonoBehaviour
 
         yield return null;
     }
+
     private IEnumerator FadeIn()
     {
         float elapsedTime = 0f;
@@ -80,6 +82,5 @@ public class clearedBoard : MonoBehaviour
             textMeshProObject.color = color;
             yield return null;
         }
-        
     }
 }

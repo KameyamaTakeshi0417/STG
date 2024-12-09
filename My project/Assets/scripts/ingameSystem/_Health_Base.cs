@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+
 public class _Health_Base : MonoBehaviour
 {
-       public float HP = 100f; // 初期HP
+    public float HP = 100f; // 初期HP
 
     public float currentHP;
     protected int Exp;
@@ -13,25 +14,19 @@ public class _Health_Base : MonoBehaviour
     protected HPBar_Base m_handler;
 
     // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    void Start() { }
 
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
-        public void SliderUpdate()
+    void Update() { }
+
+    public void SliderUpdate()
     {
         hpSlider.value = currentHP; //スライダは０〜1.0で表現するため最大HPで割って少数点数字に変換
     }
-        public virtual void TakeDamage(float damage)
-    {
-       
-    }
-        public void setExp(int exp)
+
+    public virtual void TakeDamage(float damage) { }
+
+    public void setExp(int exp)
     {
         Exp = exp;
     }
@@ -67,5 +62,4 @@ public class _Health_Base : MonoBehaviour
     {
         currentHP += set;
     }
-
 }

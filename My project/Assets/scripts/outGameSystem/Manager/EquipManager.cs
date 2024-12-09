@@ -16,8 +16,6 @@ public class EquipManager : _Manager_Base
         activePrimer = Resources.Load<GameObject>("Objects/Reward/NormalPrimer");
     }
 
-    
-
     void Update()
     {
         if (Input.GetKeyDown("3"))

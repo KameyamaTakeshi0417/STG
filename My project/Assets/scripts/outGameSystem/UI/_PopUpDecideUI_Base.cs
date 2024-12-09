@@ -5,7 +5,7 @@ using UnityEngine;
 public class _PopUpDecideUI_Base : MonoBehaviour
 {
     // Start is called before the first frame update
-  public GameObject selectionCanvas; // 選択用の Canvas
+    public GameObject selectionCanvas; // 選択用の Canvas
 
     void Start()
     {
@@ -14,6 +14,7 @@ public class _PopUpDecideUI_Base : MonoBehaviour
             selectionCanvas.SetActive(false); // 初期状態で選択 UI を非表示にしておく
         }
     }
+
     // Update is called once per frame
 
     public virtual void StartSelection()
@@ -23,9 +24,9 @@ public class _PopUpDecideUI_Base : MonoBehaviour
             selectionCanvas.SetActive(true); // 選択 UI を表示
         }
         freezeGame();
-
     }
- public void freezeGame()
+
+    public void freezeGame()
     {
         Time.timeScale = 0f; // ゲームの時間を停止
     }
@@ -38,5 +39,4 @@ public class _PopUpDecideUI_Base : MonoBehaviour
             selectionCanvas.SetActive(false); // 選択 UI を非表示にする
         }
     }
-
 }

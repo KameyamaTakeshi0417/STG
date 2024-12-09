@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class RewardStackDecide : _PopUpDecideUI_Base
 {
-   // public GameObject ImageBoardBase;
+    // public GameObject ImageBoardBase;
 
     void Start()
     {
@@ -15,7 +15,6 @@ public class RewardStackDecide : _PopUpDecideUI_Base
        Transform targetChild = parentTransform.Find("RewardSelectCanvas");
        selectionCanvas = targetChild.gameObject;
 */
-
     }
 
     // 選択画面を開始する
@@ -153,7 +152,6 @@ public class RewardStackDecide : _PopUpDecideUI_Base
                 new Vector3(0.75f, 0.75f, 1f)
             );
         }
-   
     }
 
     // target を選択した際の処理

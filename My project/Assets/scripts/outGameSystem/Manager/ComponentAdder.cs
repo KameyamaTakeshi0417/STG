@@ -3,7 +3,7 @@ using UnityEngine;
 public class ComponentAdder : MonoBehaviour
 {
     // 任意のスクリプト名を指定してAddComponentを実行
-    public void AddCaseByName(string scriptName,GameObject targetObj)
+    public void AddCaseByName(string scriptName, GameObject targetObj)
     {
         // スクリプト名からTypeを取得
         System.Type componentType = System.Type.GetType(scriptName);
@@ -15,7 +15,9 @@ public class ComponentAdder : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("The component type is not valid or does not inherit from BaseScript.");
+            Debug.LogWarning(
+                "The component type is not valid or does not inherit from BaseScript."
+            );
         }
     }
 }

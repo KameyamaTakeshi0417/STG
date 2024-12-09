@@ -47,13 +47,8 @@ public class treasureBox : MonoBehaviour
 
     private void showUI()
     {
-        GameObject rewardUI = Instantiate(
-            rewardUIObj,
-            new Vector3(0,0,0),
-            Quaternion.identity
-        );
-      //  rewardUI.GetComponent<rewardUIManager>().
-        
+        GameObject rewardUI = Instantiate(rewardUIObj, new Vector3(0, 0, 0), Quaternion.identity);
+        //  rewardUI.GetComponent<rewardUIManager>().
     }
 
     public void developReward()

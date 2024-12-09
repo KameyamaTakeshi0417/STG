@@ -5,20 +5,14 @@ using UnityEngine;
 public class NormalCase : Case_Base
 {
     // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    void Start() { }
 
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    //最終的にはこれを装備している弾は威力増加させたい
-       protected override IEnumerator move()
-    {
+    void Update() { }
 
+    //最終的にはこれを装備している弾は威力増加させたい
+    protected override IEnumerator move()
+    {
         int count = 0;
         Rigidbody2D rb;
         //弾の発射

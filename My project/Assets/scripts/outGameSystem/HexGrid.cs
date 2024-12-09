@@ -11,11 +11,11 @@ public class HexGrid : MonoBehaviour
     void Start()
     {
         GameObject hexPrefab_StartFloor = Resources.Load<GameObject>("Objects/StartFloor");
-         Instantiate(hexPrefab_StartFloor, new Vector3(0,0,0), Quaternion.identity);
+        Instantiate(hexPrefab_StartFloor, new Vector3(0, 0, 0), Quaternion.identity);
         CreateHexGrid();
     }
 
-   void CreateHexGrid()
+    void CreateHexGrid()
     {
         // 六角形の隣接距離を計算
         float xOffset = (hexWidth * 0.75f); // 幅の3/4
@@ -35,7 +35,7 @@ public class HexGrid : MonoBehaviour
                     yPos += yOffset * 0.5f;
                 }
 
-                Vector3 pos = new Vector3(xPos-xOffset, yPos+(hexHeight*0.45f), 0);
+                Vector3 pos = new Vector3(xPos - xOffset, yPos + (hexHeight * 0.45f), 0);
                 Instantiate(hexPrefab, pos, Quaternion.identity);
             }
         }

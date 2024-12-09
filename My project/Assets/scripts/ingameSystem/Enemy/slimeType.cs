@@ -145,7 +145,7 @@ public class slimeType : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             // HPを持つコンポーネントを取得
-            Health health = collision.GetComponent<Health>();
+            _Health_Base health = collision.GetComponent<_Health_Base>();
             if (health != null)
             {
                 // HPを減らす

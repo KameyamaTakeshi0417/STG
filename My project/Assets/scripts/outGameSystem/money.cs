@@ -5,17 +5,16 @@ using UnityEngine;
 public class money : MonoBehaviour
 {
     public int moneyValue;
+
     // Start is called before the first frame update
     void Start()
     {
-//        gameObject.GetComponent<Health>().setMoneyCount(moneyValue);
+        //        gameObject.GetComponent<Health>().setMoneyCount(moneyValue);
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() { }
 
-    }
     void OnTriggerEnter2D(Collider2D collision)
     {
         // 衝突したオブジェクトのタグをチェック
@@ -24,8 +23,6 @@ public class money : MonoBehaviour
             GameObject.Find("GameManager").GetComponent<pointManager>().addMoney(moneyValue);
             // 弾を破壊
             Destroy(this.gameObject);
-
         }
-
     }
 }

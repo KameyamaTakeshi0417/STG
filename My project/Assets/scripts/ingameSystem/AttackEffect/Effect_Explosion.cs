@@ -8,45 +8,41 @@ public class Effect_Explosion : MonoBehaviour
     private int explosionTime = 50;
     private Vector3 scale = new Vector3(1, 1, 0);
     int damagedCount = 0;
-    // Start is called before the first frame update
-    void Start()
-    {
 
-    }
+    // Start is called before the first frame update
+    void Start() { }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() { }
 
-    }
     public void startExplosion(float setdmg, int setExplosionTime)
     {
         dmg = setdmg;
         explosionTime = setExplosionTime;
         StartCoroutine(startExplosion());
     }
+
     private IEnumerator startExplosion()
     {
         int count = 0;
         while (count < explosionTime)
         {
-
             count++;
             yield return new WaitForEndOfFrame();
         }
         Destroy(this.gameObject);
         yield break;
     }
+
     protected void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Enemy"))
         {
-            if (damagedCount >0)
+            if (damagedCount > 0)
             {
                 collision.gameObject.GetComponent<Health>().TakeDamage(dmg);
-                damagedCount-=1;
+                damagedCount -= 1;
             }
-
         }
     }
 }

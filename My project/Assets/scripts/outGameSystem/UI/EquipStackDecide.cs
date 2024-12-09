@@ -10,7 +10,6 @@ public class EquipStackDecide : _PopUpDecideUI_Base
     public GameObject subEquipImage;
     public GameObject targetEquipImage;
 
-
     void Start()
     {
         if (selectionCanvas != null)
@@ -31,12 +30,16 @@ public class EquipStackDecide : _PopUpDecideUI_Base
     }
 
     // 選択を設定する
-    private void SetupSelection(GameObject mainObject, GameObject subObject, GameObject targetObject)
+    private void SetupSelection(
+        GameObject mainObject,
+        GameObject subObject,
+        GameObject targetObject
+    )
     {
         EquipManager equipManager = gameObject.GetComponent<EquipManager>();
         if (equipManager != null)
         {
-         //   equipManager.EquipItemtoMain(targetObject);
+            //   equipManager.EquipItemtoMain(targetObject);
         }
         Selecttarget(mainEquipImage, mainObject);
         Selecttarget(subEquipImage, subObject);
@@ -47,7 +50,7 @@ public class EquipStackDecide : _PopUpDecideUI_Base
         if (mainButton != null)
         {
             mainButton.onClick.RemoveAllListeners();
-             mainButton.onClick.AddListener(() => Selecttarget(mainEquipImage, mainObject));
+            mainButton.onClick.AddListener(() => Selecttarget(mainEquipImage, mainObject));
             mainButton.onClick.AddListener(() => equipManager.EquipItemtoMain(targetObject));
             mainButton.onClick.AddListener(() => continueGame());
         }
@@ -64,11 +67,9 @@ public class EquipStackDecide : _PopUpDecideUI_Base
         if (targetButton != null)
         {
             targetButton.onClick.RemoveAllListeners();
-           // targetButton.onClick.AddListener(() => equipManager.EquipItemtoMain(targetObject));
+            // targetButton.onClick.AddListener(() => equipManager.EquipItemtoMain(targetObject));
             targetButton.onClick.AddListener(() => continueGame());
         }
-
-        
     }
 
     // target を選択した際の処理

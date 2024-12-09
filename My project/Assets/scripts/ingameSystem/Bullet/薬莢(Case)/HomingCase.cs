@@ -33,7 +33,7 @@ public class HomingCase : Case_Base
             targetWay = player.GetComponent<Player>().watch;
             Vector3.Normalize(targetWay);
             force = new Vector2(targetWay.x, targetWay.y) * (Speed * 0.001f);
-            DestroyTime=100f;
+            DestroyTime = 100f;
         }
         rb.velocity = force;
 

@@ -5,17 +5,12 @@ using UnityEngine;
 public class VoltBullet : Bullet_Base
 {
     // Start is called before the first frame update
-    void Start()
-    {
-
-    }
+    void Start() { }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() { }
 
-    }
-      protected override void OnTriggerEnter2D(Collider2D collision)
+    protected override void OnTriggerEnter2D(Collider2D collision)
     {
         // 衝突したオブジェクトのタグをチェック
         if (collision.CompareTag("Enemy") || collision.CompareTag("Player"))
@@ -26,15 +21,19 @@ public class VoltBullet : Bullet_Base
             {
                 // HPを減らす
                 health.TakeDamage(dmg);
-                GameObject voltPrefab = Instantiate(Resources.Load<GameObject>("Objects/Effect_Volt"), collision.transform.position, Quaternion.identity);
-                voltPrefab.GetComponent<Effect_Volt>().startVolt(30 , 50,2 );
+                GameObject voltPrefab = Instantiate(
+                    Resources.Load<GameObject>("Objects/Effect_Volt"),
+                    collision.transform.position,
+                    Quaternion.identity
+                );
+                voltPrefab.GetComponent<Effect_Volt>().startVolt(30, 50, 2);
             }
 
             // 弾を破壊
             Destroy(this.gameObject);
-
         }
 
-        if (collision.CompareTag("wall")) Destroy(this.gameObject);
+        if (collision.CompareTag("wall"))
+            Destroy(this.gameObject);
     }
 }

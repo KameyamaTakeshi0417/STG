@@ -6,6 +6,7 @@ public class restRoom : MonoBehaviour
 {
     public bool canRest;
     public bool useRest;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -15,7 +16,7 @@ public class restRoom : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Return)&&(canRest && !useRest))
+        if (Input.GetKeyDown(KeyCode.Return) && (canRest && !useRest))
         {
             GameObject.Find("fadeBoard").GetComponent<FadeBoard>().callFadeScreen();
             useRest = true;
@@ -31,24 +32,22 @@ public class restRoom : MonoBehaviour
             {
                 playerHealth.setCurrentHP(healHP);
             }
-
         }
     }
+
     private void OnTriggerStay2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
             canRest = true;
         }
-
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.tag==("Player"))
+        if (collision.gameObject.tag == ("Player"))
         {
             canRest = false;
         }
-
     }
 }

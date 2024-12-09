@@ -9,24 +9,25 @@ public class Spawner : MonoBehaviour
     public GameObject enemy;
     private Health hitPoint;
     public float coolTime = 3.5f;
+
     // Start is called before the first frame update
     void Start()
     {
         hitPoint = GetComponent<Health>();
         hitPoint.setHP(HP);
         StartCoroutine("createEnemy");
-        
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (hitPoint.getHP() <= 0) Destroy(this.gameObject);
-
+        if (hitPoint.getHP() <= 0)
+            Destroy(this.gameObject);
     }
+
     private void CreateSpawnPos()
     {
-        float randomPos;//乱数ベクトル作るための一時的なもの
+        float randomPos; //乱数ベクトル作るための一時的なもの
         Vector3 scale = transform.lossyScale;
         randomPos = Random.Range(-1f, 1f);
         if (randomPos <= 0f)
@@ -51,18 +52,18 @@ public class Spawner : MonoBehaviour
         spawnPos += transform.localPosition;
         return;
     }
+
     private IEnumerator createEnemy()
     {
         Vector3 createPos = transform.position + spawnPos;
 
         while (hitPoint.getHP() >= 0)
         {
-
-            GameObject enemyPrefab = Instantiate(enemy, createPos, Quaternion.identity);//エネミー生成
+            GameObject enemyPrefab = Instantiate(enemy, createPos, Quaternion.identity); //エネミー生成
             hitPoint.addHP(-4000);
 
             CreateSpawnPos();
-            createPos = transform.position + spawnPos;//次のエネミー生成位置更新
+            createPos = transform.position + spawnPos; //次のエネミー生成位置更新
             yield return new WaitForSeconds(coolTime);
         }
         yield return null;

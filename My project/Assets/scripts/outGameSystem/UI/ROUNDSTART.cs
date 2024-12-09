@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class ROUNDSTART : MonoBehaviour
 {
- public TMP_Text textMeshProObject; // フェードさせるTextMeshProオブジェクト
+    public TMP_Text textMeshProObject; // フェードさせるTextMeshProオブジェクト
     public float fadeInDuration = 2.0f; // フェードインの時間（秒）
     public float fadeOutDuration = 1.0f; // フェードアウトの時間（秒）
 

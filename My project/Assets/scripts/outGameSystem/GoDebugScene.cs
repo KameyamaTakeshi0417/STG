@@ -9,6 +9,7 @@ public class GoDebugScene : MonoBehaviour
     public bool canEnter;
     public int stepNum;
     public string nextScene;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -16,21 +17,18 @@ public class GoDebugScene : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() { }
 
-    }
     public void setEnterable(bool set)
     {
         canEnter = set;
-
     }
+
     void OnTriggerEnter2D(Collider2D collision)
     {
-if(collision.gameObject.CompareTag("Player")){
-           GameObject.Find("GameManager").GetComponent<GameManager>().DebugChangeScene(nextScene);
-
-}
- 
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            GameObject.Find("GameManager").GetComponent<GameManager>().DebugChangeScene(nextScene);
+        }
     }
 }

@@ -14,12 +14,11 @@ public class MenuController : MonoBehaviour
 
     void Start()
     {
-       
         // Resourcesフォルダからカーソルのテクスチャをロード
         cursorTexture = Resources.Load<Texture2D>("Texture/target");
         cursorHotspot = new Vector2(cursorTexture.width / 2, cursorTexture.height / 2); // カーソルの中央をホットスポットに設定
-    menuPanel.SetActive(false);
-    boardStatus.SetActive(false);
+        menuPanel.SetActive(false);
+        boardStatus.SetActive(false);
     }
 
     void Update()
@@ -51,7 +50,7 @@ public class MenuController : MonoBehaviour
         boardStatus.SetActive(false);
         // パネルの表示/非表示を切り替え
         menuPanel.SetActive(!menuPanel.activeSelf);
-        
+
         // ポーズ状態を切り替える
         isPaused = menuPanel.activeSelf;
         Time.timeScale = isPaused ? 0f : 1f;
@@ -67,7 +66,6 @@ public class MenuController : MonoBehaviour
         }
 
         // プレイヤーの動きを制御するためにイベントを発行
-
     }
 
     public void ActivateBoardReplacement()

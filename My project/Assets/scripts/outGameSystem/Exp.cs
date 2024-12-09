@@ -5,24 +5,23 @@ using UnityEngine;
 public class Exp : MonoBehaviour
 {
     private Player playerScript;
-    public int addPoint=3;
+    public int addPoint = 3;
+
     // Start is called before the first frame update
     void Start()
     {
-        playerScript=GameObject.Find("Player").GetComponent<Player>();
+        playerScript = GameObject.Find("Player").GetComponent<Player>();
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
-      void OnTriggerEnter2D(Collider2D collision)
+    void Update() { }
+
+    void OnTriggerEnter2D(Collider2D collision)
     {
         // 衝突したオブジェクトのタグをチェック
         if (collision.CompareTag("Player"))
         {
-        playerScript.addExp(addPoint);
+            playerScript.addExp(addPoint);
             // 破壊
             Destroy(gameObject);
         }

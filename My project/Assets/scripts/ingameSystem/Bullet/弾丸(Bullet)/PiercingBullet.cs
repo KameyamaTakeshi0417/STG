@@ -6,19 +6,20 @@ public class PiercingBullet : Bullet_Base
 {
     // Start is called before the first frame update
     int piercingCount = 2;
+
     void Start()
     {
         piercingCount = rarelity;
     }
+
     void Awake()
     {
         //penetrateCount = rarelity;
     }
-    // Update is called once per frame
-    void Update()
-    {
 
-    }
+    // Update is called once per frame
+    void Update() { }
+
     protected override void OnTriggerEnter2D(Collider2D collision)
     {
         // 衝突したオブジェクトのタグをチェック
@@ -37,10 +38,9 @@ public class PiercingBullet : Bullet_Base
                 }
                 piercingCount -= 1;
             }
-
-
         }
 
-        if (collision.CompareTag("wall")) Destroy(this.gameObject);
+        if (collision.CompareTag("wall"))
+            Destroy(this.gameObject);
     }
 }

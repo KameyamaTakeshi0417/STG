@@ -11,21 +11,35 @@ public class Primer_Base : MonoBehaviour
     protected float speed;
     protected int rarelity;
     public string primerName;
-    // Start is called before the first frame update
-    public string getName() { return primerName; }
-    // Update is called once per frame
-    void Update()
-    {
 
+    // Start is called before the first frame update
+    public string getName()
+    {
+        return primerName;
     }
+
+    // Update is called once per frame
+    void Update() { }
+
     public virtual void StrikePrimer()
     {
-          //弾丸を生成する
+        //弾丸を生成する
 
         //発射時の効果をここに記載する
-
     }
-    public float getDmg() { return pow; }
-    public float getSpeed() { return speed; }
-    public int getRarelity() { return rarelity; }
+
+    public float getDmg()
+    {
+        return pow;
+    }
+
+    public float getSpeed()
+    {
+        return speed;
+    }
+
+    public int getRarelity()
+    {
+        return rarelity;
+    }
 }

@@ -4,12 +4,12 @@ using UnityEngine;
 public class EnemyManager : MonoBehaviour
 {
     public GameObject healthBarPrefab; // HPバーのPrefab
-public    GameObject[] enemyObjects;
+    public GameObject[] enemyObjects;
 
     void Awake()
     {
         // 初期配置されているエネミーの処理
-       enemyObjects = GameObject.FindGameObjectsWithTag("Enemy");
+        enemyObjects = GameObject.FindGameObjectsWithTag("Enemy");
         foreach (GameObject enemyObject in enemyObjects)
         {
             Health enemy = enemyObject.GetComponent<Health>();
@@ -23,7 +23,6 @@ public    GameObject[] enemyObjects;
 
     public void OnEnemySpawned(GameObject enemyObj)
     {
-        
         if (enemyObj != null)
         {
             CreateHealthBarForEnemy(enemyObj);
@@ -33,7 +32,5 @@ public    GameObject[] enemyObjects;
     void CreateHealthBarForEnemy(GameObject enemy)
     {
         GameObject healthBar = Instantiate(healthBarPrefab, transform);
-        
-        
     }
 }

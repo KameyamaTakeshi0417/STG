@@ -11,7 +11,7 @@ public class AmmoInstance
     {
         this.ammoData = data;
         this.rarity = rarity;
-        
+
         // レアリティに基づく値の設定
         this.itemHP = data.itemHP * rarity;
         this.itemPower = data.itemPower * rarity;

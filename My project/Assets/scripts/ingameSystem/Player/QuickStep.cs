@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class QuickStep : MonoBehaviour
 {
- public bool nowStep; // QuickStep使用中かどうか
+    public bool nowStep; // QuickStep使用中かどうか
     public float waitTime = 1.0f; // クールダウンの待機時間
     public float stepLength = 15.0f; // 移動する距離
 
@@ -24,7 +24,10 @@ public class QuickStep : MonoBehaviour
     private IEnumerator startStep()
     {
         nowStep = true; // QuickStepを開始
-        Vector2 inputDirection = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
+        Vector2 inputDirection = new Vector2(
+            Input.GetAxisRaw("Horizontal"),
+            Input.GetAxisRaw("Vertical")
+        ).normalized;
 
         // 入力がない場合は終了
         if (inputDirection == Vector2.zero)
