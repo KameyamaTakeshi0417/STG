@@ -9,4 +9,12 @@ public class PiercingPrimer : Primer_Base
 
     // Update is called once per frame
     void Update() { }
+
+    public override void StrikePrimer()
+    {
+        if (targetBullet != null)
+        {
+            targetBullet.GetComponent<Bullet_Base>().piercingCount = rarelity + 1;
+        }
+    }
 }

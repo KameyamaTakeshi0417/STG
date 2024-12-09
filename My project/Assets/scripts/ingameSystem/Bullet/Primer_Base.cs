@@ -11,6 +11,7 @@ public class Primer_Base : MonoBehaviour
     protected float speed;
     protected int rarelity;
     public string primerName;
+    public GameObject targetBullet;
 
     // Start is called before the first frame update
     public string getName()

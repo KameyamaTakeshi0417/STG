@@ -152,6 +152,7 @@ public class ShooterHandler : MonoBehaviour
             Primer_Base primerScript = activePrimer
                 .GetComponent<ItemPickUp>()
                 .targetObj.GetComponent<Primer_Base>();
+            primerScript.targetBullet = bulletPrefab;
             primerScript.StrikePrimer();
         }
 
