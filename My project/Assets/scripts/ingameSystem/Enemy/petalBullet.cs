@@ -23,6 +23,23 @@ public class petalBullet : MonoBehaviour
         }
     }
 
+    public void wait(float waitSec)
+    {
+        StartCoroutine("waitAndShoot", waitSec);
+    }
+
+    private IEnumerator waitAndShoot(float waitSec)
+    {
+        float count = 0;
+        while (count < waitSec)
+        {
+            count++;
+            //回転とかさせるか？
+            yield return new WaitForSeconds(1);
+        }
+        yield return homing();
+    }
+
     public void shoot(int shootWay)
     {
         StartCoroutine("spread", getShootWayAsClock(shootWay));
@@ -148,7 +165,7 @@ public class petalBullet : MonoBehaviour
     private IEnumerator homing()
     {
         int count = 0;
-        int countClock = 1000;
+        int countClock = 500;
 
         while (true)
         {
@@ -158,7 +175,7 @@ public class petalBullet : MonoBehaviour
             float rotationAngle = Mathf.Atan2(moveWay.y, moveWay.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotationAngle + 90));
 
-            transform.position += moveWay * (bulletSpeedMag * 2.0f);
+            transform.position += moveWay * (bulletSpeedMag * 5.0f);
             count++;
 
             if (count >= countClock)

@@ -9,10 +9,12 @@ public class PetalCollector : MonoBehaviour
     public float reachBehind; //近いかどうか
     public float moveMag;
     private int actionCount = 0; //
+    protected Health myHealth;
 
     // Start is called before the first frame update
     void Awake()
     {
+        myHealth = gameObject.GetComponent<Health>();
         StartCoroutine("Idle");
     }
 
@@ -30,8 +32,11 @@ public class PetalCollector : MonoBehaviour
 
     private IEnumerator Idle()
     {
+        if (myHealth.getCurrentHP() <= (myHealth.getHP() * 0.5f))
+        {
+            yield return attack1();
+        }
         yield return new WaitForSeconds(0.5f);
-        actionCount++;
         yield return moveStartPoint();
     }
 
@@ -56,7 +61,7 @@ public class PetalCollector : MonoBehaviour
     private IEnumerator moveForward()
     {
         Debug.Log(gameObject.name + ":forward");
-        int limitClock = 500; //待機カウント
+        int limitClock = 1000; //待機カウント
         int count = 0;
         while (true)
         {
@@ -66,7 +71,7 @@ public class PetalCollector : MonoBehaviour
 
             if (checkDirectionToPlayer().magnitude < reachForward)
             {
-                yield return attack1();
+                yield return attack0();
             }
             if (count >= limitClock)
             {
@@ -109,23 +114,49 @@ public class PetalCollector : MonoBehaviour
         yield return Idle();
     }
 
+    private IEnumerator attack0Pattern(Vector3 setPosition, float waitTime)
+    {
+        int BulletCount = 3;
+        int[] shootSet = new int[BulletCount];
+        shootSet[0] = 6;
+        shootSet[1] = 2;
+        shootSet[2] = 10;
+        float passSec = waitTime * BulletCount;
+        float positionMag = 3.0f;
+        for (int i = 0; i < BulletCount; i++)
+        {
+            Vector3 createPosition =
+                gameObject.transform.position
+                + setPosition * positionMag
+                + (getShootWayAsClock(shootSet[i]) * positionMag * 0.4f);
+            GameObject bullet = Instantiate(
+                Resources.Load<GameObject>("Objects/Bullet/petalBullet"),
+                createPosition,
+                Quaternion.LookRotation(
+                    Vector3.forward,
+                    createPosition - (gameObject.transform.position + setPosition * positionMag)
+                )
+            );
+            bullet.GetComponent<petalBullet>().wait(passSec);
+            passSec -= waitTime;
+            yield return new WaitForSeconds(waitTime);
+        }
+    }
+
     private IEnumerator attack0()
     { //牽制技
         int[] shootSet = new int[3];
         shootSet[0] = 6;
         shootSet[1] = 2;
         shootSet[2] = 10;
-        for (int i = 0; i < 3; i++)
-        {
-            GameObject bullet = Instantiate(
-                Resources.Load<GameObject>("Objects/Bullet/petalBullet"),
-                gameObject.transform.position,
-                Quaternion.identity
-            );
-            bullet.GetComponent<petalBullet>().shoot(shootSet[i]);
-            yield return new WaitForEndOfFrame();
-        }
-        yield return attack1();
+        float waitTime = 1f;
+        yield return attack0Pattern(getShootWayAsClock(shootSet[0]), waitTime);
+        yield return new WaitForSeconds(waitTime);
+        yield return attack0Pattern(getShootWayAsClock(shootSet[1]), waitTime);
+        yield return new WaitForSeconds(waitTime);
+        yield return attack0Pattern(getShootWayAsClock(shootSet[2]), waitTime);
+        yield return new WaitForSeconds(waitTime);
+        yield return Idle();
     }
 
     private IEnumerator ShootPattern(int startClock, bool isClockwise, int count)
@@ -163,5 +194,54 @@ public class PetalCollector : MonoBehaviour
     private IEnumerator attack4()
     { //奥義
         yield return null;
+    }
+
+    public Vector3 getShootWayAsClock(int num)
+    {
+        Vector3 ret = new Vector3(0, 0, 0);
+        switch (num)
+        {
+            case 0:
+            case 12:
+                ret = new Vector3(0, 1, 0);
+                break;
+            case 1:
+                ret = new Vector3(0.5f, 0.866f, 0);
+                break;
+            case 2:
+                ret = new Vector3(0.866f, 0.5f, 0);
+                break;
+            case 3:
+                ret = new Vector3(1, 0, 0);
+                break;
+            case 4:
+                ret = new Vector3(0.866f, -0.5f, 0);
+                break;
+            case 5:
+                ret = new Vector3(0.5f, -0.866f, 0);
+                break;
+            case 6:
+                ret = new Vector3(0, -1, 0);
+                break;
+            case 7:
+                ret = new Vector3(-0.5f, -0.866f, 0);
+                break;
+            case 8:
+                ret = new Vector3(-0.866f, -0.5f, 0);
+                break;
+            case 9:
+                ret = new Vector3(-1, 0, 0);
+                break;
+            case 10:
+                ret = new Vector3(-0.866f, 0.5f, 0);
+                break;
+            case 11:
+                ret = new Vector3(-0.5f, 0.866f, 0);
+                break;
+            default:
+                ret = new Vector3(0, -1, 0);
+                break;
+        }
+        return ret;
     }
 }
