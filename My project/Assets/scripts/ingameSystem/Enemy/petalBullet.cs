@@ -110,7 +110,7 @@ public class petalBullet : MonoBehaviour
 
     private IEnumerator Involute(Vector2 startPos, float rotationWay)
     {
-        float speed = bulletSpeedMag * 1000.0f;
+        float speed = bulletSpeedMag * 500.0f;
         float angle = 0.0f;
         int count = 0;
         Vector2 collectorPos;
@@ -175,7 +175,7 @@ public class petalBullet : MonoBehaviour
             float rotationAngle = Mathf.Atan2(moveWay.y, moveWay.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotationAngle + 90));
 
-            transform.position += moveWay * (bulletSpeedMag * 5.0f);
+            transform.position += moveWay * (bulletSpeedMag * 4.0f);
             count++;
 
             if (count >= countClock)
