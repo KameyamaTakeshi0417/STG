@@ -580,6 +580,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: da68591268dea09449c139fbf3489269, type: 3}
+--- !u!1 &870629357 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6355505621596896345, guid: 9c8809ac63fb9244a82f68da66af88d9, type: 3}
+  m_PrefabInstance: {fileID: 956703049}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &912455333
 GameObject:
   m_ObjectHideFlags: 0
@@ -1533,11 +1538,12 @@ MonoBehaviour:
   HP: 300
   currentHP: 300
   HealthPhase: 0
-  LifeCount: 1
+  LifeCount: 2
   CircleHPBar:
   - {fileID: 956703052}
   - {fileID: 956703051}
   - {fileID: 956703050}
+  canvasInstance: {fileID: 870629357}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
