@@ -10,11 +10,13 @@ public class treasureBox : MonoBehaviour
     private bool nowOpen;
     public float checkInterval = 1.0f; // チェック間隔（秒）
     public GameObject rewardUIObj;
+    AudioSource audioSource;
 
     // Start is called before the first frame update
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        audioSource = GetComponent<AudioSource>();
         nowOpen = false;
     }
 
@@ -23,9 +25,17 @@ public class treasureBox : MonoBehaviour
     {
         if ((Input.GetKeyDown(KeyCode.Return)) && nowOpen)
         {
+            audioSource.Play();
             showUI();
-            Destroy(this.gameObject);
+            StartCoroutine(DestroyAfterAudio());
         }
+    }
+
+    private IEnumerator DestroyAfterAudio()
+    {
+        // 音声の再生が終了するまで待つ
+        yield return new WaitForSeconds(audioSource.clip.length);
+        Destroy(this.gameObject);
     }
 
     public void setNowOpen(bool set)

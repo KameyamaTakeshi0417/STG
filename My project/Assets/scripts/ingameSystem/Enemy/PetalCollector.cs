@@ -9,12 +9,13 @@ public class PetalCollector : MonoBehaviour
     public float reachBehind; //近いかどうか
     public float moveMag;
     private int actionCount = 0; //
-    protected Health myHealth;
+    protected EliteHealth myHealth;
 
     // Start is called before the first frame update
     void Awake()
     {
-        myHealth = gameObject.GetComponent<Health>();
+        myHealth = gameObject.GetComponent<EliteHealth>();
+        gameObject.GetComponent<EliteHealth>().setSlideHPBar();
         StartCoroutine("Idle");
     }
 

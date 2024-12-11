@@ -13,7 +13,7 @@ public class Health : _Health_Base
         m_handler = gameObject.GetComponent<HPBar_Base>();
     }
 
-    public void setSlideHPBar()
+    public virtual void setSlideHPBar()
     {
         GameObject canvasInstance = Instantiate(
             Resources.Load<GameObject>("UI/EnemyHPCanvas"),

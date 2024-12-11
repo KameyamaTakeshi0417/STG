@@ -618,7 +618,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Safety Area
+  m_text: Event Area
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: bd636b260a1666641a21b47c3e9acf43, type: 2}
   m_sharedMaterial: {fileID: 2242146926751244349, guid: bd636b260a1666641a21b47c3e9acf43, type: 2}
