@@ -34,13 +34,8 @@ public class EliteHealth : Health
             EliteSliderUpdate();
         }
         // Debug.Log(gameObject.name + " took " + damage + " damage. Remaining HP: " + currentHP);
-        if (LifeCount <= 0 && currentHP <= 0)
+        if (LifeCount <= 0)
         {
-            if (hpSlider != null)
-            {
-                Destroy(hpSlider);
-            }
-
             Die();
         }
     }
@@ -94,7 +89,8 @@ public class EliteHealth : Health
         }
         Debug.Log(gameObject.name + " died.");
         // ここに死亡時の処理を書く
-        Destroy(gameObject);
+        Destroy(CircleHPBar[1].transform.root);
+        Destroy(this.gameObject);
     }
 
     public override void setSlideHPBar()
