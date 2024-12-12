@@ -108,6 +108,37 @@ public class petalBullet : MonoBehaviour
         StartCoroutine(Involute(ret, checker));
     }
 
+    public void moveLerp(Vector2 startPos, Vector2 endPos)
+    {
+        StartCoroutine(LerpMoving(startPos, endPos));
+    }
+
+    private IEnumerator LerpMoving(Vector3 startPos, Vector3 endPos, float duration = 2.0f)
+    {
+        // 経過時間を記録する変数
+        float elapsedTime = 0f;
+
+        // Lerpでの移動開始
+        while (elapsedTime < duration)
+        {
+            // 経過時間に基づいて現在位置を計算
+            Vector2 newPos = Vector2.Lerp(startPos, endPos, elapsedTime / duration);
+
+            // オブジェクトの位置を更新
+            transform.position = new Vector3(newPos.x, newPos.y, transform.position.z);
+
+            // 経過時間を加算
+            elapsedTime += Time.deltaTime;
+
+            // 次のフレームまで待機
+            yield return new WaitForEndOfFrame();
+        }
+
+        // 最終位置を強制的に設定（浮動小数点誤差対策）
+        transform.position = new Vector3(endPos.x, endPos.y, transform.position.z);
+        yield return homing();
+    }
+
     private IEnumerator Involute(Vector2 startPos, float rotationWay)
     {
         float speed = bulletSpeedMag * 500.0f;

@@ -10,6 +10,8 @@ public class PetalCollector : MonoBehaviour
     public float moveMag;
     private int actionCount = 0; //
     protected EliteHealth myHealth;
+    public bool isLifeBroken = false;
+    public int Level = 1; //行動を変更する指標であり倒したら貰える花弁の最低枚数
 
     // Start is called before the first frame update
     void Awake()
@@ -33,9 +35,14 @@ public class PetalCollector : MonoBehaviour
 
     private IEnumerator Idle()
     {
-        if (myHealth.getCurrentHP() <= (myHealth.getHP() * 0.5f))
+        //レベルを条件に追加したいね
+        if (myHealth.LifeCount == 2 && myHealth.getCurrentHP() <= (myHealth.getHP() * 0.5f))
         {
             yield return attack1();
+        }
+        if (myHealth.LifeCount == 1)
+        {
+            yield return attack2();
         }
         yield return new WaitForSeconds(0.5f);
         yield return moveStartPoint();
@@ -146,21 +153,74 @@ public class PetalCollector : MonoBehaviour
 
     private IEnumerator attack0()
     { //牽制技
-        int[] shootSet = new int[3];
+        int createCount = 3;
+        int[] shootSet = new int[createCount];
         shootSet[0] = 6;
         shootSet[1] = 2;
         shootSet[2] = 10;
         float waitTime = 1f;
-        yield return attack0Pattern(getShootWayAsClock(shootSet[0]), waitTime);
-        yield return new WaitForSeconds(waitTime);
-        yield return attack0Pattern(getShootWayAsClock(shootSet[1]), waitTime);
-        yield return new WaitForSeconds(waitTime);
-        yield return attack0Pattern(getShootWayAsClock(shootSet[2]), waitTime);
-        yield return new WaitForSeconds(waitTime);
+        for (int i = 0; i < createCount; i++)
+        {
+            if (myHealth.currentHP <= myHealth.HP * 0.5f)
+            {
+                yield return Idle();
+            }
+            yield return attack0Pattern(getShootWayAsClock(shootSet[i]), waitTime);
+            yield return new WaitForSeconds(waitTime);
+        }
+
         yield return Idle();
     }
 
-    private IEnumerator ShootPattern(int startClock, bool isClockwise, int count)
+    private IEnumerator attack1()
+    {
+        int createCount = 5;
+        int[] createIndex = new int[createCount];
+        createIndex[0] = 9;
+        createIndex[1] = 3;
+        createIndex[2] = 10;
+        createIndex[3] = 2;
+        createIndex[4] = 12;
+        for (int i = 0; i < createCount; i++)
+        {
+            attack1Pattern(createIndex[i]);
+            yield return new WaitForSeconds(0.1f);
+        }
+        yield return new WaitForSeconds(1f);
+        yield return Idle();
+    }
+
+    private void attack1Pattern(int createIndex)
+    {
+        float posMag = 7.0f;
+        Vector3 moveWay =
+            gameObject.transform.position
+            - ((gameObject.transform.position) + getShootWayAsClock(createIndex) * posMag);
+        moveWay.Normalize();
+        float rotationAngle = Mathf.Atan2(moveWay.y, moveWay.x) * Mathf.Rad2Deg;
+
+        GameObject bullet = Instantiate(
+            Resources.Load<GameObject>("Objects/Bullet/petalBullet"),
+            gameObject.transform.position,
+            Quaternion.Euler(new Vector3(0, 0, rotationAngle + 90))
+        );
+        bullet
+            .GetComponent<petalBullet>()
+            .moveLerp(
+                gameObject.transform.position,
+                (gameObject.transform.position) + getShootWayAsClock(createIndex) * posMag
+            );
+    }
+
+    private IEnumerator attack2()
+    { //通常攻撃強
+        yield return attack2Pattern(2, true, 50);
+        yield return attack2Pattern(10, false, 50);
+        yield return attack2Pattern(6, true, 50);
+        yield return Idle();
+    }
+
+    private IEnumerator attack2Pattern(int startClock, bool isClockwise, int count)
     {
         for (int i = 0; i < count; i++)
         {
@@ -174,21 +234,11 @@ public class PetalCollector : MonoBehaviour
         }
     }
 
-    private IEnumerator attack1()
-    {
-        yield return ShootPattern(2, true, 50);
-        yield return ShootPattern(10, false, 50);
-        yield return ShootPattern(6, true, 50);
-        yield return Idle();
-    }
-
-    private IEnumerator attack2()
-    { //通常攻撃強
-        yield return null;
-    }
-
     private IEnumerator attack3()
     { //強攻撃
+        /*
+        予定としてはattack2の挙動をインボリュート後の動きをホーミングから中心に向かって直進+バラまき+ホーミングでいこうかな。
+        */
         yield return null;
     }
 
