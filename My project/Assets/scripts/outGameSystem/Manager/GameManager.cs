@@ -83,12 +83,14 @@ public class GameManager : MonoBehaviour
     {
         score = 0;
         // ゲームのリセット処理
+        SceneManager.LoadScene("title");
     }
 
     public void EndGame()
     {
         currentState = GameState.GameOver;
         // ゲームオーバーの処理
+        SceneManager.LoadScene("title");
     }
 
     void FillArrayWithRandomValues()
