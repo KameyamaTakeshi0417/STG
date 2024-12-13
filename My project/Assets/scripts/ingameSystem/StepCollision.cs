@@ -7,6 +7,7 @@ public class StepCollision : MonoBehaviour
     public bool Onstep;
     public bool canEnter;
     public int stepNum;
+    public GameObject fadeCanvas;
 
     // Start is called before the first frame update
     void Start()
@@ -29,7 +30,21 @@ public class StepCollision : MonoBehaviour
             && GameObject.Find("GameManager").GetComponent<GameManager>().getCleared()
         )
         {
-            GameObject.Find("GameManager").GetComponent<GameManager>().ChangeScene(stepNum);
+            StartCoroutine(fadeOut());
         }
+    }
+
+    private IEnumerator fadeOut()
+    {
+        FadeBoard targetScript;
+        targetScript = fadeCanvas.GetComponent<FadeBoard>();
+        targetScript.StartFadeIn();
+        yield return new WaitForEndOfFrame();
+        while (targetScript.nowFade)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+        GameObject.Find("GameManager").GetComponent<GameManager>().ChangeScene(stepNum);
+        yield return null;
     }
 }

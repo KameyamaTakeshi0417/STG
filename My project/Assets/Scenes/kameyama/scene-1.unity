@@ -671,6 +671,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7908924037538618816, guid: da68591268dea09449c139fbf3489269, type: 3}
+      propertyPath: fadeCanvas
+      value: 
+      objectReference: {fileID: 1572245899}
     - target: {fileID: 8616996156230354111, guid: da68591268dea09449c139fbf3489269, type: 3}
       propertyPath: m_Name
       value: steps (5)
@@ -1334,7 +1338,6 @@ GameObject:
   - component: {fileID: 383412720}
   - component: {fileID: 383412723}
   - component: {fileID: 383412722}
-  - component: {fileID: 383412721}
   m_Layer: 5
   m_Name: fadeBoard
   m_TagString: Untagged
@@ -1361,21 +1364,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1914.06, y: 1159.8}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &383412721
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 383412719}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8df8311077750949b55091353ff97fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  imageObject: {fileID: 383412722}
-  fadeInDuration: 2
-  fadeOutDuration: 1
 --- !u!114 &383412722
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3118,6 +3106,10 @@ PrefabInstance:
       propertyPath: stepNum
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7908924037538618816, guid: da68591268dea09449c139fbf3489269, type: 3}
+      propertyPath: fadeCanvas
+      value: 
+      objectReference: {fileID: 1572245899}
     - target: {fileID: 8616996156230354111, guid: da68591268dea09449c139fbf3489269, type: 3}
       propertyPath: m_Name
       value: steps (2)
@@ -4858,6 +4850,10 @@ PrefabInstance:
       propertyPath: stepNum
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 7908924037538618816, guid: da68591268dea09449c139fbf3489269, type: 3}
+      propertyPath: fadeCanvas
+      value: 
+      objectReference: {fileID: 1572245899}
     - target: {fileID: 8616996156230354111, guid: da68591268dea09449c139fbf3489269, type: 3}
       propertyPath: m_Name
       value: steps (4)
@@ -5026,7 +5022,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 0}
   m_FillRect: {fileID: 568905094}
   m_HandleRect: {fileID: 0}
@@ -5277,6 +5273,7 @@ GameObject:
   - component: {fileID: 1572245902}
   - component: {fileID: 1572245901}
   - component: {fileID: 1572245900}
+  - component: {fileID: 1572245904}
   m_Layer: 5
   m_Name: UICanvas
   m_TagString: Untagged
@@ -5370,6 +5367,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1572245904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1572245899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8df8311077750949b55091353ff97fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetObject: {fileID: 383412719}
+  fadeInDuration: 1
+  fadeOutDuration: 1
+  nowFade: 0
 --- !u!1 &1603334037 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4390047272584022613, guid: ea02c46b4f1337e439dfe303aa5ec7b0, type: 3}
@@ -7636,6 +7649,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7908924037538618816, guid: da68591268dea09449c139fbf3489269, type: 3}
+      propertyPath: fadeCanvas
+      value: 
+      objectReference: {fileID: 1572245899}
     - target: {fileID: 8616996156230354111, guid: da68591268dea09449c139fbf3489269, type: 3}
       propertyPath: m_Name
       value: steps (1)
@@ -7710,6 +7727,8 @@ SceneRoots:
   - {fileID: 899164599}
   - {fileID: 1904669296173012796}
   - {fileID: 175111447}
+  - {fileID: 811810137}
+  - {fileID: 1410913311}
   - {fileID: 2028919413}
   - {fileID: 1651506167}
   - {fileID: 439775631}
@@ -7718,6 +7737,4 @@ SceneRoots:
   - {fileID: 1082264917}
   - {fileID: 1203368866}
   - {fileID: 8867567768286216145}
-  - {fileID: 811810137}
-  - {fileID: 1410913311}
   - {fileID: 1907175339}

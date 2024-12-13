@@ -4,29 +4,32 @@ using UnityEngine.UI;
 
 public class FadeBoard : MonoBehaviour
 {
-    public Image imageObject;       // フェードさせるImageオブジェクト
-    public float fadeInDuration = 2.0f;  // フェードインの時間（秒）
+    public GameObject targetObject;
+    private Image imageObject; // フェードさせるImageオブジェクト
+    public float fadeInDuration = 2.0f; // フェードインの時間（秒）
     public float fadeOutDuration = 1.0f; // フェードアウトの時間（秒）
+    public bool nowFade = false;
 
     void Start()
     {
+        imageObject = targetObject.GetComponent<Image>();
         FadestartStage();
     }
-    void Awake()
-    {
 
+    void Awake() { }
 
-    }
     public void callFadeScreen()
     {
         // フェードイン・フェードアウトを開始
         StartCoroutine(FadeImageCoroutine());
     }
+
     public void FadestartStage()
     {
         // フェードアウト
         StartCoroutine(FadeOut());
     }
+
     private IEnumerator FadeImageCoroutine()
     {
         // フェードイン
@@ -39,8 +42,15 @@ public class FadeBoard : MonoBehaviour
         yield return StartCoroutine(FadeOut());
     }
 
+    public void StartFadeIn()
+    {
+        StartCoroutine(FadeIn());
+    }
+
     private IEnumerator FadeIn()
     {
+        nowFade = true;
+        targetObject.SetActive(true);
         float elapsedTime = 0f;
 
         // 初期アルファ値を0に設定
@@ -55,6 +65,7 @@ public class FadeBoard : MonoBehaviour
             imageObject.color = color;
             yield return null;
         }
+        nowFade = false;
     }
 
     private IEnumerator FadeOut()
@@ -73,5 +84,6 @@ public class FadeBoard : MonoBehaviour
             imageObject.color = color;
             yield return null;
         }
+        targetObject.SetActive(false);
     }
 }

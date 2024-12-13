@@ -204,6 +204,8 @@ public class rewardUIManager : _Manager_Base
                         )
                     )
             );
+            SoundManager soundManager = FindObjectOfType<SoundManager>();
+            targetButton.onClick.AddListener(() => soundManager.Play("UI_Decide"));
             targetButton.onClick.AddListener(() => equipManager.EquipItem(targetRewardObj));
             targetButton.onClick.AddListener(() => continueGame());
             targetButton.onClick.AddListener(() => Destroy(targetRewardObj));
