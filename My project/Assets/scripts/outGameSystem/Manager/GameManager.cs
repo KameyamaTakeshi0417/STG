@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     public int NowRow,
         NowCol;
     public bool isCleared;
+    private bool isGameOver = false;
 
     public int getBattleCount()
     {
@@ -91,6 +92,61 @@ public class GameManager : MonoBehaviour
         currentState = GameState.GameOver;
         // ゲームオーバーの処理
         SceneManager.LoadScene("title");
+    }
+
+    public void GameOver()
+    {
+        if (!isGameOver)
+        {
+            isGameOver = true;
+            StartCoroutine(GameOverRoutine());
+        }
+    }
+
+    private IEnumerator GameOverRoutine()
+    {
+        // 入力を無効化
+        DisablePlayerInput();
+
+        // 時間を止める
+        Time.timeScale = 0f;
+        Debug.Log("Game Over: Time Stopped");
+
+        // 1秒待機
+        yield return new WaitForSecondsRealtime(1f); // RealtimeはTimeScaleの影響を受けない
+
+        // 時間を徐々に元に戻す
+        float duration = 2f;
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.unscaledDeltaTime; // TimeScaleの影響を受けない時間
+            Time.timeScale = Mathf.Lerp(0f, 1f, elapsed / duration);
+            yield return null;
+        }
+
+        // 完全に元の状態に戻す
+        Time.timeScale = 1f;
+        Debug.Log("Game Over: Time Restored");
+
+        // 必要に応じてゲームオーバー画面を表示
+        ShowGameOverScreen();
+    }
+
+    private void DisablePlayerInput()
+    {
+        // プレイヤー入力を無効化する例
+        Player player = FindObjectOfType<Player>();
+        if (player != null)
+        {
+            player.enabled = false;
+        }
+    }
+
+    private void ShowGameOverScreen()
+    {
+        Debug.Log("Game Over Screen Displayed");
+        // ゲームオーバー画面を表示する処理
     }
 
     void FillArrayWithRandomValues()

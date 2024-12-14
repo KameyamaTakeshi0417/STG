@@ -10,13 +10,12 @@ public class HPBar_Base : MonoBehaviour
     public float currentHP;
     public GameObject HPBar;
     protected Slider hpSlider; //HPバー（スライダー）
-    public Health objectHealth;
-
+    public _Health_Base objectHealth;
 
     // Start is called before the first frame update
     void Start()
     {
-        objectHealth = gameObject.GetComponent<Health>();
+        objectHealth = gameObject.GetComponent<_Health_Base>();
         currentHP = objectHealth.currentHP;
         HP = objectHealth.HP;
     }

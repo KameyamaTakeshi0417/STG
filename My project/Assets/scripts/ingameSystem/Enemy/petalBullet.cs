@@ -248,14 +248,20 @@ public class petalBullet : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
+            Debug.Log("Collision with Player detected");
+
             // HPを持つコンポーネントを取得
-            _Health_Base health = collision.GetComponent<_Health_Base>();
+            PlayerHealth health = collision.gameObject.GetComponent<PlayerHealth>();
             if (health != null)
             {
                 // HPを減らす
                 health.TakeDamage(damage);
+                Debug.Log($"Damage dealt: {damage}");
             }
-            Destroy(this.gameObject);
+
+            // デストロイが呼ばれるか確認
+            Debug.Log("Calling Destroy on root object");
+            Destroy(this.gameObject.transform.root.gameObject);
         }
     }
 }

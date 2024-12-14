@@ -39,7 +39,6 @@ public class PlayerHPBar : HPBar_Base
         // HPバー(Slider)を取得
         if (hpSlider != null)
         {
-            hpSlider = HPBar.transform.Find("PlayerHPBar").GetComponent<Slider>();
             setSlideHPBar();
         }
     }
@@ -59,6 +58,5 @@ public class PlayerHPBar : HPBar_Base
         {
             Debug.LogWarning("Canvas or HPBar not found in the enemy object.");
         }
-        HPUpdate();
     }
 }

@@ -22,22 +22,25 @@ public class PlayerHealth : _Health_Base
     {
         currentHP -= damage;
         OnPlayerHPChanged?.Invoke();
+        Debug.Log("TakeDamaged");
         if (hpSlider != null)
         {
             //SliderUpdate();
         }
-        // Debug.Log(gameObject.name + " took " + damage + " damage. Remaining HP: " + currentHP);
+
         if (currentHP <= 0)
         {
-            if (hpSlider != null)
-            {
-                Die();
-            }
+            Debug.Log("CallDie");
+            Die();
         }
     }
 
     public void Die()
     {
         //ゲームオーバー処理を入れる
+        GameManager manager = GameObject.Find("GameManager").GetComponent<GameManager>();
+
+        Debug.Log("マネージャー見つからねえ");
+        manager.GameOver();
     }
 }
