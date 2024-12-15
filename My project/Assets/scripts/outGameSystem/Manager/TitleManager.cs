@@ -17,16 +17,6 @@ public class TitleManager : MonoBehaviour
     {
         CreditPanel.SetActive(false);
 
-        // シングルトンパターンの実装
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
         SceneManager.sceneLoaded += OnSceneLoaded; // シーンロードイベントを追加
     }
 
