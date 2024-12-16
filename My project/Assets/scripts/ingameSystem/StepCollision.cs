@@ -8,6 +8,7 @@ public class StepCollision : MonoBehaviour
     public bool canEnter;
     public int stepNum;
     public GameObject fadeCanvas;
+    public Animator animator; // アニメーターの参照
 
     // Start is called before the first frame update
     void Start()
@@ -16,7 +17,16 @@ public class StepCollision : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update() { }
+    void Update()
+    {
+        if (
+            animator.GetBool("cleared") == false
+            && GameObject.Find("GameManager").GetComponent<GameManager>().getCleared()
+        )
+        {
+            animator.SetBool("cleared", true);
+        }
+    }
 
     public void setEnterable(bool set)
     {
