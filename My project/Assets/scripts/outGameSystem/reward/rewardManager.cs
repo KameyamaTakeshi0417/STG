@@ -8,7 +8,7 @@ public class rewardManager : MonoBehaviour
     public GameObject treasureBox;
 
     // Start is called before the first frame update
-    private int[] normalRewardArray = new int[300];
+    public int[] normalRewardArray = new int[300];
     private int[] specialRewardArray = new int[12];
     public delegate void RewardTakeHandler();
     public static event RewardTakeHandler BoxisOpened;
@@ -101,16 +101,16 @@ public class rewardManager : MonoBehaviour
                 }
                 randomValue -= kvp.Value;
             }
+            PrintArray(j);
         }
-        PrintArray();
     }
 
-    void PrintArray()
+    void PrintArray(int target)
     {
         // 配列の内容をコンソールに出力
 
         string row = "rewardIndex: ";
-        for (int j = 0; j < normalRewardArray.GetLength(1); j++)
+        for (int j = 0; j < normalRewardArray.Length; j++)
         {
             row += normalRewardArray[j] + " ";
         }

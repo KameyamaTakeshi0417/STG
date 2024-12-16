@@ -114,7 +114,7 @@ public class GameManager : MonoBehaviour
 
         // 1秒待機
         yield return new WaitForSecondsRealtime(1f); // RealtimeはTimeScaleの影響を受けない
-
+        //GameObject.Find("UICanvas").GetComponent<FadeBoard>().StartFadeIn();
         // 時間を徐々に元に戻す
         float duration = 2f;
         float elapsed = 0f;
@@ -122,11 +122,11 @@ public class GameManager : MonoBehaviour
         {
             elapsed += Time.unscaledDeltaTime; // TimeScaleの影響を受けない時間
             Time.timeScale = Mathf.Lerp(0f, 1f, elapsed / duration);
-            yield return null;
+            yield return new WaitForEndOfFrame();
         }
 
         // 完全に元の状態に戻す
-        Time.timeScale = 1f;
+        //        Time.timeScale = 1f;
         Debug.Log("Game Over: Time Restored");
 
         // 必要に応じてゲームオーバー画面を表示
@@ -146,6 +146,7 @@ public class GameManager : MonoBehaviour
     private void ShowGameOverScreen()
     {
         Debug.Log("Game Over Screen Displayed");
+        DebugChangeScene("Continue");
         // ゲームオーバー画面を表示する処理
     }
 

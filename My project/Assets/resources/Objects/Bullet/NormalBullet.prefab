@@ -56,6 +56,7 @@ MonoBehaviour:
   rarelity: 0
   bulletName: 
   addDmg: 0
+  piercingCount: 0
   AddDamageRatio: 0.3
 --- !u!212 &1074022942457827577
 SpriteRenderer:
@@ -241,8 +242,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -226196017
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 0.7940895, g: 0.93207544, b: 0.6735564, a: 0.5529412}

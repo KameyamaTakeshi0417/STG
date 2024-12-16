@@ -16,7 +16,7 @@ public class TitleManager : MonoBehaviour
     void Start()
     {
         CreditPanel.SetActive(false);
-
+        ClearDontDestroyOnLoadObjects();
         SceneManager.sceneLoaded += OnSceneLoaded; // シーンロードイベントを追加
     }
 
@@ -74,5 +74,22 @@ public class TitleManager : MonoBehaviour
     public void QuitGame()
     {
         Application.Quit();
+    }
+
+    public void ClearDontDestroyOnLoadObjects()
+    {
+        // Unityシーンのルートオブジェクトをすべて取得
+        GameObject[] rootObjects = FindObjectsOfType<GameObject>();
+
+        // DontDestroyOnLoad に登録されているオブジェクトを特定
+        foreach (GameObject obj in rootObjects)
+        {
+            if (obj.scene.name == null || obj.scene.name == "")
+            {
+                // シーンに属していない（DontDestroyOnLoad に属している）オブジェクトを削除
+                Destroy(obj);
+                Debug.Log($"Deleted DontDestroy object: {obj.name}");
+            }
+        }
     }
 }
