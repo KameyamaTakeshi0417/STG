@@ -3607,7 +3607,7 @@ MonoBehaviour:
   Onstep: 0
   canEnter: 0
   stepNum: 0
-  nextScene: scene2
+  nextScene: scene0
 --- !u!1 &912631153
 GameObject:
   m_ObjectHideFlags: 0
@@ -7916,6 +7916,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2873150374837375822, guid: b268f28426be0dc47b8dc289772a9696, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2948048074146492389, guid: b268f28426be0dc47b8dc289772a9696, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3280954393386180980, guid: b268f28426be0dc47b8dc289772a9696, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.5328288
@@ -7954,6 +7962,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3280954393386180980, guid: b268f28426be0dc47b8dc289772a9696, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3829437172969995108, guid: b268f28426be0dc47b8dc289772a9696, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4248672002489678097, guid: b268f28426be0dc47b8dc289772a9696, type: 3}
+      propertyPath: m_IsTrigger
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8823766583826250412, guid: b268f28426be0dc47b8dc289772a9696, type: 3}
