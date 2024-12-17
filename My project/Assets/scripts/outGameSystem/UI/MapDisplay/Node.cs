@@ -2,40 +2,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public sealed class Node
+public class Node
 {
-    public int ID
+    public Vector2Int grid; // グリッド座標
+    public Vector2 position; // UI上の位置
+    public NodeType nodeType = NodeType.Battle; // ノードタイプ
+
+    [SerializeField]
+    private List<Node> connectedNodes = new List<Node>();
+
+    public void ConnectNode(Node other)
     {
-        get { return gridX * 1000 + gridY; }
-    } // 一意のID
-
-    public NodeType nodeType = NodeType.Undefined;
-
-    private int gridX;
-    private int gridY;
-
-    public Vector2Int grid
-    {
-        get { return new Vector2Int(gridX, gridY); }
-        set
+        if (!connectedNodes.Contains(other))
         {
-            gridX = value.x;
-            gridY = value.y;
+            connectedNodes.Add(other);
         }
-    }
-
-    public Vector2 position;
-
-    private List<int> nextNodeIdList = new List<int>(3);
-    public IReadOnlyList<int> NextNodeIDList => nextNodeIdList;
-
-    public bool ConnectNode(Node other)
-    {
-        if (!nextNodeIdList.Contains(other.ID))
-        {
-            nextNodeIdList.Add(other.ID);
-            return true;
-        }
-        return false;
     }
 }
