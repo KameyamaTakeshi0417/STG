@@ -39,6 +39,7 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         isCleared = false;
+
         // シングルトンパターンの実装
         if (Instance == null)
         {
@@ -114,7 +115,7 @@ public class GameManager : MonoBehaviour
 
         // 1秒待機
         yield return new WaitForSecondsRealtime(1f); // RealtimeはTimeScaleの影響を受けない
-        //GameObject.Find("UICanvas").GetComponent<FadeBoard>().StartFadeIn();
+        GameObject.Find("UICanvas").GetComponent<FadeBoard>().StartFadeIn();
         // 時間を徐々に元に戻す
         float duration = 2f;
         float elapsed = 0f;
@@ -122,24 +123,44 @@ public class GameManager : MonoBehaviour
         {
             elapsed += Time.unscaledDeltaTime; // TimeScaleの影響を受けない時間
             Time.timeScale = Mathf.Lerp(0f, 1f, elapsed / duration);
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForSecondsRealtime(0.1f);
         }
 
         // 完全に元の状態に戻す
-        //        Time.timeScale = 1f;
+        Time.timeScale = 1f;
         Debug.Log("Game Over: Time Restored");
 
         // 必要に応じてゲームオーバー画面を表示
         ShowGameOverScreen();
     }
 
-    private void DisablePlayerInput()
+    public void DisablePlayerInput()
     {
-        // プレイヤー入力を無効化する例
+        // プレイヤー入力を無効化する
+        GameObject PlayerObj = GameObject.Find("Player");
         Player player = FindObjectOfType<Player>();
         if (player != null)
         {
+            PlayerObj.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
             player.enabled = false;
+        }
+    }
+
+    public void AblePlayerInput()
+    {
+        // プレイヤー入力を無効化する
+        GameObject PlayerObj = GameObject.Find("Player");
+        Player player = PlayerObj.GetComponent<Player>();
+
+        if (player != null)
+        {
+            Debug.Log("呼び出されてる");
+            // PlayerObj.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+            player.enabled = true;
+        }
+        else
+        {
+            Debug.Log("呼び出されてねえ");
         }
     }
 

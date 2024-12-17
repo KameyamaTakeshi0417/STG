@@ -14,6 +14,7 @@ public class StepCollision : MonoBehaviour
     void Start()
     {
         Onstep = false;
+        GameObject.Find("GameManager").GetComponent<GameManager>().AblePlayerInput();
     }
 
     // Update is called once per frame
@@ -35,11 +36,10 @@ public class StepCollision : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (
-            collision.CompareTag("Player")
-            && GameObject.Find("GameManager").GetComponent<GameManager>().getCleared()
-        )
+        GameManager manager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        if (collision.CompareTag("Player") && manager.getCleared())
         {
+            manager.DisablePlayerInput();
             StartCoroutine(fadeOut());
         }
     }
