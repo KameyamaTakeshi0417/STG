@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 999726587373927949}
   - component: {fileID: 379378583704652822}
   - component: {fileID: 2685419999802579504}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: DamegeText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 6110849580172799170}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.63687605, y: 40.341682, z: 6.4383206}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -54,7 +54,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10100, guid: 0000000000000000e000000000000000, type: 0}
+  - {fileID: 2100000, guid: 01f2479d101d2834091486260a3d4d82, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -94,7 +94,7 @@ TextMesh:
   m_FontSize: 70
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 0}
+  m_Font: {fileID: 12800000, guid: 01f2479d101d2834091486260a3d4d82, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
@@ -110,6 +110,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e7950e483dcf6942b1714916e7a283f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DeleteTime: 1
+  DeleteTime: 10
   MoveRange: 1
   EndAlpha: 0

@@ -1,3 +1,5 @@
+using System.Collections;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,6 +8,10 @@ public class Health : _Health_Base
 {
     public delegate void HPChangedHandler();
     public static event HPChangedHandler OnHPChanged;
+    GameObject canvasInstance;
+    Transform canvasTransform; // エネミーのCanvasのTransform
+    public GameObject damageTextPrefab; // ダメージ表示用のプレハブ
+    public float DamageUIMagnitude = 0.1f;
 
     void Start()
     {
@@ -15,11 +21,12 @@ public class Health : _Health_Base
 
     public virtual void setSlideHPBar()
     {
-        GameObject canvasInstance = Instantiate(
+        canvasInstance = Instantiate(
             Resources.Load<GameObject>("UI/EnemyHPCanvas"),
             gameObject.transform.position,
             Quaternion.identity
         );
+        canvasTransform = canvasInstance.transform;
         canvasInstance.GetComponent<HPBarFollower>().setTargetTransform(gameObject.transform);
         //canvasInstance.transform.SetParent(transform);
         canvasInstance.transform.localPosition = new Vector3(0, 2, 0); // 必要に応じてオフセットを調整
@@ -50,6 +57,7 @@ public class Health : _Health_Base
         if (hpSlider != null)
         {
             SliderUpdate();
+            ShowDamage(damage);
         }
         // Debug.Log(gameObject.name + " took " + damage + " damage. Remaining HP: " + currentHP);
         if (gameObject.tag == "Enemy" && currentHP <= 0)
@@ -104,5 +112,19 @@ public class Health : _Health_Base
         Debug.Log(gameObject.name + " died.");
         // ここに死亡時の処理を書く
         Destroy(gameObject);
+    }
+
+    public void ShowDamage(float damage)
+    {
+        // ダメージテキストの生成
+        GameObject damageTextInstance = Instantiate(damageTextPrefab, canvasTransform);
+        damageTextInstance.GetComponent<RectTransform>().localPosition = Vector3.zero;
+
+        // テキストのスケールを調整
+        damageTextInstance.GetComponent<RectTransform>().localScale =
+            Vector3.one * DamageUIMagnitude;
+
+        // テキスト内容を設定
+        damageTextInstance.GetComponent<DamageUI3D>().damage = damage;
     }
 }

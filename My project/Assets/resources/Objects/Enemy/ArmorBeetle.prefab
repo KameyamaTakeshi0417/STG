@@ -147,6 +147,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HP: 150
   currentHP: 150
+  damageTextPrefab: {fileID: 3988437868621658341, guid: 5ccc0cd62017e7542bc9974c88b5c92d, type: 3}
+  DamageUIMagnitude: 10
 --- !u!114 &6117067203040952965
 MonoBehaviour:
   m_ObjectHideFlags: 0

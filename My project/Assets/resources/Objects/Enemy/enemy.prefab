@@ -210,6 +210,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HP: 100
   currentHP: 100
+  damageTextPrefab: {fileID: 3988437868621658341, guid: 5ccc0cd62017e7542bc9974c88b5c92d, type: 3}
+  DamageUIMagnitude: 10
 --- !u!58 &1676712397939449718
 CircleCollider2D:
   m_ObjectHideFlags: 0

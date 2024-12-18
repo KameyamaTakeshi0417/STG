@@ -1463,6 +1463,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HP: 1000
   currentHP: 1000
+  damageTextPrefab: {fileID: 0}
+  DamageUIMagnitude: 100
 --- !u!61 &411040683
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3607,7 +3609,7 @@ MonoBehaviour:
   Onstep: 0
   canEnter: 0
   stepNum: 0
-  nextScene: scene0
+  nextScene: scene1
 --- !u!1 &912631153
 GameObject:
   m_ObjectHideFlags: 0
