@@ -20,7 +20,12 @@ public class PlayerHealth : _Health_Base
 
     public override void TakeDamage(float damage)
     {
-        currentHP -= damage;
+        float setDmg = damage;
+        if (VulnerableFlg)
+        {
+            setDmg *= 1.5f;
+        }
+        currentHP -= setDmg;
         OnPlayerHPChanged?.Invoke();
         Debug.Log("TakeDamaged");
         if (hpSlider != null)

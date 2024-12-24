@@ -10,7 +10,9 @@ public class Player : MonoBehaviour
 
     public float HP;
     public float currentHP;
+
     public float pow;
+    public float DamageAdd = 0.0f; //バフとかで増やす値
     public float DamageMag = 1.0f; //非固定ダメージの倍率
 
     public float moveSpeed;

@@ -28,16 +28,6 @@ public class HomingPrimer : Primer_Base
 
         bulletScript.setStatus(watch, bulletSpeed, 10);
 
-        Case_Base caseScript;
-        System.Type caseType;
-
-        //何もついてないとき、通常薬莢装備
-        caseScript = Resources
-            .Load<GameObject>("Objects/Case/HomingCase")
-            .GetComponent<Case_Base>();
-        caseType = caseScript.GetType();
-        bulletPrefab.AddComponent(caseType);
-
         // 弾丸の発射
         bulletScript?.fire();
     }

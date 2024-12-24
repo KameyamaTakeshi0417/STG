@@ -12,6 +12,7 @@ public class Primer_Base : MonoBehaviour
     protected int rarelity;
     public string primerName;
     public GameObject targetBullet;
+    bool isHoming = false;
 
     // Start is called before the first frame update
     public string getName()

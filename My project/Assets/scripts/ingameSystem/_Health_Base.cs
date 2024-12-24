@@ -12,12 +12,24 @@ public class _Health_Base : MonoBehaviour
     protected int moneyCount;
     protected Slider hpSlider; //HPバー（スライダー）
     protected HPBar_Base m_handler;
+    public float VulnerableTime = 0f;
+    public bool VulnerableFlg = false;
 
     // Start is called before the first frame update
     void Start() { }
 
     // Update is called once per frame
-    void Update() { }
+    void Update()
+    {
+        if (VulnerableFlg)
+        {
+            VulnerableTime -= 0.1f;
+            if (VulnerableTime <= 0f)
+            {
+                VulnerableFlg = false;
+            }
+        }
+    }
 
     public void SliderUpdate()
     {

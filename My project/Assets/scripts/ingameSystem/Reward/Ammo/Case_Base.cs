@@ -12,6 +12,7 @@ public class Case_Base : MonoBehaviour
     public float dmg; // 弾のダメージ量
     public string CaseName;
     public ItemData mydata;
+    protected bool isHoming = false;
 
     // Start is called before the first frame update
     void Start() { }
@@ -64,6 +65,30 @@ public class Case_Base : MonoBehaviour
 
         Destroy(myBullet);
         yield break;
+    }
+
+    public void HomingMove(GameObject targetEnemy)
+    {
+        Rigidbody2D rb;
+        rb = gameObject.GetComponent<Rigidbody2D>();
+        Vector3 targetWay = new Vector3(0, 0, 0);
+        Vector2 force = new Vector2(rotate.x, rotate.y) * Speed;
+        // 弾の位置を更新する
+        if (targetEnemy != null)
+        {
+            targetEnemy = GameObject.Find("Player").GetComponent<Player>().getTargetEnemy();
+
+            rb.velocity = Vector3.zero;
+            targetWay = targetEnemy.transform.position - transform.position;
+            Vector3.Normalize(targetWay);
+            force = new Vector2(targetWay.x, targetWay.y) * (Speed * 0.001f);
+            rb.velocity = force;
+        }
+        else
+        {
+            force = new Vector2(targetWay.x, targetWay.y) * (Speed * 0.01f);
+            rb.velocity = force;
+        }
     }
 
     public virtual void ApplyCaseEffect(GameObject bullet)
