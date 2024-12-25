@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StrawBerry : _Relic_Base
+public class MemoryDeluge : _Relic_Base
 {
     // Start is called before the first frame update
     void Start() { }
@@ -12,18 +12,20 @@ public class StrawBerry : _Relic_Base
 
     public override void GetEffect()
     {
-        m_Playerhealth.addHP(10);
-        m_Playerhealth.AddCurrentHP(10);
+        base.GetEffect();
+        m_PlayerScript.Exp += 300;
     } //取得時のみ呼び出す
 
     public override void EquipEffect()
     {
         base.EquipEffect();
-        m_Playerhealth.TakeDamage(30);
-    }
+        int addNum = (m_PlayerScript.Exp / 100);
+        if (addNum <= 0)
+        {
+            return;
+        }
 
-    public override void EquipHitEffect()
-    {
-        m_Playerhealth.AddCurrentHP(2);
+        m_PlayerScript.DamageAdd += addNum;
+        m_PlayerScript.BlockDmg += addNum;
     }
 }

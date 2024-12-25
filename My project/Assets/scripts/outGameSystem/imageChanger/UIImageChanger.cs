@@ -3,7 +3,6 @@ using UnityEngine.UI;
 
 public class UIImageChanger : _ImageChanger_Base
 {
-
     void OnEnable()
     {
         EquipManager.OnEquipChanged += ChangeTexture;

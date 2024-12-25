@@ -54,19 +54,39 @@ public class rewardUIManager : _Manager_Base
     {
         GameObject ret = null;
         int rarelityValue = 0;
+        string createObjName = "";
         // 0=コモンAmmo
         //1=アンコモンAmmo
         //2=レアAmmo
         //3=ノーマルレリック
         //4=アンコモンレリック
         //5=レアレリック
-        Random.InitState((int)System.DateTime.Now.Ticks);
-        string createAmmoObj =
-            "Objects/Reward/" + AmmoTypeArray[Random.Range(0, AmmoTypeArray.Length)];
-        createAmmoObj +=
-            AmmoCategoryArray[Random.Range(0, AmmoCategoryArray.Length)] + "_RewardObject";
 
-        GameObject prefab = Resources.Load<GameObject>(createAmmoObj);
+        switch (index)
+        {
+            case 3:
+                createObjName = "Objects/Reward/Relic/StrawBerry_RewardObject";
+                break;
+            case 4:
+                createObjName = "Objects/Reward/Relic/Vajra_RewardObject";
+                break;
+            case 5:
+                createObjName = "Objects/Reward/Relic/MemoryDeluge_RewardObject";
+                break;
+            case 0:
+            case 1:
+            case 2:
+            default:
+                Random.InitState((int)(System.DateTime.Now.Ticks & 0xFFFFFFF));
+                createObjName =
+                    "Objects/Reward/" + AmmoTypeArray[Random.Range(0, AmmoTypeArray.Length)];
+                Random.InitState((int)((System.DateTime.Now.Ticks * 31) & 0xFFFFFFF));
+                createObjName +=
+                    AmmoCategoryArray[Random.Range(0, AmmoCategoryArray.Length)] + "_RewardObject";
+                break;
+        }
+
+        GameObject prefab = Resources.Load<GameObject>(createObjName);
         temporaryList.Add(prefab);
         switch (index)
         {
@@ -94,7 +114,7 @@ public class rewardUIManager : _Manager_Base
                 prefab.GetComponent<ItemPickUp>().itemRarelity = rarelityValue;
                 break;
         }
-        Debug.Log(createAmmoObj + "rarelity" + prefab.GetComponent<ItemPickUp>().itemRarelity);
+        Debug.Log(createObjName + "rarelity" + prefab.GetComponent<ItemPickUp>().itemRarelity);
         ret = prefab;
         return ret;
     }
@@ -256,12 +276,14 @@ public class rewardUIManager : _Manager_Base
     }
 
     //弾丸の種類をここに記そう
-    public static string[] AmmoTypeArray = { "Normal", "Homing", "Piercing", "Volt", "Explosion" }; //BloomBullet,OmniBulletは入れないかも
+    public static string[] AmmoTypeArray = { "Normal", "Homing", "Piercing", "Volt", "Explosion" }; //BloomBulletは当たりとして実装したい。OmniBulletは入れないかも
     public static string[] AmmoCategoryArray = { "Bullet", "Case", "Primer" };
 
     //仮レリックはコンボA,コンボB、単体で使うものを実装した。
     //コンボAは鈍足デメリットを無敵化で補い、コンボBは弾速すごいけど威力がカスになるのを固定ダメージで補うってもの
-    public static string[] normalRelicArray = { "quipStep", "baseSkill", "mineralWater" }; //それぞれクイックステップ解禁、弾速修正、体力回復
-    public static string[] UnCommonRelicArray = { "heavyBomb", "quickDraw", "powerBarrel" }; //走っていないとき威力修正、リロード修正、ダメージ補正
-    public static string[] rareRelicArray = { "stoneWill", "aetherPowder", "enemyDevour" }; //走れない代わりにバリア展開、基本ダメージ0になるけど固定ダメージ追加、敵を倒したとき回復
+    public static string[] normalRelicArray = { "quipStep", "baseSkill", "StrawBerry" }; //それぞれクイックステップ解禁、弾速修正、体力回復
+    public static string[] UnCommonRelicArray = { "heavyBomb", "quickDraw", "Vajra" }; //走っていないとき威力修正、リロード修正、ダメージ補正
+    public static string[] rareRelicArray = { "stoneWill", "aetherPowder", "MemoryDeluge" }; //走れない代わりにバリア展開、基本ダメージ0になるけど固定ダメージ追加、お金ゲット、お金分補正
+    //レアレリック：バレットユニファイアー-取得時に同じ種類のバレットをすべて統合。装備効果：戦闘終了時にバレット統合。火力+、攻撃時小ダメージ。
+    //レアレリック：弾食らい-取得時効果：基本火力+5、装備時：最大30ダメージ軽減、軽減分次のダメージにプラス。弾速度減少
 }

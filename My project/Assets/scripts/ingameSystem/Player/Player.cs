@@ -14,6 +14,8 @@ public class Player : MonoBehaviour
     public float pow;
     public float DamageAdd = 0.0f; //バフとかで増やす値
     public float DamageMag = 1.0f; //非固定ダメージの倍率
+    public float BlockDmg = 0f; //ダメージ軽減数値
+    public float BlockMag = 1f; //ダメージ軽減倍率
 
     public float moveSpeed;
     public float bulletSpeed;

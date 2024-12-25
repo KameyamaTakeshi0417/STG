@@ -41,6 +41,8 @@ public class EquipManager : _Manager_Base
         }
     }
 
+    public void EquipRelic(GameObject TargetRelic) { }
+
     public void EquipItem(GameObject item)
     {
         // 装備が変更された際にイベントを発行
@@ -91,6 +93,8 @@ public class EquipManager : _Manager_Base
                         subPrimer = item;
                     else
                         decideScript.StartSelection(activePrimer, subPrimer, item);
+                break;
+            case "Relic":
                 break;
             default:
                 Debug.LogWarning("Invalid item type for equip");
@@ -216,11 +220,19 @@ public class EquipManager : _Manager_Base
         UIImageChanger[] imageChangers = FindObjectsOfType<UIImageChanger>();
         Sprite tmpSprite = targetObj.GetComponent<SpriteRenderer>().sprite;
         OnEquipChanged?.Invoke(tmpCategory, tmpSprite);
+        //レリックの処理を入れる。同じレリックって枠が3つあるのでどうしようね
         foreach (UIImageChanger imageChanger in imageChangers)
         {
             if (imageChanger.itemCategory == tmpCategory)
             {
-                imageChanger.newSprite = tmpSprite;
+                if (imageChanger.itemCategory == "Relic")
+                {
+                    return; //プレイヤーに手ずから装備させようねえ
+                }
+                else
+                {
+                    imageChanger.newSprite = tmpSprite;
+                }
             }
         }
     }
