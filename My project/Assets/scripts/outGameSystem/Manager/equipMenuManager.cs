@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class equipMenuManager : MonoBehaviour
 {
-    GameObject selectEquipScrollUI;
+    public GameObject selectEquipScrollUI;
 
     // Start is called before the first frame update
     void Start()
