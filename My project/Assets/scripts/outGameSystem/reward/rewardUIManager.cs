@@ -214,25 +214,34 @@ public class rewardUIManager : _Manager_Base
         {
             targetButton.onClick.RemoveAllListeners();
             targetButton.onClick.AddListener(() => Selecttarget(targetUIObj, targetRewardObj));
-            targetButton.onClick.AddListener(
-                () =>
-                    inventoryManager.AddItem(
-                        Instantiate(
-                            targetRewardObj,
-                            new Vector3(1000f, 1000f, 1000f),
-                            Quaternion.identity
-                        )
-                    )
-            );
+
             SoundManager soundManager = FindObjectOfType<SoundManager>();
             if (targetRewardObj.GetComponent<ItemPickUp>().itemType == "Relic")
             {
                 targetButton.onClick.AddListener(
                     () => targetRewardObj.GetComponent<_Relic_Base>().GetEffect()
                 );
+                targetButton.onClick.AddListener(
+                    () =>
+                        inventoryManager.AddItem(
+                            Resources.Load<GameObject>(
+                                targetRewardObj.GetComponent<ItemPickUp>().accessAddress
+                            )
+                        )
+                );
             }
             else
             {
+                targetButton.onClick.AddListener(
+                    () =>
+                        inventoryManager.AddItem(
+                            Instantiate(
+                                targetRewardObj,
+                                new Vector3(1000f, 1000f, 1000f),
+                                Quaternion.identity
+                            )
+                        )
+                );
                 targetButton.onClick.AddListener(() => equipManager.EquipItem(targetRewardObj));
             }
             targetButton.onClick.AddListener(() => soundManager.Play("UI_Decide"));
