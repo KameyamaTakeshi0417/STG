@@ -12,6 +12,7 @@ public class StrawBerry : _Relic_Base
 
     public override void GetEffect()
     {
+        base.GetEffect();
         m_Playerhealth.addHP(10);
         m_Playerhealth.AddCurrentHP(10);
     } //取得時のみ呼び出す

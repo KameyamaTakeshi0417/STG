@@ -19,7 +19,10 @@ public class _Relic_Base : Reward
     // Update is called once per frame
     void Update() { }
 
-    public virtual void GetEffect() { } //取得時のみ呼び出す
+    public virtual void GetEffect()
+    {
+        SetPlayerData();
+    } //取得時のみ呼び出す
 
     public virtual void EquipEffect()
     {

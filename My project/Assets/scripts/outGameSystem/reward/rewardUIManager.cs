@@ -85,7 +85,7 @@ public class rewardUIManager : _Manager_Base
                     AmmoCategoryArray[Random.Range(0, AmmoCategoryArray.Length)] + "_RewardObject";
                 break;
         }
-
+        createObjName = "Objects/Reward/Relic/StrawBerry_RewardObject";
         GameObject prefab = Resources.Load<GameObject>(createObjName);
         temporaryList.Add(prefab);
         switch (index)
@@ -225,8 +225,18 @@ public class rewardUIManager : _Manager_Base
                     )
             );
             SoundManager soundManager = FindObjectOfType<SoundManager>();
+            if (targetRewardObj.GetComponent<ItemPickUp>().itemType == "Relic")
+            {
+                targetButton.onClick.AddListener(
+                    () => targetRewardObj.GetComponent<_Relic_Base>().GetEffect()
+                );
+            }
+            else
+            {
+                targetButton.onClick.AddListener(() => equipManager.EquipItem(targetRewardObj));
+            }
             targetButton.onClick.AddListener(() => soundManager.Play("UI_Decide"));
-            targetButton.onClick.AddListener(() => equipManager.EquipItem(targetRewardObj));
+
             targetButton.onClick.AddListener(() => continueGame());
             targetButton.onClick.AddListener(() => Destroy(targetRewardObj));
         }
