@@ -7,6 +7,9 @@ public class EquipManager : _Manager_Base
 {
     public delegate void EquipChangedHandler(string updatedCategory, Sprite newSprite); //UIImageChangerにある
     public static event EquipChangedHandler OnEquipChanged;
+    public GameObject EquipRelic1,
+        EquipRelic2,
+        EquipRelic3;
 
     void Awake()
     {

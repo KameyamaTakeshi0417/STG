@@ -12,10 +12,14 @@ public class equipUIChangeCanvasManager : MonoBehaviour
     public string targetObjCategory;
     public string AmmoType;
     private bool isInitialized = false; // 初期化されたかどうかを確認するフラグ
+    Canvas MyCanvas;
 
     public void Initialize(string category)
     {
         targetObjCategory = category;
+        MyCanvas = gameObject.GetComponent<Canvas>();
+        MyCanvas.sortingLayerName = "UI";
+        MyCanvas.sortingOrder = 100;
         isInitialized = true; // 初期化完了
     }
 
