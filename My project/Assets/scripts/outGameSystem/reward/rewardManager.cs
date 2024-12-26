@@ -101,7 +101,7 @@ public class rewardManager : MonoBehaviour
                 }
                 randomValue -= kvp.Value;
             }
-            PrintArray(j);
+            //PrintArray(j);
         }
     }
 

@@ -154,10 +154,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 4688009681387298610}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -186.41, y: -1.64}
-  m_SizeDelta: {x: 89.68, y: 80.59}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 400, y: 0}
+  m_SizeDelta: {x: 310.4, y: 80.59}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3176114961560921344
 CanvasRenderer:
@@ -187,7 +187,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: cca892e6e117ba54d8011dc51a06487e, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -209,7 +209,7 @@ GameObject:
   - component: {fileID: 6730424285618143335}
   - component: {fileID: 6575401586620592980}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: objectExplain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

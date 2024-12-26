@@ -135,6 +135,7 @@ GameObject:
   - component: {fileID: 75004335}
   - component: {fileID: 75004334}
   - component: {fileID: 75004333}
+  - component: {fileID: 75004337}
   - component: {fileID: 75004336}
   m_Layer: 0
   m_Name: activePrimer
@@ -176,7 +177,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetImage: {fileID: 75004334}
   newSprite: {fileID: 0}
-  itemCategory: Bullet
+  itemCategory: Primer
 --- !u!114 &75004334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -259,18 +260,33 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1821330275}
-        m_TargetAssemblyTypeName: equipMenuManager, Assembly-CSharp
-        m_MethodName: callEquipScrollBar
-        m_Mode: 5
+      - m_Target: {fileID: 75004337}
+        m_TargetAssemblyTypeName: EquipButtonHandler, Assembly-CSharp
+        m_MethodName: OnButtonClicked
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: active
+          m_StringArgument: Primer
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &75004337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 75004331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e014a3bb9a2a834c9b28024723f4d3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainType: active
+  itemType: Primer
+  parentObject: {fileID: 1821330270}
 --- !u!1 &87639354
 GameObject:
   m_ObjectHideFlags: 0
@@ -706,6 +722,7 @@ GameObject:
   - component: {fileID: 218335374}
   - component: {fileID: 218335377}
   - component: {fileID: 218335376}
+  - component: {fileID: 218335379}
   - component: {fileID: 218335375}
   - component: {fileID: 218335378}
   m_Layer: 0
@@ -831,18 +848,90 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1821330275}
-        m_TargetAssemblyTypeName: equipMenuManager, Assembly-CSharp
-        m_MethodName: callEquipScrollBar
-        m_Mode: 5
+      - m_Target: {fileID: 218335379}
+        m_TargetAssemblyTypeName: ButtonHandler, Assembly-CSharp
+        m_MethodName: OnButtonClicked
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: active
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &218335379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 218335373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e014a3bb9a2a834c9b28024723f4d3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainType: active
+  itemType: Bullet
+  parentObject: {fileID: 1821330270}
+--- !u!1001 &250927517
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3514305996929684084, guid: 9db976b2efa2fce47af968ea17c0ebc8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.1863188
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 9db976b2efa2fce47af968ea17c0ebc8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.35006142
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 9db976b2efa2fce47af968ea17c0ebc8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 9db976b2efa2fce47af968ea17c0ebc8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 9db976b2efa2fce47af968ea17c0ebc8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 9db976b2efa2fce47af968ea17c0ebc8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 9db976b2efa2fce47af968ea17c0ebc8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 9db976b2efa2fce47af968ea17c0ebc8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 9db976b2efa2fce47af968ea17c0ebc8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 9db976b2efa2fce47af968ea17c0ebc8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4825919582345253749, guid: 9db976b2efa2fce47af968ea17c0ebc8, type: 3}
+      propertyPath: m_Name
+      value: ExplosionBullet_RewardObject
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9db976b2efa2fce47af968ea17c0ebc8, type: 3}
 --- !u!1 &255233463
 GameObject:
   m_ObjectHideFlags: 0
@@ -2031,63 +2120,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 440976942}
   m_CullTransparentMesh: 1
---- !u!1001 &442757545
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 2.32
-      objectReference: {fileID: 0}
-    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -1.24
-      objectReference: {fileID: 0}
-    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4825919582345253749, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
-      propertyPath: m_Name
-      value: PiercingBullet_RewardObject (1)
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
 --- !u!1001 &472519588
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2772,6 +2804,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 616596620}
   m_CullTransparentMesh: 1
+--- !u!1001 &664390951
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1301627413454444585, guid: 709ba55ff0cbac64d8e36fdc5434bf59, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 3.082523
+      objectReference: {fileID: 0}
+    - target: {fileID: 1301627413454444585, guid: 709ba55ff0cbac64d8e36fdc5434bf59, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.42299235
+      objectReference: {fileID: 0}
+    - target: {fileID: 1301627413454444585, guid: 709ba55ff0cbac64d8e36fdc5434bf59, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1301627413454444585, guid: 709ba55ff0cbac64d8e36fdc5434bf59, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1301627413454444585, guid: 709ba55ff0cbac64d8e36fdc5434bf59, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1301627413454444585, guid: 709ba55ff0cbac64d8e36fdc5434bf59, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1301627413454444585, guid: 709ba55ff0cbac64d8e36fdc5434bf59, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1301627413454444585, guid: 709ba55ff0cbac64d8e36fdc5434bf59, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1301627413454444585, guid: 709ba55ff0cbac64d8e36fdc5434bf59, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1301627413454444585, guid: 709ba55ff0cbac64d8e36fdc5434bf59, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9015945370616339314, guid: 709ba55ff0cbac64d8e36fdc5434bf59, type: 3}
+      propertyPath: m_Name
+      value: HomingBullet_RewardObject
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 709ba55ff0cbac64d8e36fdc5434bf59, type: 3}
 --- !u!1 &667662440
 GameObject:
   m_ObjectHideFlags: 0
@@ -2918,6 +3007,63 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 95cc7bd325cec9043831ca768492d5d2, type: 3}
+--- !u!1001 &680119399
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1301627413454444585, guid: 71bf3a3428b95c341891537ce8003eb7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.6482147
+      objectReference: {fileID: 0}
+    - target: {fileID: 1301627413454444585, guid: 71bf3a3428b95c341891537ce8003eb7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.027473
+      objectReference: {fileID: 0}
+    - target: {fileID: 1301627413454444585, guid: 71bf3a3428b95c341891537ce8003eb7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1301627413454444585, guid: 71bf3a3428b95c341891537ce8003eb7, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1301627413454444585, guid: 71bf3a3428b95c341891537ce8003eb7, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1301627413454444585, guid: 71bf3a3428b95c341891537ce8003eb7, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1301627413454444585, guid: 71bf3a3428b95c341891537ce8003eb7, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1301627413454444585, guid: 71bf3a3428b95c341891537ce8003eb7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1301627413454444585, guid: 71bf3a3428b95c341891537ce8003eb7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1301627413454444585, guid: 71bf3a3428b95c341891537ce8003eb7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9015945370616339314, guid: 71bf3a3428b95c341891537ce8003eb7, type: 3}
+      propertyPath: m_Name
+      value: VoltBullet_RewardObject
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 71bf3a3428b95c341891537ce8003eb7, type: 3}
 --- !u!1 &691971451
 GameObject:
   m_ObjectHideFlags: 0
@@ -4818,6 +4964,63 @@ PrefabInstance:
       addedObject: {fileID: 784095834}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7abc9468525abd54686730887646250d, type: 3}
+--- !u!1001 &1099735325
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3514305996929684084, guid: 01035dee17f670e43a60a187770cff58, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.304593
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 01035dee17f670e43a60a187770cff58, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.7892462
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 01035dee17f670e43a60a187770cff58, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 01035dee17f670e43a60a187770cff58, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 01035dee17f670e43a60a187770cff58, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 01035dee17f670e43a60a187770cff58, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 01035dee17f670e43a60a187770cff58, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 01035dee17f670e43a60a187770cff58, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 01035dee17f670e43a60a187770cff58, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3514305996929684084, guid: 01035dee17f670e43a60a187770cff58, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4825919582345253749, guid: 01035dee17f670e43a60a187770cff58, type: 3}
+      propertyPath: m_Name
+      value: NormalBullet_RewardObject
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 01035dee17f670e43a60a187770cff58, type: 3}
 --- !u!1001 &1108540407
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5128,6 +5331,7 @@ GameObject:
   - component: {fileID: 1201100608}
   - component: {fileID: 1201100607}
   - component: {fileID: 1201100606}
+  - component: {fileID: 1201100610}
   - component: {fileID: 1201100609}
   m_Layer: 0
   m_Name: subPrimer
@@ -5169,7 +5373,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetImage: {fileID: 1201100607}
   newSprite: {fileID: 0}
-  itemCategory: Bullet
+  itemCategory: Primer
 --- !u!114 &1201100607
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5261,9 +5465,24 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: sub
+          m_StringArgument: Primer
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1201100610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1201100604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e014a3bb9a2a834c9b28024723f4d3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainType: sub
+  itemType: Primer
+  parentObject: {fileID: 1821330270}
 --- !u!1 &1203368864
 GameObject:
   m_ObjectHideFlags: 0
@@ -5555,6 +5774,7 @@ GameObject:
   - component: {fileID: 1250809730}
   - component: {fileID: 1250809729}
   - component: {fileID: 1250809728}
+  - component: {fileID: 1250809732}
   - component: {fileID: 1250809731}
   m_Layer: 0
   m_Name: subBullet
@@ -5679,18 +5899,33 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1821330275}
-        m_TargetAssemblyTypeName: equipMenuManager, Assembly-CSharp
-        m_MethodName: callEquipScrollBar
-        m_Mode: 5
+      - m_Target: {fileID: 1250809732}
+        m_TargetAssemblyTypeName: EquipButtonHandler, Assembly-CSharp
+        m_MethodName: OnButtonClicked
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: sub
+          m_StringArgument: Bullet
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1250809732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1250809726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e014a3bb9a2a834c9b28024723f4d3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainType: sub
+  itemType: Bullet
+  parentObject: {fileID: 1821330270}
 --- !u!1 &1396229708
 GameObject:
   m_ObjectHideFlags: 0
@@ -5703,6 +5938,7 @@ GameObject:
   - component: {fileID: 1396229712}
   - component: {fileID: 1396229711}
   - component: {fileID: 1396229710}
+  - component: {fileID: 1396229715}
   - component: {fileID: 1396229713}
   m_Layer: 0
   m_Name: subCase
@@ -5744,7 +5980,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetImage: {fileID: 1396229711}
   newSprite: {fileID: 0}
-  itemCategory: Bullet
+  itemCategory: Case
 --- !u!114 &1396229711
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5827,18 +6063,33 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1821330275}
-        m_TargetAssemblyTypeName: equipMenuManager, Assembly-CSharp
-        m_MethodName: callEquipScrollBar
-        m_Mode: 5
+      - m_Target: {fileID: 1396229715}
+        m_TargetAssemblyTypeName: EquipButtonHandler, Assembly-CSharp
+        m_MethodName: OnButtonClicked
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: sub
+          m_StringArgument: Case
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1396229715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1396229708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e014a3bb9a2a834c9b28024723f4d3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainType: sub
+  itemType: Case
+  parentObject: {fileID: 1821330270}
 --- !u!1 &1416593184
 GameObject:
   m_ObjectHideFlags: 0
@@ -7863,63 +8114,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1889179656}
   m_CullTransparentMesh: 1
---- !u!1001 &1907175339
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.5427009
-      objectReference: {fileID: 0}
-    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -2.6971493
-      objectReference: {fileID: 0}
-    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3514305996929684084, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4825919582345253749, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
-      propertyPath: m_Name
-      value: PiercingBullet_RewardObject
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 2ad5ea8cda6c7fe4891c177cca21c5c5, type: 3}
 --- !u!1 &1927110878
 GameObject:
   m_ObjectHideFlags: 0
@@ -8778,6 +8972,7 @@ GameObject:
   - component: {fileID: 2041307315}
   - component: {fileID: 2041307314}
   - component: {fileID: 2041307313}
+  - component: {fileID: 2041307317}
   - component: {fileID: 2041307316}
   m_Layer: 0
   m_Name: activeCase
@@ -8819,7 +9014,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetImage: {fileID: 2041307314}
   newSprite: {fileID: 0}
-  itemCategory: Bullet
+  itemCategory: Case
 --- !u!114 &2041307314
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8902,18 +9097,33 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1821330275}
-        m_TargetAssemblyTypeName: equipMenuManager, Assembly-CSharp
-        m_MethodName: callEquipScrollBar
-        m_Mode: 5
+      - m_Target: {fileID: 2041307317}
+        m_TargetAssemblyTypeName: EquipButtonHandler, Assembly-CSharp
+        m_MethodName: OnButtonClicked
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: active
+          m_StringArgument: Case
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &2041307317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2041307311}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e014a3bb9a2a834c9b28024723f4d3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainType: active
+  itemType: Case
+  parentObject: {fileID: 1821330270}
 --- !u!1 &2049247019
 GameObject:
   m_ObjectHideFlags: 0
@@ -9600,10 +9810,12 @@ SceneRoots:
   - {fileID: 472519588}
   - {fileID: 1203368866}
   - {fileID: 8867567768286216145}
-  - {fileID: 1907175339}
-  - {fileID: 442757545}
   - {fileID: 1168900181}
   - {fileID: 1604450232}
   - {fileID: 667723058}
   - {fileID: 2038305668}
   - {fileID: 1108540407}
+  - {fileID: 250927517}
+  - {fileID: 664390951}
+  - {fileID: 1099735325}
+  - {fileID: 680119399}

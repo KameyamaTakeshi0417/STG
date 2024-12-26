@@ -154,14 +154,10 @@ public class GameManager : MonoBehaviour
 
         if (player != null)
         {
-            Debug.Log("呼び出されてる");
             // PlayerObj.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
             player.enabled = true;
         }
-        else
-        {
-            Debug.Log("呼び出されてねえ");
-        }
+        else { }
     }
 
     private void ShowGameOverScreen()

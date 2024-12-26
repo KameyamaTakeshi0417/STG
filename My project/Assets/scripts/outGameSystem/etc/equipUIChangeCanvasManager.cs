@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,21 +11,39 @@ public class equipUIChangeCanvasManager : MonoBehaviour
     public GameObject scrollUI; // スクロールバーUIの親要素
     public GameObject elementPrefab; // 各要素のプレハブ
     public string targetObjCategory;
+    public string targetMode; //activeかsubか
     public string AmmoType;
     private bool isInitialized = false; // 初期化されたかどうかを確認するフラグ
+    public GameObject ViewPort;
     Canvas MyCanvas;
 
-    public void Initialize(string category)
+    public void Initialize(string category, string categoryType)
     {
-        targetObjCategory = category;
+        targetObjCategory = categoryType;
+        targetMode = category;
         MyCanvas = gameObject.GetComponent<Canvas>();
         MyCanvas.sortingLayerName = "UI";
         MyCanvas.sortingOrder = 100;
+
+        // 各ゲームオブジェクトをスクロールUIに追加
+        foreach (
+            GameObject obj in GameObject
+                .Find("GameManager")
+                .GetComponent<InventoryManager>()
+                .AmmoObjectList
+        )
+        {
+            if (obj.GetComponent<ItemPickUp>().itemType == targetObjCategory)
+            {
+                CreateScrollElement(obj);
+            }
+        }
         isInitialized = true; // 初期化完了
     }
 
     void Awake()
     {
+        Debug.Log("CallObj:" + gameObject.name);
         // Awake は Start より先に呼ばれる
         Canvas canvas = gameObject.GetComponent<Canvas>();
         if (canvas != null)
@@ -38,31 +57,18 @@ public class equipUIChangeCanvasManager : MonoBehaviour
         }
     }
 
-    void Start()
-    {
-        // 各ゲームオブジェクトをスクロールUIに追加
-        foreach (
-            GameObject obj in GameObject
-                .Find("GameManager")
-                .GetComponent<InventoryManager>()
-                .AmmoObjectList
-        )
-        {
-            if (obj.GetComponent<ItemPickUp>().itemType == AmmoType)
-            {
-                CreateScrollElement(obj);
-            }
-        }
-    }
+    void Start() { }
 
     void CreateScrollElement(GameObject obj)
     {
         // 要素を生成し、スクロールバーUIに追加
-        GameObject newElement = Instantiate(elementPrefab, scrollUI.transform);
+        GameObject newElement = Instantiate(elementPrefab, ViewPort.transform);
 
         // スプライトと名前を設定
         Image spriteImage = newElement.transform.Find("Image").GetComponent<Image>();
-        TextMesh nameText = newElement.transform.Find("objectExplain").GetComponent<TextMesh>();
+        TextMeshPro nameText = newElement
+            .transform.Find("objectExplain")
+            .GetComponent<TextMeshPro>();
 
         if (spriteImage != null && nameText != null)
         {
@@ -78,7 +84,7 @@ public class equipUIChangeCanvasManager : MonoBehaviour
         Button button = newElement.GetComponent<Button>();
         if (button != null)
         {
-            if (targetObjCategory == "active")
+            if (targetMode == "active")
             {
                 button.onClick.AddListener(
                     () =>
@@ -88,7 +94,7 @@ public class equipUIChangeCanvasManager : MonoBehaviour
                             .EquipItemtoMain(obj)
                 );
             }
-            else if (targetObjCategory == "sub")
+            else if (targetMode == "sub")
             {
                 button.onClick.AddListener(
                     () =>
@@ -109,6 +115,6 @@ public class equipUIChangeCanvasManager : MonoBehaviour
 
     public void CloseUI()
     {
-        Destroy(gameObject.transform.root);
+        Destroy(this.gameObject);
     }
 }

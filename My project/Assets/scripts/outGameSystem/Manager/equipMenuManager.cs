@@ -84,10 +84,10 @@ public class equipMenuManager : MonoBehaviour
         return null;
     }
 
-    public void callEquipScrollBar(string categoryName)
+    public void callEquipScrollBar(string categoryName, string categoryType)
     {
         //activeかsubか設定しておく
         GameObject UIPrefab = Instantiate(selectEquipScrollUI, Vector3.zero, Quaternion.identity);
-        UIPrefab.GetComponent<equipUIChangeCanvasManager>().Initialize(categoryName); // ここで targetObjCategory を設定
+        UIPrefab.GetComponent<equipUIChangeCanvasManager>().Initialize(categoryName, categoryType); // ここで targetObjCategory を設定
     }
 }
