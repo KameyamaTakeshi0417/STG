@@ -85,7 +85,6 @@ public class rewardUIManager : _Manager_Base
                     AmmoCategoryArray[Random.Range(0, AmmoCategoryArray.Length)] + "_RewardObject";
                 break;
         }
-        createObjName = "Objects/Reward/Relic/StrawBerry_RewardObject";
         GameObject prefab = Resources.Load<GameObject>(createObjName);
         temporaryList.Add(prefab);
         switch (index)
