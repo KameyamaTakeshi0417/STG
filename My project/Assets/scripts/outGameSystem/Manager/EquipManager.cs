@@ -18,9 +18,24 @@ public class EquipManager : _Manager_Base
     void Awake()
     {
         // 初期装備のロード処理
-        activeBullet = Resources.Load<GameObject>("Objects/Reward/NormalBullet");
-        activeCase = Resources.Load<GameObject>("Objects/Reward/NormalCase");
-        activePrimer = Resources.Load<GameObject>("Objects/Reward/NormalPrimer");
+        if (activeBullet == null)
+            activeBullet = Resources.Load<GameObject>("Objects/Reward/NormalBullet");
+        if (activeCase == null)
+            activeCase = Resources.Load<GameObject>("Objects/Reward/NormalCase");
+        if (activePrimer == null)
+            activePrimer = Resources.Load<GameObject>("Objects/Reward/NormalPrimer");
+        if (EquipRelic1 != null)
+        {
+            EquipRelic1.GetComponent<_Relic_Base>().EquipEffect();
+        }
+        if (EquipRelic2 != null)
+        {
+            EquipRelic2.GetComponent<_Relic_Base>().EquipEffect();
+        }
+        if (EquipRelic3 != null)
+        {
+            EquipRelic3.GetComponent<_Relic_Base>().EquipEffect();
+        }
     }
 
     void Update()
