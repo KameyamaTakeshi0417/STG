@@ -222,6 +222,42 @@ public class EquipManager : _Manager_Base
         }
     }
 
+    public void EquipItemtoRelic(GameObject item, string setType)
+    {
+        // 装備が変更された際にイベントを発行
+        string activateType = setType; //first,second,third
+        string tmpCategory = item.GetComponent<ItemPickUp>().itemType;
+        Sprite tmpSprite = item.GetComponent<SpriteRenderer>().sprite;
+        OnEquipChanged?.Invoke(tmpCategory, activateType, tmpSprite);
+        bool subChanged = false;
+        EquipStackDecide decideScript = gameObject.GetComponent<EquipStackDecide>();
+        switch (activateType)
+        {
+            case "first":
+                EquipRelic1 = item;
+                // 新しいスプライトを設定
+                imageChange(item, activateType);
+                break;
+            case "second":
+                EquipRelic2 = item;
+                // 新しいスプライトを設定
+                imageChange(item, activateType);
+                break;
+            case "third":
+                EquipRelic3 = item;
+                // 新しいスプライトを設定
+                imageChange(item, activateType);
+                break;
+            default:
+                Debug.LogWarning("Invalid item type for equip");
+                break;
+        }
+        if (subChanged == true)
+        {
+            return;
+        }
+    }
+
     public void imageChange(GameObject targetObj, string activateType)
     {
         string tmpCategory = targetObj.GetComponent<ItemPickUp>().itemType;
@@ -269,6 +305,30 @@ public class EquipManager : _Manager_Base
                 }
                 break;
             case "sub":
+                switch (targetCategory)
+                {
+                    case "Bullet":
+                        subBullet = targetObj;
+                        break;
+                    case "Case":
+                        subCase = targetObj;
+                        break;
+                    case "Primer":
+                        subPrimer = targetObj;
+                        break;
+                }
+                break;
+            //レリック処理
+            case "first":
+                EquipRelic1 = targetObj;
+                break;
+            case "second":
+                EquipRelic2 = targetObj;
+                break;
+            case "third":
+                EquipRelic3 = targetObj;
+                break;
+            default:
                 break;
         }
     }

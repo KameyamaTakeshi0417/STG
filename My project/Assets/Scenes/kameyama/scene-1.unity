@@ -3811,6 +3811,7 @@ GameObject:
   - component: {fileID: 792444435}
   - component: {fileID: 792444437}
   - component: {fileID: 792444436}
+  - component: {fileID: 792444438}
   m_Layer: 5
   m_Name: RelicImage (1)
   m_TagString: Untagged
@@ -3853,11 +3854,11 @@ MonoBehaviour:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 501656badb529b64d93cfc940a613a53, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 08f0a1bdddc815448921e10e0de13980, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3875,6 +3876,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 792444434}
   m_CullTransparentMesh: 1
+--- !u!114 &792444438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 792444434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59caf8f1b7fad3843be223ccb855eb99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetImage: {fileID: 792444436}
+  newSprite: {fileID: 0}
+  itemCategory: Relic
+  itemType: first
 --- !u!1 &844814299
 GameObject:
   m_ObjectHideFlags: 0
@@ -3886,6 +3903,7 @@ GameObject:
   - component: {fileID: 844814300}
   - component: {fileID: 844814302}
   - component: {fileID: 844814301}
+  - component: {fileID: 844814303}
   m_Layer: 5
   m_Name: RelicImage (3)
   m_TagString: Untagged
@@ -3932,7 +3950,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 6420aad802f31b6409fad694f568033a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 08f0a1bdddc815448921e10e0de13980, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3950,6 +3968,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 844814299}
   m_CullTransparentMesh: 1
+--- !u!114 &844814303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 844814299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59caf8f1b7fad3843be223ccb855eb99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetImage: {fileID: 844814301}
+  newSprite: {fileID: 0}
+  itemCategory: Relic
+  itemType: third
 --- !u!1 &853436134
 GameObject:
   m_ObjectHideFlags: 0
@@ -7948,7 +7982,7 @@ GameObject:
   - component: {fileID: 1852647957}
   - component: {fileID: 1852647958}
   m_Layer: 5
-  m_Name: GameObject
+  m_Name: RelicArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9219,6 +9253,7 @@ GameObject:
   - component: {fileID: 2059209375}
   - component: {fileID: 2059209377}
   - component: {fileID: 2059209376}
+  - component: {fileID: 2059209378}
   m_Layer: 5
   m_Name: RelicImage (2)
   m_TagString: Untagged
@@ -9265,7 +9300,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: d4385f9ba860f37449224bda7d7cee13, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 08f0a1bdddc815448921e10e0de13980, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -9283,6 +9318,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2059209374}
   m_CullTransparentMesh: 1
+--- !u!114 &2059209378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2059209374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59caf8f1b7fad3843be223ccb855eb99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetImage: {fileID: 2059209376}
+  newSprite: {fileID: 0}
+  itemCategory: Relic
+  itemType: second
 --- !u!1 &2079405544
 GameObject:
   m_ObjectHideFlags: 0

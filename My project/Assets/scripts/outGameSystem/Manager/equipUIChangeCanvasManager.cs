@@ -84,25 +84,34 @@ public class equipUIChangeCanvasManager : MonoBehaviour
         Button button = newElement.GetComponent<Button>();
         if (button != null)
         {
-            if (targetMode == "active")
+            switch (targetMode)
             {
-                button.onClick.AddListener(
-                    () =>
-                        GameObject
-                            .Find("GameManager")
-                            .GetComponent<EquipManager>()
-                            .EquipItemtoMain(obj)
-                );
-            }
-            else if (targetMode == "sub")
-            {
-                button.onClick.AddListener(
-                    () =>
-                        GameObject
-                            .Find("GameManager")
-                            .GetComponent<EquipManager>()
-                            .EquipItemtoSub(obj)
-                );
+                case "active":
+                    button.onClick.AddListener(
+                        () =>
+                            GameObject
+                                .Find("GameManager")
+                                .GetComponent<EquipManager>()
+                                .EquipItemtoMain(obj)
+                    );
+                    break;
+                case "sub":
+                    button.onClick.AddListener(
+                        () =>
+                            GameObject
+                                .Find("GameManager")
+                                .GetComponent<EquipManager>()
+                                .EquipItemtoSub(obj)
+                    );
+                    break;
+                case "first":
+                    break;
+                case "second":
+                    break;
+                case "third":
+                    break;
+                default:
+                    break;
             }
             button.onClick.AddListener(() => CloseUI());
         }
