@@ -1144,6 +1144,7 @@ GameObject:
   - component: {fileID: 306599325}
   - component: {fileID: 306599324}
   - component: {fileID: 306599323}
+  - component: {fileID: 306599326}
   - component: {fileID: 306599322}
   m_Layer: 0
   m_Name: Relic1
@@ -1214,19 +1215,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 306599324}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1821330275}
-        m_TargetAssemblyTypeName: equipMenuManager, Assembly-CSharp
-        m_MethodName: callEquipScrollBar
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: Relic
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &306599323
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1241,8 +1230,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetImage: {fileID: 306599324}
   newSprite: {fileID: 0}
-  itemCategory: Relic1
-  itemType: 
+  itemCategory: Relic
+  itemType: first
 --- !u!114 &306599324
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1281,6 +1270,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 306599320}
   m_CullTransparentMesh: 1
+--- !u!114 &306599326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 306599320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e014a3bb9a2a834c9b28024723f4d3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainType: first
+  itemType: Relic
+  parentObject: {fileID: 1821330270}
 --- !u!1 &349156196
 GameObject:
   m_ObjectHideFlags: 0
@@ -3056,6 +3060,7 @@ GameObject:
   - component: {fileID: 691971456}
   - component: {fileID: 691971455}
   - component: {fileID: 691971454}
+  - component: {fileID: 691971457}
   - component: {fileID: 691971453}
   m_Layer: 0
   m_Name: Relic2
@@ -3126,19 +3131,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 691971455}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1821330275}
-        m_TargetAssemblyTypeName: equipMenuManager, Assembly-CSharp
-        m_MethodName: callEquipScrollBar
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: Relic
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &691971454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3153,8 +3146,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetImage: {fileID: 691971455}
   newSprite: {fileID: 0}
-  itemCategory: Relic2
-  itemType: 
+  itemCategory: Relic
+  itemType: second
 --- !u!114 &691971455
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3193,6 +3186,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 691971451}
   m_CullTransparentMesh: 1
+--- !u!114 &691971457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 691971451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e014a3bb9a2a834c9b28024723f4d3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainType: second
+  itemType: Relic
+  parentObject: {fileID: 1821330270}
 --- !u!1 &716584912
 GameObject:
   m_ObjectHideFlags: 0
@@ -3527,9 +3535,9 @@ MonoBehaviour:
   subBullet: {fileID: 1250809726}
   subCase: {fileID: 1396229708}
   subPrimer: {fileID: 1201100604}
-  Relic1UI: {fileID: 0}
-  Relic2UI: {fileID: 0}
-  Relic3UI: {fileID: 0}
+  Relic1UI: {fileID: 306599320}
+  Relic2UI: {fileID: 691971451}
+  Relic3UI: {fileID: 1226915774}
 --- !u!114 &736362694
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5597,6 +5605,7 @@ GameObject:
   - component: {fileID: 1226915779}
   - component: {fileID: 1226915778}
   - component: {fileID: 1226915777}
+  - component: {fileID: 1226915780}
   - component: {fileID: 1226915776}
   m_Layer: 0
   m_Name: Relic3
@@ -5667,19 +5676,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1226915778}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1821330275}
-        m_TargetAssemblyTypeName: equipMenuManager, Assembly-CSharp
-        m_MethodName: callEquipScrollBar
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: Relic
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1226915777
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5694,8 +5691,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetImage: {fileID: 1226915778}
   newSprite: {fileID: 0}
-  itemCategory: Relic3
-  itemType: 
+  itemCategory: Relic
+  itemType: third
 --- !u!114 &1226915778
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5734,6 +5731,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1226915774}
   m_CullTransparentMesh: 1
+--- !u!114 &1226915780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1226915774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e014a3bb9a2a834c9b28024723f4d3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainType: third
+  itemType: Relic
+  parentObject: {fileID: 1821330270}
 --- !u!1 &1250809726
 GameObject:
   m_ObjectHideFlags: 0
