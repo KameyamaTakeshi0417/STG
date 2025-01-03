@@ -105,10 +105,31 @@ public class equipUIChangeCanvasManager : MonoBehaviour
                     );
                     break;
                 case "first":
+                    button.onClick.AddListener(
+                        () =>
+                            GameObject
+                                .Find("GameManager")
+                                .GetComponent<EquipManager>()
+                                .EquipItemtoRelic(obj, targetMode)
+                    );
                     break;
                 case "second":
+                    button.onClick.AddListener(
+                        () =>
+                            GameObject
+                                .Find("GameManager")
+                                .GetComponent<EquipManager>()
+                                .EquipItemtoRelic(obj, targetMode)
+                    );
                     break;
                 case "third":
+                    button.onClick.AddListener(
+                        () =>
+                            GameObject
+                                .Find("GameManager")
+                                .GetComponent<EquipManager>()
+                                .EquipItemtoRelic(obj, targetMode)
+                    );
                     break;
                 default:
                     break;
