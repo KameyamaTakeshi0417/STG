@@ -8,11 +8,16 @@ public class _ImageChanger_Base : MonoBehaviour
     public Image targetImage; // 対象の Image コンポーネント
     public Sprite newSprite; // 新しい画像
     public string itemCategory; // アイテムのカテゴリ（Bullet, Case, Primerなど）
+    public string itemType; // active/sub
 
     // Start is called before the first frame update
 
 
-    public virtual void ChangeTexture(string changedItemCategory, Sprite newSprite)
+    public virtual void ChangeTexture(
+        string changedItemCategory,
+        string targetType,
+        Sprite newSprite
+    )
     {
         if (changedItemCategory == itemCategory && targetImage != null && newSprite != null)
         {

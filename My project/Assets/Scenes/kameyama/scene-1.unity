@@ -178,6 +178,7 @@ MonoBehaviour:
   targetImage: {fileID: 75004334}
   newSprite: {fileID: 0}
   itemCategory: Primer
+  itemType: active
 --- !u!114 &75004334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -259,19 +260,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 75004334}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 75004337}
-        m_TargetAssemblyTypeName: EquipButtonHandler, Assembly-CSharp
-        m_MethodName: OnButtonClicked
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: Primer
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &75004337
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -766,6 +755,7 @@ MonoBehaviour:
   targetImage: {fileID: 218335376}
   newSprite: {fileID: 0}
   itemCategory: Bullet
+  itemType: active
 --- !u!114 &218335376
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -847,19 +837,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 218335376}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 218335379}
-        m_TargetAssemblyTypeName: ButtonHandler, Assembly-CSharp
-        m_MethodName: OnButtonClicked
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &218335379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1264,6 +1242,7 @@ MonoBehaviour:
   targetImage: {fileID: 306599324}
   newSprite: {fileID: 0}
   itemCategory: Relic1
+  itemType: 
 --- !u!114 &306599324
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2082,6 +2061,7 @@ MonoBehaviour:
   targetImage: {fileID: 440976945}
   newSprite: {fileID: 0}
   itemCategory: Primer
+  itemType: active
 --- !u!114 &440976945
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3174,6 +3154,7 @@ MonoBehaviour:
   targetImage: {fileID: 691971455}
   newSprite: {fileID: 0}
   itemCategory: Relic2
+  itemType: 
 --- !u!114 &691971455
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5197,6 +5178,7 @@ MonoBehaviour:
   targetImage: {fileID: 1178327063}
   newSprite: {fileID: 0}
   itemCategory: Case
+  itemType: active
 --- !u!114 &1178327063
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5374,6 +5356,7 @@ MonoBehaviour:
   targetImage: {fileID: 1201100607}
   newSprite: {fileID: 0}
   itemCategory: Primer
+  itemType: sub
 --- !u!114 &1201100607
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5455,19 +5438,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1201100607}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1821330275}
-        m_TargetAssemblyTypeName: equipMenuManager, Assembly-CSharp
-        m_MethodName: callEquipScrollBar
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: Primer
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1201100610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5724,6 +5695,7 @@ MonoBehaviour:
   targetImage: {fileID: 1226915778}
   newSprite: {fileID: 0}
   itemCategory: Relic3
+  itemType: 
 --- !u!114 &1226915778
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5817,6 +5789,7 @@ MonoBehaviour:
   targetImage: {fileID: 1250809729}
   newSprite: {fileID: 0}
   itemCategory: Bullet
+  itemType: sub
 --- !u!114 &1250809729
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5898,19 +5871,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1250809729}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1250809732}
-        m_TargetAssemblyTypeName: EquipButtonHandler, Assembly-CSharp
-        m_MethodName: OnButtonClicked
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: Bullet
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1250809732
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5981,6 +5942,7 @@ MonoBehaviour:
   targetImage: {fileID: 1396229711}
   newSprite: {fileID: 0}
   itemCategory: Case
+  itemType: sub
 --- !u!114 &1396229711
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6062,19 +6024,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1396229711}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1396229715}
-        m_TargetAssemblyTypeName: EquipButtonHandler, Assembly-CSharp
-        m_MethodName: OnButtonClicked
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: Case
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1396229715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6189,7 +6139,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1508519145
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6603,6 +6553,7 @@ MonoBehaviour:
   targetImage: {fileID: 1565292412}
   newSprite: {fileID: 0}
   itemCategory: Bullet
+  itemType: active
 --- !u!114 &1565292412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9015,6 +8966,7 @@ MonoBehaviour:
   targetImage: {fileID: 2041307314}
   newSprite: {fileID: 0}
   itemCategory: Case
+  itemType: active
 --- !u!114 &2041307314
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9096,19 +9048,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2041307314}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2041307317}
-        m_TargetAssemblyTypeName: EquipButtonHandler, Assembly-CSharp
-        m_MethodName: OnButtonClicked
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: Case
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &2041307317
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9384,6 +9324,7 @@ MonoBehaviour:
   targetImage: {fileID: 2079405547}
   newSprite: {fileID: 0}
   itemCategory: Case
+  itemType: 
 --- !u!114 &2079405547
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -5,7 +5,11 @@ using UnityEngine.SceneManagement;
 
 public class EquipManager : _Manager_Base
 {
-    public delegate void EquipChangedHandler(string updatedCategory, Sprite newSprite); //UIImageChangerにある
+    public delegate void EquipChangedHandler(
+        string updatedCategory,
+        string activateType,
+        Sprite newSprite
+    ); //UIImageChangerにある
     public static event EquipChangedHandler OnEquipChanged;
     public GameObject EquipRelic1,
         EquipRelic2,
@@ -62,7 +66,7 @@ public class EquipManager : _Manager_Base
                     {
                         activeBullet = item;
                         // 新しいスプライトを設定
-                        imageChange(item);
+                        imageChange(item, "active");
                     }
                     else if (subBullet == null)
                         subBullet = item;
@@ -75,7 +79,7 @@ public class EquipManager : _Manager_Base
                     {
                         // 新しいスプライトを設定
 
-                        imageChange(item);
+                        imageChange(item, "active");
                         activeCase = item;
                     }
                     else if (subCase == null)
@@ -89,7 +93,7 @@ public class EquipManager : _Manager_Base
                     {
                         // 新しいスプライトを設定
 
-                        imageChange(item);
+                        imageChange(item, "active");
                         activePrimer = item;
                     }
                     else if (subPrimer == null)
@@ -112,9 +116,10 @@ public class EquipManager : _Manager_Base
     public void EquipItemtoMain(GameObject item)
     {
         // 装備が変更された際にイベントを発行
+        string activateType = "active";
         string tmpCategory = item.GetComponent<ItemPickUp>().itemType;
         Sprite tmpSprite = item.GetComponent<SpriteRenderer>().sprite;
-        OnEquipChanged?.Invoke(tmpCategory, tmpSprite);
+        OnEquipChanged?.Invoke(tmpCategory, activateType, tmpSprite);
         bool subChanged = false;
         EquipStackDecide decideScript = gameObject.GetComponent<EquipStackDecide>();
         switch (tmpCategory)
@@ -124,7 +129,7 @@ public class EquipManager : _Manager_Base
                 {
                     activeBullet = item;
                     // 新しいスプライトを設定
-                    imageChange(item);
+                    imageChange(item, activateType);
                 }
                 else { }
 
@@ -134,7 +139,7 @@ public class EquipManager : _Manager_Base
                 {
                     activeCase = item;
                     // 新しいスプライトを設定
-                    imageChange(item);
+                    imageChange(item, activateType);
                 }
                 else
                 {
@@ -146,7 +151,7 @@ public class EquipManager : _Manager_Base
                 {
                     activePrimer = item;
                     // 新しいスプライトを設定
-                    imageChange(item);
+                    imageChange(item, activateType);
                 }
                 else
                 {
@@ -168,7 +173,7 @@ public class EquipManager : _Manager_Base
         // 装備が変更された際にイベントを発行
         string tmpCategory = item.GetComponent<ItemPickUp>().itemType;
         Sprite tmpSprite = item.GetComponent<SpriteRenderer>().sprite;
-        //  OnEquipChanged?.Invoke(tmpCategory, tmpSprite);
+        OnEquipChanged?.Invoke(tmpCategory, "sub", tmpSprite);
         bool subChanged = false;
         EquipStackDecide decideScript = gameObject.GetComponent<EquipStackDecide>();
         switch (tmpCategory)
@@ -217,12 +222,12 @@ public class EquipManager : _Manager_Base
         }
     }
 
-    public void imageChange(GameObject targetObj)
+    public void imageChange(GameObject targetObj, string activateType)
     {
         string tmpCategory = targetObj.GetComponent<ItemPickUp>().itemType;
         UIImageChanger[] imageChangers = FindObjectsOfType<UIImageChanger>();
         Sprite tmpSprite = targetObj.GetComponent<SpriteRenderer>().sprite;
-        OnEquipChanged?.Invoke(tmpCategory, tmpSprite);
+        OnEquipChanged?.Invoke(tmpCategory, activateType, tmpSprite);
         //レリックの処理を入れる。同じレリックって枠が3つあるのでどうしようね
         foreach (UIImageChanger imageChanger in imageChangers)
         {
@@ -237,6 +242,34 @@ public class EquipManager : _Manager_Base
                     imageChanger.newSprite = tmpSprite;
                 }
             }
+        }
+    }
+
+    public void ReplaseEquip(string targetType, string targetCategory, GameObject targetObj)
+    {
+        string tmpCategory = targetObj.GetComponent<ItemPickUp>().itemType;
+        UIImageChanger[] imageChangers = FindObjectsOfType<UIImageChanger>();
+        Sprite tmpSprite = targetObj.GetComponent<SpriteRenderer>().sprite;
+        OnEquipChanged?.Invoke(tmpCategory, targetType, tmpSprite);
+
+        switch (targetType)
+        {
+            case "active":
+                switch (targetCategory)
+                {
+                    case "Bullet":
+                        activeBullet = targetObj;
+                        break;
+                    case "Case":
+                        activeCase = targetObj;
+                        break;
+                    case "Primer":
+                        activePrimer = targetObj;
+                        break;
+                }
+                break;
+            case "sub":
+                break;
         }
     }
 

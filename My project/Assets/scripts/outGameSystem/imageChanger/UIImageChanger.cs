@@ -13,9 +13,17 @@ public class UIImageChanger : _ImageChanger_Base
         EquipManager.OnEquipChanged -= ChangeTexture;
     }
 
-    public override void ChangeTexture(string changedItemCategory, Sprite newSprite)
+    public override void ChangeTexture(
+        string changedItemCategory,
+        string targetType,
+        Sprite newSprite
+    )
     {
-        if (changedItemCategory == itemCategory && targetImage != null && newSprite != null)
+        if (
+            (changedItemCategory == itemCategory && targetType == itemType)
+            && targetImage != null
+            && newSprite != null
+        )
         {
             // Image コンポーネントの Source Image を newSprite に変更
             targetImage.sprite = newSprite;
