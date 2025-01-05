@@ -194,7 +194,7 @@ MonoBehaviour:
   enemyRange: 3
   duration: 3
   elapsedTime: 0
-  Exp: 0
+  Exp: 2
   bullet: {fileID: 1895039100003720943, guid: f21e58a1636bdaa4b9ef54dadf4f3608, type: 3}
 --- !u!114 &-3290141349049413948
 MonoBehaviour:
@@ -210,6 +210,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HP: 100
   currentHP: 100
+  Exp: 2
+  VulnerableTime: 0
+  VulnerableFlg: 0
   damageTextPrefab: {fileID: 3988437868621658341, guid: 5ccc0cd62017e7542bc9974c88b5c92d, type: 3}
   DamageUIMagnitude: 10
 --- !u!58 &1676712397939449718

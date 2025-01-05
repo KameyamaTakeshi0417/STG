@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class ArmorBeetle : EnemyBase
 {
-    private Rigidbody2D rb;
     public bool makeBarrier;
 
     Coroutine currentCoroutine;

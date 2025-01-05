@@ -146,6 +146,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HP: 200
   currentHP: 200
+  Exp: 1
+  VulnerableTime: 0
+  VulnerableFlg: 0
   damageTextPrefab: {fileID: 3988437868621658341, guid: 5ccc0cd62017e7542bc9974c88b5c92d, type: 3}
   DamageUIMagnitude: 10
 --- !u!114 &-4341598551997397719

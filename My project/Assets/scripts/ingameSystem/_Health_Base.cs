@@ -8,7 +8,7 @@ public class _Health_Base : MonoBehaviour
     public float HP = 100f; // 初期HP
 
     public float currentHP;
-    protected int Exp;
+    public int Exp;
     protected int moneyCount;
     protected Slider hpSlider; //HPバー（スライダー）
     protected HPBar_Base m_handler;

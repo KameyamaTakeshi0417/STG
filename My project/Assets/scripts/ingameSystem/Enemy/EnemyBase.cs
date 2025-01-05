@@ -6,7 +6,7 @@ public class EnemyBase : MonoBehaviour
     public GameObject Player;
     public float chaseSpeed;
     public Health myHealth;
-    private Rigidbody2D rb;
+    protected Rigidbody2D rb;
 
     public int blockPoint;
     public bool enemyType; //それぞれ攻撃か妨害かを選べる

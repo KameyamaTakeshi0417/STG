@@ -287,4 +287,9 @@ public class Player : MonoBehaviour
     {
         bulletSpeed += addpoint;
     }
+
+    public int getExp()
+    {
+        return Exp;
+    }
 }

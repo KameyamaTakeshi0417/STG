@@ -161,6 +161,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HP: 500
   currentHP: 500
+  Exp: 4
+  VulnerableTime: 0
+  VulnerableFlg: 0
   damageTextPrefab: {fileID: 3988437868621658341, guid: 5ccc0cd62017e7542bc9974c88b5c92d, type: 3}
   DamageUIMagnitude: 10
 --- !u!114 &1925977949460508292
@@ -175,12 +178,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c628332d3d7cee04cacf85ebdb624e3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  separateCount: 2
   Player: {fileID: 0}
   chaseSpeed: 0.1
   myHealth: {fileID: 0}
-  rotate: {x: 0, y: 0, z: 0}
+  blockPoint: 0
+  enemyType: 0
   pow: 100
+  rotate: {x: 0, y: 0, z: 0}
+  speedMag: 0
+  separateCount: 2
   radius: 2
   moneyCount: 0
 --- !u!50 &3014635963954712539

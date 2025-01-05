@@ -8,8 +8,6 @@ public class slimeType : EnemyBase
 {
     public int separateCount; //被弾時に分裂する能力
 
-    private Rigidbody2D rb;
-
     public float radius = 2.0f; // 半径（中心からの距離）
     private float angle = 0.0f; // 現在の角度
     public int moneyCount;
