@@ -14,16 +14,11 @@ public class EnemyBase : MonoBehaviour
     public Vector3 rotate; //プレイヤーに向かった時の角度
     public float speedMag;
 
-    public GameObject Exp;
-    public int ExpCount = 1;
-    public float ExpRadius = 2.0f;
-
     protected virtual void Init()
     {
         Player = GameObject.Find("Player");
         myHealth = GetComponent<Health>();
         rb = GetComponent<Rigidbody2D>();
-        Exp = Resources.Load<GameObject>("Objects/MoneyAndExp");
     }
 
     public virtual void setRotate(Vector3 rot)
@@ -68,27 +63,5 @@ public class EnemyBase : MonoBehaviour
             count++;
             yield return new WaitForEndOfFrame();
         }
-    }
-
-    protected void Die()
-    {
-        Vector3 position = new Vector3(
-            Random.Range(ExpRadius, ExpRadius),
-            0,
-            Random.Range(ExpRadius, ExpRadius)
-        );
-        int RandomAddPoint = Random.Range((ExpCount * -1) + 1, ExpCount);
-        Vector3 ObjPos = gameObject.transform.position;
-        for (int i = 0; i < ExpCount + RandomAddPoint; i++)
-        {
-            position = new Vector3(
-                Random.Range(ExpRadius, ExpRadius),
-                0,
-                Random.Range(ExpRadius, ExpRadius)
-            );
-            GameObject bulletPrefab = Instantiate(Exp, ObjPos + position, Quaternion.identity); //弾の生成
-        }
-
-        Destroy(this.gameObject);
     }
 }

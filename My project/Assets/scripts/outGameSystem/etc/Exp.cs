@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Exp : MonoBehaviour
-{
+{ //エネミーのヘルスで、Hit後の死亡判定で呼び出されてるよ
     private Player playerScript;
     public int addPoint = 3;
 

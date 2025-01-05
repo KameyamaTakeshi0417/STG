@@ -95,20 +95,12 @@ public class Health : _Health_Base
         for (int i = 0; i < Exp; i++)
         {
             GameObject ExpObj = Instantiate(
-                Resources.Load<GameObject>("Objects/Exp"),
+                Resources.Load<GameObject>("Objects/MoneyAndExp"),
                 CreateExpPos(),
                 Quaternion.identity
             );
         }
 
-        for (int i = 0; i < moneyCount; i++)
-        {
-            GameObject moneyObj = Instantiate(
-                Resources.Load<GameObject>("Objects/money"),
-                CreateExpPos(),
-                Quaternion.identity
-            );
-        }
         Debug.Log(gameObject.name + " died.");
         // ここに死亡時の処理を書く
         Destroy(gameObject);
