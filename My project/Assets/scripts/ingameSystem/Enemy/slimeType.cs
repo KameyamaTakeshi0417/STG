@@ -4,16 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class slimeType : MonoBehaviour
+public class slimeType : EnemyBase
 {
     public int separateCount; //被弾時に分裂する能力
-    public GameObject Player;
-    public float chaseSpeed;
-    public Health myHealth;
+
     private Rigidbody2D rb;
 
-    public Vector3 rotate; //プレイヤーに向かった時の角度
-    public int pow;
     public float radius = 2.0f; // 半径（中心からの距離）
     private float angle = 0.0f; // 現在の角度
     public int moneyCount;
@@ -21,6 +17,7 @@ public class slimeType : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        Init();
         Player = GameObject.Find("Player");
         myHealth = gameObject.GetComponent<Health>();
 
@@ -36,7 +33,7 @@ public class slimeType : MonoBehaviour
     // Update is called once per frame
     void Update() { }
 
-    private IEnumerator Idle()
+    protected override IEnumerator Idle()
     {
         //被弾していない間は動かない
         while (true)
@@ -54,7 +51,7 @@ public class slimeType : MonoBehaviour
         yield return null;
     }
 
-    private IEnumerator ChasePlayer()
+    protected override IEnumerator ChasePlayer()
     {
         int chaseTime = UnityEngine.Random.Range(3, 7);
         Vector3 chaseWay = new Vector3(0, 0, 0);
@@ -152,16 +149,6 @@ public class slimeType : MonoBehaviour
                 health.TakeDamage(pow);
             }
         }
-    }
-
-    public void setRotate(Vector3 rot)
-    {
-        transform.localEulerAngles = new Vector3(
-            0,
-            0,
-            MathF.Atan2(rot.y, rot.x) * Mathf.Rad2Deg + 90
-        );
-        rotate = rot.normalized;
     }
 
     private IEnumerator rolling()

@@ -26,18 +26,6 @@ public class EnemyBase : MonoBehaviour
         Exp = Resources.Load<GameObject>("Objects/MoneyAndExp");
     }
 
-    protected virtual void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Player"))
-        {
-            Health health = collision.GetComponent<Health>();
-            if (health != null)
-            {
-                health.TakeDamage(pow);
-            }
-        }
-    }
-
     public virtual void setRotate(Vector3 rot)
     {
         transform.localEulerAngles = new Vector3(
@@ -66,7 +54,7 @@ public class EnemyBase : MonoBehaviour
         yield return null;
     }
 
-    protected IEnumerator ChasePlayer()
+    protected virtual IEnumerator ChasePlayer()
     {
         Vector3 chaseWay;
         int count = 0;
