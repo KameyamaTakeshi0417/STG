@@ -6,16 +6,24 @@ public class EnemyBase : MonoBehaviour
     public GameObject Player;
     public float chaseSpeed;
     public Health myHealth;
-    protected Rigidbody2D rb;
+    private Rigidbody2D rb;
+
+    public int blockPoint;
+    public bool enemyType; //それぞれ攻撃か妨害かを選べる
     public int pow;
-    public Vector3 rotate;
+    public Vector3 rotate; //プレイヤーに向かった時の角度
     public float speedMag;
-    public bool makeBarrier;
-    protected virtual void Awake()
+
+    public GameObject Exp;
+    public int ExpCount = 1;
+    public float ExpRadius = 2.0f;
+
+    protected virtual void Init()
     {
         Player = GameObject.Find("Player");
         myHealth = GetComponent<Health>();
         rb = GetComponent<Rigidbody2D>();
+        Exp = Resources.Load<GameObject>("Objects/MoneyAndExp");
     }
 
     protected virtual void OnTriggerEnter2D(Collider2D collision)
@@ -30,17 +38,25 @@ public class EnemyBase : MonoBehaviour
         }
     }
 
-    public void setRotate(Vector3 rot)
+    public virtual void setRotate(Vector3 rot)
     {
-        transform.localEulerAngles = new Vector3(0, 0, Mathf.Atan2(rot.y, rot.x) * Mathf.Rad2Deg + 90);
+        transform.localEulerAngles = new Vector3(
+            0,
+            0,
+            Mathf.Atan2(rot.y, rot.x) * Mathf.Rad2Deg + 90
+        );
         rotate = rot.normalized;
     }
-    protected IEnumerator Idle()
+
+    protected virtual IEnumerator Idle()
     {
         //被弾していない間は動かない
         while (true)
         {
-            if (gameObject.GetComponent<Health>().getCurrentHP() <= gameObject.GetComponent<Health>().getHP())
+            if (
+                gameObject.GetComponent<Health>().getCurrentHP()
+                <= gameObject.GetComponent<Health>().getHP()
+            )
             {
                 yield return ChasePlayer();
                 break;
@@ -49,6 +65,7 @@ public class EnemyBase : MonoBehaviour
         }
         yield return null;
     }
+
     protected IEnumerator ChasePlayer()
     {
         Vector3 chaseWay;
@@ -63,5 +80,27 @@ public class EnemyBase : MonoBehaviour
             count++;
             yield return new WaitForEndOfFrame();
         }
+    }
+
+    protected void Die()
+    {
+        Vector3 position = new Vector3(
+            Random.Range(ExpRadius, ExpRadius),
+            0,
+            Random.Range(ExpRadius, ExpRadius)
+        );
+        int RandomAddPoint = Random.Range((ExpCount * -1) + 1, ExpCount);
+        Vector3 ObjPos = gameObject.transform.position;
+        for (int i = 0; i < ExpCount + RandomAddPoint; i++)
+        {
+            position = new Vector3(
+                Random.Range(ExpRadius, ExpRadius),
+                0,
+                Random.Range(ExpRadius, ExpRadius)
+            );
+            GameObject bulletPrefab = Instantiate(Exp, ObjPos + position, Quaternion.identity); //弾の生成
+        }
+
+        Destroy(this.gameObject);
     }
 }

@@ -1,25 +1,18 @@
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class ArmorBeetle : MonoBehaviour
+public class ArmorBeetle : EnemyBase
 {
-    public GameObject Player;
-    public float chaseSpeed;
-    public Health myHealth;
     private Rigidbody2D rb;
-
-    public int blockPoint;
-    public bool enemyType; //それぞれ攻撃か妨害かを選べる
-    public int pow;
-    public Vector3 rotate; //プレイヤーに向かった時の角度
-    public float speedMag;
     public bool makeBarrier;
 
     Coroutine currentCoroutine;
 
     void Awake()
     {
+        base.Init();
         Player = GameObject.Find("Player");
         myHealth = gameObject.GetComponent<Health>();
         makeBarrier = false;
@@ -38,7 +31,7 @@ public class ArmorBeetle : MonoBehaviour
         currentCoroutine = StartCoroutine(Idle());
     }
 
-    private IEnumerator Idle()
+    protected override IEnumerator Idle()
     {
         Debug.Log("StartIdle");
         stopMovingByVelocity();
@@ -65,7 +58,7 @@ public class ArmorBeetle : MonoBehaviour
             // プレイヤーに向かう
             Vector3 chaseWay = Player.transform.position - transform.position;
             chaseWay.Normalize();
-            setRotate(chaseWay);
+            base.setRotate(chaseWay);
             rb.velocity = chaseWay * speedMag;
 
             if (!makeBarrier && myHealth.getCurrentHP() < myHealth.getHP())
@@ -127,15 +120,5 @@ public class ArmorBeetle : MonoBehaviour
                 health.TakeDamage(pow);
             }
         }
-    }
-
-    public void setRotate(Vector3 rot)
-    {
-        transform.localEulerAngles = new Vector3(
-            0,
-            0,
-            Mathf.Atan2(rot.y, rot.x) * Mathf.Rad2Deg + 90
-        );
-        rotate = rot.normalized;
     }
 }
