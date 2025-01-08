@@ -299,9 +299,9 @@ public class rewardUIManager : _Manager_Base
 
     //仮レリックはコンボA,コンボB、単体で使うものを実装した。
     //コンボAは鈍足デメリットを無敵化で補い、コンボBは弾速すごいけど威力がカスになるのを固定ダメージで補うってもの
-    public static string[] normalRelicArray = { "quipStep", "baseSkill", "StrawBerry" }; //それぞれクイックステップ解禁、弾速修正、体力回復
-    public static string[] UnCommonRelicArray = { "heavyBomb", "quickDraw", "Vajra" }; //走っていないとき威力修正、リロード修正、ダメージ補正
-    public static string[] rareRelicArray = { "stoneWill", "aetherPowder", "MemoryDeluge" }; //走れない代わりにバリア展開、基本ダメージ0になるけど固定ダメージ追加、お金ゲット、お金分補正
+    public static string[] normalRelicArray = { "quipStep", "studyBasic", "StrawBerry" }; //それぞれクイックステップ解禁、弾速修正、体力回復
+    public static string[] UnCommonRelicArray = { "heavyImpact", "mightOfOak", "Vajra" }; //走っていないとき威力修正、リロード修正、ダメージ補正
+    public static string[] rareRelicArray = { "tangledFoot", "fullFocus", "MemoryDeluge" }; //走れない代わりにバリア展開、基本ダメージ0になるけど固定ダメージ追加、お金ゲット、お金分補正
     //レアレリック：バレットユニファイアー-取得時に同じ種類のバレットをすべて統合。装備効果：戦闘終了時にバレット統合。火力+、攻撃時小ダメージ。
     //レアレリック：弾食らい-取得時効果：基本火力+5、装備時：最大30ダメージ軽減、軽減分次のダメージにプラス。弾速度減少
 }
