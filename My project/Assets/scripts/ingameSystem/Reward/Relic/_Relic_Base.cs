@@ -29,6 +29,11 @@ public class _Relic_Base : Reward
         SetPlayerData();
     } //フロア開始時に呼び出す。
 
+    public virtual void UnEquipEffect()
+    {
+        SetPlayerData();
+    } //装備解除時に呼び出す。バフを打ち消したりするためのもの
+
     public virtual void EquipHitEffect() { } //装備中発動し続ける効果。
 
     protected void SetPlayerData()

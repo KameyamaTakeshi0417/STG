@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StudyBasic : _Relic_Base
+public class TangledFoot : _Relic_Base
 {
     // Start is called before the first frame update
     void Start() { }
