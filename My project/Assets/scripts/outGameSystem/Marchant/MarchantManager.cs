@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MarchantManager : MonoBehaviour
@@ -32,10 +33,25 @@ public class MarchantManager : MonoBehaviour
                 targetObjScript.Init(createGoods_Relic());
             }
         }
+        targetCanvas.SetActive(false);
     }
 
     // Update is called once per frame
     void Update() { }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag != "Player")
+            return;
+        targetCanvas.SetActive(true);
+    }
+
+    void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag != "Player")
+            return;
+        targetCanvas.SetActive(false);
+    }
 
     public GameObject createGoods_AmmoParts()
     {
