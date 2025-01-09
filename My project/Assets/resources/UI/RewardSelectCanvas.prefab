@@ -185,7 +185,7 @@ Canvas:
   m_GameObject: {fileID: 2084623247214189244}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 1
+  m_RenderMode: 0
   m_Camera: {fileID: 0}
   m_PlaneDistance: 6.21
   m_PixelPerfect: 0
@@ -264,7 +264,6 @@ MonoBehaviour:
   targetIndex: 
   temporaryList: []
   rewardObjects: []
-  SE: {fileID: 6608326939394084156}
 --- !u!82 &6608326939394084156
 AudioSource:
   m_ObjectHideFlags: 0
