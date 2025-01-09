@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1533693221546898036}
   - component: {fileID: 8293380040888585499}
   m_Layer: 0
-  m_Name: StoneWill_RewardObject
+  m_Name: TangledFoot_RewardObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -75,7 +75,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 7af334d2ff3b7da439eb9b631596080a, type: 3}
+  m_Sprite: {fileID: -6864868359746500748, guid: 5e54ca6246292454587298a07e41c48f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -102,7 +102,7 @@ MonoBehaviour:
   itemType: Relic
   itemRarelity: 1
   targetObj: {fileID: 0}
-  accessAddress: Objects/Reward/StoneWill_RewardObject
+  accessAddress: Objects/Reward/TangledFoot_RewardObject
 --- !u!61 &8293380040888585499
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -138,8 +138,8 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 4, y: 3.62}
+    pivot: {x: 0.5, y: 0}
+    oldSize: {x: 0.32, y: 0.32}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0

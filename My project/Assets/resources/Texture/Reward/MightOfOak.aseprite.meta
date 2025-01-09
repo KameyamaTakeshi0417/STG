@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 5e54ca6246292454587298a07e41c48f
+guid: 8cf2b5910cf645c448768d364fc58504
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -122,7 +122,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
-  - name: Relic_RootFeetGenerate
+  - name: Relic_MightOfOak
     originalName: 
     pivot: {x: 0.5, y: 0}
     alignment: 9
@@ -133,7 +133,7 @@ ScriptedImporter:
       y: 4
       width: 32
       height: 32
-    spriteID: 8eafdfad74de09a449ef380df649e265
+    spriteID: 6fed0f116da73a1499e45dc42a658d07
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -145,13 +145,13 @@ ScriptedImporter:
   spriteSheetImportData: []
   asepriteLayers:
   - layerIndex: 0
-    guid: 845408609
-    name: Relic_RootFeetGenerate
+    guid: 1930765965
+    name: Relic_MightOfOak
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: Relic_TangledFoot
+    - name: MightOfOak
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
@@ -159,7 +159,7 @@ ScriptedImporter:
         y: 0
         width: 32
         height: 32
-      spriteId: 8eafdfad74de09a449ef380df649e265
+      spriteId: 6fed0f116da73a1499e45dc42a658d07
     linkedCells: []
     parentIndex: -1
   platformSettings:

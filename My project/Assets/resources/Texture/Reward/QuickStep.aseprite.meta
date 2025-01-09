@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 8cf2b5910cf645c448768d364fc58504
+guid: f87573281898ab14f9bca45569deb74d
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -122,7 +122,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
-  - name: Relic_MightOfOak
+  - name: Relic_QuickStep
     originalName: 
     pivot: {x: 0.5, y: 0}
     alignment: 9
@@ -133,7 +133,7 @@ ScriptedImporter:
       y: 4
       width: 32
       height: 32
-    spriteID: 6fed0f116da73a1499e45dc42a658d07
+    spriteID: a88c602ec518cb940a6c6ae12ed9d65f
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -145,13 +145,13 @@ ScriptedImporter:
   spriteSheetImportData: []
   asepriteLayers:
   - layerIndex: 0
-    guid: 1930765965
-    name: Relic_MightOfOak
+    guid: 753944157
+    name: Relic_QuickStep
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: Relic_MightOfOak
+    - name: QuickStep
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
@@ -159,7 +159,7 @@ ScriptedImporter:
         y: 0
         width: 32
         height: 32
-      spriteId: 6fed0f116da73a1499e45dc42a658d07
+      spriteId: a88c602ec518cb940a6c6ae12ed9d65f
     linkedCells: []
     parentIndex: -1
   platformSettings:

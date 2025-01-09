@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class QuickStep : MonoBehaviour
+public class Action_QuickStep : MonoBehaviour
 {
     public bool nowStep; // QuickStep使用中かどうか
     public float waitTime = 1.0f; // クールダウンの待機時間
