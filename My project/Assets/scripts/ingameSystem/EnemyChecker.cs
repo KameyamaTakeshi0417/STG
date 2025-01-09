@@ -5,6 +5,7 @@ public class EnemyChecker : MonoBehaviour
 {
     public float checkInterval = 1.0f; // チェック間隔（秒）
     public GameObject[] enemies;
+    public bool isCalled = false;
 
     void Start()
     {
@@ -36,6 +37,11 @@ public class EnemyChecker : MonoBehaviour
         // 敵が0になったときの処理
         //        Debug.Log("All enemies have been defeated!");
         // 必要な処理をここに追加
-        GameObject.Find("GameManager").GetComponent<GameManager>().setCleared(true);
+        if (isCalled == false)
+        {
+            GameObject.Find("GameManager").GetComponent<GameManager>().setCleared(true);
+            GetComponent<rewardManager>().CreateTreasureBox(1);
+            isCalled = true;
+        }
     }
 }

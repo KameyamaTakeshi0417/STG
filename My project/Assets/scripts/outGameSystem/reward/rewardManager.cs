@@ -26,7 +26,7 @@ public class rewardManager : MonoBehaviour
     {
         List<GameObject> generatedObjects = new List<GameObject>();
 
-        for (int i = -1; i < numToGenerate - 1; i++)
+        for (int i = 0; i < numToGenerate; i++)
         {
             // treasureBoxを生成し、変数に格納
             GameObject newTreasureBox = Instantiate(
@@ -34,7 +34,6 @@ public class rewardManager : MonoBehaviour
                 new Vector3((i * 7), 0, 0),
                 Quaternion.identity
             );
-
             // リストに格納して後で参照可能にする
             generatedObjects.Add(newTreasureBox);
 
@@ -54,7 +53,7 @@ public class rewardManager : MonoBehaviour
             }
             */
         }
-        generatedObjects.Clear();
+        //generatedObjects.Clear();
 
         yield break;
     }
@@ -145,5 +144,10 @@ public class rewardManager : MonoBehaviour
             // 配列の終わりに達した場合は空の配列を返す
             return new int[0];
         }
+    }
+
+    public void CreateTreasureBox(int num)
+    {
+        StartCoroutine(showReward(num));
     }
 }
