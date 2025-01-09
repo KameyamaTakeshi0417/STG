@@ -15,7 +15,7 @@ public class MemoryDeluge : _Relic_Base
     public override void GetEffect()
     {
         base.GetEffect();
-        m_PlayerScript.Exp += 300;
+        m_PlayerScript.addExp(300);
     } //取得時のみ呼び出す
 
     public override void EquipEffect()
