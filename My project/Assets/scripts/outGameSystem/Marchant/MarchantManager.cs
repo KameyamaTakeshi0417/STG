@@ -21,7 +21,15 @@ public class MarchantManager : MonoBehaviour
             targetObjScript = AmmoGoods[i].GetComponent<GoodsHandler>();
             if (targetObjScript != null)
             {
-                //targetObjScript.Init()
+                targetObjScript.Init(createGoods_AmmoParts());
+            }
+        }
+        for (int i = 0; i < RelicNum; i++)
+        {
+            targetObjScript = RelicGoods[i].GetComponent<GoodsHandler>();
+            if (targetObjScript != null)
+            {
+                targetObjScript.Init(createGoods_Relic());
             }
         }
     }
@@ -29,7 +37,7 @@ public class MarchantManager : MonoBehaviour
     // Update is called once per frame
     void Update() { }
 
-    public GameObject createAmmoParts()
+    public GameObject createGoods_AmmoParts()
     {
         string CreateObjPath = null;
         Random.InitState((int)(System.DateTime.Now.Ticks & 0xFFFFFFF));
@@ -42,6 +50,22 @@ public class MarchantManager : MonoBehaviour
                 Random.Range(0, rewardUIManager.AmmoCategoryArray.Length)
             ] + "_RewardObject";
         GameObject prefab = Resources.Load<GameObject>(CreateObjPath);
+        Debug.Log("MarchantManager:" + CreateObjPath);
+        return prefab;
+    }
+
+    public GameObject createGoods_Relic()
+    {
+        string CreateObjPath = null;
+        Random.InitState((int)(System.DateTime.Now.Ticks & 0xFFFFFFF));
+        CreateObjPath =
+            "Objects/Reward/Relic/"
+            + rewardUIManager.canUseRelicArray[
+                Random.Range(0, rewardUIManager.canUseRelicArray.Length)
+            ];
+        CreateObjPath += "_RewardObject";
+        GameObject prefab = Resources.Load<GameObject>(CreateObjPath);
+        Debug.Log("MarchantManager:" + CreateObjPath);
         return prefab;
     }
 }

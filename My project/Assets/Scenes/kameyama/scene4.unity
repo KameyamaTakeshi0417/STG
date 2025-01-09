@@ -801,7 +801,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 333297671}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 333297670}
+        m_TargetAssemblyTypeName: GoodsHandler, Assembly-CSharp
+        m_MethodName: Purchase
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &333297670
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -815,7 +827,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   priceText: {fileID: 10596799}
+  targetImage: {fileID: 0}
   setGoods: {fileID: 0}
+  Price: 0
 --- !u!114 &333297671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -937,7 +951,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 363456952}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 363456951}
+        m_TargetAssemblyTypeName: GoodsHandler, Assembly-CSharp
+        m_MethodName: Purchase
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &363456951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -951,7 +977,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   priceText: {fileID: 716892673}
+  targetImage: {fileID: 0}
   setGoods: {fileID: 0}
+  Price: 0
 --- !u!114 &363456952
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1950,7 +1978,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 573097457}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 573097456}
+        m_TargetAssemblyTypeName: GoodsHandler, Assembly-CSharp
+        m_MethodName: Purchase
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &573097456
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1964,7 +2004,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   priceText: {fileID: 494806927}
+  targetImage: {fileID: 0}
   setGoods: {fileID: 0}
+  Price: 0
 --- !u!114 &573097457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3095,7 +3137,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 933298617}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 933298616}
+        m_TargetAssemblyTypeName: GoodsHandler, Assembly-CSharp
+        m_MethodName: Purchase
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &933298616
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3109,7 +3163,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   priceText: {fileID: 733109644}
+  targetImage: {fileID: 0}
   setGoods: {fileID: 0}
+  Price: 0
 --- !u!114 &933298617
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3381,7 +3437,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1096644329}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1096644328}
+        m_TargetAssemblyTypeName: GoodsHandler, Assembly-CSharp
+        m_MethodName: Purchase
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1096644328
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3395,7 +3463,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   priceText: {fileID: 459524214}
+  targetImage: {fileID: 0}
   setGoods: {fileID: 0}
+  Price: 0
 --- !u!114 &1096644329
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3829,7 +3899,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1532561104}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1532561103}
+        m_TargetAssemblyTypeName: GoodsHandler, Assembly-CSharp
+        m_MethodName: Purchase
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1532561103
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3843,7 +3925,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   priceText: {fileID: 1954052591}
+  targetImage: {fileID: 0}
   setGoods: {fileID: 0}
+  Price: 0
 --- !u!114 &1532561104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4378,7 +4462,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1718296667}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1718296666}
+        m_TargetAssemblyTypeName: GoodsHandler, Assembly-CSharp
+        m_MethodName: Purchase
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1718296666
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4392,7 +4488,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   priceText: {fileID: 411602663}
+  targetImage: {fileID: 0}
   setGoods: {fileID: 0}
+  Price: 0
 --- !u!114 &1718296667
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5232,7 +5330,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2119899883}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2119899885}
+        m_TargetAssemblyTypeName: GoodsHandler, Assembly-CSharp
+        m_MethodName: Purchase
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2119899883
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5284,7 +5394,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   priceText: {fileID: 129092213}
+  targetImage: {fileID: 0}
   setGoods: {fileID: 0}
+  Price: 0
 --- !u!224 &481165611991030943 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6021155347323292062, guid: 0788f77adda6148448340ec75e07c4fc, type: 3}

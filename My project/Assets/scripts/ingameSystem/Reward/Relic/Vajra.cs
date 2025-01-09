@@ -16,7 +16,19 @@ public class Vajra : _Relic_Base
         base.EquipEffect();
         m_PlayerScript.DamageAdd += 30;
 
-        m_Playerhealth.VulnerableTime = 10f;
+        m_Playerhealth.VulnerableTime += 10f;
         m_Playerhealth.VulnerableFlg = true;
     } //バトル開始時呼び出す。
+
+    public override void UnEquipEffect()
+    {
+        base.UnEquipEffect();
+        m_PlayerScript.DamageAdd -= 30;
+        m_Playerhealth.VulnerableTime -= 10f;
+        if (m_Playerhealth.VulnerableTime <= 0f)
+        {
+            m_Playerhealth.VulnerableTime = 0f;
+            m_Playerhealth.VulnerableFlg = false;
+        }
+    } //装備解除時に呼び出す。バフを打ち消したりするためのもの
 }

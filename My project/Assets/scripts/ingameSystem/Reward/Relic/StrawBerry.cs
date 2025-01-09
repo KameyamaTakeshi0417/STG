@@ -27,4 +27,9 @@ public class StrawBerry : _Relic_Base
     {
         m_Playerhealth.AddCurrentHP(2);
     }
+
+    public override void UnEquipEffect()
+    {
+        base.UnEquipEffect();
+    } //装備解除時に呼び出す。バフを打ち消したりするためのもの
 }

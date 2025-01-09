@@ -4671,7 +4671,7 @@ MonoBehaviour:
   Onstep: 0
   canEnter: 0
   stepNum: 0
-  nextScene: scene2
+  nextScene: scene4
 --- !u!1 &912631153
 GameObject:
   m_ObjectHideFlags: 0
@@ -8915,6 +8915,10 @@ PrefabInstance:
     - target: {fileID: 7669535322195873543, guid: ea02c46b4f1337e439dfe303aa5ec7b0, type: 3}
       propertyPath: m_SortingOrder
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7815110798661859022, guid: ea02c46b4f1337e439dfe303aa5ec7b0, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: -4217822520560754959, guid: ea02c46b4f1337e439dfe303aa5ec7b0, type: 3}

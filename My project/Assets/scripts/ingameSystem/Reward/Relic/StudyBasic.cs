@@ -13,11 +13,13 @@ public class StudyBasic : _Relic_Base
     public override void GetEffect()
     {
         base.GetEffect();
+        //全てのステータスをちょっぴり上昇させる
     } //取得時のみ呼び出す
 
     public override void EquipEffect()
     {
         base.EquipEffect();
+        //さらに上昇させるけどデバフを付与する
     } //フロア開始時に呼び出す。
 
     public override void UnEquipEffect()

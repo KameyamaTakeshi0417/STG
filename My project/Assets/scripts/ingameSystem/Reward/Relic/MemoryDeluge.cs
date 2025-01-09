@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class MemoryDeluge : _Relic_Base
 {
+    int addNum = 0;
+
     // Start is called before the first frame update
     void Start() { }
 
@@ -19,7 +21,7 @@ public class MemoryDeluge : _Relic_Base
     public override void EquipEffect()
     {
         base.EquipEffect();
-        int addNum = (m_PlayerScript.Exp / 100);
+        addNum = (m_PlayerScript.Exp / 100);
         if (addNum <= 0)
         {
             return;
@@ -28,4 +30,11 @@ public class MemoryDeluge : _Relic_Base
         m_PlayerScript.DamageAdd += addNum;
         m_PlayerScript.BlockDmg += addNum;
     }
+
+    public override void UnEquipEffect()
+    {
+        base.UnEquipEffect();
+        m_PlayerScript.DamageAdd -= addNum;
+        m_PlayerScript.BlockDmg -= addNum;
+    } //装備解除時に呼び出す。バフを打ち消したりするためのもの
 }
