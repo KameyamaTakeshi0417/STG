@@ -7,7 +7,7 @@ public class Effect_Explosion : MonoBehaviour
     private float dmg = 30f;
     private int explosionTime = 50;
     private Vector3 scale = new Vector3(1, 1, 0);
-    int damagedCount = 0;
+    int damagedCount = 3;
 
     // Start is called before the first frame update
     void Start() { }

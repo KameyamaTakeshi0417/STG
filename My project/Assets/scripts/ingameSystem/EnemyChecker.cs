@@ -28,8 +28,10 @@ public class EnemyChecker : MonoBehaviour
             if (enemies.Length == 0)
             {
                 OnAllEnemiesDefeated();
+                break;
             }
         }
+        yield break;
     }
 
     private void OnAllEnemiesDefeated()

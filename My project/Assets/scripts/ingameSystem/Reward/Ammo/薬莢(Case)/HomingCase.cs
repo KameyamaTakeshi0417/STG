@@ -26,13 +26,13 @@ public class HomingCase : Case_Base
         {
             targetWay = targetEnemy.transform.position - transform.position;
             Vector3.Normalize(targetWay);
-            force = new Vector2(targetWay.x, targetWay.y) * (Speed * 0.001f);
+            force = new Vector2(targetWay.x, targetWay.y) * (Speed * 0.01f);
         }
         else
         {
             targetWay = player.GetComponent<Player>().watch;
             Vector3.Normalize(targetWay);
-            force = new Vector2(targetWay.x, targetWay.y) * (Speed * 0.001f);
+            force = new Vector2(targetWay.x, targetWay.y) * (Speed * 0.01f);
             DestroyTime = 100f;
         }
         rb.velocity = force;
