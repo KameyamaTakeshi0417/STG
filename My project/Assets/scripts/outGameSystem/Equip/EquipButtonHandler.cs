@@ -20,7 +20,11 @@ public class EquipButtonHandler : MonoBehaviour
     public void OnButtonClicked()
     {
         Debug.Log($"Button clicked! MainType: {mainType}, ItemType: {itemType}");
-
+        GameObject targetUICanvas = GameObject.Find("equipChangeCanvas(Clone)");
+        if (targetUICanvas != null)
+        {
+            Destroy(targetUICanvas);
+        }
         // 必要に応じて、ここで文字列を利用した処理を追加
         ProcessSelection(mainType, itemType);
     }

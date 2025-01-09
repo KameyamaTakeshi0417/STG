@@ -35,7 +35,13 @@ public class equipMenuManager : MonoBehaviour
 
     public void closeUI()
     {
+        GameObject targetUICanvas = GameObject.Find("equipChangeCanvas(Clone)");
+        if (targetUICanvas != null)
+        {
+            Destroy(targetUICanvas);
+        }
         this.gameObject.SetActive(false);
+
         Time.timeScale = 1f;
     }
 
