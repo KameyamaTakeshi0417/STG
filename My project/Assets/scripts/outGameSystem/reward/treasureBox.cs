@@ -34,8 +34,9 @@ public class treasureBox : MonoBehaviour
     private IEnumerator DestroyAfterAudio()
     {
         // 音声の再生が終了するまで待つ
-        yield return new WaitForSeconds(audioSource.clip.length);
+        yield return new WaitForSeconds(audioSource.clip.length * 0.25f);
         Destroy(this.gameObject);
+        yield return null;
     }
 
     public void setNowOpen(bool set)

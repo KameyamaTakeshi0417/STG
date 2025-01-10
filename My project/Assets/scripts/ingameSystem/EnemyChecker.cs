@@ -41,8 +41,9 @@ public class EnemyChecker : MonoBehaviour
         // 必要な処理をここに追加
         if (isCalled == false)
         {
-            GameObject.Find("GameManager").GetComponent<GameManager>().setCleared(true);
-            GetComponent<rewardManager>().CreateTreasureBox(1);
+            GameObject manager = GameObject.Find("GameManager");
+            manager.GetComponent<GameManager>().setCleared(true);
+            manager.GetComponent<rewardManager>().CreateTreasureBox(1);
             isCalled = true;
         }
     }

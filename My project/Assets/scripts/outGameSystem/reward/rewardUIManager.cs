@@ -77,12 +77,10 @@ public class rewardUIManager : _Manager_Base
             case 1:
             case 2:
             default:
-                Random.InitState((int)(System.DateTime.Now.Ticks & 0xFFFFFFF));
-                createObjName =
-                    "Objects/Reward/" + AmmoTypeArray[Random.Range(0, AmmoTypeArray.Length)];
-                Random.InitState((int)((System.DateTime.Now.Ticks * 31) & 0xFFFFFFF));
+                System.Random rand = new System.Random();
+                createObjName = "Objects/Reward/" + AmmoTypeArray[rand.Next(AmmoTypeArray.Length)];
                 createObjName +=
-                    AmmoCategoryArray[Random.Range(0, AmmoCategoryArray.Length)] + "_RewardObject";
+                    AmmoCategoryArray[rand.Next(AmmoCategoryArray.Length)] + "_RewardObject";
                 break;
         }
         GameObject prefab = Resources.Load<GameObject>(createObjName);
