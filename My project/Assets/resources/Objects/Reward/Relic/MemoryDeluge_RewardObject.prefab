@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 597412458633222089}
   - component: {fileID: 6345657299419764313}
   - component: {fileID: 3867885305438761938}
+  - component: {fileID: -4143177087591647077}
   - component: {fileID: 7243701841578519525}
-  - component: {fileID: 7546868480414391747}
   m_Layer: 0
   m_Name: MemoryDeluge_RewardObject
   m_TagString: Untagged
@@ -73,8 +73,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -226196017
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 501656badb529b64d93cfc940a613a53, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -104,6 +104,18 @@ MonoBehaviour:
   itemRarelity: 5
   targetObj: {fileID: 5343932838368336543, guid: 9ec60c9ee67c73e4db863b40f36772a7, type: 3}
   accessAddress: Objects/Reward/Relic/MemoryDeluge_RewardObject
+--- !u!114 &-4143177087591647077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 199265565191141835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c50c964cb4696c418251771fd4b3a2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!61 &7243701841578519525
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -149,15 +161,3 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &7546868480414391747
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 199265565191141835}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37f57ac1e06c2ec4ab6ee6239d8b4698, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

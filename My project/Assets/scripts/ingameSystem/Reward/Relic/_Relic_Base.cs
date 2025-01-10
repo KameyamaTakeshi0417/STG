@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class _Relic_Base : Reward
@@ -41,5 +42,14 @@ public class _Relic_Base : Reward
         m_Player = GameObject.Find("Player");
         m_PlayerScript = m_Player.GetComponent<Player>();
         m_Playerhealth = m_Player.GetComponent<PlayerHealth>();
+    }
+
+    protected void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            SetPlayerData();
+            //m_PlayerScript.addExp(300);
+        }
     }
 }
