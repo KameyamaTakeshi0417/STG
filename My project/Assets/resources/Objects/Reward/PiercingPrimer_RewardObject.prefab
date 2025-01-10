@@ -101,7 +101,7 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: f41d2f6a97425894ead5e8859af126c0, type: 2}
   itemType: Primer
   itemRarelity: 1
-  targetObj: {fileID: 7064059390813096083}
+  targetObj: {fileID: 1105239664719311294, guid: 4a3c27d604a7bf842ab61b8e7baa2bc7, type: 3}
   accessAddress: Objects/Reward/PiercingPrimer_RewardObject
 --- !u!61 &1916286870448690094
 BoxCollider2D:
