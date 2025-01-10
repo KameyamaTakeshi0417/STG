@@ -10,8 +10,25 @@ public class ItemPickUp : MonoBehaviour
     public string itemType; // アイテムの種類（Bullet, Case, Primer）
     public int itemRarelity;
     public GameObject targetObj;
-
+    public static ItemPickUp Instance { get; private set; }
     public string accessAddress;
+
+    private static List<GameObject> persistentObjects = new List<GameObject>();
+
+    void Start()
+    {
+        // このオブジェクトがすでにDontDestroyOnLoadのリストに含まれていない場合のみ追加
+        if (!persistentObjects.Contains(gameObject))
+        {
+            persistentObjects.Add(gameObject);
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            // 同じオブジェクトが存在する場合、破棄する
+            Destroy(gameObject);
+        }
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {

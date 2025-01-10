@@ -29,4 +29,10 @@ public class NormalCase : Case_Base
         Destroy(this.gameObject);
         yield break;
     }
+
+    public override void ApplyCaseEffect(GameObject bullet)
+    {
+        base.ApplyCaseEffect(bullet);
+        GetComponent<Bullet_Base>().dmg += 5 * rarelity;
+    }
 }

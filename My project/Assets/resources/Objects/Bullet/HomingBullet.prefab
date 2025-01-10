@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8814587795362611339}
   - component: {fileID: 1074022942457827577}
+  - component: {fileID: 5987424453293631805}
   - component: {fileID: 1892329032998698401}
   - component: {fileID: 8164464404984304022}
-  - component: {fileID: 5987424453293631805}
   m_Layer: 0
   m_Name: HomingBullet
   m_TagString: Untagged
@@ -87,6 +87,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &5987424453293631805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1895039100003720943}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69c4f19c8e66ea645a90822c0a037004, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dmg: 10
+  Speed: 1
+  DestroyTime: 3
+  bullettype: 0
+  rotate: {x: 0, y: 0, z: 0}
+  rarelity: 1
+  bulletName: HomingBullet
+  addDmg: 5
+  piercingCount: 0
+  pullForce: 10
 --- !u!50 &1892329032998698401
 Rigidbody2D:
   serializedVersion: 4
@@ -149,24 +171,3 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
---- !u!114 &5987424453293631805
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1895039100003720943}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69c4f19c8e66ea645a90822c0a037004, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dmg: 10
-  Speed: 1
-  DestroyTime: 3
-  bullettype: 0
-  rotate: {x: 0, y: 0, z: 0}
-  rarelity: 1
-  bulletName: HomingBullet
-  addDmg: 5
-  pullForce: 10

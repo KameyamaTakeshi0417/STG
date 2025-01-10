@@ -8,8 +8,8 @@ public class Case_Base : MonoBehaviour
     public float DestroyTime = 200f; //弾の存在する時間
     public float Speed;
     public Vector3 rotate; //弾の発射角
-    public int rarelity;
-    public float dmg; // 弾のダメージ量
+    public int rarelity = 1;
+    public float dmg = 10f; // 弾のダメージ量
     public string CaseName;
     public ItemData mydata;
     protected bool isHoming = false;
@@ -96,6 +96,7 @@ public class Case_Base : MonoBehaviour
         StartCoroutine(move());
         // 弾丸が移動中の効果を実装
         //        Debug.Log("Case effect applied during bullet flight.");
+        GetComponent<Bullet_Base>().dmg += dmg;
     }
 
     public void setBulletObj(GameObject bulletObj)

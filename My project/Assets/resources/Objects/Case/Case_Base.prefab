@@ -51,8 +51,9 @@ MonoBehaviour:
   Speed: 1
   rotate: {x: 0, y: 0, z: 0}
   rarelity: 1
-  dmg: 10
+  dmg: 1
   CaseName: NormalCase
+  mydata: {fileID: 0}
 --- !u!212 &-5996250091171595308
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -231,6 +232,6 @@ SpriteRenderer:
   m_Size: {x: 2.56, y: 2.56}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
