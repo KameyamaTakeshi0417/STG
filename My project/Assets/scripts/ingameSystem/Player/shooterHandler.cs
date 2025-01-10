@@ -14,14 +14,18 @@ public class ShooterHandler : MonoBehaviour
     private Vector3 watch;
     private bool isPaused = false;
     private Transform playerTransform;
+    GameObject PlayerObj;
+    Player playerStatusScript;
 
     void Awake()
     {
         equipManager = GameObject.Find("GameManager").GetComponent<EquipManager>();
         playerTransform = GameObject.FindWithTag("Player").transform;
+        PlayerObj = playerTransform.gameObject;
         if (playerTransform != null)
         {
             targetObj = playerTransform.Find("Shooter").gameObject;
+            playerStatusScript = PlayerObj.GetComponent<Player>();
         }
     }
 
@@ -119,7 +123,11 @@ public class ShooterHandler : MonoBehaviour
         Bullet_Base bulletScript = bulletPrefab.GetComponent<Bullet_Base>();
         if (bulletScript != null)
         {
-            bulletScript.setStatus(watch, bulletSpeed, gameObject.GetComponent<Player>().pow);
+            bulletScript.setStatus(
+                watch,
+                bulletSpeed,
+                playerStatusScript.pow + playerStatusScript.DamageAdd
+            );
         }
         else
         {
