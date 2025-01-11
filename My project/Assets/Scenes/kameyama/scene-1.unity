@@ -514,7 +514,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 1530105413
+  m_SortingLayerID: 1531714459
   m_SortingOrder: 200
   m_TargetDisplay: 0
 --- !u!224 &108298554
@@ -952,7 +952,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 1530105413
+  m_SortingLayerID: 1531714459
   m_SortingOrder: 200
   m_TargetDisplay: 0
 --- !u!1 &265417072
@@ -4183,7 +4183,7 @@ MonoBehaviour:
   Onstep: 0
   canEnter: 0
   stepNum: 0
-  nextScene: scene4
+  nextScene: scene1
 --- !u!1 &912631153
 GameObject:
   m_ObjectHideFlags: 0
@@ -7324,7 +7324,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 1530105413
+  m_SortingLayerID: 1531714459
   m_SortingOrder: 51
   m_TargetDisplay: 0
 --- !u!224 &1821330274
