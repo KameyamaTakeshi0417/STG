@@ -2906,6 +2906,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   checkInterval: 1
   enemies: []
+  isCalled: 0
 --- !u!114 &736362686
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3773,6 +3774,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   checkInterval: 1
   enemies: []
+  isCalled: 0
 --- !u!4 &1394382606
 Transform:
   m_ObjectHideFlags: 0
@@ -4412,6 +4414,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   checkInterval: 1
   enemies: []
+  isCalled: 0
 --- !u!4 &1651506167
 Transform:
   m_ObjectHideFlags: 0
