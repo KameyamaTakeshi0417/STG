@@ -9,6 +9,20 @@ public class equipMenuManager : MonoBehaviour
     public GameObject selectEquipScrollUI;
 
     // Start is called before the first frame update
+    void Awake()
+    {
+        Canvas canvas = gameObject.GetComponent<Canvas>();
+        if (canvas != null)
+        {
+            canvas.worldCamera = Camera.main;
+            Debug.Log("startRewarUI");
+        }
+        else
+        {
+            Debug.LogError("Canvas component not found on this GameObject.");
+        }
+    }
+
     void Start()
     {
         rewardManager targetRewardManager = GameObject

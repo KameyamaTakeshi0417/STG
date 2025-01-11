@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5266270450127908542}
   - component: {fileID: 1533693221546898036}
   - component: {fileID: 8293380040888585499}
+  - component: {fileID: -2759356671238372097}
   m_Layer: 0
   m_Name: TangledFoot_RewardObject
   m_TagString: Untagged
@@ -148,3 +149,15 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &-2759356671238372097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4825919582345253749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbea5d5657a2ebc4785baf3bc6c4b834, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

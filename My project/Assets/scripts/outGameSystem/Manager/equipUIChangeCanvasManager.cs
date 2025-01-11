@@ -49,6 +49,18 @@ public class equipUIChangeCanvasManager : MonoBehaviour
         if (canvas != null)
         {
             canvas.worldCamera = Camera.main;
+            Camera[] cameras = Camera.allCameras;
+            foreach (Camera cam in cameras)
+            {
+                if (cam.CompareTag("MainCamera"))
+                {
+                    // MainCameraを取得
+                    Camera mainCamera = cam;
+                    canvas.worldCamera = mainCamera;
+                    break;
+                }
+            }
+
             Debug.Log("Canvas is set with the main camera.");
         }
         else
@@ -63,21 +75,17 @@ public class equipUIChangeCanvasManager : MonoBehaviour
     {
         // 要素を生成し、スクロールバーUIに追加
         GameObject newElement = Instantiate(elementPrefab, ViewPort.transform);
-
-        // スプライトと名前を設定
-        Image spriteImage = newElement.transform.Find("Image").GetComponent<Image>();
-        TextMeshPro nameText = newElement
-            .transform.Find("objectExplain")
-            .GetComponent<TextMeshPro>();
-
-        if (spriteImage != null && nameText != null)
+        if (newElement == null)
         {
-            SpriteRenderer spriteRenderer = obj.GetComponent<SpriteRenderer>();
-            if (spriteRenderer != null)
-            {
-                spriteImage.sprite = spriteRenderer.sprite;
-            }
-            nameText.text = obj.name;
+            Debug.Log("エレメント取得できてない");
+        }
+        // スプライトと名前を設定
+        Image spriteImage = newElement.transform.Find("ObjImage").GetComponent<Image>();
+
+        if (spriteImage == null)
+        {
+            Debug.LogError("ObjImage not found in the new element!");
+            return;
         }
 
         // クリックイベントを設定

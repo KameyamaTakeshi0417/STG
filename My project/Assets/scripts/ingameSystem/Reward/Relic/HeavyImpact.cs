@@ -13,11 +13,13 @@ public class HeavyImpact : _Relic_Base
     public override void GetEffect()
     {
         base.GetEffect();
+        //ダメージ軽減＋ダメージ上昇
     } //取得時のみ呼び出す
 
     public override void EquipEffect()
     {
         base.EquipEffect();
+        //発射スパン減少、防御力修正
     } //フロア開始時に呼び出す。
 
     public override void UnEquipEffect()

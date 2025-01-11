@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4411647033833063054}
   - component: {fileID: 8430303238022386459}
   - component: {fileID: 7846506832229337476}
+  - component: {fileID: -2383803297417809297}
   - component: {fileID: 2984953134163136434}
   m_Layer: 0
   m_Name: FullFocus_RewardObject
@@ -103,6 +104,18 @@ MonoBehaviour:
   itemRarelity: 5
   targetObj: {fileID: 5343932838368336543, guid: 9ec60c9ee67c73e4db863b40f36772a7, type: 3}
   accessAddress: Objects/Reward/Relic/FullFocus_RewardObject
+--- !u!114 &-2383803297417809297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5307890653785900603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd19598d2bd00134392749589fb0ff4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!61 &2984953134163136434
 BoxCollider2D:
   m_ObjectHideFlags: 0
