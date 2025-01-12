@@ -785,7 +785,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 268301442}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 244834915}
+        m_TargetAssemblyTypeName: EventHandler_Osaisen, Assembly-CSharp
+        m_MethodName: Action1
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &268301442
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -906,7 +918,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 287172957}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 244834915}
+        m_TargetAssemblyTypeName: EventHandler_Osaisen, Assembly-CSharp
+        m_MethodName: Action3
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &287172957
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1102,7 +1126,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 455193056}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 244834915}
+        m_TargetAssemblyTypeName: EventHandler_Osaisen, Assembly-CSharp
+        m_MethodName: Action2
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &455193056
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1270,6 +1306,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetCanvas: {fileID: 244834910}
+  check: 0
 --- !u!212 &612590514
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2343,7 +2380,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1588917154}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 244834915}
+        m_TargetAssemblyTypeName: EventHandler_Osaisen, Assembly-CSharp
+        m_MethodName: Action4
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1588917154
 MonoBehaviour:
   m_ObjectHideFlags: 0
