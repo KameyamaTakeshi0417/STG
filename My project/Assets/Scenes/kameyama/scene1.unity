@@ -2055,7 +2055,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u306A\u306B\u3082\u5165\u308C\u306A\u3044"
+  m_text: "\u7948\u308B\u3060\u3051\u306A\u3089\u30BF\u30C0"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 67b664555ef4c9242a9035fe8dbd5d39, type: 2}
   m_sharedMaterial: {fileID: -479698885679972380, guid: 67b664555ef4c9242a9035fe8dbd5d39, type: 2}
@@ -2082,8 +2082,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20.2
-  m_fontSizeBase: 20.2
+  m_fontSize: 18.86
+  m_fontSizeBase: 18.86
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2761,7 +2761,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "100Exp\u6D88\u8CBB"
+  m_text: "100Exp\u5165\u308C\u308B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 67b664555ef4c9242a9035fe8dbd5d39, type: 2}
   m_sharedMaterial: {fileID: -479698885679972380, guid: 67b664555ef4c9242a9035fe8dbd5d39, type: 2}
@@ -2788,8 +2788,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 22
+  m_fontSizeBase: 22
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -3112,7 +3112,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "200Exp\u6D88\u8CBB"
+  m_text: "200Exp\u5165\u308C\u308B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 67b664555ef4c9242a9035fe8dbd5d39, type: 2}
   m_sharedMaterial: {fileID: -479698885679972380, guid: 67b664555ef4c9242a9035fe8dbd5d39, type: 2}
@@ -3139,8 +3139,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 22
+  m_fontSizeBase: 22
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -3527,7 +3527,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "50Exp\u6D88\u8CBB"
+  m_text: "50Exp\u5165\u308C\u308B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 67b664555ef4c9242a9035fe8dbd5d39, type: 2}
   m_sharedMaterial: {fileID: -479698885679972380, guid: 67b664555ef4c9242a9035fe8dbd5d39, type: 2}
@@ -3554,8 +3554,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 22
+  m_fontSizeBase: 22
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

@@ -15,38 +15,36 @@ public class EventHandler_Osaisen : _EventHandlerBase
     }
 
     public override void Action1()
-    {
-        // 重み付きリストを作成。最上位のシークレットレアは特殊な方法でないと排出しないことにした。ギャラクシーなんちゃらの影響。
-        Dictionary<int, int> weightedNumbers = new Dictionary<int, int>()
-        { //弾丸85%、レリック15%
-            { 0, 70 }, // 大当たり
-            { 1, 25 }, //辺り
-            { 2, 5 }, //外れ、スカ
-        };
-        // 累積重みを計算
-        int totalWeight = 0;
-        foreach (var weight in weightedNumbers.Values)
-        {
-            totalWeight += weight;
-        }
-        // Randomクラスのインスタンスを作成
-        System.Random random = new System.Random();
-        int resultNum = 0;
-        // 配列をループして重み付けによるランダムな値を設定
-        // 0から累積重みの範囲内で乱数を取得
-        int randomValue = random.Next(0, totalWeight);
+    { //200Exp消費するイベント。一番成功率高い
+        createText(CreateValue(70, 25, 5));
 
-        // 重みをもとに数値を選択
-        foreach (var kvp in weightedNumbers)
-        {
-            if (randomValue < kvp.Value)
-            {
-                resultNum = kvp.Key;
-                break;
-            }
-            randomValue -= kvp.Value;
-        }
-        textZone.text = useText[3];
+        changeActivateButton(4, false);
+        quitButton.SetActive(true);
+    }
+
+    public override void Action2()
+    { //100Exp消費。
+        createText(CreateValue(40, 50, 10));
+        changeActivateButton(4, false);
+        quitButton.SetActive(true);
+    }
+
+    public override void Action3()
+    { //50P消費
+        createText(CreateValue(20, 65, 15));
+        changeActivateButton(4, false);
+        quitButton.SetActive(true);
+    }
+
+    public override void Action4()
+    { //0P消費
+        createText(CreateValue(5, 20, 75));
+        changeActivateButton(4, false);
+        quitButton.SetActive(true);
+    }
+
+    private void createText(int resultNum)
+    {
         switch (resultNum)
         {
             case 0:
@@ -57,21 +55,47 @@ public class EventHandler_Osaisen : _EventHandlerBase
                 break;
 
             case 2:
-                textZone.text = useText[4];
+                textZone.text = useText[3];
                 break;
 
             default:
                 break;
         }
-        changeActivateButton(4, false);
-        quitButton.SetActive(true);
     }
 
-    public override void Action2() { }
+    private int CreateValue(int value1, int value2, int value3)
+    {
+        //50Exp消費
+        // 重み付きリストを作成。
+        Dictionary<int, int> weightedNumbers = new Dictionary<int, int>()
+        { //弾丸85%、レリック15%
+            { 0, value1 }, // 大当たり
+            { 1, value2 }, //辺り
+            { 2, value3 }, //外れ、スカ
+        };
+        // 累積重みを計算
+        int totalWeight = 0;
+        foreach (var weight in weightedNumbers.Values)
+        {
+            totalWeight += weight;
+        }
+        // Randomクラスのインスタンスを作成
+        System.Random random = new System.Random();
 
-    public override void Action3() { }
-
-    public override void Action4() { }
-
-    public override void Action5() { }
+        // 配列をループして重み付けによるランダムな値を設定
+        // 0から累積重みの範囲内で乱数を取得
+        int randomValue = random.Next(0, totalWeight);
+        int ret = 0;
+        // 重みをもとに数値を選択
+        foreach (var kvp in weightedNumbers)
+        {
+            if (randomValue < kvp.Value)
+            {
+                ret = kvp.Key;
+                break;
+            }
+            randomValue -= kvp.Value;
+        }
+        return ret;
+    }
 }
