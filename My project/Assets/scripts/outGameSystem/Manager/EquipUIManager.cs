@@ -33,6 +33,7 @@ public class EquipUIManager : _Manager_Base
     {
         Time.timeScale = 0f;
         selectionCanvas.SetActive(true);
+        selectionCanvas.GetComponent<PlayerStatusWatcher>().Init(GameObject.Find("Player"));
         setImageEquipMenu();
     }
 
