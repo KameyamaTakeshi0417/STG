@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public struct enemyList
@@ -39,7 +41,8 @@ public class EnemyList : MonoBehaviour
     void Start()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        setEnemy(gameManager.getBattleCount());
+        if (SceneManager.GetActiveScene().name == "scene0")
+            setEnemy(gameManager.getBattleCount());
     }
 
     void Awake() { }
