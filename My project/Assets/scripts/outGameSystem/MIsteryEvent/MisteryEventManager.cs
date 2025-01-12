@@ -53,5 +53,6 @@ public class MisteryEventManager : MonoBehaviour
     public void closeUI()
     {
         targetCanvas.SetActive(false);
+        Debug.Log("EventQUit!");
     }
 }

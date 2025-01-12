@@ -63,6 +63,8 @@ public class EventHandler_Osaisen : _EventHandlerBase
             default:
                 break;
         }
+        changeActivateButton(4, false);
+        quitButton.SetActive(true);
     }
 
     public override void Action2() { }
