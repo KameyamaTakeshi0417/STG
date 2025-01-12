@@ -49,9 +49,11 @@ public class EventHandler_Osaisen : _EventHandlerBase
         {
             case 0:
                 textZone.text = useText[1];
+                BigHit();
                 break;
             case 1:
                 textZone.text = useText[2];
+                MiddleHit();
                 break;
 
             case 2:
@@ -97,5 +99,34 @@ public class EventHandler_Osaisen : _EventHandlerBase
             randomValue -= kvp.Value;
         }
         return ret;
+    }
+
+    private void BigHit()
+    {
+        GameObject player = GameObject.Find("Player");
+        Player playerStatusScript = player.GetComponent<Player>();
+        PlayerHealth playerHPScript = player.GetComponent<PlayerHealth>();
+
+        playerStatusScript.DamageAdd += 20;
+        playerStatusScript.BlockDmg += 15;
+        playerHPScript.HP += 40;
+        playerHPScript.currentHP += 20;
+    }
+
+    private void MiddleHit()
+    {
+        GameObject player = GameObject.Find("Player");
+        Player playerStatusScript = player.GetComponent<Player>();
+        PlayerHealth playerHPScript = player.GetComponent<PlayerHealth>();
+
+        playerStatusScript.DamageAdd += 5;
+        playerStatusScript.BlockDmg += 5;
+        playerHPScript.HP += 10;
+        playerHPScript.currentHP += 5;
+    }
+
+    private void NoHit()
+    {
+        return;
     }
 }
