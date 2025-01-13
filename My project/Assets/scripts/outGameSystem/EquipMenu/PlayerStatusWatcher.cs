@@ -34,17 +34,4 @@ public class PlayerStatusWatcher : MonoBehaviour
     {
         targetObj.GetComponent<TextMeshProUGUI>().text = setText;
     }
-
-    public static string[] statusStringArray =
-    {
-        "HP",
-        "currentHP",
-        "damageRatio",
-        "addDmg",
-        "blockRatio",
-        "addBlock",
-        "playerSpeed",
-        "coolTime",
-        "bulletSpeed",
-    };
 }

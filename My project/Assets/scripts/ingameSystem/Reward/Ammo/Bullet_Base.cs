@@ -6,6 +6,7 @@ using UnityEngine.UIElements;
 
 public class Bullet_Base : MonoBehaviour
 {
+    public string Objname;
     protected Rigidbody2D rb;
     public float dmg; // 弾のダメージ量
     public float Speed; //弾の出る速度

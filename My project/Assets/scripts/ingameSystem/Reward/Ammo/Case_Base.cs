@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Case_Base : MonoBehaviour
 {
+    public string Objname;
     protected GameObject myBullet;
     public float DestroyTime = 200f; //弾の存在する時間
     public float Speed;

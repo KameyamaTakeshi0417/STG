@@ -31,6 +31,24 @@ public class EquipUIManager : _Manager_Base
         // 初期カメラ設定
         AssignMainCamera();
         selectionCanvas.GetComponent<PlayerStatusWatcher>().Init(GameObject.Find("Player"));
+        EquipManager targetManager = GetComponent<EquipManager>();
+        GameObject targetObj = null;
+        if (targetManager.activeBullet != null)
+        {
+            Debug.Log("呼び出し成功");
+            targetObj = targetManager.activeBullet.GetComponent<ItemPickUp>().targetObj;
+            selectionCanvas.GetComponent<BulletStatusWatcher>().BulletInit(targetObj);
+        }
+        if (targetManager.activeCase != null)
+        {
+            targetObj = targetManager.activeCase.GetComponent<ItemPickUp>().targetObj;
+            selectionCanvas.GetComponent<BulletStatusWatcher>().CaseInit(targetObj);
+        }
+        if (targetManager.activePrimer != null)
+        {
+            targetObj = targetManager.activePrimer.GetComponent<ItemPickUp>().targetObj;
+            selectionCanvas.GetComponent<BulletStatusWatcher>().PrimerInit(targetObj);
+        }
     }
 
     // Update is called once per frame
@@ -47,7 +65,21 @@ public class EquipUIManager : _Manager_Base
         Time.timeScale = 0f;
         selectionCanvas.SetActive(true);
         selectionCanvas.GetComponent<PlayerStatusWatcher>().Init(GameObject.Find("Player"));
-        setImageEquipMenu();
+        EquipManager targetManager = GetComponent<EquipManager>();
+        GameObject targetObj = null;
+        if (targetManager.activeBullet != null)
+        {
+            Debug.Log("呼び出し成功");
+            targetObj = targetManager.activeBullet.GetComponent<ItemPickUp>().targetObj;
+            selectionCanvas.GetComponent<BulletStatusWatcher>().BulletInit(targetObj);
+        }
+        if (targetManager.activeCase != null)
+        {
+            targetObj = targetManager.activeCase.GetComponent<ItemPickUp>().targetObj;
+            selectionCanvas.GetComponent<BulletStatusWatcher>().CaseInit(targetObj);
+        }
+        if (targetManager.activePrimer != null)
+            setImageEquipMenu();
     }
 
     public void closeUI()

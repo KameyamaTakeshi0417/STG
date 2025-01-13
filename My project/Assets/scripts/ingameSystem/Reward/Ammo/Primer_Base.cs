@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class Primer_Base : MonoBehaviour
 {
+    public string Objname;
     GameObject targetBulletObj;
     Case_Base targetCase;
     Bullet_Base targetBulletScript;
-    protected float pow;
+    public float pow;
     protected float speed;
     protected int rarelity;
     public string primerName;
