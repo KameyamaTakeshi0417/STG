@@ -15,6 +15,7 @@ public class PlayerStatusWatcher : MonoBehaviour
     public void Init(GameObject PlayerObj)
     {
         targetScript = PlayerObj.GetComponent<Player>();
+        targetHealthScript = PlayerObj.GetComponent<PlayerHealth>();
         SetText(showUI[0], targetHealthScript.HP.ToString());
         SetText(showUI[1], targetHealthScript.currentHP.ToString());
         SetText(showUI[2], targetScript.DamageMag.ToString());

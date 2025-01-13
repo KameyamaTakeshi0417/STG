@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class EquipUIManager : _Manager_Base
@@ -18,6 +19,18 @@ public class EquipUIManager : _Manager_Base
         {
             selectionCanvas.SetActive(false); // 初期状態で選択 UI を非表示にしておく
         }
+    }
+
+    void Awake()
+    {
+        // Canvas の取得
+
+        // シーンロード完了時にカメラを再設定
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
+        // 初期カメラ設定
+        AssignMainCamera();
+        selectionCanvas.GetComponent<PlayerStatusWatcher>().Init(GameObject.Find("Player"));
     }
 
     // Update is called once per frame
@@ -41,6 +54,23 @@ public class EquipUIManager : _Manager_Base
     {
         selectionCanvas.SetActive(false);
         Time.timeScale = 1f;
+    }
+
+    private void AssignMainCamera()
+    {
+        // 現在のシーンの Main Camera を取得
+        Camera mainCamera = Camera.main;
+        Canvas canvas = selectionCanvas.GetComponent<Canvas>();
+        if (mainCamera != null)
+        {
+            canvas.renderMode = RenderMode.ScreenSpaceCamera; // 必要に応じて設定
+            canvas.worldCamera = mainCamera;
+            Debug.Log("Main Camera assigned to Canvas: " + mainCamera.name);
+        }
+        else
+        {
+            Debug.LogError("Main Camera not found!");
+        }
     }
 
     protected void setImageEquipMenu()
@@ -166,5 +196,18 @@ public class EquipUIManager : _Manager_Base
                 imageChanger.newSprite = tmpSprite;
             }
         }
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // シーンロード後にカメラを再設定
+        Debug.Log("Scene loaded: " + scene.name);
+        AssignMainCamera();
+    }
+
+    private void OnDestroy()
+    {
+        // イベントリスナーの解除
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 }
