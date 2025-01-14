@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class equipUIChangeCanvasManager : MonoBehaviour
@@ -24,7 +25,7 @@ public class equipUIChangeCanvasManager : MonoBehaviour
         MyCanvas = gameObject.GetComponent<Canvas>();
         MyCanvas.sortingLayerName = "UI";
         MyCanvas.sortingOrder = 100;
-
+        AssignMainCamera();
         // 各ゲームオブジェクトをスクロールUIに追加
         foreach (
             GameObject obj in GameObject
@@ -39,6 +40,9 @@ public class equipUIChangeCanvasManager : MonoBehaviour
             }
         }
         isInitialized = true; // 初期化完了
+        // シーンロード完了時にカメラを再設定
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        AssignMainCamera();
     }
 
     void Awake()
@@ -154,5 +158,33 @@ public class equipUIChangeCanvasManager : MonoBehaviour
     public void CloseUI()
     {
         Destroy(this.gameObject);
+    }
+
+    private void AssignMainCamera()
+    {
+        // 現在のシーンの Main Camera を取得
+        Camera mainCamera = Camera.main;
+        Canvas canvas = MyCanvas;
+        if (mainCamera != null)
+        {
+            canvas.renderMode = RenderMode.ScreenSpaceCamera; // 必要に応じて設定
+            canvas.worldCamera = mainCamera;
+            Debug.Log("Main Camera assigned to Canvas: " + mainCamera.name);
+        }
+        else
+        {
+            Debug.LogError("Main Camera not found!");
+        }
+        // CanvasのSortingLayerを指定
+        string sortingLayerName = "SystemUI"; // ここでレイヤー名を指定
+        canvas.sortingLayerName = sortingLayerName;
+        Debug.Log("Canvas sorting layer set to: " + sortingLayerName);
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // シーンロード後にカメラを再設定
+        Debug.Log("Scene loaded: " + scene.name);
+        AssignMainCamera();
     }
 }

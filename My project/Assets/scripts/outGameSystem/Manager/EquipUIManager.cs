@@ -25,11 +25,7 @@ public class EquipUIManager : _Manager_Base
     {
         // Canvas の取得
 
-        // シーンロード完了時にカメラを再設定
-        SceneManager.sceneLoaded += OnSceneLoaded;
 
-        // 初期カメラ設定
-        AssignMainCamera();
         selectionCanvas.GetComponent<PlayerStatusWatcher>().Init(GameObject.Find("Player"));
         EquipManager targetManager = GetComponent<EquipManager>();
         GameObject targetObj = null;
@@ -49,6 +45,10 @@ public class EquipUIManager : _Manager_Base
             targetObj = targetManager.activePrimer.GetComponent<ItemPickUp>().targetObj;
             selectionCanvas.GetComponent<BulletStatusWatcher>().PrimerInit(targetObj);
         }
+        // シーンロード完了時にカメラを再設定
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
+        AssignMainCamera();
     }
 
     // Update is called once per frame
@@ -79,7 +79,11 @@ public class EquipUIManager : _Manager_Base
             selectionCanvas.GetComponent<BulletStatusWatcher>().CaseInit(targetObj);
         }
         if (targetManager.activePrimer != null)
-            setImageEquipMenu();
+        {
+            targetObj = targetManager.activePrimer.GetComponent<ItemPickUp>().targetObj;
+            selectionCanvas.GetComponent<BulletStatusWatcher>().PrimerInit(targetObj);
+        }
+        setImageEquipMenu();
     }
 
     public void closeUI()
