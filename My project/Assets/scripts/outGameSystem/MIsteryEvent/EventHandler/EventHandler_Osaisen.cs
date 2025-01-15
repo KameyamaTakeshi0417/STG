@@ -16,24 +16,53 @@ public class EventHandler_Osaisen : _EventHandlerBase
 
     public override void Action1()
     { //200Exp消費するイベント。一番成功率高い
-        createText(CreateValue(70, 25, 5));
-
-        changeActivateButton(4, false);
-        quitButton.SetActive(true);
+        GameObject player = GameObject.Find("Player");
+        Player playerStatusScript = player.GetComponent<Player>();
+        if (playerStatusScript.Exp < 200)
+        {
+            return;
+        }
+        else
+        {
+            playerStatusScript.Exp -= 200;
+            createText(CreateValue(70, 25, 5));
+            changeActivateButton(4, false);
+            quitButton.SetActive(true);
+        }
     }
 
     public override void Action2()
     { //100Exp消費。
-        createText(CreateValue(40, 50, 10));
-        changeActivateButton(4, false);
-        quitButton.SetActive(true);
+        GameObject player = GameObject.Find("Player");
+        Player playerStatusScript = player.GetComponent<Player>();
+        if (playerStatusScript.Exp < 100)
+        {
+            return;
+        }
+        else
+        {
+            playerStatusScript.Exp -= 100;
+            createText(CreateValue(40, 50, 10));
+            changeActivateButton(4, false);
+            quitButton.SetActive(true);
+        }
     }
 
     public override void Action3()
     { //50P消費
-        createText(CreateValue(20, 65, 15));
-        changeActivateButton(4, false);
-        quitButton.SetActive(true);
+        GameObject player = GameObject.Find("Player");
+        Player playerStatusScript = player.GetComponent<Player>();
+        if (playerStatusScript.Exp < 50)
+        {
+            return;
+        }
+        else
+        {
+            playerStatusScript.Exp -= 50;
+            createText(CreateValue(20, 65, 15));
+            changeActivateButton(4, false);
+            quitButton.SetActive(true);
+        }
     }
 
     public override void Action4()
