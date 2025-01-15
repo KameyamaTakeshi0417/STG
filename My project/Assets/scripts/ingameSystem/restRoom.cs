@@ -20,8 +20,8 @@ public class restRoom : MonoBehaviour
         {
             GameObject.Find("fadeBoard").GetComponent<FadeBoard>().callFadeScreen();
             useRest = true;
-            Health playerHealth;
-            playerHealth = GameObject.Find("Player").GetComponent<Health>();
+            PlayerHealth playerHealth;
+            playerHealth = GameObject.Find("Player").GetComponent<PlayerHealth>();
             int healHP;
             healHP = (int)(playerHealth.getCurrentHP() + (int)playerHealth.getHP() * 0.3f);
             if (healHP > playerHealth.getCurrentHP())
