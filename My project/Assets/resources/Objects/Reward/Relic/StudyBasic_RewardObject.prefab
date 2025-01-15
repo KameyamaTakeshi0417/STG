@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4411647033833063054}
   - component: {fileID: 8430303238022386459}
+  - component: {fileID: -5545953266156618871}
   - component: {fileID: 7846506832229337476}
   - component: {fileID: 2984953134163136434}
-  - component: {fileID: -5545953266156618871}
   m_Layer: 0
   m_Name: StudyBasic_RewardObject
   m_TagString: Untagged
@@ -87,6 +87,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &-5545953266156618871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5307890653785900603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d20a58e836b1734585200bda97586aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &7846506832229337476
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,15 +163,3 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &-5545953266156618871
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5307890653785900603}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d20a58e836b1734585200bda97586aa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

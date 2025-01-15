@@ -61,23 +61,35 @@ public class rewardUIManager : _Manager_Base
         //3=ノーマルレリック
         //4=アンコモンレリック
         //5=レアレリック
-
+        System.Random rand = new System.Random();
         switch (index)
         {
             case 3:
                 createObjName = "Objects/Reward/Relic/StrawBerry_RewardObject";
+
+                createObjName =
+                    "Objects/Reward/Relic/"
+                    + normalRelicArray[rand.Next(normalRelicArray.Length)]
+                    + "_RewardObject";
                 break;
             case 4:
                 createObjName = "Objects/Reward/Relic/Vajra_RewardObject";
+                createObjName =
+                    "Objects/Reward/Relic/"
+                    + UnCommonRelicArray[rand.Next(UnCommonRelicArray.Length)]
+                    + "_RewardObject";
                 break;
             case 5:
                 createObjName = "Objects/Reward/Relic/MemoryDeluge_RewardObject";
+                createObjName =
+                    "Objects/Reward/Relic/"
+                    + rareRelicArray[rand.Next(rareRelicArray.Length)]
+                    + "_RewardObject";
                 break;
             case 0:
             case 1:
             case 2:
             default:
-                System.Random rand = new System.Random();
                 createObjName = "Objects/Reward/" + AmmoTypeArray[rand.Next(AmmoTypeArray.Length)];
                 createObjName +=
                     AmmoCategoryArray[rand.Next(AmmoCategoryArray.Length)] + "_RewardObject";
@@ -244,7 +256,8 @@ public class rewardUIManager : _Manager_Base
             targetButton.onClick.AddListener(() => soundManager.Play("UI_Decide"));
 
             targetButton.onClick.AddListener(() => continueGame());
-            targetButton.onClick.AddListener(() => Destroy(targetRewardObj));
+            if (targetRewardObj != null)
+                targetButton.onClick.AddListener(() => Destroy(targetRewardObj));
         }
     }
 
@@ -297,10 +310,21 @@ public class rewardUIManager : _Manager_Base
 
     //仮レリックはコンボA,コンボB、単体で使うものを実装した。
     //コンボAは鈍足デメリットを無敵化で補い、コンボBは弾速すごいけど威力がカスになるのを固定ダメージで補うってもの
-    public static string[] normalRelicArray = { "quipStep", "studyBasic", "StrawBerry" }; //それぞれクイックステップ解禁、弾速修正、体力回復
-    public static string[] UnCommonRelicArray = { "heavyImpact", "mightOfOak", "Vajra" }; //走っていないとき威力修正、リロード修正、ダメージ補正
-    public static string[] rareRelicArray = { "tangledFoot", "fullFocus", "MemoryDeluge" }; //走れない代わりにバリア展開、基本ダメージ0になるけど固定ダメージ追加、お金ゲット、お金分補正
-    public static string[] canUseRelicArray = { "StrawBerry", "Vajra", "MemoryDeluge" };
+    public static string[] normalRelicArray = { "QuipStep", "StudyBasic", "StrawBerry" }; //それぞれクイックステップ解禁、弾速修正、体力回復
+    public static string[] UnCommonRelicArray = { "HeavyImpact", "MightOfOak", "Vajra" }; //走っていないとき威力修正、リロード修正、ダメージ補正
+    public static string[] rareRelicArray = { "TangledFoot", "FullFocus", "MemoryDeluge" }; //走れない代わりにバリア展開、基本ダメージ0になるけど固定ダメージ追加、お金ゲット、お金分補正
+    public static string[] canUseRelicArray =
+    {
+        "QuipStep",
+        "StudyBasic",
+        "StrawBerry",
+        "HeavyImpact",
+        "MightOfOak",
+        "Vajra",
+        "TangledFoot",
+        "FullFocus",
+        "MemoryDeluge",
+    };
     //レアレリック：バレットユニファイアー-取得時に同じ種類のバレットをすべて統合。装備効果：戦闘終了時にバレット統合。火力+、攻撃時小ダメージ。
     //レアレリック：弾食らい-取得時効果：基本火力+5、装備時：最大30ダメージ軽減、軽減分次のダメージにプラス。弾速度減少
 }

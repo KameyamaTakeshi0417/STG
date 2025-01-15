@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 913c854531f6fbd4f9f764e38bd57d39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemData: {fileID: 0}
+  itemData: {fileID: 11400000, guid: f41d2f6a97425894ead5e8859af126c0, type: 2}
   itemType: Relic
   itemRarelity: 1
   targetObj: {fileID: 0}
