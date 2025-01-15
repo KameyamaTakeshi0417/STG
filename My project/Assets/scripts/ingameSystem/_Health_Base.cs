@@ -72,6 +72,9 @@ public class _Health_Base : MonoBehaviour
 
     public void AddCurrentHP(float set)
     {
+        float ret = set;
+        if (currentHP + set > HP)
+            set = HP;
         currentHP += set;
     }
 }
