@@ -104,6 +104,8 @@ MonoBehaviour:
   itemRarelity: 1
   targetObj: {fileID: 0}
   accessAddress: Objects/Reward/QuickStep_RewardObject
+  nameText: 
+  explainText: \n
 --- !u!61 &8293380040888585499
 BoxCollider2D:
   m_ObjectHideFlags: 0

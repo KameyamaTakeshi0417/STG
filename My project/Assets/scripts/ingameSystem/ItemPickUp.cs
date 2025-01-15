@@ -14,6 +14,8 @@ public class ItemPickUp : MonoBehaviour
     public string accessAddress;
 
     private static List<GameObject> persistentObjects = new List<GameObject>();
+    public string nameText;
+    public string explainText;
 
     void Start()
     {

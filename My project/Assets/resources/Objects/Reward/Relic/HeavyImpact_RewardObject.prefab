@@ -104,6 +104,8 @@ MonoBehaviour:
   itemRarelity: 5
   targetObj: {fileID: 5343932838368336543, guid: 9ec60c9ee67c73e4db863b40f36772a7, type: 3}
   accessAddress: Objects/Reward/Relic/HeavyImpact_RewardObject
+  nameText: 
+  explainText: \n
 --- !u!61 &2984953134163136434
 BoxCollider2D:
   m_ObjectHideFlags: 0

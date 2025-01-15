@@ -103,6 +103,8 @@ MonoBehaviour:
   itemRarelity: 1
   targetObj: {fileID: 3095739216751408760, guid: 34c4f06ad861dfe418a3868fe7e43462, type: 3}
   accessAddress: Objects/Reward/PiercingBullet_RewardObject
+  nameText: "\u8CAB\u901A\u5F3E"
+  explainText: "\u5F3E\u4E38\u304C\u6575\u3092\u8CAB\u901A\u3059\u308B\u3088\u3046\u306B\u306A\u308B\u3002"
 --- !u!61 &8293380040888585499
 BoxCollider2D:
   m_ObjectHideFlags: 0

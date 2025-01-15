@@ -94,6 +94,12 @@ public class Bullet_Base : MonoBehaviour
 
     public void callHitEffect()
     {
+        DrainEffect targetScript;
+        targetScript = GetComponent<DrainEffect>();
+        if (targetScript != null)
+        {
+            targetScript.MakeEffect();
+        }
         StartCoroutine(hitEffect());
     }
 

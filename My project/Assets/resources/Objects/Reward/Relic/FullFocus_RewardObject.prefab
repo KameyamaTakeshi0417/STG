@@ -104,6 +104,8 @@ MonoBehaviour:
   itemRarelity: 5
   targetObj: {fileID: 5343932838368336543, guid: 9ec60c9ee67c73e4db863b40f36772a7, type: 3}
   accessAddress: Objects/Reward/Relic/FullFocus_RewardObject
+  nameText: "\u904E\u304E\u305F\u308B\u96C6\u4E2D\uFF08\u30EC\u30A2\u30EC\u30EA\u30C3\u30AF\uFF09"
+  explainText: "\u53D6\u5F97\u6642:\\n"
 --- !u!114 &-2383803297417809297
 MonoBehaviour:
   m_ObjectHideFlags: 0

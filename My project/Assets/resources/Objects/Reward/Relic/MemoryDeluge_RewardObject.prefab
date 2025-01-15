@@ -104,6 +104,9 @@ MonoBehaviour:
   itemRarelity: 5
   targetObj: {fileID: 5343932838368336543, guid: 9ec60c9ee67c73e4db863b40f36772a7, type: 3}
   accessAddress: Objects/Reward/Relic/MemoryDeluge_RewardObject
+  nameText: "\u8A18\u61B6\u306E\u6C3E\u6FEB\uFF08\u30EC\u30A2\u30EC\u30EA\u30C3\u30AF\uFF09"
+  explainText: "\u53D6\u5F97\u6642\uFF1A300Exp\u3092\u7372\u5F97\u3059\u308B\u3002\\n\u88C5\u5099\u6642\uFF1A\u8FFD\u52A0\u30C0\u30E1\u30FC\u30B8\u3068\u30C0\u30E1\u30FC\u30B8\u8EFD\u6E1B\u3092x\u5F97\u3066\u3001\\n
+    x\u79D2\u88AB\u30C0\u30E1\u30FC\u30B8\u91CF\u304C1.5\u500D\u306B\u306A\u308B\u3002x\u306F\u6240\u6301Exp\u306B\u7B49\u3057\u3044\u3002"
 --- !u!114 &-4143177087591647077
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -103,6 +103,8 @@ MonoBehaviour:
   itemRarelity: 1
   targetObj: {fileID: 8751345717704160567, guid: ae4de9f8089238a42b9f40f8a8007785, type: 3}
   accessAddress: Objects/Reward/NormalCase_RewardObject
+  nameText: "\u4E00\u5FB9\u85AC\u83A2"
+  explainText: "\u653B\u6483\u306E\u57FA\u790E\u30C0\u30E1\u30FC\u30B8\u304C\u4E0A\u6607\u3059\u308B\u3002"
 --- !u!61 &8293380040888585499
 BoxCollider2D:
   m_ObjectHideFlags: 0

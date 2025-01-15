@@ -14,6 +14,7 @@ public class NormalBullet : Bullet_Base
 
     protected override void OnTriggerEnter2D(Collider2D collision)
     {
+        base.callHitEffect();
         // 衝突したオブジェクトのタグをチェック
         if (collision.CompareTag("Enemy") || collision.CompareTag("Player"))
         {

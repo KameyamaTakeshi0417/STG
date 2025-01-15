@@ -246,20 +246,34 @@ public class EquipManager : _Manager_Base
         OnEquipChanged?.Invoke(tmpCategory, activateType, tmpSprite);
         bool subChanged = false;
         EquipStackDecide decideScript = gameObject.GetComponent<EquipStackDecide>();
+        _Relic_Base targetRelicScript = null;
         switch (activateType)
         {
             case "first":
+
+                if (EquipRelic1 != null)
+                    EquipRelic1.GetComponent<_Relic_Base>().UnEquipEffect();
                 EquipRelic1 = item;
+                targetRelicScript = EquipRelic1.GetComponent<_Relic_Base>();
+                targetRelicScript.EquipEffect();
                 // 新しいスプライトを設定
                 imageChange(item, activateType);
                 break;
             case "second":
+                if (EquipRelic2 != null)
+                    EquipRelic2.GetComponent<_Relic_Base>().UnEquipEffect();
                 EquipRelic2 = item;
+                targetRelicScript = EquipRelic2.GetComponent<_Relic_Base>();
+                targetRelicScript.EquipEffect();
                 // 新しいスプライトを設定
                 imageChange(item, activateType);
                 break;
             case "third":
+                if (EquipRelic3 != null)
+                    EquipRelic3.GetComponent<_Relic_Base>().UnEquipEffect();
                 EquipRelic3 = item;
+                targetRelicScript = EquipRelic3.GetComponent<_Relic_Base>();
+                targetRelicScript.EquipEffect();
                 // 新しいスプライトを設定
                 imageChange(item, activateType);
                 break;

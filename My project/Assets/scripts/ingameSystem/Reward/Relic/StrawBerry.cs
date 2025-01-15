@@ -21,15 +21,18 @@ public class StrawBerry : _Relic_Base
     {
         base.EquipEffect();
         m_Playerhealth.TakeDamage(30);
-    }
-
-    public override void EquipHitEffect()
-    {
-        m_Playerhealth.AddCurrentHP(2);
+        if (m_Player.GetComponent<DrainHandler>() == null)
+        {
+            m_Player.AddComponent<DrainHandler>();
+        }
     }
 
     public override void UnEquipEffect()
     {
         base.UnEquipEffect();
+        if (m_Player.GetComponent<DrainHandler>() != null)
+        {
+            Destroy(m_Player.GetComponent<DrainHandler>());
+        }
     } //装備解除時に呼び出す。バフを打ち消したりするためのもの
 }

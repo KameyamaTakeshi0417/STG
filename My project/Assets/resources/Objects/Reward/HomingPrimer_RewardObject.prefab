@@ -103,6 +103,8 @@ MonoBehaviour:
   itemRarelity: 1
   targetObj: {fileID: 1105239664719311294, guid: 50af1607c4d4d83448b14aa496103318, type: 3}
   accessAddress: Objects/Reward/HomingPrimer_RewardObject
+  nameText: "\u8FFD\u5C3E\u5F3E"
+  explainText: "\uFF08\u767A\u5C04\u52B9\u679C\uFF09\\n\u5F3E\u4E38\u306B\u8FFD\u5C3E\u6027\u80FD\u3092\u4ED8\u4E0E\u3059\u308B\u3002"
 --- !u!61 &1916286870448690094
 BoxCollider2D:
   m_ObjectHideFlags: 0

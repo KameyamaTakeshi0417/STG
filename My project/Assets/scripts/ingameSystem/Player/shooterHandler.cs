@@ -99,7 +99,14 @@ public class ShooterHandler : MonoBehaviour
         // オブジェクトの向きを変更
         float rotationAngle = Mathf.Atan2(watch.y, watch.x) * Mathf.Rad2Deg;
         // transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotationAngle));
+        float BuffedDamage = playerStatusScript.pow + playerStatusScript.DamageAdd;
+        //バフによるダメージ増減の処理
+        if (GetComponent<FullFocusHandler>() != null)
+        {
+            BuffedDamage += GetComponent<FullFocusHandler>().ShootCheck();
+        }
 
+        //弾丸生成処理
         if (activeBullet == null)
         {
             Debug.LogWarning("No active bullet equipped.");
@@ -123,11 +130,7 @@ public class ShooterHandler : MonoBehaviour
         Bullet_Base bulletScript = bulletPrefab.GetComponent<Bullet_Base>();
         if (bulletScript != null)
         {
-            bulletScript.setStatus(
-                watch,
-                bulletSpeed,
-                playerStatusScript.pow + playerStatusScript.DamageAdd
-            );
+            bulletScript.setStatus(watch, bulletSpeed, BuffedDamage);
         }
         else
         {
@@ -163,7 +166,12 @@ public class ShooterHandler : MonoBehaviour
             primerScript.targetBullet = bulletPrefab;
             primerScript.StrikePrimer();
         }
-
+        //ドレイン効果が付与できるなら付与する
+        DrainHandler targetHandler = GetComponent<DrainHandler>();
+        if (targetHandler != null)
+        {
+            targetHandler.AttachEffect(bulletPrefab);
+        }
         // 弾丸の発射
         bulletScript?.fire();
 

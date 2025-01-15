@@ -7,6 +7,7 @@ public class HomingBullet : Bullet_Base
 
     protected override void OnTriggerEnter2D(Collider2D collision)
     {
+        base.callHitEffect();
         // 衝突したオブジェクトのタグをチェック
         if (collision.CompareTag("Enemy"))
         {
