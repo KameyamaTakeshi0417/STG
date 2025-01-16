@@ -104,8 +104,8 @@ MonoBehaviour:
   itemRarelity: 5
   targetObj: {fileID: 5343932838368336543, guid: 9ec60c9ee67c73e4db863b40f36772a7, type: 3}
   accessAddress: Objects/Reward/Relic/HeavyImpact_RewardObject
-  nameText: 
-  explainText: \n
+  nameText: "\u91CD\u6483"
+  explainText: "\u53D6\u5F97\u6642\uFF1A\u653B\u6483\u3001\u9632\u5FA1\u304C15\u4E0A\u6607\u3059\u308B\u3002\\n\u88C5\u5099\u6642\uFF1A\u653B\u6483\u3068\u9632\u5FA1\u304C1.5\u500D\u3055\u308C\u308B\u3002\u653B\u6483\u901F\u5EA6\u304C\u5927\u5E45\u306B\u9045\u304F\u306A\u308B\u3002"
 --- !u!61 &2984953134163136434
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -163,3 +163,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50f43ec77a618214c9d82e05358f4e6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  oldSpan: 0

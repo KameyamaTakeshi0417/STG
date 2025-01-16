@@ -13,15 +13,34 @@ public class TangledFoot : _Relic_Base
     public override void GetEffect()
     {
         base.GetEffect();
+        m_Playerhealth.addHP(50);
     } //取得時のみ呼び出す
 
     public override void EquipEffect()
     {
         base.EquipEffect();
-    } //フロア開始時に呼び出す。
+        if (m_Player.GetComponent<DrainHandler>() == null)
+        {
+            m_Player.AddComponent<DrainHandler>();
+        }
+        m_Player.AddComponent<DrainHandler>().DrainPoint += 4;
+        m_PlayerScript.moveSpeedMag -= 0.3f;
+    }
 
     public override void UnEquipEffect()
     {
         base.UnEquipEffect();
+        if (m_Player.AddComponent<DrainHandler>().DrainPoint > 4)
+        {
+            m_Player.AddComponent<DrainHandler>().DrainPoint -= 4;
+        }
+        else
+        {
+            if (m_Player.GetComponent<DrainHandler>() != null)
+            {
+                Destroy(m_Player.GetComponent<DrainHandler>());
+            }
+        }
+        m_PlayerScript.moveSpeedMag += 0.3f;
     } //装備解除時に呼び出す。バフを打ち消したりするためのもの
 }

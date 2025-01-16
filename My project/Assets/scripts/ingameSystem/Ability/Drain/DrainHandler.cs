@@ -10,9 +10,11 @@ public class DrainHandler : _EffectHandlerBase
     // Update is called once per frame
     void Update() { }
 
+    public float DrainPoint = 0;
+
     public override void AttachEffect(GameObject targetObj)
     {
         DrainEffect targetScript = targetObj.AddComponent<DrainEffect>();
-        targetScript.DrainPoint = 2;
+        targetScript.DrainPoint = DrainPoint;
     }
 }

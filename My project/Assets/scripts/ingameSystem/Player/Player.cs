@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     public float BlockMag = 1f; //ダメージ軽減倍率
 
     public float moveSpeed;
+    public float moveSpeedMag = 1;
     public float bulletSpeed;
     public float BulletSpan; // フレーム
     public bool onCoolTime;
@@ -123,7 +124,7 @@ public class Player : MonoBehaviour
         }
 
         // キャラクターを移動させる
-        rb.velocity = input * moveSpeed;
+        rb.velocity = input * (moveSpeed * moveSpeedMag);
     }
 
     private void LockOnEnemy(Vector3 mousePosition)

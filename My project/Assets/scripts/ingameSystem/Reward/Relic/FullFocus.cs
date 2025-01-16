@@ -16,6 +16,7 @@ public class FullFocus : _Relic_Base
     {
         base.GetEffect();
         //攻撃力上方修正
+        m_PlayerScript.DamageAdd += 20;
     } //取得時のみ呼び出す
 
     public override void EquipEffect()
@@ -29,7 +30,6 @@ public class FullFocus : _Relic_Base
         }
         //移動速度が大幅減少
         playerSpeed = m_PlayerScript.moveSpeed;
-        m_PlayerScript.moveSpeed -= (m_PlayerScript.moveSpeed) * 0.5f;
     } //フロア開始時に呼び出す。
 
     public override void UnEquipEffect()
@@ -40,6 +40,5 @@ public class FullFocus : _Relic_Base
         {
             Destroy(m_Player.GetComponent<FullFocusHandler>());
         }
-        m_PlayerScript.moveSpeed = playerSpeed;
     } //装備解除時に呼び出す。バフを打ち消したりするためのもの
 }

@@ -25,14 +25,22 @@ public class StrawBerry : _Relic_Base
         {
             m_Player.AddComponent<DrainHandler>();
         }
+        m_Player.AddComponent<DrainHandler>().DrainPoint += 2;
     }
 
     public override void UnEquipEffect()
     {
         base.UnEquipEffect();
-        if (m_Player.GetComponent<DrainHandler>() != null)
+        if (m_Player.AddComponent<DrainHandler>().DrainPoint > 2)
         {
-            Destroy(m_Player.GetComponent<DrainHandler>());
+            m_Player.AddComponent<DrainHandler>().DrainPoint -= 2;
+        }
+        else
+        {
+            if (m_Player.GetComponent<DrainHandler>() != null)
+            {
+                Destroy(m_Player.GetComponent<DrainHandler>());
+            }
         }
     } //装備解除時に呼び出す。バフを打ち消したりするためのもの
 }

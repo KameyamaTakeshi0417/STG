@@ -25,14 +25,16 @@ public class HeavyImpact : _Relic_Base
         base.EquipEffect();
         //発射スパン減少、防御力修正
         oldSpan = m_PlayerScript.BulletSpan;
-        m_PlayerScript.BlockMag = 1.5f;
+        m_PlayerScript.DamageMag += 0.5f;
+        m_PlayerScript.BlockMag += 0.5f;
         m_PlayerScript.BulletSpan = m_PlayerScript.BulletSpan * 0.75f;
     } //フロア開始時に呼び出す。
 
     public override void UnEquipEffect()
     {
         base.UnEquipEffect();
-        m_PlayerScript.BlockMag = 1.0f;
+        m_PlayerScript.DamageMag -= 0.5f;
+        m_PlayerScript.BlockMag -= 0.5f;
         m_PlayerScript.BulletSpan = oldSpan;
     } //装備解除時に呼び出す。バフを打ち消したりするためのもの
 }
