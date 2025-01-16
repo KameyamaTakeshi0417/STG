@@ -69,21 +69,21 @@ public class rewardUIManager : _Manager_Base
 
                 createObjName =
                     "Objects/Reward/Relic/"
-                    + normalRelicArray[rand.Next(normalRelicArray.Length)]
+                    + normalRelicArray[rand.Next(normalRelicArray.Length - 1)]
                     + "_RewardObject";
                 break;
             case 4:
                 createObjName = "Objects/Reward/Relic/Vajra_RewardObject";
                 createObjName =
                     "Objects/Reward/Relic/"
-                    + UnCommonRelicArray[rand.Next(UnCommonRelicArray.Length)]
+                    + UnCommonRelicArray[rand.Next(UnCommonRelicArray.Length - 1)]
                     + "_RewardObject";
                 break;
             case 5:
                 createObjName = "Objects/Reward/Relic/MemoryDeluge_RewardObject";
                 createObjName =
                     "Objects/Reward/Relic/"
-                    + rareRelicArray[rand.Next(rareRelicArray.Length)]
+                    + rareRelicArray[rand.Next(rareRelicArray.Length - 1)]
                     + "_RewardObject";
                 break;
             case 0:
@@ -95,6 +95,7 @@ public class rewardUIManager : _Manager_Base
                     AmmoCategoryArray[rand.Next(AmmoCategoryArray.Length)] + "_RewardObject";
                 break;
         }
+        Debug.Log("SelectedObj" + createObjName);
         GameObject prefab = Resources.Load<GameObject>(createObjName);
         temporaryList.Add(prefab);
         switch (index)
@@ -120,7 +121,7 @@ public class rewardUIManager : _Manager_Base
             default:
                 //コモンアモ作成 1-3の値を付与する
                 rarelityValue = Random.Range(1, 4);
-                prefab.GetComponent<ItemPickUp>().itemRarelity = rarelityValue;
+                //prefab.GetComponent<ItemPickUp>().itemRarelity = rarelityValue;
                 break;
         }
         Debug.Log(createObjName + "rarelity" + prefab.GetComponent<ItemPickUp>().itemRarelity);
