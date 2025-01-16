@@ -311,7 +311,7 @@ public class rewardUIManager : _Manager_Base
 
     //仮レリックはコンボA,コンボB、単体で使うものを実装した。
     //コンボAは鈍足デメリットを無敵化で補い、コンボBは弾速すごいけど威力がカスになるのを固定ダメージで補うってもの
-    public static string[] normalRelicArray = { "QuipStep", "StudyBasic", "StrawBerry" }; //それぞれクイックステップ解禁、弾速修正、体力回復
+    public static string[] normalRelicArray = { "QuickStep", "StudyBasic", "StrawBerry" }; //それぞれクイックステップ解禁、弾速修正、体力回復
     public static string[] UnCommonRelicArray = { "HeavyImpact", "MightOfOak", "Vajra" }; //走っていないとき威力修正、リロード修正、ダメージ補正
     public static string[] rareRelicArray = { "TangledFoot", "FullFocus", "MemoryDeluge" }; //走れない代わりにバリア展開、基本ダメージ0になるけど固定ダメージ追加、お金ゲット、お金分補正
     public static string[] canUseRelicArray =
