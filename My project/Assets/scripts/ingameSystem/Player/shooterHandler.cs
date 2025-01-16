@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class ShooterHandler : MonoBehaviour
 {
-    public float bulletSpeed;
-    public float BulletSpan; // フレーム
     public bool onCoolTime;
     public AudioSource shootAudioSource; // 弾の発射音用のAudioSource
     public float moveRadius = 5f; // プレイヤーを中心とする半径
@@ -38,6 +36,10 @@ public class ShooterHandler : MonoBehaviour
     {
         if (Time.timeScale == 0f || isPaused)
             return;
+        if (isPaused)
+        {
+            return;
+        }
 
         // マウスの位置を取得
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -66,7 +68,7 @@ public class ShooterHandler : MonoBehaviour
         int count = 0;
         while (true)
         {
-            if (count >= BulletSpan)
+            if (count >= (playerStatusScript.BulletSpan * playerStatusScript.BulletSpanMag))
             {
                 onCoolTime = false;
                 yield break;
@@ -100,6 +102,8 @@ public class ShooterHandler : MonoBehaviour
         float rotationAngle = Mathf.Atan2(watch.y, watch.x) * Mathf.Rad2Deg;
         // transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotationAngle));
         float BuffedDamage = playerStatusScript.pow + playerStatusScript.DamageAdd;
+        if (BuffedDamage < 0)
+            BuffedDamage = 1;
         //バフによるダメージ増減の処理
         if (GetComponent<FullFocusHandler>() != null)
         {
@@ -130,7 +134,7 @@ public class ShooterHandler : MonoBehaviour
         Bullet_Base bulletScript = bulletPrefab.GetComponent<Bullet_Base>();
         if (bulletScript != null)
         {
-            bulletScript.setStatus(watch, bulletSpeed, BuffedDamage);
+            bulletScript.setStatus(watch, playerStatusScript.bulletSpeed, BuffedDamage);
         }
         else
         {

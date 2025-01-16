@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Action_QuickStep : MonoBehaviour
 {
-    public bool nowStep; // QuickStep使用中かどうか
+    public bool nowStep = false; // QuickStep使用中かどうか
     public float waitTime = 1.0f; // クールダウンの待機時間
-    public float stepLength = 15.0f; // 移動する距離
+    public float stepLength = 5.0f; // 移動する距離
 
     void Start()
     {

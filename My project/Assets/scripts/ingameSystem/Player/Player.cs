@@ -20,7 +20,9 @@ public class Player : MonoBehaviour
     public float moveSpeed;
     public float moveSpeedMag = 1;
     public float bulletSpeed;
+    public float bulletSpeedMag = 1.0f;
     public float BulletSpan; // フレーム
+    public float BulletSpanMag = 1.0f;
     public bool onCoolTime;
     public Vector3 watch;
     public float lockOnRadius = 5f; // ロックオンの半径
@@ -124,7 +126,12 @@ public class Player : MonoBehaviour
         }
 
         // キャラクターを移動させる
-        rb.velocity = input * (moveSpeed * moveSpeedMag);
+        float setSpd = (moveSpeed * moveSpeedMag);
+        if (setSpd <= 0)
+        {
+            setSpd = 0.1f;
+        }
+        rb.velocity = input * setSpd;
     }
 
     private void LockOnEnemy(Vector3 mousePosition)
@@ -155,7 +162,7 @@ public class Player : MonoBehaviour
         int count = 0;
         while (true)
         {
-            if (count >= BulletSpan)
+            if (count >= (BulletSpan * BulletSpanMag))
             {
                 onCoolTime = false;
                 yield break;

@@ -12718,8 +12718,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19a653717fa1ea4a8c66dd6f68b1555, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletSpeed: 1000
-  BulletSpan: 100
   onCoolTime: 0
   shootAudioSource: {fileID: 1603334043}
   moveRadius: 2
@@ -16196,6 +16194,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: -4217822520560754959, guid: ea02c46b4f1337e439dfe303aa5ec7b0, type: 3}
+    - {fileID: 7815110798661859022, guid: ea02c46b4f1337e439dfe303aa5ec7b0, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 3729972331255071290, guid: ea02c46b4f1337e439dfe303aa5ec7b0, type: 3}
