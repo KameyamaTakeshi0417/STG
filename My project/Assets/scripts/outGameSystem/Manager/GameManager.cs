@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour
         NowCol;
     public bool isCleared;
     private bool isGameOver = false;
+    public GameObject PlayerStatusUI;
 
     public int getBattleCount()
     {
@@ -62,6 +63,17 @@ public class GameManager : MonoBehaviour
     {
         // すべてのシーンでisClearedをfalseにリセット
         isCleared = false;
+        if (
+            SceneManager.GetActiveScene().name == "Continue"
+            || SceneManager.GetActiveScene().name == "Title"
+        )
+        {
+            PlayerStatusUI.SetActive(false);
+        }
+        else
+        {
+            PlayerStatusUI.SetActive(true);
+        }
         GameObject.Find("Player").transform.position = new Vector3(0, -10, 0);
         Debug.Log($"Scene {scene.name} loaded. isCleared has been reset to false.");
     }
@@ -110,28 +122,37 @@ public class GameManager : MonoBehaviour
         DisablePlayerInput();
 
         // 時間を止める
-        Time.timeScale = 0f;
+        //Time.timeScale = 0f;
         Debug.Log("Game Over: Time Stopped");
 
         // 1秒待機
         yield return new WaitForSecondsRealtime(1f); // RealtimeはTimeScaleの影響を受けない
         GameObject.Find("UICanvas").GetComponent<FadeBoard>().StartFadeIn();
-        // 時間を徐々に元に戻す
-        float duration = 2f;
-        float elapsed = 0f;
-        while (elapsed < duration)
-        {
-            elapsed += Time.unscaledDeltaTime; // TimeScaleの影響を受けない時間
-            Time.timeScale = Mathf.Lerp(0f, 1f, elapsed / duration);
-            yield return new WaitForSecondsRealtime(0.1f);
-        }
-
+        /*
+                // 時間を徐々に元に戻す
+                float duration = 2f;
+                float elapsed = 0f;
+                while (elapsed < duration)
+                {
+                    elapsed += Time.unscaledDeltaTime; // TimeScaleの影響を受けない時間
+                    //     Time.timeScale = Mathf.Lerp(0f, 1f, elapsed / duration);
+                    yield return new WaitForSecondsRealtime(0.1f);
+                }
+        */
         // 完全に元の状態に戻す
-        Time.timeScale = 1f;
+        //    Time.timeScale = 1f;
         Debug.Log("Game Over: Time Restored");
 
         // 必要に応じてゲームオーバー画面を表示
         ShowGameOverScreen();
+        yield return null;
+    }
+
+    private void ShowGameOverScreen()
+    {
+        Debug.Log("Game Over Screen Displayed");
+        DebugChangeScene("Continue");
+        // ゲームオーバー画面を表示する処理
     }
 
     public void DisablePlayerInput()
@@ -158,13 +179,6 @@ public class GameManager : MonoBehaviour
             player.enabled = true;
         }
         else { }
-    }
-
-    private void ShowGameOverScreen()
-    {
-        Debug.Log("Game Over Screen Displayed");
-        DebugChangeScene("Continue");
-        // ゲームオーバー画面を表示する処理
     }
 
     void FillArrayWithRandomValues()

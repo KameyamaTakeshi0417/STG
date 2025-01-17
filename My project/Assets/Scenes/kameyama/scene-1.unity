@@ -6117,6 +6117,7 @@ MonoBehaviour:
   NowRow: 0
   NowCol: 0
   isCleared: 0
+  PlayerStatusUI: {fileID: 366093521}
 --- !u!4 &736362684
 Transform:
   m_ObjectHideFlags: 0
@@ -7884,7 +7885,7 @@ MonoBehaviour:
   Onstep: 0
   canEnter: 0
   stepNum: 0
-  nextScene: scene1
+  nextScene: scene2
 --- !u!1 &912631153
 GameObject:
   m_ObjectHideFlags: 0
@@ -16089,11 +16090,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4077790636126634624, guid: ea02c46b4f1337e439dfe303aa5ec7b0, type: 3}
       propertyPath: moveSpeed
-      value: 10
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4077790636126634624, guid: ea02c46b4f1337e439dfe303aa5ec7b0, type: 3}
       propertyPath: BulletSpan
-      value: 100
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 4077790636126634624, guid: ea02c46b4f1337e439dfe303aa5ec7b0, type: 3}
       propertyPath: bullettype

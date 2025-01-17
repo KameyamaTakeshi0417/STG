@@ -84,6 +84,6 @@ public class FadeBoard : MonoBehaviour
             imageObject.color = color;
             yield return null;
         }
-        targetObject.SetActive(false);
+        targetObject.SetActive(true);
     }
 }
