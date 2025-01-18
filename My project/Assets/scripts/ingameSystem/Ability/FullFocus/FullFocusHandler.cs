@@ -24,7 +24,7 @@ public class FullFocusHandler : MonoBehaviour
         float ret = 0;
         if (focusCounter >= fullFocusCount)
         {
-            ret = GetComponent<Player>().DamageAdd * 9;
+            ret = GetComponent<Player>().DamageAdd * 20;
         }
         focusCounter = 0;
         return ret;

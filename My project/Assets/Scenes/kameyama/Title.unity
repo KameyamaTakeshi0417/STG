@@ -2366,8 +2366,8 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 1530105413
-  m_SortingOrder: 0
+  m_SortingLayerID: 1531714459
+  m_SortingOrder: 693
   m_TargetDisplay: 0
 --- !u!224 &743286176
 RectTransform:
@@ -5440,6 +5440,7 @@ MonoBehaviour:
   targetObject: {fileID: 1933356682}
   fadeInDuration: 2
   fadeOutDuration: 1
+  nowFade: 0
 --- !u!1 &1698732093
 GameObject:
   m_ObjectHideFlags: 0
@@ -5493,6 +5494,7 @@ MonoBehaviour:
   targetObject: {fileID: 0}
   fadeInDuration: 2
   fadeOutDuration: 1
+  nowFade: 0
 --- !u!114 &1698732096
 MonoBehaviour:
   m_ObjectHideFlags: 0

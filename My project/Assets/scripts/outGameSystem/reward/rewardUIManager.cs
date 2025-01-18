@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +14,12 @@ public class rewardUIManager : _Manager_Base
     public int[] targetIndex;
     public List<GameObject> temporaryList = new List<GameObject>();
     public List<GameObject> rewardObjects = new List<GameObject>();
+
+    [TextArea]
+    public TMP_Text NameGUI;
+
+    [TextArea]
+    public TMP_Text ExplainGUI;
 
     void Start()
     {
@@ -137,7 +144,6 @@ public class rewardUIManager : _Manager_Base
             this.gameObject.transform.position,
             Quaternion.identity
         );
-        Debug.Log("setupSelectionStart" + ui.name);
         freezeGame();
 
         Vector3 scaleMag = Vector3.one * 500f;
@@ -186,6 +192,7 @@ public class rewardUIManager : _Manager_Base
             Debug.LogError("Prefab could not be loaded. Please check the path.");
             return null;
         }
+        Obj.GetComponent<ButtonHoverHandler>().Init(gameObject, RObj);
         Debug.Log("CreateUIObj_End");
         setAsChildUI(Obj, RObj, pos);
         Selecttarget(Obj, RObj);
@@ -303,6 +310,12 @@ public class rewardUIManager : _Manager_Base
 
         // 見つからなかった場合は null を返す
         return null;
+    }
+
+    public void ChangeExplainText(string Name, string Explain)
+    {
+        NameGUI.text = Name;
+        ExplainGUI.text = Explain;
     }
 
     //弾丸の種類をここに記そう

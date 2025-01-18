@@ -104,8 +104,8 @@ MonoBehaviour:
   itemRarelity: 5
   targetObj: {fileID: 5343932838368336543, guid: 9ec60c9ee67c73e4db863b40f36772a7, type: 3}
   accessAddress: Objects/Reward/Relic/Vajra_RewardObject
-  nameText: 
-  explainText: \n
+  nameText: "\u4E09\u53C9\u5203\uFF08\u30A2\u30F3\u30B3\u30E2\u30F3\u30EC\u30EA\u30C3\u30AF\uFF09"
+  explainText: "\u53D6\u5F97\u6642\uFF1A\u653B\u6483\u309210\u5897\u3084\u3059\u3002\n\u88C5\u5099\u6642\uFF1A\u653B\u6483\u3092\u8FFD\u52A0\u306730\u5897\u3084\u3059\u3002\n\u9632\u5FA1-30\u3092\u5F97\u308B\u3002"
 --- !u!61 &2984953134163136434
 BoxCollider2D:
   m_ObjectHideFlags: 0

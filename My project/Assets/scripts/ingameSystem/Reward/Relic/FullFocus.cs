@@ -27,7 +27,7 @@ public class FullFocus : _Relic_Base
         {
             m_Player.AddComponent<FullFocusHandler>();
         }
-        m_PlayerScript.DamageAdd -= 30;
+        m_PlayerScript.DamageAdd -= 15;
     } //フロア開始時に呼び出す。
 
     public override void UnEquipEffect()
@@ -38,6 +38,6 @@ public class FullFocus : _Relic_Base
         {
             Destroy(m_Player.GetComponent<FullFocusHandler>());
         }
-        m_PlayerScript.DamageAdd += 30;
+        m_PlayerScript.DamageAdd += 15;
     } //装備解除時に呼び出す。バフを打ち消したりするためのもの
 }

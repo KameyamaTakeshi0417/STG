@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 271453201772235741}
   - component: {fileID: 7801995372039914650}
   - component: {fileID: 7053547469669243855}
+  - component: {fileID: 1161583502521234788}
   m_Layer: 0
   m_Name: RewardBasicBoard
   m_TagString: Untagged
@@ -120,3 +121,15 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1161583502521234788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2242417691602790165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51047e464e749474b8a4e0064cc7f4bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

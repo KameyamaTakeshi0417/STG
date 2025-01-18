@@ -104,7 +104,7 @@ MonoBehaviour:
   targetObj: {fileID: 8791454875908682115, guid: 9af2f54a695fa2142bf8cf8a65f800dc, type: 3}
   accessAddress: Objects/Reward/HomingCase_RewardObject
   nameText: "\u8FFD\u5C3E\u85AC\u83A2"
-  explainText: "\uFF08\u8ECC\u9053\u6642\u52B9\u679C\uFF09\\n\u6575\u3092\u8FFD\u5C3E\u3059\u308B\u3002"
+  explainText: "\uFF08\u8ECC\u9053\u6642\u52B9\u679C\uFF09\n\u6575\u3092\u8FFD\u5C3E\u3059\u308B\u3002"
 --- !u!61 &1237558717838923399
 BoxCollider2D:
   m_ObjectHideFlags: 0
