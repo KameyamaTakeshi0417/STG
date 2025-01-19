@@ -83,6 +83,12 @@ public class equipUIChangeCanvasManager : MonoBehaviour
         {
             Debug.Log("エレメント取得できてない");
         }
+        SliderElenetsUIHandler targetScript = newElement.GetComponent<SliderElenetsUIHandler>();
+        targetScript.Init(
+            obj.GetComponent<ItemPickUp>().nameText,
+            obj.GetComponent<ItemPickUp>().explainText,
+            obj.GetComponent<SpriteRenderer>()
+        );
         // スプライトと名前を設定
         Image spriteImage = newElement.transform.Find("ObjImage").GetComponent<Image>();
 

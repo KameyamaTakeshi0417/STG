@@ -11,6 +11,7 @@ public class EquipUIManager : _Manager_Base
     public GameObject Relic3UI;
     public delegate void EquipChangedHandler(string updatedCategory, Sprite newSprite);
     public static event EquipChangedHandler OnEquipChanged;
+    bool UIOpened = false;
 
     // Start is called before the first frame update
     void Start()
@@ -19,6 +20,7 @@ public class EquipUIManager : _Manager_Base
         {
             selectionCanvas.SetActive(false); // 初期状態で選択 UI を非表示にしておく
         }
+        UIOpened = false;
     }
 
     void Awake()
@@ -49,6 +51,7 @@ public class EquipUIManager : _Manager_Base
         SceneManager.sceneLoaded += OnSceneLoaded;
 
         AssignMainCamera();
+        UIOpened = false;
     }
 
     // Update is called once per frame
@@ -56,7 +59,16 @@ public class EquipUIManager : _Manager_Base
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            CallEquipUI();
+            if (UIOpened == false)
+            {
+                UIOpened = true;
+                CallEquipUI();
+            }
+            else
+            {
+                UIOpened = false;
+                closeUI();
+            }
         }
     }
 

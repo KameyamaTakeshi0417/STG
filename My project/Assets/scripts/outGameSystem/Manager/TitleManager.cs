@@ -20,6 +20,11 @@ public class TitleManager : MonoBehaviour
         SceneManager.sceneLoaded += OnSceneLoaded; // シーンロードイベントを追加
     }
 
+    void Awake()
+    {
+        ClearDontDestroyOnLoadObjects();
+    }
+
     private void OnDestroy()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded; // イベントの解除
@@ -78,18 +83,23 @@ public class TitleManager : MonoBehaviour
 
     public void ClearDontDestroyOnLoadObjects()
     {
-        // Unityシーンのルートオブジェクトをすべて取得
-        GameObject[] rootObjects = FindObjectsOfType<GameObject>();
+        // シーンに属していない（DontDestroyOnLoadに属している）オブジェクトを削除
+        GameObject[] allObjects = FindObjectsOfType<GameObject>();
 
-        // DontDestroyOnLoad に登録されているオブジェクトを特定
-        foreach (GameObject obj in rootObjects)
+        foreach (GameObject obj in allObjects)
         {
-            if (obj.scene.name == null || obj.scene.name == "")
+            // DontDestroyOnLoadされたオブジェクトを判別
+            if (obj.hideFlags == HideFlags.DontSave)
             {
-                // シーンに属していない（DontDestroyOnLoad に属している）オブジェクトを削除
                 Destroy(obj);
-                Debug.Log($"Deleted DontDestroy object: {obj.name}");
+                Debug.Log($"Deleted DontDestroyOnLoad object: {obj.name}");
             }
         }
+    }
+
+    // DontDestroyOnLoadが適用されているかを確認するメソッド
+    bool ObjectIsDontDestroyOnLoad(GameObject obj)
+    {
+        return obj.hideFlags == HideFlags.DontSave && obj.transform.root == obj.transform;
     }
 }

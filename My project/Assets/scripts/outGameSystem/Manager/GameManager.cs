@@ -66,6 +66,7 @@ public class GameManager : MonoBehaviour
         if (
             SceneManager.GetActiveScene().name == "Continue"
             || SceneManager.GetActiveScene().name == "Title"
+            || SceneManager.GetActiveScene().name == "scene5"
         )
         {
             PlayerStatusUI.SetActive(false);

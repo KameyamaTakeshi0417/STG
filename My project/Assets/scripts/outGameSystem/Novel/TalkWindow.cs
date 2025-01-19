@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class TalkWindow : MonoBehaviour
@@ -107,6 +108,7 @@ public class TalkWindow : MonoBehaviour
         //  Time.timeScale = 1f; // ゲームの時間を停止
         // 会話終了後の処理 (ウィンドウを閉じる、次のイベントに進むなど)
         Debug.Log("会話が終了しました");
+        DebugChangeScene("Title");
     }
 
     public StoryData GetStoryData(int index)
@@ -116,5 +118,47 @@ public class TalkWindow : MonoBehaviour
             return storyDataList[index];
         }
         return null;
+    }
+
+    public void DebugChangeScene(string name)
+    {
+        Debug.Log(name);
+        StartCoroutine(sceneChangeOn(name));
+    }
+
+    private IEnumerator sceneChangeOn(string name)
+    {
+        // SEの再生終了後にシーンを切り替え
+        ClearDontDestroyOnLoadObjects();
+        SceneManager.LoadScene(name);
+        yield return null;
+    }
+
+    public void ClearDontDestroyOnLoadObjects()
+    {
+        // シーンに属していない（DontDestroyOnLoadに属している）オブジェクトを削除
+        GameObject[] allObjects = FindObjectsOfType<GameObject>();
+
+        foreach (GameObject obj in allObjects)
+        {
+            // DontDestroyOnLoadされたオブジェクトを判別
+            if (obj.hideFlags == HideFlags.DontSave)
+            {
+                // 一時的にシーンに移動させる
+                MoveObjectToCurrentScene(obj);
+
+                // オブジェクトを削除
+                Destroy(obj);
+            }
+        }
+    }
+
+    private void MoveObjectToCurrentScene(GameObject obj)
+    {
+        // 現在のシーンを取得
+        Scene currentScene = SceneManager.GetActiveScene();
+
+        // オブジェクトを現在のシーンに移動
+        SceneManager.MoveGameObjectToScene(obj, currentScene);
     }
 }

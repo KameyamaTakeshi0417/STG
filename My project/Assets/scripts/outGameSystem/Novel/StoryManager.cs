@@ -4,6 +4,7 @@ using UnityEngine;
 public class StoryManager : MonoBehaviour
 {
     public List<StoryData> storyDataList = new List<StoryData>();
+    public GameObject fadeBoard;
 
     void Start()
     {
