@@ -264,8 +264,8 @@ public class rewardUIManager : _Manager_Base
             targetButton.onClick.AddListener(() => soundManager.Play("UI_Decide"));
 
             targetButton.onClick.AddListener(() => continueGame());
-            if (targetRewardObj != null)
-                targetButton.onClick.AddListener(() => Destroy(targetRewardObj));
+            /*            if (targetRewardObj != null)
+                            targetButton.onClick.AddListener(() => Destroy(targetRewardObj));*/
         }
     }
 

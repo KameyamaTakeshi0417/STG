@@ -113,7 +113,7 @@ public class ShooterHandler : MonoBehaviour
         //弾丸生成処理
         if (activeBullet == null)
         {
-            Debug.LogWarning("No active bullet equipped.");
+            //   Debug.LogWarning("No active bullet equipped.");
             bulletPrefab = Instantiate(
                 Resources.Load<GameObject>("Objects/Bullet/NormalBullet"),
                 createPos,

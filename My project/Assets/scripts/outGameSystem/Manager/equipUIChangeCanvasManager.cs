@@ -75,6 +75,12 @@ public class equipUIChangeCanvasManager : MonoBehaviour
 
     void Start() { }
 
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+            Destroy(gameObject);
+    }
+
     void CreateScrollElement(GameObject obj)
     {
         // 要素を生成し、スクロールバーUIに追加

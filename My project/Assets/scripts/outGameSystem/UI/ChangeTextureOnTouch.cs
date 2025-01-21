@@ -85,7 +85,7 @@ public class ChangeTextureOnTouch : MonoBehaviour
         gameObject.GetComponent<treasureBox>().setNowOpen(true);
         isShaking = false;
 
-        yield return disappear();
+        yield return null; //disappear();
     }
 
     private IEnumerator disappear()
