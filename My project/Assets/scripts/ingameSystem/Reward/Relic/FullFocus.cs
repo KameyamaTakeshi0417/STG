@@ -10,12 +10,12 @@ public class FullFocus : _Relic_Base
     // Update is called once per frame
     void Update() { }
 
-    //取得時:移動速度が15%上昇する。\n装備時：3秒攻撃をしていない場合、次の一撃の威力が20倍になる。\n攻撃力が-30される。
+    //取得時:移動速度が20%上昇する。\n装備時：3秒攻撃をしていない場合、次の一撃の威力が100倍になる。\n攻撃力倍率が-50%される。
     public override void GetEffect()
     {
         base.GetEffect();
         //攻撃力上方修正
-        m_PlayerScript.moveSpeedMag += 0.15f;
+        m_PlayerScript.moveSpeedMag += 0.2f;
     } //取得時のみ呼び出す
 
     public override void EquipEffect()
@@ -27,7 +27,7 @@ public class FullFocus : _Relic_Base
         {
             m_Player.AddComponent<FullFocusHandler>();
         }
-        m_PlayerScript.DamageAdd -= 15;
+        m_PlayerScript.DamageMag -= 0.50f;
     } //フロア開始時に呼び出す。
 
     public override void UnEquipEffect()
@@ -38,6 +38,6 @@ public class FullFocus : _Relic_Base
         {
             Destroy(m_Player.GetComponent<FullFocusHandler>());
         }
-        m_PlayerScript.DamageAdd += 15;
+        m_PlayerScript.DamageMag -= 0.50f;
     } //装備解除時に呼び出す。バフを打ち消したりするためのもの
 }

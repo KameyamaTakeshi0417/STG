@@ -6287,6 +6287,8 @@ MonoBehaviour:
   checkInterval: 1
   enemies: []
   isCalled: 0
+  clearSE: {fileID: 0}
+  BattleBGM: {fileID: 0}
 --- !u!114 &736362686
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10108,6 +10110,63 @@ MonoBehaviour:
   mainType: sub
   itemType: Bullet
   parentObject: {fileID: 1821330270}
+--- !u!1001 &1268990195
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4411647033833063054, guid: 2de6c6eeb846979408e7606403fd1d65, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.458
+      objectReference: {fileID: 0}
+    - target: {fileID: 4411647033833063054, guid: 2de6c6eeb846979408e7606403fd1d65, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.887024
+      objectReference: {fileID: 0}
+    - target: {fileID: 4411647033833063054, guid: 2de6c6eeb846979408e7606403fd1d65, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4411647033833063054, guid: 2de6c6eeb846979408e7606403fd1d65, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4411647033833063054, guid: 2de6c6eeb846979408e7606403fd1d65, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4411647033833063054, guid: 2de6c6eeb846979408e7606403fd1d65, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4411647033833063054, guid: 2de6c6eeb846979408e7606403fd1d65, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4411647033833063054, guid: 2de6c6eeb846979408e7606403fd1d65, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4411647033833063054, guid: 2de6c6eeb846979408e7606403fd1d65, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4411647033833063054, guid: 2de6c6eeb846979408e7606403fd1d65, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5307890653785900603, guid: 2de6c6eeb846979408e7606403fd1d65, type: 3}
+      propertyPath: m_Name
+      value: FullFocus_RewardObject
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2de6c6eeb846979408e7606403fd1d65, type: 3}
 --- !u!1 &1294793659
 GameObject:
   m_ObjectHideFlags: 0
@@ -13623,6 +13682,8 @@ MonoBehaviour:
   checkInterval: 1
   enemies: []
   isCalled: 0
+  clearSE: {fileID: 0}
+  BattleBGM: {fileID: 0}
 --- !u!4 &1651506167
 Transform:
   m_ObjectHideFlags: 0
@@ -16400,7 +16461,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4077790636126634624, guid: ea02c46b4f1337e439dfe303aa5ec7b0, type: 3}
       propertyPath: BulletSpan
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4077790636126634624, guid: ea02c46b4f1337e439dfe303aa5ec7b0, type: 3}
       propertyPath: bullettype
@@ -17981,3 +18042,4 @@ SceneRoots:
   - {fileID: 2038305668}
   - {fileID: 1108540407}
   - {fileID: 621743013}
+  - {fileID: 1268990195}

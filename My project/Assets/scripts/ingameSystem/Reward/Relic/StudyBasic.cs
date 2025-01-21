@@ -35,7 +35,7 @@ public class StudyBasic : _Relic_Base
 
     private void Effect(int num)
     {
-        m_PlayerScript.BulletSpanMag -= 0.1f * num;
+        m_PlayerScript.BulletSpanMag += 0.1f * num;
         m_PlayerScript.DamageMag += 0.1f * num;
         m_PlayerScript.BlockMag += 0.1f * num;
         m_PlayerScript.moveSpeedMag += 0.1f * num;

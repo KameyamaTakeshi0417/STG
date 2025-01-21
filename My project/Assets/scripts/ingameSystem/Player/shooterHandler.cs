@@ -74,7 +74,7 @@ public class ShooterHandler : MonoBehaviour
                 yield break;
             }
             count++;
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForSecondsRealtime(0.1f);
         }
     }
 
@@ -101,6 +101,7 @@ public class ShooterHandler : MonoBehaviour
         // オブジェクトの向きを変更
         float rotationAngle = Mathf.Atan2(watch.y, watch.x) * Mathf.Rad2Deg;
         // transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotationAngle));
+
         float BuffedDamage = playerStatusScript.pow + playerStatusScript.DamageAdd;
         if (BuffedDamage < 0)
             BuffedDamage = 1;

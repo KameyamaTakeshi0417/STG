@@ -18,7 +18,7 @@ public class Player : MonoBehaviour
     public float BlockMag = 1f; //ダメージ軽減倍率
 
     public float moveSpeed;
-    public float moveSpeedMag = 1;
+    public float moveSpeedMag = 1f;
     public float bulletSpeed;
     public float bulletSpeedMag = 1.0f;
     public float BulletSpan; // フレーム
@@ -168,7 +168,7 @@ public class Player : MonoBehaviour
                 yield break;
             }
             count++;
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForSecondsRealtime(0.1f);
         }
     }
 

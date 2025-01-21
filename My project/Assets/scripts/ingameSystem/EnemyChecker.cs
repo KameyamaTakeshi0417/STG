@@ -7,6 +7,9 @@ public class EnemyChecker : MonoBehaviour
     public GameObject[] enemies;
     public bool isCalled = false;
 
+    public AudioSource clearSE;
+    public AudioSource BattleBGM;
+
     void Start()
     {
         GameObject.Find("GameManager").GetComponent<GameManager>().setCleared(false);
@@ -41,6 +44,15 @@ public class EnemyChecker : MonoBehaviour
         // 必要な処理をここに追加
         if (isCalled == false)
         {
+            if (BattleBGM != null)
+            {
+                BattleBGM.Stop();
+            }
+            if (clearSE != null)
+            {
+                clearSE.Play();
+            }
+
             GameObject manager = GameObject.Find("GameManager");
             manager.GetComponent<GameManager>().setCleared(true);
             manager.GetComponent<rewardManager>().CreateTreasureBox(1);

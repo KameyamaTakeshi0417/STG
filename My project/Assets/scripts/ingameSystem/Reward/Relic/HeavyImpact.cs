@@ -38,6 +38,6 @@ public class HeavyImpact : _Relic_Base
     {
         m_PlayerScript.DamageMag += 0.5f * num;
         m_PlayerScript.BlockMag += 0.5f * num;
-        m_PlayerScript.BulletSpanMag -= 0.3f * num;
+        m_PlayerScript.BulletSpanMag += 0.5f * num;
     }
 }
