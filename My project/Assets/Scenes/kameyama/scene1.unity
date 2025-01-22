@@ -1564,6 +1564,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7333364572300598114, guid: 95cc7bd325cec9043831ca768492d5d2, type: 3}
+      propertyPath: stepNum
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7333364572300598114, guid: 95cc7bd325cec9043831ca768492d5d2, type: 3}
       propertyPath: fadeCanvas
       value: 
       objectReference: {fileID: 1222306515}
@@ -2115,6 +2119,8 @@ MonoBehaviour:
   checkInterval: 1
   enemies: []
   isCalled: 0
+  clearSE: {fileID: 0}
+  BattleBGM: {fileID: 0}
 --- !u!4 &946090159
 Transform:
   m_ObjectHideFlags: 0
@@ -2181,6 +2187,10 @@ PrefabInstance:
     - target: {fileID: 6301310949433501572, guid: 95cc7bd325cec9043831ca768492d5d2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7333364572300598114, guid: 95cc7bd325cec9043831ca768492d5d2, type: 3}
+      propertyPath: stepNum
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7333364572300598114, guid: 95cc7bd325cec9043831ca768492d5d2, type: 3}
       propertyPath: fadeCanvas
@@ -2519,7 +2529,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetObject: {fileID: 228791036}
-  fadeInDuration: 2
+  fadeInDuration: 1
   fadeOutDuration: 1
   nowFade: 0
 --- !u!1 &1253843395

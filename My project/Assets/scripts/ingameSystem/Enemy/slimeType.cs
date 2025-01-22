@@ -132,6 +132,7 @@ public class slimeType : EnemyBase
         slime1
             .GetComponent<Health>()
             .setCurrentHP(gameObject.GetComponent<Health>().getCurrentHP());
+        slime1.GetComponent<Health>().Exp = GetComponent<Health>().Exp / 3;
         slime1.transform.localScale = (gameObject.transform.localScale) * 0.75f;
     }
 

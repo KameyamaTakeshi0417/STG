@@ -2708,6 +2708,8 @@ MonoBehaviour:
   checkInterval: 1
   enemies: []
   isCalled: 0
+  clearSE: {fileID: 0}
+  BattleBGM: {fileID: 0}
 --- !u!114 &736362686
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3519,6 +3521,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7333364572300598114, guid: 95cc7bd325cec9043831ca768492d5d2, type: 3}
+      propertyPath: stepNum
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7333364572300598114, guid: 95cc7bd325cec9043831ca768492d5d2, type: 3}
       propertyPath: fadeCanvas
       value: 
       objectReference: {fileID: 1572245899}
@@ -3576,6 +3582,8 @@ MonoBehaviour:
   checkInterval: 1
   enemies: []
   isCalled: 0
+  clearSE: {fileID: 0}
+  BattleBGM: {fileID: 0}
 --- !u!4 &1394382606
 Transform:
   m_ObjectHideFlags: 0
@@ -4313,6 +4321,8 @@ MonoBehaviour:
   checkInterval: 1
   enemies: []
   isCalled: 0
+  clearSE: {fileID: 0}
+  BattleBGM: {fileID: 0}
 --- !u!4 &1651506167
 Transform:
   m_ObjectHideFlags: 0
@@ -4528,6 +4538,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6301310949433501572, guid: 95cc7bd325cec9043831ca768492d5d2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7333364572300598114, guid: 95cc7bd325cec9043831ca768492d5d2, type: 3}
+      propertyPath: stepNum
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7333364572300598114, guid: 95cc7bd325cec9043831ca768492d5d2, type: 3}

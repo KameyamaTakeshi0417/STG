@@ -108,7 +108,7 @@ public class TalkWindow : MonoBehaviour
         //  Time.timeScale = 1f; // ゲームの時間を停止
         // 会話終了後の処理 (ウィンドウを閉じる、次のイベントに進むなど)
         Debug.Log("会話が終了しました");
-        DebugChangeScene("Title");
+      //  DebugChangeScene("Title");
     }
 
     public StoryData GetStoryData(int index)

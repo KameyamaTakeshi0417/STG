@@ -8,6 +8,8 @@ public class ArmorBeetle : EnemyBase
     public bool makeBarrier;
 
     Coroutine currentCoroutine;
+    public Sprite blockSprite;
+    public Sprite StandardSprite;
 
     void Awake()
     {
@@ -82,7 +84,7 @@ public class ArmorBeetle : EnemyBase
         Debug.Log("StartBlock");
         stopMovingByVelocity();
         makeBarrier = true;
-
+        GetComponent<SpriteRenderer>().sprite = blockSprite;
         // バリア生成
         GameObject barrier = Instantiate(
             Resources.Load<GameObject>("Objects/Enemy/barrier"),
@@ -92,7 +94,7 @@ public class ArmorBeetle : EnemyBase
         barrier.GetComponent<Health>().setHP(myHealth.getHP());
         barrier.GetComponent<Health>().setCurrentHP(myHealth.getHP());
         barrier.GetComponent<barrier>().startDisappear();
-
+        GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezePosition;
         // 一定時間待機
         yield return new WaitForSeconds(5);
 
@@ -100,6 +102,8 @@ public class ArmorBeetle : EnemyBase
         //makeBarrier = false;
 
         // 次の状態へ移行
+        GetComponent<SpriteRenderer>().sprite = StandardSprite;
+        rb.constraints &= ~RigidbodyConstraints2D.FreezePosition;
         currentCoroutine = StartCoroutine(Idle());
     }
 

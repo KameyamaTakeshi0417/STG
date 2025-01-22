@@ -78,7 +78,7 @@ SpriteRenderer:
   m_SortingLayerID: -226196017
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: f0ffd2c1b2b1ead408b9d5f9db79ee29, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1d989b08574dbff48ade5d02826529dc, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -121,18 +121,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.12538505, y: 0.10776967}
+  m_Offset: {x: 0.04, y: -0.02}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 4, y: 4}
+    oldSize: {x: 2.56, y: 2.56}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 3.3027887, y: 2.5310931}
+  m_Size: {x: 2.2107687, y: 2.5310931}
   m_EdgeRadius: 0
 --- !u!114 &6739778351882358014
 MonoBehaviour:
@@ -159,9 +159,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adecb30a3579caf4abf4d199f8542e7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 500
-  currentHP: 500
-  Exp: 4
+  HP: 600
+  currentHP: 600
+  Exp: 36
   VulnerableTime: 0
   VulnerableFlg: 0
   damageTextPrefab: {fileID: 3988437868621658341, guid: 5ccc0cd62017e7542bc9974c88b5c92d, type: 3}
@@ -179,14 +179,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 0}
-  chaseSpeed: 0.1
+  chaseSpeed: 1.1
   myHealth: {fileID: 0}
   blockPoint: 0
   enemyType: 0
   pow: 100
   rotate: {x: 0, y: 0, z: 0}
   speedMag: 0
-  separateCount: 2
+  separateCount: 1
   radius: 2
   moneyCount: 0
 --- !u!50 &3014635963954712539

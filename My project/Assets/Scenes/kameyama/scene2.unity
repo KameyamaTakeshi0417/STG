@@ -448,6 +448,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7333364572300598114, guid: 95cc7bd325cec9043831ca768492d5d2, type: 3}
+      propertyPath: stepNum
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7333364572300598114, guid: 95cc7bd325cec9043831ca768492d5d2, type: 3}
       propertyPath: fadeCanvas
       value: 
       objectReference: {fileID: 337537238}
@@ -1595,6 +1599,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7333364572300598114, guid: 95cc7bd325cec9043831ca768492d5d2, type: 3}
+      propertyPath: stepNum
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7333364572300598114, guid: 95cc7bd325cec9043831ca768492d5d2, type: 3}
       propertyPath: fadeCanvas
       value: 
       objectReference: {fileID: 337537238}
@@ -1755,9 +1763,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e291c44f81f67842aebc20c410c50a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 300
-  currentHP: 300
-  Exp: 0
+  HP: 1000
+  currentHP: 1000
+  Exp: 40
   VulnerableTime: 0
   VulnerableFlg: 0
   damageTextPrefab: {fileID: 0}

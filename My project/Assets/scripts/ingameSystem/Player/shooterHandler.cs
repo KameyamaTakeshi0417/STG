@@ -105,6 +105,10 @@ public class ShooterHandler : MonoBehaviour
         float BuffedDamage = playerStatusScript.pow + playerStatusScript.DamageAdd;
         if (BuffedDamage < 0)
             BuffedDamage = 1;
+        if (playerStatusScript.DamageMag > 0)
+        {
+            BuffedDamage *= playerStatusScript.DamageMag;
+        }
         //バフによるダメージ増減の処理
         if (GetComponent<FullFocusHandler>() != null)
         {

@@ -189,11 +189,11 @@ public class GameManager : MonoBehaviour
         // 重み付きリストを作成。各数値とその重みを設定
         Dictionary<int, int> weightedNumbers = new Dictionary<int, int>()
         {
-            { 0, 55 }, // {n,m}でnが対象の数値、mが重み。合計100にするのが良いか。
-            { 1, 24 }, //0が通常戦闘部屋、1がイベント、2がエリートエネミー、3が休憩。4は宝物部屋、5はボス戦の番号となっておる。
-            { 2, 14 },
-            { 3, 5 },
-            { 4, 2 },
+            { 0, 42 }, // {n,m}でnが対象の数値、mが重み。合計100にするのが良いか。
+            { 1, 24 }, //0が通常戦闘部屋、1がイベント、2がエリートエネミー、3が休憩。4は商店、5はボス戦の番号となっておる。
+            { 2, 10 },
+            { 3, 10 },
+            { 4, 14 },
         };
 
         // 累積重みを計算
@@ -280,6 +280,29 @@ public class GameManager : MonoBehaviour
     public void setCleared(bool clear)
     {
         isCleared = clear;
+       // SetNextScene();
+    }
+
+    public void SetNextScene()
+    {
+        Scene activeScene = SceneManager.GetActiveScene();
+        // アクティブシーン内のすべてのゲームオブジェクトを検索
+        GameObject[] sceneObjects = activeScene.GetRootGameObjects();
+
+        foreach (var obj in sceneObjects)
+        {
+            // このオブジェクトが StepCollision スクリプトを持っているか確認
+            StepCollision[] scripts = obj.GetComponents<StepCollision>();
+
+            if (scripts.Length > 0)
+            {
+                // スクリプトが見つかった場合、そのスクリプトを利用
+                foreach (var script in scripts)
+                {
+                    script.stepNum = DungeonConstructArray[NowRow, NowCol].value; // 例: スクリプトの関数を呼び出し
+                }
+            }
+        }
     }
 
     public bool getCleared()

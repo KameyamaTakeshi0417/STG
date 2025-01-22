@@ -176,6 +176,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7333364572300598114, guid: 95cc7bd325cec9043831ca768492d5d2, type: 3}
+      propertyPath: stepNum
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7333364572300598114, guid: 95cc7bd325cec9043831ca768492d5d2, type: 3}
       propertyPath: fadeCanvas
       value: 
       objectReference: {fileID: 1802821035}
@@ -728,6 +732,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7333364572300598114, guid: 95cc7bd325cec9043831ca768492d5d2, type: 3}
+      propertyPath: stepNum
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7333364572300598114, guid: 95cc7bd325cec9043831ca768492d5d2, type: 3}
       propertyPath: fadeCanvas
       value: 
       objectReference: {fileID: 1802821035}
@@ -1236,7 +1244,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetObject: {fileID: 1924080671}
-  fadeInDuration: 2
+  fadeInDuration: 1
   fadeOutDuration: 1
   nowFade: 0
 --- !u!114 &1802821037
@@ -1337,7 +1345,6 @@ GameObject:
   - component: {fileID: 1924080675}
   - component: {fileID: 1924080674}
   - component: {fileID: 1924080673}
-  - component: {fileID: 1924080672}
   m_Layer: 5
   m_Name: fadeBoard
   m_TagString: Untagged
@@ -1345,22 +1352,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1924080672
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1924080671}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8df8311077750949b55091353ff97fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetObject: {fileID: 0}
-  fadeInDuration: 2
-  fadeOutDuration: 1
-  nowFade: 0
 --- !u!114 &1924080673
 MonoBehaviour:
   m_ObjectHideFlags: 0
