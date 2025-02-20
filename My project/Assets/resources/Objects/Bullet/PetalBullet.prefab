@@ -220,9 +220,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cycleCount: 0
-  cycleCountMax: 3
-  bulletSpeedMag: 0.005
-  involuteTimeMax: 1000
+  cycleCountMax: 2
+  bulletSpeedMag: 0.05
+  involuteTimeMax: 600
   involuteRadius: 1
   damage: 10
 --- !u!50 &5435358981537241717

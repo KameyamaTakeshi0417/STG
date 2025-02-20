@@ -141,7 +141,7 @@ public class petalBullet : MonoBehaviour
 
     private IEnumerator Involute(Vector2 startPos, float rotationWay)
     {
-        float speed = bulletSpeedMag * 500.0f;
+        float speed = bulletSpeedMag * 50.0f;
         float angle = 0.0f;
         int count = 0;
         Vector2 collectorPos;
@@ -163,9 +163,10 @@ public class petalBullet : MonoBehaviour
             angle += (speed * Time.deltaTime) * rotationWay;
 
             count++;
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForSecondsRealtime(0.01f);
         }
-        yield return homing();
+        bulletSpeedMag -= 0.01f;
+        yield return move();
     }
 
     private Vector2 CalculateInvolutePosition(float radius, float theta)
@@ -196,8 +197,8 @@ public class petalBullet : MonoBehaviour
     private IEnumerator homing()
     {
         int count = 0;
-        int countClock = 500;
-
+        int countClock = 150;
+        bulletSpeedMag -= 0.015f;
         while (true)
         {
             // プレイヤーに向けてオブジェクトの向きを変更
@@ -206,14 +207,14 @@ public class petalBullet : MonoBehaviour
             float rotationAngle = Mathf.Atan2(moveWay.y, moveWay.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotationAngle + 90));
 
-            transform.position += moveWay * (bulletSpeedMag * 4.0f);
+            transform.position += moveWay * (bulletSpeedMag);
             count++;
 
             if (count >= countClock)
             {
                 yield return move();
             }
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForSecondsRealtime(0.01f);
         }
     }
 
@@ -224,7 +225,7 @@ public class petalBullet : MonoBehaviour
 
         Vector3 moveWay = GameObject.Find("Player").transform.position - transform.position;
         moveWay.Normalize();
-
+        bulletSpeedMag += 0.035f;
         while (true)
         {
             transform.position += moveWay * bulletSpeedMag;
@@ -234,14 +235,47 @@ public class petalBullet : MonoBehaviour
             {
                 break;
             }
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForSecondsRealtime(0.01f);
         }
         cycleCount++;
         if (cycleCount > cycleCountMax)
         {
-            Destroy(this.gameObject);
+            yield return StraightOnly();
+            // Destroy(this.gameObject);
         }
-        yield return homing();
+        int num = (int)Random.Range(0, 3);
+        if (num % 2 == 0)
+        {
+            yield return homing();
+        }
+        else
+        {
+            yield return StraightOnly();
+        }
+    }
+
+    private IEnumerator StraightOnly()
+    {
+        int count = 0;
+        int countMax = 200;
+        bulletSpeedMag += 0.05f;
+        // プレイヤーに向けてオブジェクトの向きを変更
+        Vector3 moveWay = GameObject.Find("Player").transform.position - transform.position;
+        moveWay.Normalize();
+        float rotationAngle = Mathf.Atan2(moveWay.y, moveWay.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotationAngle + 90));
+        while (true)
+        {
+            transform.position += moveWay * (bulletSpeedMag);
+            count++;
+            if (count > countMax)
+            {
+                break;
+            }
+            yield return new WaitForSecondsRealtime(0.01f);
+        }
+        Destroy(this.gameObject);
+        yield break;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

@@ -5,16 +5,11 @@ using UnityEngine;
 public class BairngCase : Case_Base
 {
     // Start is called before the first frame update
-    void Start()
-    {
-
-    }
+    void Start() { }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() { }
 
-    }
     protected override IEnumerator move()
     {
         //移動中にベアリング弾を拡散させてほしいなあ

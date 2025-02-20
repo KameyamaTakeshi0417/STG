@@ -16,7 +16,10 @@ public class FadeBoard : MonoBehaviour
         FadestartStage();
     }
 
-    void Awake() { }
+    void Awake()
+    {
+        imageObject = targetObject.GetComponent<Image>();
+    }
 
     public void callFadeScreen()
     {

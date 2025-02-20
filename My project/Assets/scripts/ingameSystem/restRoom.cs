@@ -6,6 +6,7 @@ public class restRoom : MonoBehaviour
 {
     public bool canRest;
     public bool useRest;
+    public GameObject fadeBoard;
 
     // Start is called before the first frame update
     void Start()

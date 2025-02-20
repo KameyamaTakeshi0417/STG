@@ -15,7 +15,6 @@ public class HPBar_Enemy : HPBar_Base
         Health.OnHPChanged -= setSlideHPBar;
     }
 
-
     // Start is called before the first frame update
     public override void setSlideHPBar()
     {

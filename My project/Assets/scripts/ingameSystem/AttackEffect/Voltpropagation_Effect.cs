@@ -10,6 +10,7 @@ public class Voltpropagation_Effect : MonoBehaviour
     private int voltTime = 50;
     public Queue<GameObject> hitQueue = new Queue<GameObject>(); // 当たったオブジェクトを格納するキュー
     public GameObject parent;
+
     void Start()
     {
         Effect_Volt parentsScript;
@@ -18,18 +19,28 @@ public class Voltpropagation_Effect : MonoBehaviour
         voltTime = parentsScript.getVoltTime();
         IterationCount = parentsScript.getShockCount();
     }
+
     void OnTriggerEnter2D(Collider2D collision)
     {
         // キューに存在していないオブジェクトのみ追加し、IterationCountが0でない場合に処理を行う
-        if (collision.CompareTag("Enemy") && (!hitQueue.Contains(collision.gameObject) && IterationCount > 0))
+        if (
+            collision.CompareTag("Enemy")
+            && (!hitQueue.Contains(collision.gameObject) && IterationCount > 0)
+        )
         {
             hitQueue.Enqueue(collision.gameObject); // キューにオブジェクトを追加
             IterationCount--; // IterationCountを減少
 
             // CreateVolt関数を呼び出し
-            GameObject voltPrefab = Instantiate(Resources.Load<GameObject>("Objects/Effect_Volt"), collision.transform.position, Quaternion.identity);
+            GameObject voltPrefab = Instantiate(
+                Resources.Load<GameObject>("Objects/Effect_Volt"),
+                collision.transform.position,
+                Quaternion.identity
+            );
 
-            voltPrefab.GetComponent<Effect_Volt>().startVolt(dmg, voltTime, IterationCount - 1, hitQueue);
+            voltPrefab
+                .GetComponent<Effect_Volt>()
+                .startVolt(dmg, voltTime, IterationCount - 1, hitQueue);
         }
     }
 

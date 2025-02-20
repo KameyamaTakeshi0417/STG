@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 [CreateAssetMenu(fileName = "NewItemData", menuName = "Game/ItemData")]
 public class ItemData : ScriptableObject
 {
@@ -19,18 +20,21 @@ public class ItemData : ScriptableObject
     public string flavorText1;
     public string flavorText2;
     public string flavorText3;
+
     public void setDataforPlayer(float hp, float pow, float spd)
     {
         itemHP = hp;
         itemPower = pow;
         itemSpeed = spd;
     }
+
     public void setDataforBullet(float dmg, float lange, float span)
     {
         itemDamage = dmg;
         itemLange = lange;
         itemSpan = span;
     }
+
     public void setDataItemInfo(string name, int rarelity)
     {
         itemName = name;

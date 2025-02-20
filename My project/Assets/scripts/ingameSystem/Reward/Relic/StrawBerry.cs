@@ -25,7 +25,7 @@ public class StrawBerry : _Relic_Base
         {
             m_Player.AddComponent<DrainHandler>();
         }
-        m_Player.AddComponent<DrainHandler>().DrainPoint += 2;
+        m_Player.GetComponent<DrainHandler>().DrainPoint += 2;
     }
 
     public override void UnEquipEffect()
@@ -33,7 +33,7 @@ public class StrawBerry : _Relic_Base
         base.UnEquipEffect();
         if (m_Player.AddComponent<DrainHandler>().DrainPoint > 2)
         {
-            m_Player.AddComponent<DrainHandler>().DrainPoint -= 2;
+            m_Player.GetComponent<DrainHandler>().DrainPoint -= 2;
         }
         else
         {

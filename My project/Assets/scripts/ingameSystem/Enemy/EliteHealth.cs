@@ -73,16 +73,7 @@ public class EliteHealth : Health
         for (int i = 0; i < Exp; i++)
         {
             GameObject ExpObj = Instantiate(
-                Resources.Load<GameObject>("Objects/Exp"),
-                CreateExpPos(),
-                Quaternion.identity
-            );
-        }
-
-        for (int i = 0; i < moneyCount; i++)
-        {
-            GameObject moneyObj = Instantiate(
-                Resources.Load<GameObject>("Objects/money"),
+                Resources.Load<GameObject>("Objects/MoneyAndExp"),
                 CreateExpPos(),
                 Quaternion.identity
             );

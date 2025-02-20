@@ -99,9 +99,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69c4f19c8e66ea645a90822c0a037004, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Objname: 
   dmg: 10
   Speed: 1
-  DestroyTime: 3
+  DestroyTime: 100
   bullettype: 0
   rotate: {x: 0, y: 0, z: 0}
   rarelity: 1

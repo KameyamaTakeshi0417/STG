@@ -262,9 +262,14 @@ public class GameManager : MonoBehaviour
         int nextRow = NowRow;
         int nextCol = num;
         int nextFloor;
-        if (nextRow < 5)
+        if (nextRow < 4)
         {
             nextFloor = DungeonConstructArray[nextCol, nextRow].value;
+            NowRow += 1;
+        }
+        else if (nextRow == 4)
+        {
+            nextFloor = 2;
             NowRow += 1;
         }
         else
@@ -280,7 +285,7 @@ public class GameManager : MonoBehaviour
     public void setCleared(bool clear)
     {
         isCleared = clear;
-       // SetNextScene();
+        // SetNextScene();
     }
 
     public void SetNextScene()

@@ -108,8 +108,8 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 0
-  m_Spacing: 100
+  m_ChildAlignment: 4
+  m_Spacing: 0
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
@@ -237,7 +237,7 @@ MonoBehaviour:
   targetObjCategory: 
   targetMode: 
   AmmoType: 
-  ViewPort: {fileID: 1381201656175453036}
+  ViewPort: {fileID: 5564189037792520969}
 --- !u!1 &2670180852989006177
 GameObject:
   m_ObjectHideFlags: 0
@@ -276,7 +276,7 @@ RectTransform:
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 20, y: -295.43585}
   m_SizeDelta: {x: 20, y: -17}
-  m_Pivot: {x: 1, y: 1}
+  m_Pivot: {x: 1, y: 0}
 --- !u!222 &5293406683698797443
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -358,8 +358,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3093286165068960441}
   m_HandleRect: {fileID: 7692134262282391130}
   m_Direction: 2
-  m_Value: 0
-  m_Size: 0.7601248
+  m_Value: 1
+  m_Size: 0.998815
   m_NumberOfSteps: 11
   m_OnValueChanged:
     m_PersistentCalls:
@@ -541,6 +541,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3102454601443649954}
+  - component: {fileID: 7938947968795193650}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -567,7 +568,33 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0.5, y: 0.95}
+--- !u!114 &7938947968795193650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5564189037792520969}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: -249
+    m_Right: 0
+    m_Top: -22
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_Spacing: 77.92
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &5622081400312849045
 GameObject:
   m_ObjectHideFlags: 0
@@ -659,7 +686,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Content: {fileID: 3102454601443649954}
-  m_Horizontal: 1
+  m_Horizontal: 0
   m_Vertical: 1
   m_MovementType: 1
   m_Elasticity: 0.1
@@ -805,7 +832,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4688009681387298610, guid: c0424ca242678724789f9da0e8ca4a2c, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4688009681387298610, guid: c0424ca242678724789f9da0e8ca4a2c, type: 3}
       propertyPath: m_AnchorMin.x
@@ -813,7 +840,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4688009681387298610, guid: c0424ca242678724789f9da0e8ca4a2c, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4688009681387298610, guid: c0424ca242678724789f9da0e8ca4a2c, type: 3}
       propertyPath: m_SizeDelta.x

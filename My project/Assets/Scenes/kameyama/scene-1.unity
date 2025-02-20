@@ -1813,7 +1813,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8616996156230354111, guid: da68591268dea09449c139fbf3489269, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7908924037538618816, guid: da68591268dea09449c139fbf3489269, type: 3}
@@ -6293,6 +6293,7 @@ MonoBehaviour:
   isCalled: 0
   clearSE: {fileID: 0}
   BattleBGM: {fileID: 0}
+  EnbiromentBGM: {fileID: 0}
 --- !u!114 &736362686
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8026,7 +8027,7 @@ MonoBehaviour:
   Onstep: 0
   canEnter: 0
   stepNum: 0
-  nextScene: scene5
+  nextScene: scene2
 --- !u!1 &912631153
 GameObject:
   m_ObjectHideFlags: 0
@@ -9606,7 +9607,7 @@ SpriteRenderer:
   m_SortingLayerID: -226196017
   m_SortingLayer: 3
   m_SortingOrder: 20
-  m_Sprite: {fileID: 21300000, guid: 9f787cad965bbcd4f95a4d05d9c7200a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6ac4ee1cb23079f4a8c567369dac9d0b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -13635,6 +13636,7 @@ MonoBehaviour:
   isCalled: 0
   clearSE: {fileID: 0}
   BattleBGM: {fileID: 0}
+  EnbiromentBGM: {fileID: 0}
 --- !u!4 &1651506167
 Transform:
   m_ObjectHideFlags: 0

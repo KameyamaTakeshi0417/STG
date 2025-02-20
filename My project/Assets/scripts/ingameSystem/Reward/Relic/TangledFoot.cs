@@ -23,16 +23,16 @@ public class TangledFoot : _Relic_Base
         {
             m_Player.AddComponent<DrainHandler>();
         }
-        m_Player.AddComponent<DrainHandler>().DrainPoint += 4;
+        m_Player.GetComponent<DrainHandler>().DrainPoint += 4;
         m_PlayerScript.moveSpeedMag -= 0.3f;
     }
 
     public override void UnEquipEffect()
     {
         base.UnEquipEffect();
-        if (m_Player.AddComponent<DrainHandler>().DrainPoint > 4)
+        if (m_Player.GetComponent<DrainHandler>().DrainPoint > 4)
         {
-            m_Player.AddComponent<DrainHandler>().DrainPoint -= 4;
+            m_Player.GetComponent<DrainHandler>().DrainPoint -= 4;
         }
         else
         {

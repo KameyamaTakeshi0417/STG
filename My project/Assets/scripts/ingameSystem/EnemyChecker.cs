@@ -9,6 +9,7 @@ public class EnemyChecker : MonoBehaviour
 
     public AudioSource clearSE;
     public AudioSource BattleBGM;
+    public AudioSource EnbiromentBGM;
 
     void Start()
     {
@@ -51,6 +52,7 @@ public class EnemyChecker : MonoBehaviour
             if (clearSE != null)
             {
                 clearSE.Play();
+                EnbiromentBGM.Play();
             }
 
             GameObject manager = GameObject.Find("GameManager");
