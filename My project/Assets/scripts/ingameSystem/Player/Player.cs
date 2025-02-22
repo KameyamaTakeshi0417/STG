@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    private static Player instance; // Singletonインスタンス
     private Rigidbody2D rb;
     private bool isPaused = false;
 
@@ -35,17 +34,6 @@ public class Player : MonoBehaviour
 
     void Awake()
     {
-        // Singletonパターンの実装
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject); // シーンをまたいでもオブジェクトを破棄しない
-        }
-        else if (instance != this)
-        {
-            Destroy(gameObject); // 既存のインスタンスがある場合、新しいインスタンスを破棄
-        }
-
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>(); // Animator を取得
         equipManager = GameObject.Find("GameManager").GetComponent<EquipManager>();

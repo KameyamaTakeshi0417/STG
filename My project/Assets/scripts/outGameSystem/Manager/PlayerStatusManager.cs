@@ -40,6 +40,9 @@ public class PlayerStatusManager : MonoBehaviour
         {
             Destroy(gameObject); // 既存のインスタンスがある場合、新しいインスタンスを破棄
         }
+        //シーン読み込み時のステータス更新
+        PlayerHealth targetScript = GameObject.Find("Player").GetComponent<PlayerHealth>();
+        LoadStatus(GameObject.Find("Player"));
     }
 
     // Update is called once per frame
@@ -47,13 +50,55 @@ public class PlayerStatusManager : MonoBehaviour
 
     public void getStatus(GameObject targetObj)
     {
-        Player targetScript = targetObj.GetComponent<Player>();
+        PlayerHealth playerHPScript = targetObj.GetComponent<PlayerHealth>();
+        Player playerStatusScript = targetObj.GetComponent<Player>();
         //数字入れる処理
     }
 
-    public void setStatus(GameObject targetObj)
+    public void saveStatus(GameObject targetObj)
     {
-        Player targetScript = targetObj.GetComponent<Player>();
+        PlayerHealth playerHPScript = targetObj.GetComponent<PlayerHealth>();
+        Player playerStatusScript = targetObj.GetComponent<Player>();
         //数字入れる処理
+        HP = playerHPScript.getHP();
+        currentHP = playerHPScript.getCurrentHP();
+
+        pow = playerStatusScript.pow;
+        DamageAdd = playerStatusScript.DamageAdd; // バフとかで増やす値
+        DamageMag = playerStatusScript.DamageMag; // 追加したい変数
+        BlockDmg = playerStatusScript.BlockDmg; // 追加したい変数
+        BlockMag = playerStatusScript.BlockMag; // 追加したい変数
+
+        moveSpeed = playerStatusScript.moveSpeed;
+        moveSpeedMag = playerStatusScript.moveSpeedMag;
+        bulletSpeed = playerStatusScript.bulletSpeed;
+        bulletSpeedMag = playerStatusScript.bulletSpeedMag;
+        BulletSpan = playerStatusScript.BulletSpan;
+        BulletSpanMag = playerStatusScript.BulletSpanMag;
+        lockOnRadius = playerStatusScript.lockOnRadius;
+        Exp = playerStatusScript.Exp;
+    }
+
+    public void LoadStatus(GameObject targetObj)
+    {
+        PlayerHealth playerHPScript = targetObj.GetComponent<PlayerHealth>();
+        Player playerStatusScript = targetObj.GetComponent<Player>();
+
+        // 保存されているデータを対応するプレイヤーのスクリプトにセット
+        playerHPScript.setPlayerHP(HP, currentHP);
+        playerStatusScript.pow = pow;
+        playerStatusScript.DamageAdd = DamageAdd;
+        playerStatusScript.DamageMag = DamageMag;
+        playerStatusScript.BlockDmg = BlockDmg;
+        playerStatusScript.BlockMag = BlockMag;
+
+        playerStatusScript.moveSpeed = moveSpeed;
+        playerStatusScript.moveSpeedMag = moveSpeedMag;
+        playerStatusScript.bulletSpeed = bulletSpeed;
+        playerStatusScript.bulletSpeedMag = bulletSpeedMag;
+        playerStatusScript.BulletSpan = BulletSpan;
+        playerStatusScript.BulletSpanMag = BulletSpanMag;
+        playerStatusScript.lockOnRadius = lockOnRadius;
+        playerStatusScript.Exp = Exp;
     }
 }

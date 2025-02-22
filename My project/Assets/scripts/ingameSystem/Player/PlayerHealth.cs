@@ -48,4 +48,11 @@ public class PlayerHealth : _Health_Base
         Debug.Log("マネージャー見つからねえ");
         manager.GameOver();
     }
+
+    public void setPlayerHP(float setHP, float setCurrentHP)
+    {
+        HP = setHP;
+        currentHP = setCurrentHP;
+        OnPlayerHPChanged?.Invoke();
+    }
 }
