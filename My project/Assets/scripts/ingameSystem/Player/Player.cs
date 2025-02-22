@@ -8,9 +8,6 @@ public class Player : MonoBehaviour
     private Rigidbody2D rb;
     private bool isPaused = false;
 
-    public float HP;
-    public float currentHP;
-
     public float pow;
     public float DamageAdd = 0.0f; //バフとかで増やす値
     public float DamageMag = 1.0f; //非固定ダメージの倍率
@@ -278,12 +275,6 @@ public class Player : MonoBehaviour
     public Vector3 getRotate()
     {
         return watch;
-    }
-
-    public void setHP(float addpoint)
-    {
-        HP += addpoint;
-        currentHP += addpoint;
     }
 
     public void setPow(float addpoint)
