@@ -42,6 +42,7 @@ public class Player : MonoBehaviour
     void Start()
     {
         onCoolTime = false;
+        GameObject.Find("GameManager").GetComponent<PlayerStatusManager>().LoadStatus(gameObject);
     }
 
     void Update()

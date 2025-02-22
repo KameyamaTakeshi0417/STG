@@ -41,8 +41,6 @@ public class PlayerStatusManager : MonoBehaviour
             Destroy(gameObject); // 既存のインスタンスがある場合、新しいインスタンスを破棄
         }
         //シーン読み込み時のステータス更新
-        PlayerHealth targetScript = GameObject.Find("Player").GetComponent<PlayerHealth>();
-        LoadStatus(GameObject.Find("Player"));
     }
 
     // Update is called once per frame
