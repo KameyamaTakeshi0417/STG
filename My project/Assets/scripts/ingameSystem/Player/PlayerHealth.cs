@@ -17,6 +17,7 @@ public class PlayerHealth : _Health_Base
         {
             GameObject parentObj = GameObject.Find("GameManager");
             string childName = "PlayerUI";
+            //playerUIの子にHPBarがあるのにPlayerUIからHPBarスクリプトを取得しようとしてる？
             foreach (Transform child in parentObj.transform)
             {
                 // 子オブジェクトの名前が一致するかをチェック

@@ -1195,7 +1195,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: db3cc268dac769e43a0ee21040ca4640, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f0b853d0df9b5da43849fc2c410bad23, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1801,13 +1801,13 @@ MonoBehaviour:
     Place: 
     Left: Assets/resources/Texture/chara/player_Idle
     Center: 
-    Right: 
+    Right: Assets/resources/Texture/chara/Himawari_Anger
   - Name: "\u30AB\u30A4\u30AB"
     Talk: "Sacred Sakura Showdown\u3001\n\u307E\u3060\u307E\u3060\u958B\u767A\u4E2D\u3002\n\u5FDC\u63F4\u3088\u308D\u3057\u304F\u306D\u3002"
     Place: 
     Left: Assets/resources/Texture/chara/player_Smile
     Center: 
-    Right: 
+    Right: Assets/resources/Texture/chara/Himawari_Anger
   fadeBoard: {fileID: 2134366587}
 --- !u!114 &1892430378
 MonoBehaviour:
