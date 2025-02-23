@@ -1195,7 +1195,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f0b853d0df9b5da43849fc2c410bad23, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1bac6ba081da3004b90a62b950bab662, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1229,7 +1229,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 740, y: -714}
+  m_AnchoredPosition: {x: 372.3, y: -714}
   m_SizeDelta: {x: 720, y: 900}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &1410199114
@@ -1756,13 +1756,13 @@ MonoBehaviour:
     Place: 
     Left: Texture/chara/player_Idle
     Center: 
-    Right: 
+    Right: Texture/chara/HimawariAnger
   - Name: "\u30AB\u30A4\u30AB"
     Talk: "Sacred Sakura Showdown\u3001\n\u307E\u3060\u307E\u3060\u958B\u767A\u4E2D\u3002\n\u5FDC\u63F4\u3088\u308D\u3057\u304F\u306D\u3002"
     Place: 
     Left: Texture/chara/player_Smile
     Center: 
-    Right: 
+    Right: Texture/chara/HimawariAnger
 --- !u!1 &1892430376
 GameObject:
   m_ObjectHideFlags: 0
@@ -1790,7 +1790,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1892430376}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 40d61aba5f1b7da4abc105de17f2752c, type: 3}
   m_Name: 
@@ -1801,13 +1801,13 @@ MonoBehaviour:
     Place: 
     Left: Assets/resources/Texture/chara/player_Idle
     Center: 
-    Right: Assets/resources/Texture/chara/Himawari_Anger
+    Right: Assets/resources/Texture/chara/HimawariAnger
   - Name: "\u30AB\u30A4\u30AB"
     Talk: "Sacred Sakura Showdown\u3001\n\u307E\u3060\u307E\u3060\u958B\u767A\u4E2D\u3002\n\u5FDC\u63F4\u3088\u308D\u3057\u304F\u306D\u3002"
     Place: 
     Left: Assets/resources/Texture/chara/player_Smile
     Center: 
-    Right: Assets/resources/Texture/chara/Himawari_Anger
+    Right: Assets/resources/Texture/chara/HimawariAnger
   fadeBoard: {fileID: 2134366587}
 --- !u!114 &1892430378
 MonoBehaviour:
