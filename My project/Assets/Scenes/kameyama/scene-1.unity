@@ -3295,7 +3295,7 @@ MonoBehaviour:
   HP: 100
   currentHP: 0
   HPBar: {fileID: 1531717139}
-  objectHealth: {fileID: 0}
+  objectHealth: {fileID: 1603334051}
   playerObj: {fileID: 1603334037}
 --- !u!114 &366093527
 MonoBehaviour:
