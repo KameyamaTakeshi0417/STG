@@ -29,6 +29,12 @@ public class PlayerHealth : _Health_Base
         }
     }
 
+    void Awake()
+    {
+        HPBarObj = GameObject.Find("PlayerUI");
+        myHPBarScript = HPBarObj.GetComponent<PlayerHPBar>();
+    }
+
     // Update is called once per frame
     void Update() { }
 
@@ -68,5 +74,8 @@ public class PlayerHealth : _Health_Base
         HP = setHP;
         currentHP = setCurrentHP;
         OnPlayerHPChanged?.Invoke();
+    }
+    public void AwakePlayerHP(GameObject PlayerObject){
+
     }
 }
