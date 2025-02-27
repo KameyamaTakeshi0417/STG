@@ -160,6 +160,7 @@ MonoBehaviour:
   Exp: 40
   VulnerableTime: 0
   VulnerableFlg: 0
+  canvasInstance: {fileID: 1004983713}
   damageTextPrefab: {fileID: 3988437868621658341, guid: 5ccc0cd62017e7542bc9974c88b5c92d, type: 3}
   DamageUIMagnitude: 0.1
   circleGauge:
@@ -172,7 +173,6 @@ MonoBehaviour:
   - {fileID: 1004983716}
   - {fileID: 1004983715}
   - {fileID: 1004983714}
-  canvasInstance: {fileID: 1004983713}
 --- !u!114 &163178421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,7 +224,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.76, y: 1.17}
+  m_Size: {x: 1.52, y: 2.84}
   m_Direction: 0
 --- !u!212 &163178423
 SpriteRenderer:
@@ -267,7 +267,7 @@ SpriteRenderer:
   m_SortingLayerID: -226196017
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 2036265589, guid: be770d6caf8b6974889af955e3dcd881, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2e0331f838705174295980b8de5a885b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -288,7 +288,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 9.61, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}

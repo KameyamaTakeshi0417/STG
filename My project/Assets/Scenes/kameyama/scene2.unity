@@ -2390,7 +2390,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 1.59, y: 2.93}
+  m_Size: {x: 0.69, y: 1.37}
   m_Direction: 0
 --- !u!212 &2132476857
 SpriteRenderer:
@@ -2433,7 +2433,7 @@ SpriteRenderer:
   m_SortingLayerID: -226196017
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 2e0331f838705174295980b8de5a885b, type: 3}
+  m_Sprite: {fileID: 2036265589, guid: be770d6caf8b6974889af955e3dcd881, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2454,7 +2454,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 9.61, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 5, y: 5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -2471,11 +2471,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e291c44f81f67842aebc20c410c50a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 700
-  currentHP: 700
+  HP: 1000
+  currentHP: 1000
   Exp: 40
   VulnerableTime: 0
   VulnerableFlg: 0
+  canvasInstance: {fileID: 870629357}
   damageTextPrefab: {fileID: 0}
   DamageUIMagnitude: 0.1
   circleGauge:
@@ -2483,12 +2484,12 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   HealthPhase: 0
-  LifeCount: 2
+  LifeCount: 3
   CircleHPBar:
   - {fileID: 956703052}
   - {fileID: 956703051}
   - {fileID: 956703050}
-  canvasInstance: {fileID: 870629357}
+  eliteCanvasInstance: {fileID: 870629357}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
