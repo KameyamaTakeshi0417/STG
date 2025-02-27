@@ -137,7 +137,7 @@ GameObject:
   - component: {fileID: 163178421}
   - component: {fileID: 163178420}
   m_Layer: 0
-  m_Name: PetalCollector
+  m_Name: Himawari
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -160,7 +160,7 @@ MonoBehaviour:
   Exp: 40
   VulnerableTime: 0
   VulnerableFlg: 0
-  damageTextPrefab: {fileID: 0}
+  damageTextPrefab: {fileID: 3988437868621658341, guid: 5ccc0cd62017e7542bc9974c88b5c92d, type: 3}
   DamageUIMagnitude: 0.1
   circleGauge:
   - {fileID: 0}

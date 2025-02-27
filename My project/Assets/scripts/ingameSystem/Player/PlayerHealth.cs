@@ -75,7 +75,6 @@ public class PlayerHealth : _Health_Base
         currentHP = setCurrentHP;
         OnPlayerHPChanged?.Invoke();
     }
-    public void AwakePlayerHP(GameObject PlayerObject){
 
-    }
+    public void AwakePlayerHP(GameObject PlayerObject) { }
 }
