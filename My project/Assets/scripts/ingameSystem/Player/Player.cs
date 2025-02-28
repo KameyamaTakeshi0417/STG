@@ -1,10 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
-    private static Player instance; // Singletonインスタンス
+    private static Player _instance;
+    public static Player Instance
+    {
+        get { return _instance; }
+    }
     private Rigidbody2D rb;
     private bool isPaused = false;
 
@@ -33,17 +38,18 @@ public class Player : MonoBehaviour
     private EquipManager equipManager; // プレイヤーの装備を管理
     private Animator animator; // Animator コンポーネントを追加
 
+    public bool UnBattle = false;
+
     void Awake()
     {
-        // Singletonパターンの実装
-        if (instance == null)
+        if (_instance == null)
         {
-            instance = this;
-            DontDestroyOnLoad(gameObject); // シーンをまたいでもオブジェクトを破棄しない
+            _instance = this;
+            DontDestroyOnLoad(gameObject);
         }
-        else if (instance != this)
+        else
         {
-            Destroy(gameObject); // 既存のインスタンスがある場合、新しいインスタンスを破棄
+            Destroy(gameObject);
         }
 
         rb = GetComponent<Rigidbody2D>();
@@ -74,6 +80,18 @@ public class Player : MonoBehaviour
         {
             rb.velocity = Vector2.zero; // ポーズ中は動きを停止
             return;
+        }
+        string nowScene = SceneManager.GetActiveScene().name;
+
+        if (nowScene == "DramaticMangaScene" || nowScene == "Title" || nowScene == "Continue")
+        {
+            UnBattle = true;
+            // シーン遷移時にプレイヤーオブジェクトを非アクティブにする
+            return;
+        }
+        else
+        {
+            UnBattle = false;
         }
 
         // マウスの位置を取得
@@ -299,5 +317,19 @@ public class Player : MonoBehaviour
     public int getExp()
     {
         return Exp;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "DramaticMangaScene" || scene.name == "Title" || scene.name == "Continue")
+        {
+            // シーン遷移時にプレイヤーオブジェクトを非アクティブにする
+            gameObject.SetActive(false);
+        }
+        else
+        {
+            // 戦闘シーンなどではプレイヤーオブジェクトをアクティブにする
+            gameObject.SetActive(true);
+        }
     }
 }
