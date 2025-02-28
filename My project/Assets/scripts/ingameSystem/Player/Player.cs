@@ -81,18 +81,6 @@ public class Player : MonoBehaviour
             rb.velocity = Vector2.zero; // ポーズ中は動きを停止
             return;
         }
-        string nowScene = SceneManager.GetActiveScene().name;
-
-        if (nowScene == "DramaticMangaScene" || nowScene == "Title" || nowScene == "Continue")
-        {
-            UnBattle = true;
-            // シーン遷移時にプレイヤーオブジェクトを非アクティブにする
-            return;
-        }
-        else
-        {
-            UnBattle = false;
-        }
 
         // マウスの位置を取得
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
