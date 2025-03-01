@@ -8055,7 +8055,7 @@ MonoBehaviour:
   Onstep: 0
   canEnter: 0
   stepNum: 0
-  nextScene: scene1
+  nextScene: BossArea
 --- !u!1 &912631153
 GameObject:
   m_ObjectHideFlags: 0

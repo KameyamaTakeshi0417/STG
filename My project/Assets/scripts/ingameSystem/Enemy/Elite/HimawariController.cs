@@ -90,36 +90,35 @@ public class HimawariController : EliteEnemyController_Base
         //雌蕊バリヤ生成処理を入れる
 
         //弾丸の展開
-        for (int i = 0; i < createCount; i++)
+        int refrainCountMax = 3;
+        int refrainCount = 0;
+        while (refrainCount < refrainCountMax)
         {
-            attack1Pattern(i); //12個生成
-            yield return new WaitForSeconds(0.01f);
+            for (int i = 0; i < createCount; i++)
+            {
+                attack1Pattern(i); //12個生成
+                yield return new WaitForSeconds(0.01f);
+            }
+            yield return new WaitForSeconds(0.02f);
+            refrainCount++;
         }
 
-        yield return new WaitForSecondsRealtime(0.3f);
+        yield return new WaitForSecondsRealtime(0.15f);
         yield return Idle();
     }
 
     private void attack1Pattern(int createIndex)
     {
-        float posMag = 7.0f;
-        Vector3 moveWay =
-            gameObject.transform.position
-            - ((gameObject.transform.position) + base.getShootWayAsClock(createIndex) * posMag);
+        Vector3 moveWay = base.getShootWayAsClock(createIndex);
         moveWay.Normalize();
         float rotationAngle = Mathf.Atan2(moveWay.y, moveWay.x) * Mathf.Rad2Deg;
 
         GameObject bullet = Instantiate(
-            Resources.Load<GameObject>("Objects/Bullet/petalBullet"),
+            Resources.Load<GameObject>("Objects/Bullet/PetalBullet_Himawari"),
             gameObject.transform.position,
             Quaternion.Euler(new Vector3(0, 0, rotationAngle + 90))
         );
-        bullet
-            .GetComponent<petalBullet>()
-            .moveLerp(
-                gameObject.transform.position,
-                (gameObject.transform.position) + getShootWayAsClock(createIndex) * posMag
-            );
+        bullet.GetComponent<PetalBullet_Himawari>().MoveStraignt(createIndex);
     }
 
     private void CreateArrow(Vector3 direction, float distance)

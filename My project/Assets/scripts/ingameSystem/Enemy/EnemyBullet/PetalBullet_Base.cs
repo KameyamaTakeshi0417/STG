@@ -29,18 +29,6 @@ public class PetalBullet_Base : MonoBehaviour
         StartCoroutine("waitAndShoot", waitSec);
     }
 
-    private IEnumerator waitAndShoot(float waitSec)
-    {
-        float count = 0;
-        while (count < waitSec)
-        {
-            count++;
-            //回転とかさせるか？
-            yield return new WaitForSecondsRealtime(0.5f);
-        }
-        yield return homing();
-    }
-
     public void shoot(int shootWay)
     {
         StartCoroutine("spread", getShootWayAsClock(shootWay));
@@ -48,7 +36,7 @@ public class PetalBullet_Base : MonoBehaviour
 
     public void MoveStraignt(int shootWay)
     {
-        StartCoroutine("StraightOnly");
+        StartCoroutine("StraightWay", shootWay);
     }
 
     public Vector3 getShootWayAsClock(int num)
@@ -117,6 +105,18 @@ public class PetalBullet_Base : MonoBehaviour
     public void moveLerp(Vector2 startPos, Vector2 endPos)
     {
         StartCoroutine(LerpMoving(startPos, endPos));
+    }
+
+    private IEnumerator waitAndShoot(float waitSec)
+    {
+        float count = 0;
+        while (count < waitSec)
+        {
+            count++;
+            //回転とかさせるか？
+            yield return new WaitForSecondsRealtime(0.5f);
+        }
+        yield return homing();
     }
 
     private IEnumerator LerpMoving(Vector3 startPos, Vector3 endPos, float duration = 2.0f)
@@ -260,15 +260,16 @@ public class PetalBullet_Base : MonoBehaviour
         }
     }
 
-    private IEnumerator StraightWay(int way)
+    protected IEnumerator StraightWay(int way)
     {
         int count = 0;
         int countMax = 200;
-        bulletSpeedMag += 0.05f;
+        bulletSpeedMag += 0.5f;
         // プレイヤーに向けてオブジェクトの向きを変更
         Vector3 moveWay = getShootWayAsClock(way);
         float rotationAngle = Mathf.Atan2(moveWay.y, moveWay.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotationAngle + 90));
+
         while (true)
         {
             transform.position += moveWay * (bulletSpeedMag);
