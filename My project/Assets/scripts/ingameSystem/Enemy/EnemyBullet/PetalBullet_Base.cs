@@ -277,7 +277,7 @@ public class PetalBullet_Base : MonoBehaviour
             {
                 break;
             }
-            yield return new WaitForSecondsRealtime(0.01f);
+            yield return new WaitForSecondsRealtime(0.017f);
         }
         Destroy(this.gameObject);
         yield break;
