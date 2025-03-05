@@ -39,27 +39,49 @@ public class ReactiveBarrier : MonoBehaviour
         // 衝突したオブジェクトのタグをチェック
         if (collision.gameObject.CompareTag("Player"))
         {
-            // プレイヤーの健康を管理しているコンポーネントを取得し、ダメージを与える
+            // プレイヤーを吹き飛ばす方向
+            Vector2 directionToPlayer = (
+                collision.transform.position - transform.position
+            ).normalized;
+
+            // プレイヤーを移動させる処理
+            float distanceToMove = 10f; // 1フレームで移動させる距離
+            Vector2 startPosition = collision.transform.position;
+            Vector2 targetPosition =
+                (Vector2)collision.transform.position + directionToPlayer * distanceToMove;
+
+            // 壁のチェック
+            RaycastHit2D hit = Physics2D.Raycast(
+                startPosition,
+                directionToPlayer,
+                distanceToMove,
+                LayerMask.GetMask("Wall")
+            );
+
+            // 壁がなければLerpで移動
+            if (hit.collider == null)
+            {
+                // 壁がない場合、Lerpで移動
+                float lerpSpeed = 5f; // 移動速度（適宜調整）
+                Vector2 newPosition = Vector2.Lerp(
+                    startPosition,
+                    targetPosition,
+                    Time.deltaTime * lerpSpeed
+                );
+                collision.transform.position = newPosition;
+            }
+            else
+            {
+                // 壁があった場合、壁に衝突する位置で停止
+                collision.transform.position = hit.point;
+            }
+
+            // プレイヤーにダメージを与える処理（そのまま保持）
             PlayerHealth health = collision.gameObject.GetComponent<PlayerHealth>();
             if (health != null)
             {
                 health.TakeDamage(damage);
             }
-
-            // プレイヤーを突き放す処理
-            Vector2 directionToPlayer = (
-                collision.transform.position - transform.position
-            ).normalized;
-
-            // プレイヤーの新しい位置を計算して移動させる
-            float distanceToMove = 10f; // 1フレームで移動させる距離
-            Vector2 newPlayerPosition = Vector2.Lerp(
-                collision.transform.position,
-                (Vector2)collision.transform.position + directionToPlayer * distanceToMove,
-                Time.deltaTime * pushForce
-            );
-            // プレイヤーの位置を更新
-            collision.transform.position = newPlayerPosition;
         }
     }
 }
