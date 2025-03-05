@@ -10,7 +10,10 @@ public class ReactiveBarrier : MonoBehaviour
     public float pushForce = 10f; // 弾く力の強さ
 
     // Start is called before the first frame update
-    void Start() { }
+    void Start()
+    {
+        startDisappear();
+    }
 
     public void startDisappear()
     {
@@ -26,7 +29,7 @@ public class ReactiveBarrier : MonoBehaviour
         while (count < disappearCount)
         {
             count++;
-            yield return new WaitForSecondsRealtime(1);
+            yield return new WaitForSecondsRealtime(disappearCount);
         }
         Destroy(this.gameObject);
     }

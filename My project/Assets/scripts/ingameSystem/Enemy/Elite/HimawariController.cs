@@ -88,7 +88,7 @@ public class HimawariController : EliteEnemyController_Base
         Destroy(arrow); // 矢印を削除
 
         //雌蕊バリヤ生成処理を入れる
-
+        makeBarrier();
         //弾丸の展開
         int refrainCountMax = 3;
         int refrainCount = 0;
@@ -105,6 +105,15 @@ public class HimawariController : EliteEnemyController_Base
 
         yield return new WaitForSecondsRealtime(0.15f);
         yield return Idle();
+    }
+
+    private void makeBarrier()
+    {
+        GameObject barrier = Instantiate(
+            Resources.Load<GameObject>("Objects/Bullet/Himawari_Barrier"),
+            gameObject.transform.position,
+            Quaternion.Euler(new Vector3(0, 0, 0))
+        );
     }
 
     private void attack1Pattern(int createIndex)
