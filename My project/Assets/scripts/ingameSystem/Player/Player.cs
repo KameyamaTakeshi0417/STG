@@ -39,6 +39,7 @@ public class Player : MonoBehaviour
     private Animator animator; // Animator コンポーネントを追加
 
     public bool UnBattle = false;
+    public bool isShocked = false;
 
     void Awake()
     {

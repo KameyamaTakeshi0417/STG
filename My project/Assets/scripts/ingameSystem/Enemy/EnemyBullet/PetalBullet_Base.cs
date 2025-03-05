@@ -263,7 +263,7 @@ public class PetalBullet_Base : MonoBehaviour
     protected IEnumerator StraightWay(int way)
     {
         int count = 0;
-        int countMax = 200;
+        int countMax = 150;
         bulletSpeedMag += 0.5f;
         // プレイヤーに向けてオブジェクトの向きを変更
         Vector3 moveWay = getShootWayAsClock(way);
