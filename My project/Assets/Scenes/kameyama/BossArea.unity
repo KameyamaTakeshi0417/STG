@@ -295,7 +295,7 @@ MonoBehaviour:
   Level: 1
   arrowPrefab: {fileID: 1856705748249970788, guid: 0eeaaeb86697aea4aa4e78a892f80a6b, type: 3}
   moveTime: 0.35
-  arrowAlpha: 0.5
+  arrowAlpha: 1
 --- !u!1 &418353424
 GameObject:
   m_ObjectHideFlags: 0
