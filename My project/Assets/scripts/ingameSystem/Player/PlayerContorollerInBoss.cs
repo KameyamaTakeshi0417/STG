@@ -2,44 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class PlayerContorollerInBoss : Player
 {
-    protected Rigidbody2D rb;
-
-    public float HP;
-    public float currentHP;
-
-    public float pow;
-    public float DamageAdd = 0.0f; //バフとかで増やす値
-    public float DamageMag = 1.0f; //非固定ダメージの倍率
-    public float BlockDmg = 0f; //ダメージ軽減数値
-    public float BlockMag = 1f; //ダメージ軽減倍率
-
-    public float moveSpeed;
-    public float moveSpeedMag = 1f;
-    public float bulletSpeed;
-    public float bulletSpeedMag = 1.0f;
-    public float BulletSpan; // フレーム
-    public float BulletSpanMag = 1.0f;
-    public bool onCoolTime;
-    public Vector3 watch;
-    public float lockOnRadius = 5f; // ロックオンの半径
-    public int Exp;
-
-    protected Transform lockOnTarget; // ロックオン対象
-    protected GameObject targetEnemy;
-    public AudioSource shootAudioSource; // 弾の発射音用のAudioSource
-    public AudioSource getExpAudioSource; // 経験値取得音用のAudioSource
-
-    protected EquipManager equipManager; // プレイヤーの装備を管理
-    protected Animator animator; // Animator コンポーネントを追加
-
-    protected virtual void Awake()
+    protected override void Awake()
     {
+        base.Awake();
 
-        rb = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>(); // Animator を取得
-        equipManager = GameObject.Find("GameManager").GetComponent<EquipManager>();
     }
 
     void Start()
@@ -47,7 +15,7 @@ public class Player : MonoBehaviour
         onCoolTime = false;
     }
 
-    protected virtual void Update()
+    void Update()
     {
         if (Time.timeScale == 0f)
             return;
@@ -85,7 +53,7 @@ public class Player : MonoBehaviour
         UpdateAnimatorParameters();
     }
 
-    protected virtual void FixedUpdate()
+    void FixedUpdate()
     {
 
         // 入力がない場合は何もしない
@@ -111,7 +79,7 @@ public class Player : MonoBehaviour
         rb.velocity = input * setSpd;
     }
 
-    protected void LockOnEnemy(Vector3 mousePosition)
+    private void LockOnEnemy(Vector3 mousePosition)
     {
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
         float closestDistance = lockOnRadius;
@@ -134,7 +102,7 @@ public class Player : MonoBehaviour
         return targetEnemy;
     }
 
-    protected virtual IEnumerator CoolTime()
+    private IEnumerator CoolTime()
     {
         int count = 0;
         while (true)
@@ -157,7 +125,7 @@ public class Player : MonoBehaviour
 
 
 
-    protected virtual void UpdateAnimatorParameters()
+    private void UpdateAnimatorParameters()
     {
         // マウスの位置を取得
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -174,7 +142,7 @@ public class Player : MonoBehaviour
         animator.SetFloat("moveVectorMag", moveVectorMag);
     }
 
-    protected virtual void ShootBullet()
+    void ShootBullet()
     {
         // 現在装備している弾丸、ケース、プライマーを取得
         GameObject activeBullet = equipManager.GetActiveBullet();

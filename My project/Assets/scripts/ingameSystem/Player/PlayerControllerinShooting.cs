@@ -1,0 +1,45 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerControllerinShooting : Player
+{
+   
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    protected override void Update()
+    {
+        
+    }
+    protected override void FixedUpdate()
+    {
+
+        // 入力がない場合は何もしない
+        Vector2 input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        if (input == Vector2.zero)
+        {
+            rb.velocity = Vector2.zero;
+            return;
+        }
+
+        // 入力の正規化
+        if (input.sqrMagnitude > 1)
+        {
+            input.Normalize();
+        }
+
+        // キャラクターを移動させる
+        float setSpd = (moveSpeed * moveSpeedMag);
+        if (setSpd <= 0)
+        {
+            setSpd = 0.1f;
+        }
+        rb.velocity = input * setSpd;
+    }
+
+}

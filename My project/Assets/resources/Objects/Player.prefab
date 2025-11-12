@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3729972331255071290}
   - component: {fileID: 7669535322195873543}
+  - component: {fileID: 6297513086571954660}
   - component: {fileID: 4077790636126634624}
   - component: {fileID: 7569265279989004154}
   - component: {fileID: 2423089870525446096}
@@ -89,7 +90,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &4077790636126634624
+--- !u!114 &6297513086571954660
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -98,17 +99,53 @@ MonoBehaviour:
   m_GameObject: {fileID: 4390047272584022613}
   m_Enabled: 1
   m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23bf04018b257144d885f5c51a46e6e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HP: 1000
+  currentHP: 1000
+  pow: 10
+  DamageAdd: 0
+  DamageMag: 1
+  BlockDmg: 0
+  BlockMag: 1
+  moveSpeed: 1
+  moveSpeedMag: 1
+  bulletSpeed: 1
+  bulletSpeedMag: 1
+  BulletSpan: 0
+  BulletSpanMag: 1
+  onCoolTime: 0
+  watch: {x: 0, y: 0, z: 0}
+  lockOnRadius: 5
+  Exp: 0
+  shootAudioSource: {fileID: 0}
+  getExpAudioSource: {fileID: 0}
+--- !u!114 &4077790636126634624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4390047272584022613}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4ecce08f180dc1b4b91981b28ddf949d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   HP: 10000
   currentHP: 0
   pow: 100
+  DamageAdd: 0
+  DamageMag: 1
+  BlockDmg: 0
+  BlockMag: 1
   moveSpeed: 5
-  bullet: {fileID: 1895039100003720943, guid: f21e58a1636bdaa4b9ef54dadf4f3608, type: 3}
+  moveSpeedMag: 1
   bulletSpeed: 1
+  bulletSpeedMag: 1
   BulletSpan: 60
-  bullettype: 0
+  BulletSpanMag: 1
   onCoolTime: 0
   watch: {x: 0, y: 0, z: 0}
   lockOnRadius: 5
@@ -191,6 +228,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HP: 10000
   currentHP: 0
+  Exp: 0
+  VulnerableTime: 0
+  VulnerableFlg: 0
+  damageTextPrefab: {fileID: 0}
+  DamageUIMagnitude: 0.1
 --- !u!114 &7815110798661859022
 MonoBehaviour:
   m_ObjectHideFlags: 0

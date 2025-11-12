@@ -1,11 +1,10 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerStatusManager : MonoBehaviour
 {
     private static PlayerStatusManager instance; // Singletonインスタンス
-    private bool isPaused = false;
 
     public float HP;
     public float currentHP;
@@ -55,5 +54,23 @@ public class PlayerStatusManager : MonoBehaviour
     {
         Player targetScript = targetObj.GetComponent<Player>();
         //数字入れる処理
+    }
+    private void SetPlayerStatus() {
+    
+        Player targetScript= GameObject.Find("Player").GetComponent<Player>();
+        targetScript.HP = this.HP;
+        targetScript.currentHP = this.currentHP;
+        targetScript.pow = this.pow;
+        targetScript.DamageAdd = this.DamageAdd;
+        targetScript.DamageMag = this.DamageMag;
+        targetScript.BlockDmg = this.BlockDmg;
+        targetScript.BlockMag = this.BlockMag;
+        targetScript.moveSpeed = this.moveSpeed;
+        targetScript.moveSpeedMag = this.moveSpeedMag;
+        targetScript.bulletSpeed = this.bulletSpeed;
+        targetScript.bulletSpeedMag = this.bulletSpeedMag;
+        targetScript.BulletSpan = this.BulletSpan;
+        targetScript.BulletSpanMag = this.BulletSpanMag;
+
     }
 }
