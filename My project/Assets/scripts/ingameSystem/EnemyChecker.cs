@@ -29,7 +29,7 @@ public class EnemyChecker : MonoBehaviour
             enemies = GameObject.FindGameObjectsWithTag("Enemy");
 
             // 敵の数が0かどうかを確認
-            if (enemies.Length == 0)
+            if (enemies.Length <= 0)
             {
                 OnAllEnemiesDefeated();
                 break;

@@ -189,11 +189,11 @@ public class GameManager : MonoBehaviour
         // 重み付きリストを作成。各数値とその重みを設定
         Dictionary<int, int> weightedNumbers = new Dictionary<int, int>()
         {
-            { 0, 42 }, // {n,m}でnが対象の数値、mが重み。合計100にするのが良いか。
-            { 1, 24 }, //0が通常戦闘部屋、1がイベント、2がエリートエネミー、3が休憩。4は商店、5はボス戦の番号となっておる。
+            { 0, 65 }, // {n,m}でnが対象の数値、mが重み。合計100にするのが良いか。
+            { 1, 10 }, //0が通常戦闘部屋、1がイベント、2がエリートエネミー、3が休憩。4は商店、5はボス戦の番号となっておる。
             { 2, 10 },
             { 3, 10 },
-            { 4, 14 },
+            { 4, 5 },
         };
 
         // 累積重みを計算
@@ -230,7 +230,10 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
-
+        for (int i = 0; i < 3; i++)
+        {
+            DungeonConstructArray[0, i].value = 0;
+        }
         PrintArray();
     }
 

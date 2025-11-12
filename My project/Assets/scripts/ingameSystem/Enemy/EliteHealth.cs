@@ -9,7 +9,7 @@ public class EliteHealth : Health
     public int HealthPhase;
     public int LifeCount = 1;
     public GameObject[] CircleHPBar = new GameObject[3];
-    public GameObject canvasInstance;
+    public GameObject eliteCanvasInstance;
 
     void Start()
     {
@@ -32,6 +32,7 @@ public class EliteHealth : Health
         if (hpSlider != null)
         {
             EliteSliderUpdate();
+            ShowDamage(damage);
         }
         // Debug.Log(gameObject.name + " took " + damage + " damage. Remaining HP: " + currentHP);
         if (LifeCount <= 0)
@@ -86,10 +87,10 @@ public class EliteHealth : Health
 
     public override void setSlideHPBar()
     {
-        canvasInstance.GetComponent<HPBarFollower>().setTargetTransform(gameObject.transform);
-        canvasInstance.transform.localPosition = new Vector3(0, 2, 0); // 必要に応じてオフセットを調整
+        eliteCanvasInstance.GetComponent<HPBarFollower>().setTargetTransform(gameObject.transform);
+        eliteCanvasInstance.transform.localPosition = new Vector3(0, 2, 0); // 必要に応じてオフセットを調整
 
-        hpSlider = canvasInstance.transform.Find("HPBar").GetComponent<Slider>();
+        hpSlider = eliteCanvasInstance.transform.Find("HPBar").GetComponent<Slider>();
         if (hpSlider != null)
         {
             SetCircleBar(LifeCount);
@@ -100,7 +101,7 @@ public class EliteHealth : Health
             // 円形ゲージの設定
             for (int i = 0; i < LifeCount; i++)
             {
-                circleGauge[i] = canvasInstance.GetComponentInChildren<CircleGauge>();
+                circleGauge[i] = eliteCanvasInstance.GetComponentInChildren<CircleGauge>();
                 if (circleGauge != null)
                 {
                     // HPバーの初期設定

@@ -13,6 +13,26 @@ public class PlayerHealth : _Health_Base
     void Start()
     {
         myHPBarScript = HPBarObj.GetComponent<PlayerHPBar>();
+        if (HPBarObj == null)
+        {
+            GameObject parentObj = GameObject.Find("GameManager");
+            string childName = "PlayerUI";
+            //playerUIの子にHPBarがあるのにPlayerUIからHPBarスクリプトを取得しようとしてる？
+            foreach (Transform child in parentObj.transform)
+            {
+                // 子オブジェクトの名前が一致するかをチェック
+                if (child.name == childName)
+                {
+                    myHPBarScript = child.GetComponent<PlayerHPBar>();
+                }
+            }
+        }
+    }
+
+    void Awake()
+    {
+        HPBarObj = GameObject.Find("PlayerUI");
+        myHPBarScript = HPBarObj.GetComponent<PlayerHPBar>();
     }
 
     // Update is called once per frame
@@ -48,4 +68,13 @@ public class PlayerHealth : _Health_Base
         Debug.Log("マネージャー見つからねえ");
         manager.GameOver();
     }
+
+    public void setPlayerHP(float setHP, float setCurrentHP)
+    {
+        HP = setHP;
+        currentHP = setCurrentHP;
+        OnPlayerHPChanged?.Invoke();
+    }
+
+    public void AwakePlayerHP(GameObject PlayerObject) { }
 }

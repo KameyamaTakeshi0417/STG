@@ -26,6 +26,12 @@ public class PlayerHPBar : HPBar_Base
         HPUpdate();
     }
 
+    void Awake()
+    {
+        playerObj = GameObject.Find("Player");
+        objectHealth = playerObj.GetComponent<PlayerHealth>();
+    }
+
     // Update is called once per frame
     void Update() { }
 

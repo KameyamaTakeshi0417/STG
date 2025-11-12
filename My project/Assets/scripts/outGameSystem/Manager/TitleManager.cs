@@ -15,7 +15,7 @@ public class TitleManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        CreditPanel.SetActive(false);
+        //        CreditPanel.SetActive(false);
         ClearDontDestroyOnLoadObjects();
         SceneManager.sceneLoaded += OnSceneLoaded; // シーンロードイベントを追加
     }

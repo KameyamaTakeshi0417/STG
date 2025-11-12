@@ -8,7 +8,7 @@ public class Health : _Health_Base
 {
     public delegate void HPChangedHandler();
     public static event HPChangedHandler OnHPChanged;
-    GameObject canvasInstance;
+    public GameObject canvasInstance;
     Transform canvasTransform; // エネミーのCanvasのTransform
     public GameObject damageTextPrefab; // ダメージ表示用のプレハブ
     public float DamageUIMagnitude = 0.1f;

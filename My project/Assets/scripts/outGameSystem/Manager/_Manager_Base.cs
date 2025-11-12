@@ -5,13 +5,17 @@ using UnityEngine;
 public class _Manager_Base : MonoBehaviour
 {
     public GameObject selectionCanvas;
-    public GameObject activeBullet;
-    public GameObject activeCase;
-    public GameObject activePrimer;
+    public GameObject rootBullet;
+    public GameObject rootCase;
+    public GameObject rootPrimer;
 
-    public GameObject subBullet;
-    public GameObject subCase;
-    public GameObject subPrimer;
+    public GameObject reefBullet;
+    public GameObject reefCase;
+    public GameObject reefPrimer;
+
+    public GameObject flowerBullet;
+    public GameObject flowerCase;
+    public GameObject flowerPrimer;
     protected GameObject tmpObj;
     protected bool useMainEquip = true;
 

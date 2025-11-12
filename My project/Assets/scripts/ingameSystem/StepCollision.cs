@@ -39,9 +39,19 @@ public class StepCollision : MonoBehaviour
         GameManager manager = GameObject.Find("GameManager").GetComponent<GameManager>();
         if (collision.CompareTag("Player") && manager.getCleared())
         {
+            saveStatus(collision.gameObject, GameObject.Find("GameManager"));
             manager.DisablePlayerInput();
             StartCoroutine(fadeOut());
         }
+    }
+
+    private void saveStatus(GameObject playerObj, GameObject managerObj)
+    {
+        PlayerHealth playerHPScript = playerObj.GetComponent<PlayerHealth>();
+        Player playerStatusScript = playerObj.GetComponent<Player>();
+        PlayerStatusManager statusManagerScript = managerObj.GetComponent<PlayerStatusManager>();
+
+        statusManagerScript.saveStatus(playerObj);
     }
 
     private IEnumerator fadeOut()
