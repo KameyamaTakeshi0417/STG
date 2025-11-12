@@ -1,7 +1,24 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\yukku\\OneDrive\\\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\\STG\\My project\\",
-  "Documents": [],
+  "WorkspaceRootPath": "C:\\Users\\kanin\\Documents\\STG\\My project\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{32C3BDE6-E125-3128-82C1-25D0441455A3}|Assembly-CSharp.csproj|c:\\users\\kanin\\documents\\stg\\my project\\assets\\scripts\\ingamesystem\\player\\playercontrollerinshooting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{32C3BDE6-E125-3128-82C1-25D0441455A3}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\ingamesystem\\player\\playercontrollerinshooting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{32C3BDE6-E125-3128-82C1-25D0441455A3}|Assembly-CSharp.csproj|c:\\users\\kanin\\documents\\stg\\my project\\assets\\scripts\\ingamesystem\\player\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{32C3BDE6-E125-3128-82C1-25D0441455A3}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\ingamesystem\\player\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{32C3BDE6-E125-3128-82C1-25D0441455A3}|Assembly-CSharp.csproj|C:\\Users\\kanin\\Documents\\STG\\My project\\assets\\scripts\\outgamesystem\\manager\\playerstatusmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{32C3BDE6-E125-3128-82C1-25D0441455A3}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\outgamesystem\\manager\\playerstatusmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{32C3BDE6-E125-3128-82C1-25D0441455A3}|Assembly-CSharp.csproj|C:\\Users\\kanin\\Documents\\STG\\My project\\assets\\scripts\\ingamesystem\\player\\playerhealth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{32C3BDE6-E125-3128-82C1-25D0441455A3}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\ingamesystem\\player\\playerhealth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,11 +26,57 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "PlayerControllerinShooting.cs",
+              "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\ingameSystem\\Player\\PlayerControllerinShooting.cs",
+              "RelativeDocumentMoniker": "Assets\\scripts\\ingameSystem\\Player\\PlayerControllerinShooting.cs",
+              "ToolTip": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\ingameSystem\\Player\\PlayerControllerinShooting.cs",
+              "RelativeToolTip": "Assets\\scripts\\ingameSystem\\Player\\PlayerControllerinShooting.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-12T18:35:19.767Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "PlayerStatusManager.cs",
+              "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\outGameSystem\\Manager\\PlayerStatusManager.cs",
+              "RelativeDocumentMoniker": "Assets\\scripts\\outGameSystem\\Manager\\PlayerStatusManager.cs",
+              "ToolTip": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\outGameSystem\\Manager\\PlayerStatusManager.cs",
+              "RelativeToolTip": "Assets\\scripts\\outGameSystem\\Manager\\PlayerStatusManager.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAYwA4AAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-12T18:30:25.691Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "PlayerHealth.cs",
+              "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\ingameSystem\\Player\\PlayerHealth.cs",
+              "RelativeDocumentMoniker": "Assets\\scripts\\ingameSystem\\Player\\PlayerHealth.cs",
+              "ToolTip": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\ingameSystem\\Player\\PlayerHealth.cs",
+              "RelativeToolTip": "Assets\\scripts\\ingameSystem\\Player\\PlayerHealth.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-12T18:30:05.305Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Player.cs",
+              "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\ingameSystem\\Player\\Player.cs",
+              "RelativeDocumentMoniker": "Assets\\scripts\\ingameSystem\\Player\\Player.cs",
+              "ToolTip": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\ingameSystem\\Player\\Player.cs",
+              "RelativeToolTip": "Assets\\scripts\\ingameSystem\\Player\\Player.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAADwvyAAAABAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-10T16:08:14.491Z",
+              "EditorCaption": ""
             }
           ]
         }
