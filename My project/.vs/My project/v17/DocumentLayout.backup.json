@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\kanin\\Documents\\STG\\My project\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{32C3BDE6-E125-3128-82C1-25D0441455A3}|Assembly-CSharp.csproj|c:\\users\\kanin\\documents\\stg\\my project\\assets\\scripts\\outgamesystem\\manager\\equipmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{32C3BDE6-E125-3128-82C1-25D0441455A3}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\outgamesystem\\manager\\equipmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{32C3BDE6-E125-3128-82C1-25D0441455A3}|Assembly-CSharp.csproj|c:\\users\\kanin\\documents\\stg\\my project\\assets\\scripts\\outgamesystem\\etc\\itemdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{32C3BDE6-E125-3128-82C1-25D0441455A3}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\outgamesystem\\etc\\itemdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -23,6 +27,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "EquipManager.cs",
+              "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\outGameSystem\\Manager\\EquipManager.cs",
+              "RelativeDocumentMoniker": "Assets\\scripts\\outGameSystem\\Manager\\EquipManager.cs",
+              "ToolTip": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\outGameSystem\\Manager\\EquipManager.cs",
+              "RelativeToolTip": "Assets\\scripts\\outGameSystem\\Manager\\EquipManager.cs",
+              "ViewState": "AgIAAKcAAAAAAAAAAAAYwBEAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-26T05:49:37.132Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "ItemData.cs",
               "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\outGameSystem\\etc\\ItemData.cs",
               "RelativeDocumentMoniker": "Assets\\scripts\\outGameSystem\\etc\\ItemData.cs",
@@ -35,7 +52,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "BulletEquipManager.cs",
               "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\ingameSystem\\equip\\BulletEquipManager.cs",
               "RelativeDocumentMoniker": "Assets\\scripts\\ingameSystem\\equip\\BulletEquipManager.cs",

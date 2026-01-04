@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -128,33 +128,7 @@ public class equipUIChangeCanvasManager : MonoBehaviour
                                 .EquipItemtoSub(obj)
                     );
                     break;
-                case "first":
-                    button.onClick.AddListener(
-                        () =>
-                            GameObject
-                                .Find("GameManager")
-                                .GetComponent<EquipManager>()
-                                .EquipItemtoRelic(obj, targetMode)
-                    );
-                    break;
-                case "second":
-                    button.onClick.AddListener(
-                        () =>
-                            GameObject
-                                .Find("GameManager")
-                                .GetComponent<EquipManager>()
-                                .EquipItemtoRelic(obj, targetMode)
-                    );
-                    break;
-                case "third":
-                    button.onClick.AddListener(
-                        () =>
-                            GameObject
-                                .Find("GameManager")
-                                .GetComponent<EquipManager>()
-                                .EquipItemtoRelic(obj, targetMode)
-                    );
-                    break;
+            
                 default:
                     break;
             }

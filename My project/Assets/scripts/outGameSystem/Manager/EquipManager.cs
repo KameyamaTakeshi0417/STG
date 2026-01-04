@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,9 +11,7 @@ public class EquipManager : _Manager_Base
         Sprite newSprite
     ); //UIImageChangerにある
     public static event EquipChangedHandler OnEquipChanged;
-    public GameObject EquipRelic1,
-        EquipRelic2,
-        EquipRelic3;
+
 
     void Awake()
     {
@@ -24,18 +22,7 @@ public class EquipManager : _Manager_Base
             activeCase = Resources.Load<GameObject>("Objects/Reward/NormalCase");
         if (activePrimer == null)
             activePrimer = Resources.Load<GameObject>("Objects/Reward/NormalPrimer");
-        if (EquipRelic1 != null)
-        {
-            EquipRelic1.GetComponent<_Relic_Base>().EquipEffect();
-        }
-        if (EquipRelic2 != null)
-        {
-            EquipRelic2.GetComponent<_Relic_Base>().EquipEffect();
-        }
-        if (EquipRelic3 != null)
-        {
-            EquipRelic3.GetComponent<_Relic_Base>().EquipEffect();
-        }
+
     }
 
     void Update()
@@ -237,55 +224,7 @@ public class EquipManager : _Manager_Base
         }
     }
 
-    public void EquipItemtoRelic(GameObject item, string setType)
-    {
-        // 装備が変更された際にイベントを発行
-        string activateType = setType; //first,second,third
-        string tmpCategory = item.GetComponent<ItemPickUp>().itemType;
-        Sprite tmpSprite = item.GetComponent<SpriteRenderer>().sprite;
-        OnEquipChanged?.Invoke(tmpCategory, activateType, tmpSprite);
-        bool subChanged = false;
-        EquipStackDecide decideScript = gameObject.GetComponent<EquipStackDecide>();
-        _Relic_Base targetRelicScript = null;
-        switch (activateType)
-        {
-            case "first":
 
-                if (EquipRelic1 != null)
-                    EquipRelic1.GetComponent<_Relic_Base>().UnEquipEffect();
-                EquipRelic1 = item;
-                targetRelicScript = EquipRelic1.GetComponent<_Relic_Base>();
-                targetRelicScript.EquipEffect();
-                // 新しいスプライトを設定
-                imageChange(item, activateType);
-                break;
-            case "second":
-                if (EquipRelic2 != null)
-                    EquipRelic2.GetComponent<_Relic_Base>().UnEquipEffect();
-                EquipRelic2 = item;
-                targetRelicScript = EquipRelic2.GetComponent<_Relic_Base>();
-                targetRelicScript.EquipEffect();
-                // 新しいスプライトを設定
-                imageChange(item, activateType);
-                break;
-            case "third":
-                if (EquipRelic3 != null)
-                    EquipRelic3.GetComponent<_Relic_Base>().UnEquipEffect();
-                EquipRelic3 = item;
-                targetRelicScript = EquipRelic3.GetComponent<_Relic_Base>();
-                targetRelicScript.EquipEffect();
-                // 新しいスプライトを設定
-                imageChange(item, activateType);
-                break;
-            default:
-                Debug.LogWarning("Invalid item type for equip");
-                break;
-        }
-        if (subChanged == true)
-        {
-            return;
-        }
-    }
 
     public void imageChange(GameObject targetObj, string activateType)
     {
@@ -347,18 +286,7 @@ public class EquipManager : _Manager_Base
                         break;
                 }
                 break;
-            //レリック処理
-            case "first":
-                EquipRelic1 = targetObj;
-                break;
-            case "second":
-                EquipRelic2 = targetObj;
-                break;
-            case "third":
-                EquipRelic3 = targetObj;
-                break;
-            default:
-                break;
+
         }
     }
 
