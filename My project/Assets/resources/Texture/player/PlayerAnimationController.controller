@@ -13,7 +13,7 @@ AnimatorStateTransition:
     m_EventTreshold: 0
   - m_ConditionMode: 3
     m_ConditionEvent: moveVectorMag
-    m_EventTreshold: 0.1
+    m_EventTreshold: 0.8
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 6102758417561649504}
   m_Solo: 0
@@ -41,7 +41,7 @@ AnimatorStateTransition:
     m_EventTreshold: 0
   - m_ConditionMode: 3
     m_ConditionEvent: moveVectorMag
-    m_EventTreshold: 0.1
+    m_EventTreshold: 0.8
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -3277364141255146198}
   m_Solo: 0
@@ -98,7 +98,7 @@ AnimatorStateTransition:
     m_EventTreshold: 0
   - m_ConditionMode: 4
     m_ConditionEvent: moveVectorMag
-    m_EventTreshold: 0.1
+    m_EventTreshold: 0.8
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 6706978186062136314}
   m_Solo: 0
@@ -126,7 +126,7 @@ AnimatorStateTransition:
     m_EventTreshold: 0.1
   - m_ConditionMode: 4
     m_ConditionEvent: moveVectorMag
-    m_EventTreshold: 0.1
+    m_EventTreshold: 0.8
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 6706978186062136314}
   m_Solo: 0
@@ -154,7 +154,7 @@ AnimatorStateTransition:
     m_EventTreshold: 0.1
   - m_ConditionMode: 3
     m_ConditionEvent: moveVectorMag
-    m_EventTreshold: 0.1
+    m_EventTreshold: 0.8
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 6102758417561649504}
   m_Solo: 0
@@ -250,7 +250,7 @@ AnimatorStateTransition:
     m_EventTreshold: 0
   - m_ConditionMode: 3
     m_ConditionEvent: moveVectorMag
-    m_EventTreshold: 0.1
+    m_EventTreshold: 0.8
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -3277364141255146198}
   m_Solo: 0
@@ -278,7 +278,7 @@ AnimatorStateTransition:
     m_EventTreshold: 0
   - m_ConditionMode: 3
     m_ConditionEvent: moveVectorMag
-    m_EventTreshold: 0.1
+    m_EventTreshold: 0.8
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -3277364141255146198}
   m_Solo: 0
@@ -335,7 +335,7 @@ AnimatorStateTransition:
     m_EventTreshold: 0.1
   - m_ConditionMode: 4
     m_ConditionEvent: moveVectorMag
-    m_EventTreshold: 0.1
+    m_EventTreshold: 0.8
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 6706978186062136314}
   m_Solo: 0
@@ -421,7 +421,7 @@ AnimatorStateTransition:
     m_EventTreshold: 0.1
   - m_ConditionMode: 4
     m_ConditionEvent: moveVectorMag
-    m_EventTreshold: 0.1
+    m_EventTreshold: 0.8
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 2967854007118232268}
   m_Solo: 0
@@ -508,7 +508,7 @@ AnimatorStateTransition:
     m_EventTreshold: 0
   - m_ConditionMode: 4
     m_ConditionEvent: moveVectorMag
-    m_EventTreshold: 0.1
+    m_EventTreshold: 0.8
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 2967854007118232268}
   m_Solo: 0
