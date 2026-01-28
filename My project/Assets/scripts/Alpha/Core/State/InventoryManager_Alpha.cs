@@ -14,6 +14,9 @@ public class InventoryManager_Alpha : MonoBehaviour
         public string defId;
         public int rarity;
         public BASE_WeaponData_Alpha affix; // ここは型に注意（下で説明）
+        public Alpha_Effect_Base effect1;
+        public Alpha_Effect_Base effect2;
+        public Alpha_Effect_Base effect3;
     }
 
     [SerializeField] private EquipInstance[] equipInstance = new EquipInstance[W * H];
@@ -23,9 +26,27 @@ public class InventoryManager_Alpha : MonoBehaviour
 
 #if UNITY_EDITOR
     void OnValidate()
-    {
-        if (equipInstance == null || equipInstance.Length != W * H)
-            equipInstance = new EquipInstance[W * H];
-    }
+        {
+            if (equipInstance == null || equipInstance.Length != W * H)
+                equipInstance = new EquipInstance[W * H];
+        }
 #endif
+    public void BattleStartEffect()
+    {
+        for (int y = 0; y < H; y++)
+        {
+            for (int x = 0; x < W; x++)
+            {
+
+                EquipInstance instance = Get(x, y);
+                // スロットが未設定（defId が null または空）の場合はスキップ
+                if (string.IsNullOrEmpty(instance.defId))
+                    continue;
+
+                instance.effect1?.StartEffect(instance.rarity);
+                instance.effect2?.StartEffect(instance.rarity);
+                instance.effect3?.StartEffect(instance.rarity);
+            }
+        }
+    }
 }

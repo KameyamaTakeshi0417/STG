@@ -93,8 +93,8 @@ public class Player_Shooter_Alpha : MonoBehaviour
         Vector3 createPos =  (watch * ratio);
         Vector3 NcreatePos = Vector3.Normalize(watch);
         // オブジェクトの向きを変更
-        float rotationAngle = Mathf.Atan2(watch.y, watch.x) * Mathf.Rad2Deg;
-         transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotationAngle));
+        // float rotationAngle = Mathf.Atan2(watch.y, watch.x) * Mathf.Rad2Deg;
+        // transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotationAngle));
 
 
         
