@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,7 +20,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
         PlayerObj = playerTransform.gameObject;
         if (playerTransform != null)
         {
-            playerStatusScript = PlayerObj.GetComponent<playerStatusManager_Alpha>();
+            playerStatusScript = GameObject.Find("manager").GetComponent<playerStatusManager_Alpha>();
         }
     }
 
@@ -61,17 +61,13 @@ public class Player_Shooter_Alpha : MonoBehaviour
 
     private IEnumerator CoolTime()
     {
-        int count = 0;
-        while (true)
-        {
-            if (count >= (playerStatusScript.BulletSpan * playerStatusScript.BulletSpanMag))
-            {
-                onCoolTime = false;
-                yield break;
-            }
-            count++;
-            yield return new WaitForSecondsRealtime(0.1f);
-        }
+        // 基準の発射間隔を0.8秒に設定
+        float baseInterval = 0.8f;
+        // 関数の倍率を適用 (例: BulletSpanMagが100の場合は1倍、50の場合は0.5倍)
+        float targetInterval = baseInterval * (playerStatusScript.BulletSpanMag * 0.01f);
+        
+        yield return new WaitForSecondsRealtime(targetInterval);
+        onCoolTime = false;
     }
 
     public void SetPaused(bool paused)
@@ -89,25 +85,27 @@ public class Player_Shooter_Alpha : MonoBehaviour
         // 現在装備している弾丸、ケース、プライマーを取得
 
         GameObject bulletPrefab;
-        float ratio = 0.5f;
-        Vector3 createPos =  (watch * ratio);
+        float distance = moveRadius;
+        Vector3 createPos = playerTransform.position + (watch * distance);
         Vector3 NcreatePos = Vector3.Normalize(watch);
-        // オブジェクトの向きを変更
-        // float rotationAngle = Mathf.Atan2(watch.y, watch.x) * Mathf.Rad2Deg;
-        // transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotationAngle));
-
-
+        bulletPrefab = Instantiate(
+                  Resources.Load<GameObject>("Objects/Bullet/NormalBullet"),
+                  createPos,
+                  Quaternion.identity
+              );        // 弾の向きを変更
+        float rotationAngle = Mathf.Atan2(watch.y, watch.x) * Mathf.Rad2Deg;
+        bulletPrefab.transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotationAngle));
+        Bullet_Base bulletScript = bulletPrefab.GetComponent<Bullet_Base>();
         
+        // 弾のステータス（角度、弾速、ダメージ）を設定
+        // 関数が干渉する前の弾速の基本スピードを今の1.5倍にする
+        float baseBulletSpeed = playerStatusScript.bulletSpeed * 1.5f;
+        bulletScript.setStatus(watch, baseBulletSpeed, playerStatusScript.pow);
+
+        bulletScript.shoot();
 
 
-        // 弾丸の基本ステータスを設定
 
-
-        Case_Base caseScript;
-        System.Type caseType;
-        // ケースの効果を弾丸にアタッチ
-    
-       
         //ドレイン効果が付与できるなら付与する
         DrainHandler targetHandler = GetComponent<DrainHandler>();
         // サウンドエフェクトの再生

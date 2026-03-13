@@ -70,6 +70,7 @@ public class Bullet_Base : MonoBehaviour
     {
         gameObject.GetComponent<Case_Base>().setStatus(rotate, Speed, dmg);
         gameObject.GetComponent<Case_Base>().ApplyCaseEffect(this.gameObject);
+        
     }
 
     //弾を撃ち出す

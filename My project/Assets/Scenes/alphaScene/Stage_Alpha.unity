@@ -474,6 +474,9 @@ MonoBehaviour:
   startColor: {r: 1, g: 0.5641509, b: 0.5641509, a: 1}
   endColor: {r: 1, g: 0, b: 0, a: 0.5}
   zOrder: 10
+  targetTag: Enemy
+  snapRadius: 2
+  lockOnColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!120 &1280553832
 LineRenderer:
   serializedVersion: 2
@@ -751,7 +754,7 @@ MonoBehaviour:
   moveSpeedMag_CONST: 7.5
   bulletSpeed: 100
   bulletSpeedMag: 100
-  BulletSpan: 100
+  BulletSpan: 1
   BulletSpanMag: 100
   Exp: 0
 --- !u!4 &1634642367
