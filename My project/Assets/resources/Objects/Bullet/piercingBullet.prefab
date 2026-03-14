@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1877006497555998787}
   - component: {fileID: 8012226728060144426}
+  - component: {fileID: -4999140368411241701}
   - component: {fileID: 5198347656691870225}
   - component: {fileID: 4495537895871079448}
-  - component: {fileID: -4999140368411241701}
   - component: {fileID: 5888731701616904666}
   m_Layer: 0
   m_Name: piercingBullet
@@ -88,6 +88,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &-4999140368411241701
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3095739216751408760}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fd7164055f7e69449ea17faba9796bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Objname: 
+  dmg: 0
+  Speed: 900
+  DestroyTime: 400
+  bullettype: 0
+  rotate: {x: 0, y: 0, z: 0}
+  rarelity: 1
+  bulletName: 
+  addDmg: 0
+  piercingCount: 0
 --- !u!50 &5198347656691870225
 Rigidbody2D:
   serializedVersion: 4
@@ -160,26 +182,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.61, y: 0.87}
   m_EdgeRadius: 0
---- !u!114 &-4999140368411241701
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3095739216751408760}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fd7164055f7e69449ea17faba9796bf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dmg: 0
-  Speed: 0
-  DestroyTime: 0
-  bullettype: 0
-  rotate: {x: 0, y: 0, z: 0}
-  rarelity: 1
-  bulletName: 
-  addDmg: 0
 --- !u!95 &5888731701616904666
 Animator:
   serializedVersion: 5

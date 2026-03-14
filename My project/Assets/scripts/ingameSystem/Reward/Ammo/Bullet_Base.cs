@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -54,11 +54,28 @@ public class Bullet_Base : MonoBehaviour
     //弾丸の貫通回数設定
 
 
+    public BASE_WeaponData_Alpha fireWeaponData;
+    public BASE_WeaponData_Alpha flightWeaponData;
+    public BASE_WeaponData_Alpha hitWeaponData;
+    public bool canUseAllEffects = false;
+
     public void setStatus(Vector3 Prot, float pSpeed, float pDmg)
     {
         rotate = Prot;
         Speed = pSpeed;
         dmg = pDmg;
+    }
+
+    // 武器の効果データを弾に割り当てる
+    public void SetWeaponEffects(BASE_WeaponData_Alpha w1, BASE_WeaponData_Alpha w2, BASE_WeaponData_Alpha w3, bool allEffects)
+    {
+        fireWeaponData = w1;
+        flightWeaponData = w2;
+        hitWeaponData = w3;
+        canUseAllEffects = allEffects;
+        
+        // TODO: ここで発射時効果(fireWeaponData)、航行時(flightWeaponData)、着弾時(hitWeaponData)等の
+        // 実際の効果初期化処理を呼ぶ
     }
 
     public void shoot()

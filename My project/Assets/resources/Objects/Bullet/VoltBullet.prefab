@@ -99,14 +99,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26bb4d7ea503af644b41c70e3e5a2b7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Objname: 
   dmg: 10
-  Speed: 1
-  DestroyTime: 30
+  Speed: 100
+  DestroyTime: 100
   bullettype: 0
   rotate: {x: 0, y: 0, z: 0}
   rarelity: 1
   bulletName: 
   addDmg: 0
+  piercingCount: 0
 --- !u!58 &5733044114785418192
 CircleCollider2D:
   m_ObjectHideFlags: 0

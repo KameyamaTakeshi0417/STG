@@ -162,6 +162,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 752121787}
     m_Modifications:
+    - target: {fileID: 290457744608135311, guid: b268f28426be0dc47b8dc289772a9696, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f58ed6f7c908e50478a95798e6dff8e4, type: 2}
+    - target: {fileID: 744771709685146233, guid: b268f28426be0dc47b8dc289772a9696, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f58ed6f7c908e50478a95798e6dff8e4, type: 2}
+    - target: {fileID: 985913077508701074, guid: b268f28426be0dc47b8dc289772a9696, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f58ed6f7c908e50478a95798e6dff8e4, type: 2}
+    - target: {fileID: 2828568125449859077, guid: b268f28426be0dc47b8dc289772a9696, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f58ed6f7c908e50478a95798e6dff8e4, type: 2}
     - target: {fileID: 3280954393386180980, guid: b268f28426be0dc47b8dc289772a9696, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.5328288
@@ -202,10 +218,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3460402637711350267, guid: b268f28426be0dc47b8dc289772a9696, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f58ed6f7c908e50478a95798e6dff8e4, type: 2}
+    - target: {fileID: 5738128795612951040, guid: b268f28426be0dc47b8dc289772a9696, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f58ed6f7c908e50478a95798e6dff8e4, type: 2}
+    - target: {fileID: 6514635987658601913, guid: b268f28426be0dc47b8dc289772a9696, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f58ed6f7c908e50478a95798e6dff8e4, type: 2}
     - target: {fileID: 8823766583826250412, guid: b268f28426be0dc47b8dc289772a9696, type: 3}
       propertyPath: m_Name
       value: FIeld
       objectReference: {fileID: 0}
+    - target: {fileID: 8823766583826250412, guid: b268f28426be0dc47b8dc289772a9696, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9046834265812146716, guid: b268f28426be0dc47b8dc289772a9696, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f58ed6f7c908e50478a95798e6dff8e4, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -434,6 +470,8 @@ MonoBehaviour:
   onCoolTime: 0
   shootAudioSource: {fileID: 0}
   moveRadius: 2
+  equippedWeaponData: {fileID: 0}
+  currentWeaponGroup: 0
 --- !u!114 &959620468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -475,7 +513,7 @@ MonoBehaviour:
   endColor: {r: 1, g: 0, b: 0, a: 0.5}
   zOrder: 10
   targetTag: Enemy
-  snapRadius: 2
+  snapRadius: 1.27
   lockOnColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!120 &1280553832
 LineRenderer:
@@ -754,9 +792,10 @@ MonoBehaviour:
   moveSpeedMag_CONST: 7.5
   bulletSpeed: 100
   bulletSpeedMag: 100
-  BulletSpan: 1
+  BulletSpan: 100
   BulletSpanMag: 100
   Exp: 0
+  canUseAllEffects: 0
 --- !u!4 &1634642367
 Transform:
   m_ObjectHideFlags: 0
@@ -787,55 +826,55 @@ MonoBehaviour:
   equipInstance:
   - defId: 
     rarity: 0
-    affix: {fileID: 0}
+    affix: {fileID: 11400000, guid: fba2cf693cdd1c34198ce249b683d855, type: 2}
     effect1: {fileID: 0}
     effect2: {fileID: 0}
     effect3: {fileID: 0}
   - defId: 
     rarity: 0
-    affix: {fileID: 0}
+    affix: {fileID: 11400000, guid: cfba2b9cbe9d69142b4932e81375ee1d, type: 2}
     effect1: {fileID: 0}
     effect2: {fileID: 0}
     effect3: {fileID: 0}
   - defId: 
     rarity: 0
-    affix: {fileID: 0}
+    affix: {fileID: 11400000, guid: ffff85d6d471e4e469fe1bb77db9a54f, type: 2}
     effect1: {fileID: 0}
     effect2: {fileID: 0}
     effect3: {fileID: 0}
   - defId: 
     rarity: 0
-    affix: {fileID: 0}
+    affix: {fileID: 11400000, guid: 44b9ae116b55030489ea46aa83ddd666, type: 2}
     effect1: {fileID: 0}
     effect2: {fileID: 0}
     effect3: {fileID: 0}
   - defId: 
     rarity: 0
-    affix: {fileID: 0}
+    affix: {fileID: 11400000, guid: fba2cf693cdd1c34198ce249b683d855, type: 2}
     effect1: {fileID: 0}
     effect2: {fileID: 0}
     effect3: {fileID: 0}
   - defId: 
     rarity: 0
-    affix: {fileID: 0}
+    affix: {fileID: 11400000, guid: cfba2b9cbe9d69142b4932e81375ee1d, type: 2}
     effect1: {fileID: 0}
     effect2: {fileID: 0}
     effect3: {fileID: 0}
   - defId: 
     rarity: 0
-    affix: {fileID: 0}
+    affix: {fileID: 11400000, guid: ffff85d6d471e4e469fe1bb77db9a54f, type: 2}
     effect1: {fileID: 0}
     effect2: {fileID: 0}
     effect3: {fileID: 0}
   - defId: 
     rarity: 0
-    affix: {fileID: 0}
+    affix: {fileID: 11400000, guid: 44b9ae116b55030489ea46aa83ddd666, type: 2}
     effect1: {fileID: 0}
     effect2: {fileID: 0}
     effect3: {fileID: 0}
   - defId: 
     rarity: 0
-    affix: {fileID: 0}
+    affix: {fileID: 11400000, guid: fba2cf693cdd1c34198ce249b683d855, type: 2}
     effect1: {fileID: 0}
     effect2: {fileID: 0}
     effect3: {fileID: 0}

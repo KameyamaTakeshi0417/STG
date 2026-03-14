@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,6 +14,10 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
     public float BulletSpanMag = 1.0f;
 
     public int Exp;
+
+    [Header("Weapon Synthesis Settings")]
+    [Tooltip("特定条件下で1〜3行目のすべての武器効果を使用可能にするフラグ")]
+    public bool canUseAllEffects = false;
 
    
 }
