@@ -17,6 +17,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
     GameObject PlayerObj;
     playerStatusManager_Alpha playerStatusScript;
     InventoryManager_Alpha inventoryManager;
+    Alpha.PointerLineSystem pointerSystem;
 
     [Header("Weapon Groups")]
     public int currentWeaponGroup = 0; // 0, 1, 2 (rows in inventory)
@@ -30,6 +31,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
             playerStatusScript = GameObject.Find("manager").GetComponent<playerStatusManager_Alpha>();
             inventoryManager = GameObject.FindObjectOfType<InventoryManager_Alpha>();
         }
+        pointerSystem = Object.FindAnyObjectByType<Alpha.PointerLineSystem>();
     }
 
     void Start()
@@ -65,18 +67,26 @@ public class Player_Shooter_Alpha : MonoBehaviour
         mousePosition.z = 0; // Z座標は0に固定
 
         // ターゲットロックオン時の処理を追加
-        Alpha.PointerLineSystem pointerSystem = GetComponent<Alpha.PointerLineSystem>();
+        if (pointerSystem == null) 
+        {
+            pointerSystem = Object.FindAnyObjectByType<Alpha.PointerLineSystem>();
+        }
         
         Vector3 direction;
+        Vector3 pPos = playerTransform.position;
+        pPos.z = 0; // Z座標は0に固定
+
         if (pointerSystem != null && pointerSystem.CurrentTarget != null)
         {
             // ロックオンしている対象がいれば、その対象の方向を向く
-            direction = (pointerSystem.CurrentTarget.position - playerTransform.position).normalized;
+            Vector3 targetPos = pointerSystem.CurrentTarget.position;
+            targetPos.z = 0; 
+            direction = (targetPos - pPos).normalized;
         }
         else
         {
             // いなければ今まで通りマウスの方向を向く
-            direction = (mousePosition - playerTransform.position).normalized;
+            direction = (mousePosition - pPos).normalized;
         }
 
         // オブジェクトの向きをマウスポインタ（またはターゲット）の方向に向ける

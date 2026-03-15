@@ -106,6 +106,8 @@ namespace Alpha
             }
             endPos.z = zOrder;
 
+            // Optional: Draw line from player center or exactly match bullet spawn point.
+            // Keeping it from center (startPos) is usually fine.
             lineRenderer.SetPosition(0, startPos);
             lineRenderer.SetPosition(1, endPos);
         }

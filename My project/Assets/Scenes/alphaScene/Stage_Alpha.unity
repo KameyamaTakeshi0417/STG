@@ -630,6 +630,7 @@ GameObject:
   - component: {fileID: 1283572910}
   - component: {fileID: 1283572909}
   - component: {fileID: 1283572908}
+  - component: {fileID: 1283572911}
   m_Layer: 0
   m_Name: skeacraw
   m_TagString: Enemy
@@ -749,6 +750,26 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1283572911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1283572907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adecb30a3579caf4abf4d199f8542e7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HP: 999999
+  currentHP: 0
+  Exp: 0
+  VulnerableTime: 0
+  VulnerableFlg: 0
+  PierceVolume: 1
+  damageTextPrefab: {fileID: 0}
+  DamageUIMagnitude: 0.1
 --- !u!1 &1634642365
 GameObject:
   m_ObjectHideFlags: 0
@@ -796,6 +817,7 @@ MonoBehaviour:
   BulletSpanMag: 100
   Exp: 0
   canUseAllEffects: 0
+  pierceDamageReductionRate: 0.25
 --- !u!4 &1634642367
 Transform:
   m_ObjectHideFlags: 0
@@ -827,57 +849,30 @@ MonoBehaviour:
   - defId: 
     rarity: 0
     affix: {fileID: 11400000, guid: fba2cf693cdd1c34198ce249b683d855, type: 2}
-    effect1: {fileID: 0}
-    effect2: {fileID: 0}
-    effect3: {fileID: 0}
   - defId: 
     rarity: 0
     affix: {fileID: 11400000, guid: cfba2b9cbe9d69142b4932e81375ee1d, type: 2}
-    effect1: {fileID: 0}
-    effect2: {fileID: 0}
-    effect3: {fileID: 0}
   - defId: 
     rarity: 0
     affix: {fileID: 11400000, guid: ffff85d6d471e4e469fe1bb77db9a54f, type: 2}
-    effect1: {fileID: 0}
-    effect2: {fileID: 0}
-    effect3: {fileID: 0}
   - defId: 
     rarity: 0
     affix: {fileID: 11400000, guid: 44b9ae116b55030489ea46aa83ddd666, type: 2}
-    effect1: {fileID: 0}
-    effect2: {fileID: 0}
-    effect3: {fileID: 0}
   - defId: 
     rarity: 0
     affix: {fileID: 11400000, guid: fba2cf693cdd1c34198ce249b683d855, type: 2}
-    effect1: {fileID: 0}
-    effect2: {fileID: 0}
-    effect3: {fileID: 0}
   - defId: 
     rarity: 0
     affix: {fileID: 11400000, guid: cfba2b9cbe9d69142b4932e81375ee1d, type: 2}
-    effect1: {fileID: 0}
-    effect2: {fileID: 0}
-    effect3: {fileID: 0}
   - defId: 
     rarity: 0
     affix: {fileID: 11400000, guid: ffff85d6d471e4e469fe1bb77db9a54f, type: 2}
-    effect1: {fileID: 0}
-    effect2: {fileID: 0}
-    effect3: {fileID: 0}
   - defId: 
     rarity: 0
     affix: {fileID: 11400000, guid: 44b9ae116b55030489ea46aa83ddd666, type: 2}
-    effect1: {fileID: 0}
-    effect2: {fileID: 0}
-    effect3: {fileID: 0}
   - defId: 
     rarity: 0
     affix: {fileID: 11400000, guid: fba2cf693cdd1c34198ce249b683d855, type: 2}
-    effect1: {fileID: 0}
-    effect2: {fileID: 0}
-    effect3: {fileID: 0}
 --- !u!114 &1634642369
 MonoBehaviour:
   m_ObjectHideFlags: 0

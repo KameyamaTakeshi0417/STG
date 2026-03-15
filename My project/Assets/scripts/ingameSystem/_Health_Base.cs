@@ -15,6 +15,10 @@ public class _Health_Base : MonoBehaviour
     public float VulnerableTime = 0f;
     public bool VulnerableFlg = false;
 
+    [Header("Pierce Settings")]
+    [Tooltip("このエネミーに対して許容される貫通の最大回数")]
+    public int PierceVolume = 1;
+
     // Start is called before the first frame update
     void Start() { }
 

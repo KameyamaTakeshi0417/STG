@@ -1,11 +1,11 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Effect_Explosion : MonoBehaviour
 {
     private float dmg = 30f;
-    private int explosionTime = 50;
+    public int explosionTime = 10;
     private Vector3 scale = new Vector3(1, 1, 0);
     int damagedCount = 3;
 

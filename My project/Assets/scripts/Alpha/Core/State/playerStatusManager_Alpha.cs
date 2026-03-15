@@ -19,5 +19,7 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
     [Tooltip("特定条件下で1〜3行目のすべての武器効果を使用可能にするフラグ")]
     public bool canUseAllEffects = false;
 
-   
+    [Header("Pierce Settings")]
+    [Tooltip("貫通時のダメージ減衰率（デフォルト25%減）。アイテム等で0.10fなどに変動")]
+    public float pierceDamageReductionRate = 0.25f;
 }
