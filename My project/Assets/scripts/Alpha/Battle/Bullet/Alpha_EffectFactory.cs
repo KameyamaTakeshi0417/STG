@@ -15,6 +15,10 @@ public static class Alpha_EffectFactory
                 return new Sample_Effect_Alpha(data, position);
             case Alpha_EffectType.Explosion:
                 return new Effect_Explosion_Alpha(data, position);
+            case Alpha_EffectType.Homing:
+                return new Effect_Homing_Alpha(data, position);
+            case Alpha_EffectType.Volt:
+                return new Effect_Volt_Alpha(data, position);
             // 今後追加する効果（例: 爆発、ダメージアップ等）はここにケースを追加していく
             default:
                 return null;

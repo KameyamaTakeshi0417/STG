@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7737893352781934837}
   - component: {fileID: 4421164382963660935}
   - component: {fileID: -2685486121459416717}
+  - component: {fileID: 6914432088758077143}
   m_Layer: 0
   m_Name: Effect_Volt
   m_TagString: Untagged
@@ -94,7 +95,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5623270919964311519}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6c2378bb83288ee4ca733528aa4d7aa7, type: 3}
   m_Name: 
@@ -135,6 +136,20 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.71
+--- !u!114 &6914432088758077143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5623270919964311519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5545592a1e5ecc41a98f4dd60681761, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lifetime: 1
+  chainRadius: 5
 --- !u!1 &9060683149120301583
 GameObject:
   m_ObjectHideFlags: 0

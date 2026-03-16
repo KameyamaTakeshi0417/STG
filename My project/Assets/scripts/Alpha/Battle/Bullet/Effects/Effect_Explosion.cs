@@ -47,13 +47,22 @@ public class Effect_Explosion_Alpha : Alpha_Effect_Base
     {
         if (explosionPrefab != null)
         {
-            // オブジェクトを生成（InstantiateはMonoBehaviour外のためGameObject.Instantiateを使用）
-            GameObject obj = GameObject.Instantiate(explosionPrefab, position, Quaternion.identity);
+            GameObject obj = null;
+            if (Alpha_ObjectPoolManager.Instance != null)
+            {
+                obj = Alpha_ObjectPoolManager.Instance.Rent(explosionPrefab, position, Quaternion.identity);
+            }
+            else
+            {
+                obj = GameObject.Instantiate(explosionPrefab, position, Quaternion.identity);
+            }
             
             // Effect_Explosionコンポーネントを取得し、消滅までのフレーム数(例: 10)とダメージを渡してキックする
+            // (ingameSystem/AttackEffect/Effect_Explosion.cs側のコンポーネント)
             Effect_Explosion effectScript = obj.GetComponent<Effect_Explosion>();
             if (effectScript != null)
             {
+                effectScript.sourcePrefab = explosionPrefab; // プール用
                 effectScript.startExplosion(dmg, 10);
             }
         }

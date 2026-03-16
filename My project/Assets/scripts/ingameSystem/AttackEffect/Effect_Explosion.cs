@@ -1,37 +1,55 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Effect_Explosion : MonoBehaviour
+public class Effect_Explosion : MonoBehaviour, IAlphaPoolable
 {
+    public GameObject sourcePrefab; // プール返却用の参照
+
+    public void OnRentFromPool()
+    {
+        damagedCount = 3;
+        isExploding = false;
+        currentFrame = 0;
+    }
+
+    public void OnReturnToPool()
+    {
+        isExploding = false;
+    }
     private float dmg = 30f;
     public int explosionTime = 10;
     private Vector3 scale = new Vector3(1, 1, 0);
     int damagedCount = 3;
 
-    // Start is called before the first frame update
-    void Start() { }
-
-    // Update is called once per frame
-    void Update() { }
+    private bool isExploding = false;
+    private int currentFrame = 0;
 
     public void startExplosion(float setdmg, int setExplosionTime)
     {
-        dmg = setdmg;
+      //  dmg = setdmg;
         explosionTime = setExplosionTime;
-        StartCoroutine(startExplosion());
+        isExploding = true;
+        currentFrame = 0;
     }
 
-    private IEnumerator startExplosion()
+    void Update()
     {
-        int count = 0;
-        while (count < explosionTime)
+        if (isExploding)
         {
-            count++;
-            yield return new WaitForEndOfFrame();
+            currentFrame++;
+            if (currentFrame >= explosionTime)
+            {
+                if (Alpha_ObjectPoolManager.Instance != null && sourcePrefab != null)
+                {
+                    Alpha_ObjectPoolManager.Instance.Return(this.gameObject, sourcePrefab);
+                }
+                else
+                {
+                    Destroy(this.gameObject);
+                }
+            }
         }
-        Destroy(this.gameObject);
-        yield break;
     }
 
     protected void OnTriggerEnter2D(Collider2D collision)
@@ -40,7 +58,8 @@ public class Effect_Explosion : MonoBehaviour
         {
             if (damagedCount > 0)
             {
-                collision.gameObject.GetComponent<Health>().TakeDamage(dmg);
+                _Health_Base health = collision.gameObject.GetComponent<_Health_Base>();
+                if (health != null) health.TakeDamage(dmg);
                 damagedCount -= 1;
             }
         }

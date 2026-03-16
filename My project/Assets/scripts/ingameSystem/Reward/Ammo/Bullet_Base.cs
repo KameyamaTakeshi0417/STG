@@ -4,8 +4,30 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class Bullet_Base : MonoBehaviour
+public class Bullet_Base : MonoBehaviour, IAlphaPoolable
 {
+    // 追加: 自分が生まれた元のプレハブの参照を保持する
+    public GameObject sourcePrefab;
+
+    public void OnRentFromPool()
+    {
+        // 再登場時のリセット処理
+        piercingCount = 0; // Prefab側（PiercingBulletなど）で上書きされる前提だが念のため0クリア
+        hitCountsPerEnemy.Clear();
+        if (bulletCollider != null) bulletCollider.enabled = true;
+        if (rb != null)
+        {
+            rb.velocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+        }
+        activeEffects.Clear();
+    }
+
+    public void OnReturnToPool()
+    {
+        // 非表示になる直前の処理（必要ならば）
+        StopAllCoroutines();
+    }
     public string Objname;
     protected Rigidbody2D rb;
     public float dmg; // 弾のダメージ量
@@ -103,9 +125,12 @@ public class Bullet_Base : MonoBehaviour
         }
     }
 
+    protected float initialSpeed; // 発射時の威力を基準スピードとして記憶（追加部分）
+
     public void shoot()
     {
         initialDmg = dmg; // 発射時の威力を基準ダメージとして記憶
+        initialSpeed = Speed; // 発射時のスピードを基準として記憶
         bulletCollider = GetComponent<Collider2D>(); // コライダー取得
 
         // プレイヤーのステータスを取得（弾に個別インターバルなどを反映するため）
@@ -163,7 +188,14 @@ public class Bullet_Base : MonoBehaviour
             effect.OnHit(this, null);
         }
 
-        Destroy(this.gameObject);
+        if (Alpha_ObjectPoolManager.Instance != null && sourcePrefab != null)
+        {
+            Alpha_ObjectPoolManager.Instance.Return(this.gameObject, sourcePrefab);
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
         yield break;
     }
 
@@ -189,14 +221,20 @@ public class Bullet_Base : MonoBehaviour
 
         if (piercingCount <= 0)
         {
-            Destroy(this.gameObject);
+            if (Alpha_ObjectPoolManager.Instance != null && sourcePrefab != null)
+            {
+                Alpha_ObjectPoolManager.Instance.Return(this.gameObject, sourcePrefab);
+            }
+            else
+            {
+                Destroy(this.gameObject);
+            }
         }
     }
 
     protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
         bool hitSomething = false;
-        bool isPierced = false;
 
         // 衝突したオブジェクトのタグをチェック
         if (collision.CompareTag("Enemy") || collision.CompareTag("Player"))
@@ -205,35 +243,68 @@ public class Bullet_Base : MonoBehaviour
             _Health_Base health = collision.GetComponent<_Health_Base>();
             if (health != null)
             {
-                // HPを減らす
-                health.TakeDamage(dmg);
-
-                // 貫通カウントの処理
                 GameObject targetObj = collision.gameObject;
                 if (!hitCountsPerEnemy.ContainsKey(targetObj))
                 {
                     hitCountsPerEnemy[targetObj] = 0;
                 }
-                hitCountsPerEnemy[targetObj]++;
 
-                // 貫通条件チェック
-                if (hitCountsPerEnemy[targetObj] <= health.PierceVolume && piercingCount > 0)
+                int prevHitCount = hitCountsPerEnemy[targetObj];
+                // 既にこの敵の最大ヒット数に達している場合は何もしない
+                if (prevHitCount >= health.PierceVolume) return;
+
+                // 今回の衝突で与えるべきヒット回数（弾の残り貫通回数+1 と、敵の残り許容ヒット数の少ない方）
+                // ※ piercingCount が残っている回数 = あと「通り抜けられる」回数
+                //   つまりヒットできる回数は piercingCount + 1 回
+                int allowableHits = health.PierceVolume - prevHitCount;
+                int actualHits = Mathf.Min(piercingCount + 1, allowableHits);
+
+                // 減衰率を取得
+                float reductionRate = 0.25f;
+                GameObject manager = GameObject.Find("manager");
+                if (manager != null)
                 {
-                    isPierced = true;
+                    var pStatus = manager.GetComponent<playerStatusManager_Alpha>();
+                    if (pStatus != null) reductionRate = pStatus.pierceDamageReductionRate;
+                }
+
+                // actualHitsの回数分ループ
+                for (int i = 0; i < actualHits; i++)
+                {
+                    // HPを減らす（1回目は今のdmg、2回目以降はさっき減衰されたdmgを使う）
+                    health.TakeDamage(dmg);
+                    hitCountsPerEnemy[targetObj]++;
+
+                    // 貫通枠を消費する（最後の1ヒット＝もう貫通できない時は消費しない、もしくは0未満になる）
                     piercingCount--;
 
-                    // 減衰率を取得
-                    float reductionRate = 0.25f;
-                    GameObject manager = GameObject.Find("manager");
-                    if (manager != null)
-                    {
-                        var pStatus = manager.GetComponent<playerStatusManager_Alpha>();
-                        if (pStatus != null) reductionRate = pStatus.pierceDamageReductionRate;
-                    }
-
-                    // ダメージを減衰 (一回の貫通で基準威力のX%ずつ下がる)
+                    // 次のヒット（同じ敵の連続ヒット、もしくは次の敵へのヒット）のために威力と速度を減衰させる
                     dmg -= initialDmg * reductionRate;
-                    if (dmg <= initialDmg * 0.1f) dmg = initialDmg * 0.1f; // ダメージの下限保証（10%）などを入れておく
+                    if (dmg <= initialDmg * 0.1f) dmg = initialDmg * 0.1f;
+                    
+                    Speed -= initialSpeed * reductionRate;
+                    if (Speed <= initialSpeed * 0.1f) Speed = initialSpeed * 0.1f;
+                }
+
+                // 速度が変更されたので、実際のRigidbodyの速度にも反映する
+                if (rb != null)
+                {
+                    if (rb.velocity.sqrMagnitude > 0f)
+                    {
+                        // 既にループ内で減衰済みの「いまのSpeed」と「初期のSpeed」の比率を出す
+                        float ratio = Speed / initialSpeed;
+
+                        // 現在飛んでいる実際の向きと速度の長さを取得
+                        Vector2 currentDir = rb.velocity.normalized;
+                        float originalVelocityMag = rb.velocity.magnitude;
+
+                        // AddForceで飛んだ当初の速度が最初から変化していないと仮定し、
+                        // 「初期速度×今の比率」を新しい物理速度として上書きする
+                        // （※ AddForce時の最終速度を originalMag に近いとみなす）
+                        float newMag = originalVelocityMag * ratio;
+
+                        rb.velocity = currentDir * newMag;
+                    }
                 }
             }
             hitSomething = true;
@@ -251,15 +322,22 @@ public class Bullet_Base : MonoBehaviour
                 effect.OnHit(this, collision);
             }
 
-            if (isPierced)
+            // 残りの貫通回数が0未満（＝もう貫通枠がない）もしくは壁に当たった場合は消滅
+            if (piercingCount < 0 || collision.CompareTag("wall"))
             {
-                // 貫通成功した場合は消滅せず、1フレーム後に再度判定できるようコライダーを一時無効化
-                StartCoroutine(TemporaryDisableCollider());
+                if (Alpha_ObjectPoolManager.Instance != null && sourcePrefab != null)
+                {
+                    Alpha_ObjectPoolManager.Instance.Return(this.gameObject, sourcePrefab);
+                }
+                else
+                {
+                    Destroy(this.gameObject);
+                }
             }
+            // 貫通枠が残っている場合は1フレーム無効化してすり抜ける
             else
             {
-                // 弾を破壊
-                Destroy(this.gameObject);
+                StartCoroutine(TemporaryDisableCollider());
             }
         }
     }

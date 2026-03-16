@@ -19,6 +19,10 @@ public class _Health_Base : MonoBehaviour
     [Tooltip("このエネミーに対して許容される貫通の最大回数")]
     public int PierceVolume = 1;
 
+    [Header("Status Effects")]
+    [Tooltip("感電の蓄積値。0より大きい場合帯電状態")]
+    public int VoltCount = 0;
+
     // Start is called before the first frame update
     void Start() { }
 

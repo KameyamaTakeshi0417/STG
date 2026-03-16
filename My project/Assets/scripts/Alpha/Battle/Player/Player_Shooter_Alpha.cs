@@ -148,7 +148,6 @@ public class Player_Shooter_Alpha : MonoBehaviour
 
         GameObject prefabToInstantiate = Resources.Load<GameObject>("Objects/Bullet/NormalBullet");
         
-        // 3つ目(x=2)の武器にbulletPrefabが設定されていれば見た目として使用
         if (data3 != null && data3.bulletPrefab != null)
         {
             prefabToInstantiate = data3.bulletPrefab;
@@ -158,14 +157,35 @@ public class Player_Shooter_Alpha : MonoBehaviour
             Debug.LogWarning($"[Player_Shooter] {currentWeaponGroup + 1}段目の3つ目の武器にプレハブが未設定か武器がありません。デフォルト弾を使用します。");
         }
 
-        bulletPrefab = Instantiate(
-                  prefabToInstantiate,
-                  createPos,
-                  Quaternion.identity
-              );        // 弾の向きを変更
+        // --- 追加: ObjectPoolManager を使って弾を取り出す ---
+        if (Alpha_ObjectPoolManager.Instance != null)
+        {
+            bulletPrefab = Alpha_ObjectPoolManager.Instance.Rent(
+                prefabToInstantiate,
+                createPos,
+                Quaternion.identity
+            );
+        }
+        else
+        {
+            // マネージャーが無い場合は直接生成（保険）
+            bulletPrefab = Instantiate(
+                prefabToInstantiate,
+                createPos,
+                Quaternion.identity
+            );
+        }
+
+        // 弾の向きを変更
         float rotationAngle = Mathf.Atan2(watch.y, watch.x) * Mathf.Rad2Deg;
         bulletPrefab.transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotationAngle));
         Bullet_Base bulletScript = bulletPrefab.GetComponent<Bullet_Base>();
+        
+        // --- 追加: 自分が生まれたプレハブを記憶させる（Return時に必要なため） ---
+        if (bulletScript != null)
+        {
+            bulletScript.sourcePrefab = prefabToInstantiate;
+        }
         
         // 弾のステータス（角度、弾速、ダメージ）を設定
         // 関数が干渉する前の弾速の基本スピードを今の1.5倍にする
@@ -175,6 +195,18 @@ public class Player_Shooter_Alpha : MonoBehaviour
 
         // 各武器の効果を弾に渡す
         bulletScript.SetWeaponEffects(data1, data2, data3, playerStatusScript.canUseAllEffects);
+
+        // ※ 追加: PlayerBulletManager_Alphaの貫通回数を弾に上乗せする
+        PlayerBulletManager_Alpha bulletManager = null;
+        GameObject manager = GameObject.Find("manager");
+        if (manager != null) bulletManager = manager.GetComponent<PlayerBulletManager_Alpha>();
+        if (bulletManager == null) bulletManager = FindObjectOfType<PlayerBulletManager_Alpha>(); // managerにいなかった場合用
+
+        if (bulletManager != null)
+        {
+            // プレハブの設定値(Awake) ＋ マネージャーの指定値
+            bulletScript.piercingCount += bulletManager.pierceCount;
+        }
 
         bulletScript.shoot();
 

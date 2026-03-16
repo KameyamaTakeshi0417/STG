@@ -7,7 +7,9 @@ public enum Alpha_EffectType
 {
     None = 0,
     SampleEffect = 1,
-    Explosion = 2
+    Explosion = 2,
+    Homing = 3,
+    Volt = 4
 }
 
 [CreateAssetMenu(fileName = "Alpha_Weapon", menuName = "Game_Alpha/Weapon")]

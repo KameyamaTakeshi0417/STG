@@ -188,13 +188,13 @@ MonoBehaviour:
   Objname: 
   dmg: 0
   Speed: 900
-  DestroyTime: 400
+  DestroyTime: 150
   bullettype: 0
   rotate: {x: 0, y: 0, z: 0}
   rarelity: 1
   bulletName: 
   addDmg: 0
-  piercingCount: 0
+  piercingCount: 4
   canUseAllEffects: 0
 --- !u!50 &5198347656691870225
 Rigidbody2D:
