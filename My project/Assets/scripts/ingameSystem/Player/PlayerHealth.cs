@@ -8,6 +8,7 @@ public class PlayerHealth : _Health_Base
     public static event PlayerHPChangedHandler OnPlayerHPChanged;
     public HPBar_Base myHPBarScript;
     public GameObject HPBarObj;
+    public bool isInvincible = false;
 
     // Start is called before the first frame update
     void Start()
@@ -20,6 +21,8 @@ public class PlayerHealth : _Health_Base
 
     public override void TakeDamage(float damage)
     {
+        if (isInvincible) return; // 無敵中ならダメージを無視する
+
         float setDmg = damage;
         if (VulnerableFlg)
         {

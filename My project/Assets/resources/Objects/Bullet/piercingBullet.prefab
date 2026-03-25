@@ -185,6 +185,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fd7164055f7e69449ea17faba9796bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sourcePrefab: {fileID: 0}
   Objname: 
   dmg: 0
   Speed: 900
@@ -194,7 +195,8 @@ MonoBehaviour:
   rarelity: 1
   bulletName: 
   addDmg: 0
-  piercingCount: 4
+  piercingCount: 3
+  localPierceDamageReductionRate: -1
   canUseAllEffects: 0
 --- !u!50 &5198347656691870225
 Rigidbody2D:

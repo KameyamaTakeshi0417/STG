@@ -1139,7 +1139,18 @@ MonoBehaviour:
   bulletSpeedMag: 100
   BulletSpan: 100
   BulletSpanMag: 100
-  Exp: 0
+  currentSpecialMove: 2
+  maxStamina: 100
+  currentStamina: 100
+  staminaRecoveryRate: 10
+  staminaRecoveryDelay: 0.5
+  lastStaminaConsumeTime: -100
+  dashDuration: 0.1
+  dashStaminaCost: 30
+  dashDistance: 4
+  warpDuration: 0.3
+  warpStaminaCost: 45
+  warpDistance: 8
   canUseAllEffects: 0
   pierceDamageReductionRate: 0.25
 --- !u!4 &1634642367
@@ -1171,31 +1182,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   equipInstance:
   - defId: 
-    rarity: 0
-    affix: {fileID: 11400000, guid: fba2cf693cdd1c34198ce249b683d855, type: 2}
-  - defId: 
-    rarity: 0
+    rarity: 1
     affix: {fileID: 11400000, guid: cfba2b9cbe9d69142b4932e81375ee1d, type: 2}
   - defId: 
-    rarity: 0
-    affix: {fileID: 11400000, guid: ffff85d6d471e4e469fe1bb77db9a54f, type: 2}
-  - defId: 
-    rarity: 0
-    affix: {fileID: 11400000, guid: 44b9ae116b55030489ea46aa83ddd666, type: 2}
-  - defId: 
-    rarity: 0
-    affix: {fileID: 11400000, guid: fba2cf693cdd1c34198ce249b683d855, type: 2}
-  - defId: 
-    rarity: 0
+    rarity: 1
     affix: {fileID: 11400000, guid: cfba2b9cbe9d69142b4932e81375ee1d, type: 2}
   - defId: 
-    rarity: 0
+    rarity: 1
     affix: {fileID: 11400000, guid: ffff85d6d471e4e469fe1bb77db9a54f, type: 2}
   - defId: 
-    rarity: 0
+    rarity: 1
     affix: {fileID: 11400000, guid: 44b9ae116b55030489ea46aa83ddd666, type: 2}
   - defId: 
-    rarity: 0
+    rarity: 1
+    affix: {fileID: 11400000, guid: fba2cf693cdd1c34198ce249b683d855, type: 2}
+  - defId: 
+    rarity: 1
+    affix: {fileID: 11400000, guid: cfba2b9cbe9d69142b4932e81375ee1d, type: 2}
+  - defId: 
+    rarity: 1
+    affix: {fileID: 11400000, guid: ffff85d6d471e4e469fe1bb77db9a54f, type: 2}
+  - defId: 
+    rarity: 1
+    affix: {fileID: 11400000, guid: 44b9ae116b55030489ea46aa83ddd666, type: 2}
+  - defId: 
+    rarity: 1
     affix: {fileID: 11400000, guid: fba2cf693cdd1c34198ce249b683d855, type: 2}
 --- !u!114 &1634642369
 MonoBehaviour:
@@ -1211,7 +1222,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerStatus: {fileID: 1634642366}
   damage: 0
-  pierceCount: 3
+  pierceCount: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

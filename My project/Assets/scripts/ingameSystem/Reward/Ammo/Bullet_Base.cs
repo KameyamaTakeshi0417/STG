@@ -9,11 +9,13 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
     // 追加: 自分が生まれた元のプレハブの参照を保持する
     public GameObject sourcePrefab;
 
-    public void OnRentFromPool()
+    public virtual void OnRentFromPool()
     {
         // 再登場時のリセット処理
-        piercingCount = 0; // Prefab側（PiercingBulletなど）で上書きされる前提だが念のため0クリア
+        piercingCount = 0; // 継承先（PiercingBulletなど）で必要に応じて override して再設定するベースとして0クリア
         hitCountsPerEnemy.Clear();
+        ignoredColliders.Clear();
+        
         if (bulletCollider != null) bulletCollider.enabled = true;
         if (rb != null)
         {
@@ -23,7 +25,7 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
         activeEffects.Clear();
     }
 
-    public void OnReturnToPool()
+    public virtual void OnReturnToPool()
     {
         // 非表示になる直前の処理（必要ならば）
         StopAllCoroutines();
@@ -81,6 +83,9 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
     //弾丸の貫通回数設定
 
 
+    // 貫通弾用のローカルダメージ減衰率（-1の場合はグローバル設定を使用）
+    public float localPierceDamageReductionRate = -1f;
+
     public bool canUseAllEffects = false;
     public List<Alpha_Effect_Base> activeEffects = new List<Alpha_Effect_Base>();
 
@@ -92,22 +97,22 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
     }
 
     // 武器の効果データを弾に割り当てる（ファクトリを通じてC#クラスのインスタンス化）
-    public void SetWeaponEffects(BASE_WeaponData_Alpha w1, BASE_WeaponData_Alpha w2, BASE_WeaponData_Alpha w3, bool allEffects)
+    public void SetWeaponEffects(BASE_WeaponData_Alpha w1, int rarity1, BASE_WeaponData_Alpha w2, int rarity2, BASE_WeaponData_Alpha w3, int rarity3, bool allEffects)
     {
         canUseAllEffects = allEffects;
         activeEffects.Clear();
 
-        AddEffectFromWeapon(w1, 0); // 0: 生成
-        AddEffectFromWeapon(w2, 1); // 1: 航行
-        AddEffectFromWeapon(w3, 2); // 2: 着弾
+        AddEffectFromWeapon(w1, 0, rarity1); // 0: 生成
+        AddEffectFromWeapon(w2, 1, rarity2); // 1: 航行
+        AddEffectFromWeapon(w3, 2, rarity3); // 2: 着弾
     }
 
-    private void AddEffectFromWeapon(BASE_WeaponData_Alpha weaponData, int position)
+    private void AddEffectFromWeapon(BASE_WeaponData_Alpha weaponData, int position, int rarity)
     {
         if (weaponData == null) return;
 
         // ファクトリから効果クラスのインスタンスを生成
-        Alpha_Effect_Base newEffect = Alpha_EffectFactory.CreateEffect(weaponData, position);
+        Alpha_Effect_Base newEffect = Alpha_EffectFactory.CreateEffect(weaponData, position, rarity);
         if (newEffect != null)
         {
             newEffect.canUseAllEffects = canUseAllEffects; // 全効果発動可能フラグを効果インスタンスにも渡す
@@ -163,15 +168,26 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
     {
         int count = 0;
 
-        //弾の発射
+        // 弾の発射
         rb = gameObject.GetComponent<Rigidbody2D>();
-        Vector2 force = new Vector2(rotate.x, rotate.y) * Speed;
-        rb.AddForce(force);
+
+        // 物理エンジンの慣性や衝突による減速を防ぐため、初速を強制する
+        if (rb != null)
+        {
+            rb.velocity = rotate.normalized * (Speed * 0.02f);
+        }
 
         while (count <= DestroyTime)
         {
             // 弾の位置を更新する
             count++;
+
+            // 毎フレーム、現在の進行方向(rotate)とスピード(Speed)で速度を上書きし続ける
+            // （プレイヤー移動系の改修と同様、物理演算による意図しない減速を完全に防ぐ）
+            if (rb != null)
+            {
+                rb.velocity = rotate.normalized * (Speed * 0.02f);
+            }
 
             // 航行時効果を発動 (ループ自体は0.01秒周期)
             foreach (var effect in activeEffects)
@@ -234,6 +250,9 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
 
     protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
+        // 貫通中（IgnoreCollision状態）のコライダーからのイベントは無視する
+        if (ignoredColliders.Contains(collision)) return;
+
         bool hitSomething = false;
 
         // 衝突したオブジェクトのタグをチェック
@@ -261,11 +280,21 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
 
                 // 減衰率を取得
                 float reductionRate = 0.25f;
-                GameObject manager = GameObject.Find("manager");
-                if (manager != null)
+                
+                // まずは弾自身（装備効果等）の減衰率設定があればそれを優先する
+                if (localPierceDamageReductionRate >= 0f)
                 {
-                    var pStatus = manager.GetComponent<playerStatusManager_Alpha>();
-                    if (pStatus != null) reductionRate = pStatus.pierceDamageReductionRate;
+                    reductionRate = localPierceDamageReductionRate;
+                }
+                else
+                {
+                    // なければプレイヤーステータス（マネージャー）の設定値を取得
+                    GameObject manager = GameObject.Find("manager");
+                    if (manager != null)
+                    {
+                        var pStatus = manager.GetComponent<playerStatusManager_Alpha>();
+                        if (pStatus != null) reductionRate = pStatus.pierceDamageReductionRate;
+                    }
                 }
 
                 // actualHitsの回数分ループ
@@ -278,33 +307,9 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
                     // 貫通枠を消費する（最後の1ヒット＝もう貫通できない時は消費しない、もしくは0未満になる）
                     piercingCount--;
 
-                    // 次のヒット（同じ敵の連続ヒット、もしくは次の敵へのヒット）のために威力と速度を減衰させる
+                    // 次のヒット（同じ敵の連続ヒット、もしくは次の敵へのヒット）のために威力を減衰させる
                     dmg -= initialDmg * reductionRate;
                     if (dmg <= initialDmg * 0.1f) dmg = initialDmg * 0.1f;
-                    
-                    Speed -= initialSpeed * reductionRate;
-                    if (Speed <= initialSpeed * 0.1f) Speed = initialSpeed * 0.1f;
-                }
-
-                // 速度が変更されたので、実際のRigidbodyの速度にも反映する
-                if (rb != null)
-                {
-                    if (rb.velocity.sqrMagnitude > 0f)
-                    {
-                        // 既にループ内で減衰済みの「いまのSpeed」と「初期のSpeed」の比率を出す
-                        float ratio = Speed / initialSpeed;
-
-                        // 現在飛んでいる実際の向きと速度の長さを取得
-                        Vector2 currentDir = rb.velocity.normalized;
-                        float originalVelocityMag = rb.velocity.magnitude;
-
-                        // AddForceで飛んだ当初の速度が最初から変化していないと仮定し、
-                        // 「初期速度×今の比率」を新しい物理速度として上書きする
-                        // （※ AddForce時の最終速度を originalMag に近いとみなす）
-                        float newMag = originalVelocityMag * ratio;
-
-                        rb.velocity = currentDir * newMag;
-                    }
                 }
             }
             hitSomething = true;
@@ -337,20 +342,30 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
             // 貫通枠が残っている場合は1フレーム無効化してすり抜ける
             else
             {
-                StartCoroutine(TemporaryDisableCollider());
+                StartCoroutine(TemporaryDisableCollider(collision));
             }
         }
     }
 
-    protected IEnumerator TemporaryDisableCollider()
+    // 貫通した対象との物理的な衝突判定を無視するリスト
+    private HashSet<Collider2D> ignoredColliders = new HashSet<Collider2D>();
+
+    protected IEnumerator TemporaryDisableCollider(Collider2D targetCollider)
     {
-        if (bulletCollider != null)
+        if (bulletCollider != null && targetCollider != null)
         {
-            bulletCollider.enabled = false;
-            yield return null; // 1フレーム待機
-            if (this != null && this.gameObject != null)
+            // 同じ敵に何度も当たらないように、かつ物理的に引っかかって減速しないようにコリジョンを無視する
+            Physics2D.IgnoreCollision(bulletCollider, targetCollider, true);
+            ignoredColliders.Add(targetCollider);
+            
+            // 貫通後に再び同じ敵に当たることを許可するかどうかはゲームの仕様によるが、
+            // 今回は「通り抜ける間」だけ無視し、一定時間（例えば0.5秒）後に無視を解除する
+            yield return new WaitForSeconds(0.5f);
+            
+            if (this != null && this.gameObject != null && bulletCollider != null && targetCollider != null)
             {
-                bulletCollider.enabled = true;
+                Physics2D.IgnoreCollision(bulletCollider, targetCollider, false);
+                ignoredColliders.Remove(targetCollider);
             }
         }
     }

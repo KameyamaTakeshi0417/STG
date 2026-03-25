@@ -4,7 +4,7 @@ public class Effect_Explosion_Alpha : Alpha_Effect_Base
 {
     private GameObject explosionPrefab;
 
-    public Effect_Explosion_Alpha(BASE_WeaponData_Alpha data, int pos) : base(data, pos) 
+    public Effect_Explosion_Alpha(BASE_WeaponData_Alpha data, int pos, int rarity = 1) : base(data, pos, rarity) 
     {
         // 航行中の呼び出し間隔を0.5秒に設定（のちにバフ・デバフで短縮・延長します）
         flightEffectInterval = 0.5f;

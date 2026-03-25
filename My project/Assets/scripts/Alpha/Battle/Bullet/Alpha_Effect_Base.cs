@@ -6,15 +6,17 @@ public abstract class Alpha_Effect_Base
     public int stackCount = 1; // 重複回数
     public int equipPosition; // 装備スロット位置（0:生成, 1:航行, 2:着弾）
     public bool canUseAllEffects = false; // 全効果発動可能フラグ
+    public int rarity = 1; // レアリティ
     
     // 航行エフェクトの発動間隔（秒）。0以下なら毎フレーム（OnFlightの従来の挙動）
     protected float flightEffectInterval = 0f;
     private float flightEffectTimer = 0f;
 
-    public Alpha_Effect_Base(BASE_WeaponData_Alpha data, int position)
+    public Alpha_Effect_Base(BASE_WeaponData_Alpha data, int position, int rarity = 1)
     {
         this.sourceData = data;
         this.equipPosition = position;
+        this.rarity = rarity;
     }
 
     // 弾にアタッチされた直後に初期化用として呼ばれる（ステータス反映などに使用）
@@ -38,7 +40,7 @@ public abstract class Alpha_Effect_Base
 
     // 弾が航行中に毎フレーム呼ばれる。
     // インターバルを独自のタイミングで処理するため、インターバル経過時のみ実際のエフェクト処理 (DoFlightEffect) を呼ぶ
-    public void OnFlight(Bullet_Base bullet, float deltaTime)
+    public virtual void OnFlight(Bullet_Base bullet, float deltaTime)
     {
         // 装備か全効果フラグが許可していなければ実行しない
         if (equipPosition != 1 && !canUseAllEffects) return;
@@ -78,7 +80,7 @@ public abstract class Alpha_Effect_Base
 // 効果のサンプル例（デバッグ等用）
 public class Sample_Effect_Alpha : Alpha_Effect_Base
 {
-    public Sample_Effect_Alpha(BASE_WeaponData_Alpha data, int pos) : base(data, pos) { }
+    public Sample_Effect_Alpha(BASE_WeaponData_Alpha data, int pos, int rarity = 1) : base(data, pos, rarity) { }
 
     protected override void DoFireEffect(Bullet_Base bullet)
     {

@@ -135,6 +135,10 @@ public class Player_Shooter_Alpha : MonoBehaviour
         BASE_WeaponData_Alpha data2 = null;
         BASE_WeaponData_Alpha data3 = null;
         
+        int rarity1 = 1;
+        int rarity2 = 1;
+        int rarity3 = 1;
+        
         if (inventoryManager != null)
         {
             var inst1 = inventoryManager.Get(0, currentWeaponGroup);
@@ -142,8 +146,13 @@ public class Player_Shooter_Alpha : MonoBehaviour
             var inst3 = inventoryManager.Get(2, currentWeaponGroup);
             
             data1 = inst1.affix;
+            rarity1 = inst1.rarity > 0 ? inst1.rarity : 1;
+            
             data2 = inst2.affix;
+            rarity2 = inst2.rarity > 0 ? inst2.rarity : 1;
+            
             data3 = inst3.affix;
+            rarity3 = inst3.rarity > 0 ? inst3.rarity : 1;
         }
 
         GameObject prefabToInstantiate = Resources.Load<GameObject>("Objects/Bullet/NormalBullet");
@@ -194,7 +203,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
         bulletScript.setStatus(watch, baseBulletSpeed, playerStatusScript.pow);
 
         // 各武器の効果を弾に渡す
-        bulletScript.SetWeaponEffects(data1, data2, data3, playerStatusScript.canUseAllEffects);
+        bulletScript.SetWeaponEffects(data1, rarity1, data2, rarity2, data3, rarity3, playerStatusScript.canUseAllEffects);
 
         // ※ 追加: PlayerBulletManager_Alphaの貫通回数を弾に上乗せする
         PlayerBulletManager_Alpha bulletManager = null;
