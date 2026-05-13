@@ -71,11 +71,11 @@ public class Health : _Health_Base
         }
     }
 
+    // CreateExpPos は不要になりますが、念のため残すか削除します
     private Vector3 CreateExpPos()
     {
-        Vector3 ret;
-        ret = new Vector3(0, 0, 0);
-        float randomPos; //乱数ベクトル作るための一時的なもの
+        Vector3 ret = new Vector3(0, 0, 0);
+        float randomPos;
         randomPos = Random.Range(-2f, 2f);
         ret.x = randomPos;
         randomPos = Random.Range(-2f, 2f);
@@ -94,11 +94,19 @@ public class Health : _Health_Base
     {
         for (int i = 0; i < Exp; i++)
         {
+            // まずは自分（エネミー）の中心に生成する
             GameObject ExpObj = Instantiate(
                 Resources.Load<GameObject>("Objects/MoneyAndExp"),
-                CreateExpPos(),
+                transform.position,
                 Quaternion.identity
             );
+
+            // 生成したExpオブジェクトに散らばる動きをセットアップする
+            Exp expScript = ExpObj.GetComponent<Exp>();
+            if (expScript != null)
+            {
+                expScript.SetupScatter(i, Exp, transform.position);
+            }
         }
 
         Debug.Log(gameObject.name + " died.");

@@ -13,6 +13,13 @@ public class Alpha_EliteHealth : Health
     public delegate void PhaseBreakHandler(int newPhaseIndex);
     public event PhaseBreakHandler OnPhaseBreak;
 
+    private int expectedTotalPhases = 1;
+
+    public void SetTotalPhases(int count)
+    {
+        expectedTotalPhases = Mathf.Max(1, count);
+    }
+
     protected virtual void Start()
     {
         // 最初のフェーズのHPをセット
@@ -46,14 +53,14 @@ public class Alpha_EliteHealth : Health
         // HPが0以下になった際のブレイク（フェーズ移行）判定
         if (currentHP <= 0)
         {
-            // 次のフェーズが存在するか？
-            if (CurrentPhaseIndex < phaseHPs.Count - 1)
+            // 次のフェーズが存在するか？（AI側で設定されたフェーズ数を基準にする）
+            if (CurrentPhaseIndex < expectedTotalPhases - 1)
             {
                 BreakToNextPhase();
             }
             else
             {
-                // 最後のフェーズなら本来の死亡処理へ委譲する
+                // 全てのフェーズが終わったら本来の死亡処理へ委譲する
                 // base.TakeDamageの条件(currentHP <= 0)を満たす形で0ダメージを流し込み、内部のprivate Die()を発火させる
                 currentHP = 0;
                 base.TakeDamage(0); 
@@ -65,8 +72,16 @@ public class Alpha_EliteHealth : Health
     {
         CurrentPhaseIndex++;
         
-        // 新しいフェーズのHPをセットして全回復
-        HP = phaseHPs[CurrentPhaseIndex];
+        // 新しいフェーズのHPをセットして全回復（設定されていなければ最後のHPを再利用）
+        if (CurrentPhaseIndex < phaseHPs.Count)
+        {
+            HP = phaseHPs[CurrentPhaseIndex];
+        }
+        else if (phaseHPs.Count > 0)
+        {
+            HP = phaseHPs[phaseHPs.Count - 1]; // 安全対策: 設定漏れの場合は直前のHPを引き継ぐ
+        }
+        
         currentHP = HP;
         
         if (hpSlider != null)

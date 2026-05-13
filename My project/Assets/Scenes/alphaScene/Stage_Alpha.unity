@@ -380,12 +380,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initialBehavior: {fileID: 11400000, guid: cd60216eff9728a428a7384e74d2abdf, type: 2}
   phases:
-  - phaseName: 
-    movementBehavior: {fileID: 0}
-    attackBehavior: {fileID: 0}
-    summonBehavior: {fileID: 0}
-  - phaseName: 
-    movementBehavior: {fileID: 0}
+  - phaseName: "\u8A66\u3057\u306E\u653B\u64831"
+    movementBehavior: {fileID: 11400000, guid: 0d8afc241ca8f36489766383f8468aee, type: 2}
+    attackBehavior: {fileID: 11400000, guid: 47d780a3f5c00ce49ab03d3c5f455fec, type: 2}
+    summonBehavior: {fileID: 11400000, guid: 2fc3facdb75ffb348b849f8493fb0034, type: 2}
+  - phaseName: "\u7DE0\u3081\u306E\u653B\u6483"
+    movementBehavior: {fileID: 11400000, guid: 47d780a3f5c00ce49ab03d3c5f455fec, type: 2}
     attackBehavior: {fileID: 0}
     summonBehavior: {fileID: 0}
 --- !u!114 &374857681
@@ -987,7 +987,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!61 &1283572908
 BoxCollider2D:
   m_ObjectHideFlags: 0

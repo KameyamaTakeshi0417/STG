@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class petalBullet : MonoBehaviour
+public class petalBullet : MonoBehaviour, IAlphaPoolable
 {
     public int cycleCount;
     public int cycleCountMax;
@@ -10,14 +10,46 @@ public class petalBullet : MonoBehaviour
     public float involuteRadius = 1.0f;
     public float damage;
 
+    public GameObject sourcePrefab;
+    private float defaultBulletSpeedMag;
+
     void Awake()
     {
         cycleCount = 0;
+        defaultBulletSpeedMag = bulletSpeedMag;
+    }
+
+    public void OnRentFromPool()
+    {
+        cycleCount = 0;
+        bulletSpeedMag = defaultBulletSpeedMag;
+    }
+
+    public void OnReturnToPool()
+    {
+        StopAllCoroutines();
     }
 
     void Update()
     {
-        if (GameObject.Find("GameManager").GetComponent<GameManager>().getCleared())
+        GameObject gmObj = GameObject.Find("GameManager");
+        if (gmObj != null)
+        {
+            GameManager gm = gmObj.GetComponent<GameManager>();
+            if (gm != null && gm.getCleared())
+            {
+                ReturnToPoolOrDestroy();
+            }
+        }
+    }
+
+    private void ReturnToPoolOrDestroy()
+    {
+        if (Alpha_ObjectPoolManager.Instance != null && sourcePrefab != null)
+        {
+            Alpha_ObjectPoolManager.Instance.Return(this.gameObject, sourcePrefab);
+        }
+        else
         {
             Destroy(this.gameObject);
         }
@@ -241,7 +273,6 @@ public class petalBullet : MonoBehaviour
         if (cycleCount > cycleCountMax)
         {
             yield return StraightOnly();
-            // Destroy(this.gameObject);
         }
         int num = (int)Random.Range(0, 3);
         if (num % 2 == 0)
@@ -274,28 +305,24 @@ public class petalBullet : MonoBehaviour
             }
             yield return new WaitForSecondsRealtime(0.01f);
         }
-        Destroy(this.gameObject);
+        ReturnToPoolOrDestroy();
         yield break;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        // petalBulletはエネミー専用弾なので、デフォルトでプレイヤーにのみヒットする
         if (collision.CompareTag("Player"))
         {
-            Debug.Log("Collision with Player detected");
-
             // HPを持つコンポーネントを取得
-            PlayerHealth health = collision.gameObject.GetComponent<PlayerHealth>();
+            _Health_Base health = collision.gameObject.GetComponent<_Health_Base>();
             if (health != null)
             {
                 // HPを減らす
                 health.TakeDamage(damage);
-                Debug.Log($"Damage dealt: {damage}");
             }
 
-            // デストロイが呼ばれるか確認
-            Debug.Log("Calling Destroy on root object");
-            Destroy(this.gameObject.transform.root.gameObject);
+            ReturnToPoolOrDestroy();
         }
     }
 }

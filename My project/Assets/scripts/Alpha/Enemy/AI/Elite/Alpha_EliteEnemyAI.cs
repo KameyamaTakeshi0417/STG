@@ -22,6 +22,7 @@ public class ElitePhaseData
 public class Alpha_EliteEnemyAI : Alpha_EnemyAI
 {
     [Header("Elite Phases Setup")]
+    [Tooltip("このリストの0番目が最初の攻撃フェーズになります。InitialBehaviorは使用しません。")]
     public List<ElitePhaseData> phases;
 
     private Coroutine movementCoroutine;
@@ -42,7 +43,8 @@ public class Alpha_EliteEnemyAI : Alpha_EnemyAI
 
     protected override void Start()
     {
-        // 初期位置の記録などは親クラスを使用
+        // 親クラス(Alpha_EnemyAI)のStartを呼ばないことで、
+        // 誤ってInitialBehaviorが裏で無限に動き続けるのを完全に防ぎます。
         InitialPosition = transform.position;
         
         GameObject playerObj = GameObject.FindWithTag("Player");
@@ -51,9 +53,13 @@ public class Alpha_EliteEnemyAI : Alpha_EnemyAI
         if (eliteHealth != null)
         {
             eliteHealth.OnPhaseBreak += HandlePhaseBreak;
+            
+            // AI側に登録されたフェーズ数をHealthに伝えておき、
+            // HP設定が足りなくても最後までフェーズが進むようにする
+            eliteHealth.SetTotalPhases(phases.Count);
         }
 
-        // 初期フェーズの開始
+        // 常にphasesリストの先頭（0番目）から確実にスタートする
         if (phases != null && phases.Count > 0)
         {
             StartPhase(0);
@@ -106,6 +112,12 @@ public class Alpha_EliteEnemyAI : Alpha_EnemyAI
         if (attackCoroutine != null) StopCoroutine(attackCoroutine);
         if (summonCoroutine != null) StopCoroutine(summonCoroutine);
         
+        // 親クラス側の機能で動いているものも念のため停止
+        ChangeBehavior(null);
+        
+        // このフェーズで召喚したオブジェクトを一掃する
+        ClearSpawnedObjects();
+
         movementCoroutine = null;
         attackCoroutine = null;
         summonCoroutine = null;

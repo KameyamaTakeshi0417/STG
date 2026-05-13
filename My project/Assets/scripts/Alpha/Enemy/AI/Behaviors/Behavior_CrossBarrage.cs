@@ -1,10 +1,10 @@
 using System.Collections;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Barrage Behavior", menuName = "EnemyAI/Behaviors/Barrage")]
-public class Behavior_Barrage : EnemyBehaviorData_Base
+[CreateAssetMenu(fileName = "New Cross Barrage", menuName = "EnemyAI/Behaviors/CrossBarrage")]
+public class Behavior_CrossBarrage : EnemyBehaviorData_Base
 {
-    public string attackName = "Normal Barrage";
+    public string attackName = "Cross Barrage";
     
     [Header("Barrage Parameters")]
     [Tooltip("1回のバーストで発射する回数")]
@@ -14,15 +14,13 @@ public class Behavior_Barrage : EnemyBehaviorData_Base
     [Tooltip("バースト終了後の待機時間（秒）")]
     public float cooldown = 2f;           // 1サイクルの後のインターバル
     public float bulletSpeed = 5f;        // 弾速
-    public int bulletCount = 3;           // 1度に発射する弾数（N-Way）
-    public float spreadAngle = 30f;       // 拡散角度（扇状の広がり）
-    public float waveRotationSpeed = 0f;  // 発射角を時間で回転させる場合
 
     [Header("Spawn & Aim Settings")]
     [Tooltip("発射位置のオフセット（エネミー中心からのローカル座標）")]
     public Vector2 spawnOffset = Vector2.zero;
-    [Tooltip("trueの場合、プレイヤーの方向ではなく自身が移動している方向を基準（正面）とします")]
-    public bool aimAtMoveDirection = true;
+    
+    [Tooltip("trueの場合、エネミー自身の回転（Z角）に合わせて十字に撃ちます。falseの場合、常に画面の上下左右（0, 90, 180, 270度）へ固定して撃ちます。")]
+    public bool rotateWithEnemy = true;
 
     [Header("Bullet Settings")]
     [Tooltip("弾のプレハブ。Bullet_Baseがアタッチされていること")]
@@ -38,68 +36,41 @@ public class Behavior_Barrage : EnemyBehaviorData_Base
             eliteAi.TriggerAttackEvent(attackName);
         }
 
-        float currentRotationOffset = 0f;
-        Vector2 lastPos = ai.transform.position;
-
         while (true)
         {
             for (int r = 0; r < repeats; r++)
             {
-                // ターゲットがいなければ待機（移動方向を見る設定でない場合のみ）
-                if (!aimAtMoveDirection && !ai.HasTarget())
+                if (bulletPrefab == null)
                 {
-                    lastPos = ai.transform.position;
-                    yield return new WaitForFixedUpdate();
-                    continue; // ターゲットがいない場合はバースト回数を消化せずに待機
+                    yield return new WaitForSeconds(fireInterval);
+                    continue;
                 }
 
                 Vector2 currentPos = ai.transform.position;
                 float baseAngle = 0f;
 
-                if (aimAtMoveDirection)
+                if (rotateWithEnemy)
                 {
-                    // 移動方向を計算（現在の位置 - 前回の位置）
-                    Vector2 moveDir = currentPos - lastPos;
-                    if (moveDir.sqrMagnitude > 0.0001f)
-                    {
-                        baseAngle = Mathf.Atan2(moveDir.y, moveDir.x) * Mathf.Rad2Deg;
-                    }
-                    else
-                    {
-                        // 止まっている場合は現在の自身の回転（Right）か、プレイヤー方向を向く
-                        baseAngle = ai.transform.eulerAngles.z;
-                    }
+                    // エネミーの現在のZ回転を取得
+                    baseAngle = ai.transform.eulerAngles.z;
                 }
-                else
-                {
-                    // 基準となる角度（プレイヤー方向）
-                    Vector2 toPlayer = ai.TargetTransform.position - ai.transform.position;
-                    baseAngle = Mathf.Atan2(toPlayer.y, toPlayer.x) * Mathf.Rad2Deg;
-                }
-
-                // 回転を加味
-                baseAngle += currentRotationOffset;
-                currentRotationOffset += waveRotationSpeed * fireInterval;
 
                 // 発射位置の計算（ローカルオフセットを加味）
                 Vector3 spawnPos = currentPos + (Vector2)(ai.transform.rotation * spawnOffset);
 
-                // 発射処理 (N-Way)
-                float startAngle = baseAngle - (spreadAngle / 2f);
-                float angleStep = bulletCount > 1 ? spreadAngle / (bulletCount - 1) : 0f;
-
-                for (int i = 0; i < bulletCount; i++)
+                // 十字方向に4発撃つ（0, 90, 180, 270）
+                for (int i = 0; i < 4; i++)
                 {
-                    float angle = startAngle + (angleStep * i);
+                    float angle = baseAngle + (90f * i);
                     Vector2 dir = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad));
 
                     // 弾の生成
                     GameObject bObj = null;
-                    if (Alpha_ObjectPoolManager.Instance != null && bulletPrefab != null)
+                    if (Alpha_ObjectPoolManager.Instance != null)
                     {
                         bObj = Alpha_ObjectPoolManager.Instance.Rent(bulletPrefab, spawnPos, Quaternion.identity);
                     }
-                    else if (bulletPrefab != null)
+                    else
                     {
                         bObj = Instantiate(bulletPrefab, spawnPos, Quaternion.identity);
                     }
@@ -116,8 +87,6 @@ public class Behavior_Barrage : EnemyBehaviorData_Base
                         }
                     }
                 }
-
-                lastPos = ai.transform.position;
 
                 // 次の発射まで待機
                 yield return new WaitForSeconds(fireInterval);

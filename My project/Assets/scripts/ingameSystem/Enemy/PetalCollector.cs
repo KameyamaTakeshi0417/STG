@@ -12,13 +12,37 @@ public class PetalCollector : MonoBehaviour
     protected EliteHealth myHealth;
     public bool isLifeBroken = false;
     public int Level = 1; //行動を変更する指標であり倒したら貰える花弁の最低枚数
+    
+    private GameObject petalBulletPrefab;
 
     // Start is called before the first frame update
     void Awake()
     {
         myHealth = gameObject.GetComponent<EliteHealth>();
         gameObject.GetComponent<EliteHealth>().setSlideHPBar();
+        petalBulletPrefab = Resources.Load<GameObject>("Objects/Bullet/petalBullet");
         StartCoroutine("Idle");
+    }
+
+    private GameObject SpawnPetalBullet(Vector3 position, Quaternion rotation)
+    {
+        GameObject bullet = null;
+        if (Alpha_ObjectPoolManager.Instance != null && petalBulletPrefab != null)
+        {
+            bullet = Alpha_ObjectPoolManager.Instance.Rent(petalBulletPrefab, position, rotation);
+        }
+        else if (petalBulletPrefab != null)
+        {
+            bullet = Instantiate(petalBulletPrefab, position, rotation);
+        }
+
+        if (bullet != null)
+        {
+            petalBullet script = bullet.GetComponent<petalBullet>();
+            if (script != null) script.sourcePrefab = petalBulletPrefab;
+        }
+
+        return bullet;
     }
 
     // Update is called once per frame
@@ -137,8 +161,7 @@ public class PetalCollector : MonoBehaviour
                 gameObject.transform.position
                 + setPosition * positionMag
                 + (getShootWayAsClock(shootSet[i]) * positionMag * 0.4f);
-            GameObject bullet = Instantiate(
-                Resources.Load<GameObject>("Objects/Bullet/petalBullet"),
+            GameObject bullet = SpawnPetalBullet(
                 createPosition,
                 Quaternion.LookRotation(
                     Vector3.forward,
@@ -199,8 +222,7 @@ public class PetalCollector : MonoBehaviour
         moveWay.Normalize();
         float rotationAngle = Mathf.Atan2(moveWay.y, moveWay.x) * Mathf.Rad2Deg;
 
-        GameObject bullet = Instantiate(
-            Resources.Load<GameObject>("Objects/Bullet/petalBullet"),
+        GameObject bullet = SpawnPetalBullet(
             gameObject.transform.position,
             Quaternion.Euler(new Vector3(0, 0, rotationAngle + 90))
         );
@@ -224,8 +246,7 @@ public class PetalCollector : MonoBehaviour
     {
         for (int i = 0; i < count; i++)
         {
-            GameObject bullet = Instantiate(
-                Resources.Load<GameObject>("Objects/Bullet/petalBullet"),
+            GameObject bullet = SpawnPetalBullet(
                 gameObject.transform.position,
                 Quaternion.identity
             );

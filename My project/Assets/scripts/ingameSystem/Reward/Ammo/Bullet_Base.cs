@@ -9,6 +9,12 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
     // 追加: 自分が生まれた元のプレハブの参照を保持する
     public GameObject sourcePrefab;
 
+    [Header("Alignment Settings")]
+    [Tooltip("trueならプレイヤーにダメージを与え、敵をすり抜けます。falseなら敵にダメージを与え、プレイヤーをすり抜けます。")]
+    public bool isEnemyBullet = false;
+    [Tooltip("trueなら敵味方関係なく両方にダメージを与えます。")]
+    public bool canHitBoth = false;
+
     public virtual void OnRentFromPool()
     {
         // 再登場時のリセット処理
@@ -258,6 +264,13 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
         // 衝突したオブジェクトのタグをチェック
         if (collision.CompareTag("Enemy") || collision.CompareTag("Player"))
         {
+            // 敵味方の判定
+            if (!canHitBoth)
+            {
+                if (isEnemyBullet && collision.CompareTag("Enemy")) return;
+                if (!isEnemyBullet && collision.CompareTag("Player")) return;
+            }
+
             // HPを持つコンポーネントを取得
             _Health_Base health = collision.GetComponent<_Health_Base>();
             if (health != null)
@@ -269,13 +282,16 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
                 }
 
                 int prevHitCount = hitCountsPerEnemy[targetObj];
+                // PierceVolumeが0以下（未設定など）の場合は最低1回として扱う
+                int pVol = health.PierceVolume > 0 ? health.PierceVolume : 1;
+
                 // 既にこの敵の最大ヒット数に達している場合は何もしない
-                if (prevHitCount >= health.PierceVolume) return;
+                if (prevHitCount >= pVol) return;
 
                 // 今回の衝突で与えるべきヒット回数（弾の残り貫通回数+1 と、敵の残り許容ヒット数の少ない方）
                 // ※ piercingCount が残っている回数 = あと「通り抜けられる」回数
                 //   つまりヒットできる回数は piercingCount + 1 回
-                int allowableHits = health.PierceVolume - prevHitCount;
+                int allowableHits = pVol - prevHitCount;
                 int actualHits = Mathf.Min(piercingCount + 1, allowableHits);
 
                 // 減衰率を取得

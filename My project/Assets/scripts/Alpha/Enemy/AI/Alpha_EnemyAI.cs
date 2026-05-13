@@ -20,6 +20,10 @@ public class Alpha_EnemyAI : MonoBehaviour
 
     private Coroutine activeBehaviorCoroutine;
 
+    // そのフェーズで召喚したオブジェクトを管理するリスト
+    [HideInInspector]
+    public System.Collections.Generic.List<GameObject> PhaseSpawnedObjects = new System.Collections.Generic.List<GameObject>();
+
     protected virtual void Awake()
     {
         Rb = GetComponent<Rigidbody2D>();
@@ -66,5 +70,25 @@ public class Alpha_EnemyAI : MonoBehaviour
     public bool HasTarget()
     {
         return TargetTransform != null && TargetTransform.gameObject.activeInHierarchy;
+    }
+
+    // 召喚したオブジェクトを一括破棄・返却するメソッド
+    public void ClearSpawnedObjects()
+    {
+        foreach (var obj in PhaseSpawnedObjects)
+        {
+            if (obj != null)
+            {
+                // プール管理されている場合は Return() が理想ですが、
+                // IAlphaPoolable などを利用しているオブジェクトは SetActive(false) または Destroy でプールに戻るか消滅します
+                // ここでは安全にDestroyを呼びます。もしプール機構が対応していれば適宜変更してください。
+                if (obj.activeInHierarchy)
+                {
+                    // オブジェクトプール機構があれば対応する処理、ここではDestroyで破棄
+                    Destroy(obj);
+                }
+            }
+        }
+        PhaseSpawnedObjects.Clear();
     }
 }
