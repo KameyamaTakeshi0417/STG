@@ -108,6 +108,19 @@ public class Player_Control_Alpha : MonoBehaviour
         PlayerHealth health = GetComponent<PlayerHealth>();
         if (health != null) health.isInvincible = true;
 
+        // --- 追加：ワープ中の完全無敵（すり抜け）処理 ---
+        // 有効なColliderをすべて一時的に無効化し、弾がヒットしないようにする
+        Collider2D[] colliders = GetComponentsInChildren<Collider2D>();
+        List<Collider2D> activeColliders = new List<Collider2D>();
+        foreach (var col in colliders)
+        {
+            if (col != null && col.enabled)
+            {
+                activeColliders.Add(col);
+                col.enabled = false;
+            }
+        }
+
         SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>();
         
         float blinkInterval = 0.04f; // 高速明滅
@@ -128,6 +141,12 @@ public class Player_Control_Alpha : MonoBehaviour
 
         // 瞬間移動実行
         rb.position = rb.position + direction * myStatus.warpDistance;
+
+        // --- 追加：コライダーを復元 ---
+        foreach (var col in activeColliders)
+        {
+            if (col != null) col.enabled = true;
+        }
 
         if (health != null) health.isInvincible = false;
         isSpecialMoving = false;

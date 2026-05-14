@@ -197,6 +197,9 @@ MonoBehaviour:
   moveSpeed: 3
   rotationEnabled: 1
   angularSpeed: 180
+  showDirectionLine: 1
+  lineWidth: 0.2
+  lineColor: {r: 1, g: 0.9961937, b: 0, a: 0.10980392}
   attackBehavior: {fileID: 11400000, guid: cd60216eff9728a428a7384e74d2abdf, type: 2}
   enableAttack: 1
   attackInterval: 1

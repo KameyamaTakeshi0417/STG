@@ -91,4 +91,10 @@ public class Alpha_EnemyAI : MonoBehaviour
         }
         PhaseSpawnedObjects.Clear();
     }
+
+    protected virtual void OnDestroy()
+    {
+        // 自身が破棄される（＝死亡する）際にも、道連れとして残っている召喚物を全消去する
+        ClearSpawnedObjects();
+    }
 }

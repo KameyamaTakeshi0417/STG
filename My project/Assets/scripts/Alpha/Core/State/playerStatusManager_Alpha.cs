@@ -4,7 +4,13 @@ using UnityEngine;
 
 public class playerStatusManager_Alpha : ObjectStatus_Alpha
 {
-    // Start is called before the first frame update
+    // 親クラス(ObjectStatus_Alpha)が HP, currentHP を持っているためここでの再定義は不要
+
+    // HPBar更新用などのイベント（引数で現在HPと最大HPを渡す）
+    public delegate void PlayerHPChangedHandler(float current, float max);
+    public static event PlayerHPChangedHandler OnPlayerHPChanged;
+
+    [Header("Movement Settings")]
     public float moveSpeed;
     public float moveSpeedMag = 1f;
     public float moveSpeedMag_CONST = 1.0f;
@@ -51,6 +57,56 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
                     currentStamina = maxStamina;
                 }
             }
+        }
+    }
+
+    // --- Player Health Management API ---
+    
+    public void ApplyDamage(float amount)
+    {
+        currentHP -= amount;
+        if (currentHP < 0) currentHP = 0;
+        
+        Debug.Log($"[PlayerStatusManager] ApplyDamage: {amount} | Current HP: {currentHP}");
+
+        // UI更新などのためにイベント発火（受け手が未実装でも安全）
+        OnPlayerHPChanged?.Invoke(currentHP, HP);
+
+        if (currentHP <= 0)
+        {
+            Die();
+        }
+    }
+
+    public void Heal(float amount)
+    {
+        currentHP += amount;
+        if (currentHP > HP) currentHP = HP;
+        
+        Debug.Log($"[PlayerStatusManager] Heal: {amount} | Current HP: {currentHP}");
+
+        OnPlayerHPChanged?.Invoke(currentHP, HP);
+    }
+
+    private void Die()
+    {
+        Debug.Log("[PlayerStatusManager] Player HP reached 0. Triggering GameOver.");
+        GameObject gmObj = GameObject.Find("GameManager");
+        if (gmObj != null)
+        {
+            GameManager manager = gmObj.GetComponent<GameManager>();
+            if (manager != null)
+            {
+                manager.GameOver();
+            }
+            else
+            {
+                Debug.LogError("GameManager component not found on GameManager object!");
+            }
+        }
+        else
+        {
+            Debug.LogError("GameManager object not found in the scene!");
         }
     }
 }

@@ -11,35 +11,43 @@ public class PlayerHPBar : HPBar_Base
 
     void OnEnable()
     {
-        PlayerHealth.OnPlayerHPChanged += HPUpdate;
+        playerStatusManager_Alpha.OnPlayerHPChanged += HPUpdate;
     }
 
     void OnDisable()
     {
-        PlayerHealth.OnPlayerHPChanged -= HPUpdate;
+        playerStatusManager_Alpha.OnPlayerHPChanged -= HPUpdate;
     }
 
     // Start is called before the first frame update
     void Start()
     {
         hpSlider = HPBar.GetComponent<Slider>();
-        HPUpdate();
+        
+        // 初期状態の反映（マネージャーから取得）
+        GameObject managerObj = GameObject.Find("manager");
+        if (managerObj != null)
+        {
+            var statusManager = managerObj.GetComponent<playerStatusManager_Alpha>();
+            if (statusManager != null)
+            {
+                HPUpdate(statusManager.currentHP, statusManager.HP);
+            }
+        }
     }
 
     // Update is called once per frame
     void Update() { }
 
-    private void HPUpdate()
+    private void HPUpdate(float current, float max)
     {
-        HP = playerObj.GetComponent<PlayerHealth>().HP;
-        currentHP = playerObj.GetComponent<PlayerHealth>().currentHP;
-        // HPバーの初期設定
-        hpSlider.maxValue = HP;
-        hpSlider.value = (float)currentHP; // HPバーの最初の値を現在のHPに設定
-        // HPバー(Slider)を取得
+        HP = max;
+        currentHP = current;
+        
         if (hpSlider != null)
         {
-            setSlideHPBar();
+            hpSlider.maxValue = HP;
+            hpSlider.value = currentHP;
         }
     }
 

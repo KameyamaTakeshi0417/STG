@@ -66,8 +66,10 @@ public class Alpha_EliteEnemyAI : Alpha_EnemyAI
         }
     }
 
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
+        base.OnDestroy(); // 親クラスのOnDestroy（召喚物のクリア処理）を呼ぶ
+        
         if (eliteHealth != null)
         {
             eliteHealth.OnPhaseBreak -= HandlePhaseBreak;

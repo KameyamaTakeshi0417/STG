@@ -18,6 +18,13 @@ public class CirculatorEnemy : _Health_Base, IAlphaPoolable
     public bool rotationEnabled = true;
     public float angularSpeed = 180f; // 1秒あたりの回転角度
 
+    [Header("Visual Settings")]
+    [Tooltip("サーキュレーターの移動ルートをディレクションラインとして表示するかどうか")]
+    public bool showDirectionLine = true;
+    public float lineWidth = 0.05f;
+    public Color lineColor = new Color(1f, 0f, 0f, 0.5f);
+    private LineRenderer directionLine;
+
     [Header("Attack Settings (Behavior)")]
     [Tooltip("攻撃挙動（OmniBarrage等のScriptableObjectをアサイン）。設定されている場合はこちらの挙動が優先されます。")]
     public EnemyBehaviorData_Base attackBehavior;
@@ -67,6 +74,30 @@ public class CirculatorEnemy : _Health_Base, IAlphaPoolable
         endPos = startPos + (moveDirection.normalized * moveDistance);
         movingToEnd = true;
         moveProgress = 0f;
+
+        // ディレクションラインの表示
+        if (showDirectionLine)
+        {
+            if (directionLine == null)
+            {
+                directionLine = gameObject.AddComponent<LineRenderer>();
+                directionLine.material = new Material(Shader.Find("Sprites/Default"));
+                directionLine.startWidth = lineWidth;
+                directionLine.endWidth = lineWidth;
+                directionLine.startColor = lineColor;
+                directionLine.endColor = lineColor;
+                directionLine.positionCount = 2;
+                directionLine.useWorldSpace = true;
+                directionLine.sortingOrder = -10; // 後ろに描画
+            }
+            directionLine.enabled = true;
+            directionLine.SetPosition(0, startPos);
+            directionLine.SetPosition(1, endPos);
+        }
+        else if (directionLine != null)
+        {
+            directionLine.enabled = false;
+        }
     }
 
     // プールから呼び出された時の初期化

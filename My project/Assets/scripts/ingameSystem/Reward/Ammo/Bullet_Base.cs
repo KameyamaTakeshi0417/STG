@@ -271,11 +271,11 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
                 if (!isEnemyBullet && collision.CompareTag("Player")) return;
             }
 
-            // HPを持つコンポーネントを取得
-            _Health_Base health = collision.GetComponent<_Health_Base>();
+            // HPを持つコンポーネントを取得（親オブジェクトに付いている場合も考慮して GetComponentInParent を使用）
+            _Health_Base health = collision.GetComponentInParent<_Health_Base>();
             if (health != null)
             {
-                GameObject targetObj = collision.gameObject;
+                GameObject targetObj = health.gameObject; // ダメージを受けた本体をターゲットとして記録
                 if (!hitCountsPerEnemy.ContainsKey(targetObj))
                 {
                     hitCountsPerEnemy[targetObj] = 0;

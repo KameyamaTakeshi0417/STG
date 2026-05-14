@@ -1,10 +1,10 @@
 using System.Collections;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Omni Barrage Behavior", menuName = "EnemyAI/Behaviors/OmniBarrage")]
-public class Behavior_OmniBarrage : EnemyBehaviorData_Base
+[CreateAssetMenu(fileName = "New Snap-Homing Omni Barrage", menuName = "EnemyAI/Behaviors/SnapHomingOmniBarrage")]
+public class Behavior_SnapHomingOmniBarrage : EnemyBehaviorData_Base
 {
-    public string attackName = "Omni Barrage";
+    public string attackName = "Snap-Homing Omni Barrage";
 
     [Header("Barrage Settings")]
     [Tooltip("1周（360度）に発射する弾の数")]
@@ -35,10 +35,18 @@ public class Behavior_OmniBarrage : EnemyBehaviorData_Base
     [Header("Bullet Settings")]
     [Tooltip("弾のプレハブ")]
     public GameObject bulletPrefab;
-    [Tooltip("弾の速度")]
+    [Tooltip("弾の初期速度")]
     public float bulletSpeed = 5f;
     [Tooltip("弾の生存時間")]
     public float bulletLifeTime = 10f;
+
+    [Header("Snap Homing Settings")]
+    [Tooltip("発射してからプレイヤーの方を向き始めるまでの時間（秒）")]
+    public float delayBeforeSnap = 1.0f;
+    [Tooltip("旋回にかかる時間（秒）")]
+    public float snapDuration = 0.1f;
+    [Tooltip("旋回完了後の速度倍率（例：2なら初期速度の2倍で直進する）")]
+    public float speedMultiplier = 2.0f;
 
     public override IEnumerator RunBehavior(Alpha_EnemyAI ai)
     {
@@ -103,11 +111,14 @@ public class Behavior_OmniBarrage : EnemyBehaviorData_Base
                         Bullet_Base bullet = bObj.GetComponent<Bullet_Base>();
                         if (bullet != null)
                         {
-                            // ダメージはプレハブの数値をそのまま使用し、速度と寿命を上書き
+                            // 初期のステータス設定
                             bullet.setStatus(dir, bulletSpeed, bullet.dmg);
                             bullet.setRotate(dir);
                             bullet.DestroyTime = bulletLifeTime;
                             bullet.shoot();
+
+                            // 個別の弾に対して、急旋回のコルーチンを開始する
+                            ai.StartCoroutine(HandleBulletHoming(bullet, ai));
                         }
                     }
 
@@ -127,6 +138,49 @@ public class Behavior_OmniBarrage : EnemyBehaviorData_Base
 
             // 次のサイクルまで待機
             yield return new WaitForSeconds(cooldown);
+        }
+    }
+
+    private IEnumerator HandleBulletHoming(Bullet_Base bullet, Alpha_EnemyAI ai)
+    {
+        // a秒待機
+        yield return new WaitForSeconds(delayBeforeSnap);
+
+        // 待機後に弾が消滅（壁に当たった等）していたら処理中断
+        if (bullet == null || !bullet.gameObject.activeInHierarchy) yield break;
+
+        Vector2 startDir = bullet.rotate; // 現在の進行方向
+        Vector2 targetDir = startDir;
+
+        // プレイヤーの方向を取得
+        if (ai.HasTarget())
+        {
+            targetDir = (ai.TargetTransform.position - bullet.transform.position).normalized;
+        }
+
+        // 旋回中（0.1秒など指定した時間かけて向きを変える）
+        float t = 0f;
+        while (t < snapDuration)
+        {
+            if (bullet == null || !bullet.gameObject.activeInHierarchy) yield break;
+
+            t += Time.deltaTime;
+            // 球面線形補間で滑らかに向きを変える
+            Vector2 newDir = Vector3.Slerp(startDir, targetDir, t / snapDuration).normalized;
+            
+            // 旋回中は速度そのまま
+            bullet.setStatus(newDir, bulletSpeed, bullet.dmg);
+            bullet.setRotate(newDir);
+
+            yield return null; // 次のフレームへ
+        }
+
+        // 旋回完了後、ターゲット方向へ加速して直進する
+        if (bullet != null && bullet.gameObject.activeInHierarchy)
+        {
+            float finalSpeed = bulletSpeed * speedMultiplier;
+            bullet.setStatus(targetDir, finalSpeed, bullet.dmg);
+            bullet.setRotate(targetDir);
         }
     }
 }

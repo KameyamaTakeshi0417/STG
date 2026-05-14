@@ -13,6 +13,8 @@ public class Behavior_Barrage : EnemyBehaviorData_Base
     public float fireInterval = 0.5f;     // 発射間隔（秒）
     [Tooltip("バースト終了後の待機時間（秒）")]
     public float cooldown = 2f;           // 1サイクルの後のインターバル
+    [Tooltip("同時に発射する弾と弾の間のディレイ（秒）。0なら完全同時発射（扇状）。数値を入れれば連射（スイープ）になります。")]
+    public float delayBetweenBullets = 0f;
     public float bulletSpeed = 5f;        // 弾速
     public int bulletCount = 3;           // 1度に発射する弾数（N-Way）
     public float spreadAngle = 30f;       // 拡散角度（扇状の広がり）
@@ -111,9 +113,15 @@ public class Behavior_Barrage : EnemyBehaviorData_Base
                         {
                             // ダメージはプレハブの数値をそのまま使用し、速度と寿命を上書き
                             bullet.setStatus(dir, bulletSpeed, bullet.dmg); 
+                            bullet.setRotate(dir);
                             bullet.DestroyTime = bulletLifeTime;
                             bullet.shoot();
                         }
+                    }
+
+                    if (delayBetweenBullets > 0f)
+                    {
+                        yield return new WaitForSeconds(delayBetweenBullets);
                     }
                 }
 
