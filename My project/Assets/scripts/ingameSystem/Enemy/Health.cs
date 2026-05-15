@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -17,6 +17,7 @@ public class Health : _Health_Base
     {
         currentHP = HP;
         m_handler = gameObject.GetComponent<HPBar_Base>();
+        setSlideHPBar();
     }
 
     public virtual void setSlideHPBar()

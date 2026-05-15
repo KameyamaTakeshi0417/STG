@@ -1,28 +1,45 @@
-using System.Collections;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Alpha_EnemyAI : MonoBehaviour
 {
-    [Header("Behavior Settings")]
-    [Tooltip("起動時に実行する初期の挙動")]
-    public EnemyBehaviorData_Base initialBehavior;
+    public enum BehaviorSlot
+    {
+        Movement,
+        Attack,
+        Summon
+    }
 
-    // AIの現在の状態（挙動など）
-    public EnemyBehaviorData_Base CurrentBehavior { get; protected set; }
+    [Header("Behavior Settings (Max 3 Parallel)")]
+    [Tooltip("起動時に実行する移動挙動（旧 initialBehavior 相当）")]
+    public EnemyBehaviorData_Base initialMovementBehavior;
+
+    [Tooltip("起動時に実行する攻撃挙動（任意）")]
+    public EnemyBehaviorData_Base initialAttackBehavior;
+
+    [Tooltip("起動時に実行する召喚/特殊挙動（任意）")]
+    public EnemyBehaviorData_Base initialSummonBehavior;
+
+    // 現在実行中の挙動（スロット別）
+    public EnemyBehaviorData_Base CurrentMovementBehavior { get; protected set; }
+    public EnemyBehaviorData_Base CurrentAttackBehavior { get; protected set; }
+    public EnemyBehaviorData_Base CurrentSummonBehavior { get; protected set; }
 
     // キャッシュされたコンポーネント
     public Rigidbody2D Rb { get; protected set; }
     public Transform TargetTransform { get; protected set; }
-    
-    // 生成時などの初期位置（距離維持や元の位置へ戻る処理などで使用可能）
     public Vector3 InitialPosition { get; protected set; }
 
-    private Coroutine activeBehaviorCoroutine;
+    // スロット別コルーチン
+    private Coroutine movementCoroutine;
+    private Coroutine attackCoroutine;
+    private Coroutine summonCoroutine;
 
-    // そのフェーズで召喚したオブジェクトを管理するリスト
+    // そのフェーズ/行動で召喚したオブジェクトを管理するリスト
     [HideInInspector]
-    public System.Collections.Generic.List<GameObject> PhaseSpawnedObjects = new System.Collections.Generic.List<GameObject>();
+    public List<GameObject> PhaseSpawnedObjects = new List<GameObject>();
 
     protected virtual void Awake()
     {
@@ -32,7 +49,7 @@ public class Alpha_EnemyAI : MonoBehaviour
     protected virtual void Start()
     {
         InitialPosition = transform.position;
-        
+
         // プレイヤーのTransformを取得
         GameObject playerObj = GameObject.FindWithTag("Player");
         if (playerObj != null)
@@ -40,36 +57,120 @@ public class Alpha_EnemyAI : MonoBehaviour
             TargetTransform = playerObj.transform;
         }
 
-        if (initialBehavior != null)
+        // 初期挙動を開始（必要なスロットだけ）
+        StartBehaviors(initialMovementBehavior, initialAttackBehavior, initialSummonBehavior);
+    }
+
+    /// <summary>
+    /// 3スロットをまとめて開始（nullは開始しない）
+    /// 既に動作中なら一旦停止してから開始
+    /// </summary>
+    public void StartBehaviors(
+        EnemyBehaviorData_Base movement,
+        EnemyBehaviorData_Base attack,
+        EnemyBehaviorData_Base summon,
+        bool clearSpawnedObjectsOnStop = false)
+    {
+        StopAllBehaviors(clearSpawnedObjectsOnStop);
+
+        if (movement != null) StartBehavior(BehaviorSlot.Movement, movement);
+        if (attack != null) StartBehavior(BehaviorSlot.Attack, attack);
+        if (summon != null) StartBehavior(BehaviorSlot.Summon, summon);
+    }
+
+    /// <summary>
+    /// 指定スロットの挙動を開始（既に動いていれば差し替え）
+    /// </summary>
+    public void StartBehavior(BehaviorSlot slot, EnemyBehaviorData_Base behavior)
+    {
+        if (behavior == null) return;
+
+        StopBehavior(slot, clearSpawnedObjectsOnStop: false);
+
+        switch (slot)
         {
-            ChangeBehavior(initialBehavior);
+            case BehaviorSlot.Movement:
+                CurrentMovementBehavior = behavior;
+                movementCoroutine = StartCoroutine(behavior.RunBehavior(this));
+                break;
+
+            case BehaviorSlot.Attack:
+                CurrentAttackBehavior = behavior;
+                attackCoroutine = StartCoroutine(behavior.RunBehavior(this));
+                break;
+
+            case BehaviorSlot.Summon:
+                CurrentSummonBehavior = behavior;
+                summonCoroutine = StartCoroutine(behavior.RunBehavior(this));
+                break;
         }
     }
 
-    // 挙動を安全に切り替えるメソッド（外部や挙動自身から呼び出し可能）
+    /// <summary>
+    /// 指定スロットの挙動を停止（nullでも安全）
+    /// </summary>
+    public void StopBehavior(BehaviorSlot slot, bool clearSpawnedObjectsOnStop)
+    {
+        switch (slot)
+        {
+            case BehaviorSlot.Movement:
+                if (movementCoroutine != null) StopCoroutine(movementCoroutine);
+                movementCoroutine = null;
+                CurrentMovementBehavior = null;
+                break;
+
+            case BehaviorSlot.Attack:
+                if (attackCoroutine != null) StopCoroutine(attackCoroutine);
+                attackCoroutine = null;
+                CurrentAttackBehavior = null;
+                break;
+
+            case BehaviorSlot.Summon:
+                if (summonCoroutine != null) StopCoroutine(summonCoroutine);
+                summonCoroutine = null;
+                CurrentSummonBehavior = null;
+                break;
+        }
+
+        // 慣性を残したい場合はここを外す/条件化してください
+        if (Rb != null) Rb.velocity = Vector2.zero;
+
+        if (clearSpawnedObjectsOnStop)
+        {
+            ClearSpawnedObjects();
+        }
+    }
+
+    /// <summary>
+    /// 3スロットすべて停止
+    /// </summary>
+    public void StopAllBehaviors(bool clearSpawnedObjectsOnStop)
+    {
+        StopBehavior(BehaviorSlot.Movement, clearSpawnedObjectsOnStop: false);
+        StopBehavior(BehaviorSlot.Attack, clearSpawnedObjectsOnStop: false);
+        StopBehavior(BehaviorSlot.Summon, clearSpawnedObjectsOnStop: false);
+
+        if (clearSpawnedObjectsOnStop)
+        {
+            ClearSpawnedObjects();
+        }
+    }
+
+    // 互換用：旧 ChangeBehavior を Movementスロット差し替えとして残す
+    // 既存コードから呼ばれても動くようにしておく
     public void ChangeBehavior(EnemyBehaviorData_Base newBehavior)
     {
-        if (newBehavior == null) return;
-
-        // 実行中の挙動があれば停止する
-        if (activeBehaviorCoroutine != null)
-        {
-            StopCoroutine(activeBehaviorCoroutine);
-            activeBehaviorCoroutine = null;
-        }
-
-        // 新しい挙動を開始する
-        CurrentBehavior = newBehavior;
-        activeBehaviorCoroutine = StartCoroutine(CurrentBehavior.RunBehavior(this));
-        
-        // 挙動切り替え時に速度を一旦リセット（慣性を残したい場合は要調整）
-        Rb.velocity = Vector2.zero;
+        StartBehavior(BehaviorSlot.Movement, newBehavior);
     }
 
-    // 必要に応じたユーティリティメソッド群
     public bool HasTarget()
     {
         return TargetTransform != null && TargetTransform.gameObject.activeInHierarchy;
+    }
+
+    public bool IsAnyBehaviorRunning()
+    {
+        return movementCoroutine != null || attackCoroutine != null || summonCoroutine != null;
     }
 
     // 召喚したオブジェクトを一括破棄・返却するメソッド
@@ -79,12 +180,8 @@ public class Alpha_EnemyAI : MonoBehaviour
         {
             if (obj != null)
             {
-                // プール管理されている場合は Return() が理想ですが、
-                // IAlphaPoolable などを利用しているオブジェクトは SetActive(false) または Destroy でプールに戻るか消滅します
-                // ここでは安全にDestroyを呼びます。もしプール機構が対応していれば適宜変更してください。
                 if (obj.activeInHierarchy)
                 {
-                    // オブジェクトプール機構があれば対応する処理、ここではDestroyで破棄
                     Destroy(obj);
                 }
             }
@@ -94,7 +191,7 @@ public class Alpha_EnemyAI : MonoBehaviour
 
     protected virtual void OnDestroy()
     {
-        // 自身が破棄される（＝死亡する）際にも、道連れとして残っている召喚物を全消去する
+        StopAllBehaviors(clearSpawnedObjectsOnStop: true);
         ClearSpawnedObjects();
     }
 }
