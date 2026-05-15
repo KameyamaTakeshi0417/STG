@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3709255204336134019}
   - component: {fileID: 7427175289286628311}
   - component: {fileID: 6820554471389174543}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: newEnemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -53,9 +53,9 @@ MonoBehaviour:
   Exp: 3
   VulnerableTime: 5
   VulnerableFlg: 0
-  PierceVolume: 1
+  PierceVolume: 2
   VoltCount: 0
-  damageTextPrefab: {fileID: 0}
+  damageTextPrefab: {fileID: 3988437868621658341, guid: 5ccc0cd62017e7542bc9974c88b5c92d, type: 3}
   DamageUIMagnitude: 0.1
 --- !u!114 &4597443262583086499
 MonoBehaviour:

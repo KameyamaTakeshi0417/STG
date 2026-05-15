@@ -860,9 +860,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: shadow
       objectReference: {fileID: 0}
+    - target: {fileID: 3089251581255890209, guid: 01aa64b6035b6894daf22ee71b89f235, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 7189709890881693456, guid: 01aa64b6035b6894daf22ee71b89f235, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 7189709890881693456, guid: 01aa64b6035b6894daf22ee71b89f235, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8729205960197182837, guid: 01aa64b6035b6894daf22ee71b89f235, type: 3}
       propertyPath: m_Size.y
