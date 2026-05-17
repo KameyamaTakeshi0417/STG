@@ -204,8 +204,8 @@ MonoBehaviour:
   enableAttack: 1
   attackInterval: 1
   bulletsPerShot: 8
-  bulletSpeed: 5
-  bulletPrefab: {fileID: 0}
+  bulletSpeed: 1000
+  bulletPrefab: {fileID: 3312735464239202653, guid: 8be027fbfe624524e8df4136d66266a9, type: 3}
 --- !u!50 &4552635738997091107
 Rigidbody2D:
   serializedVersion: 4
@@ -245,5 +245,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de980aabe6bfd8941b5a96140063aa98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialBehavior: {fileID: 11400000, guid: cf88d0ea421f094448d2bc7478af30ee, type: 2}
+  initialMovementBehavior: {fileID: 0}
+  initialAttackBehavior: {fileID: 11400000, guid: cf88d0ea421f094448d2bc7478af30ee, type: 2}
+  initialSummonBehavior: {fileID: 0}
   PhaseSpawnedObjects: []

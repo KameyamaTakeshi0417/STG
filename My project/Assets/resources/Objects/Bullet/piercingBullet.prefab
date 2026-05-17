@@ -186,6 +186,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sourcePrefab: {fileID: 0}
+  isEnemyBullet: 0
+  canHitBoth: 0
   Objname: 
   dmg: 0
   Speed: 900
@@ -195,7 +197,7 @@ MonoBehaviour:
   rarelity: 1
   bulletName: 
   addDmg: 0
-  piercingCount: 3
+  piercingCount: 1
   localPierceDamageReductionRate: -1
   canUseAllEffects: 0
 --- !u!50 &5198347656691870225

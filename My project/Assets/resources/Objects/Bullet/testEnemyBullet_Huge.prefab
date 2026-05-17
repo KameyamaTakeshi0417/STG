@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 6127089242709787844}
   - component: {fileID: 999450693679256876}
   - component: {fileID: 2625644330906647157}
-  m_Layer: 0
-  m_Name: testEnemyBullet
+  m_Layer: 7
+  m_Name: testEnemyBullet_Huge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -15.151253, y: -13.459573, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6052434566019040837}
@@ -76,7 +76,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -226196017
   m_SortingLayer: 3
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 0.5622641, g: 0.021192584, b: 0.015913038, a: 1}
   m_FlipX: 0
@@ -172,7 +172,7 @@ MonoBehaviour:
   bullettype: 0
   rotate: {x: 0, y: 0, z: 0}
   rarelity: 1
-  bulletName: enemyBullet
+  bulletName: testEnemyBullet_Huge
   addDmg: 0
   piercingCount: 0
   localPierceDamageReductionRate: -1
@@ -187,7 +187,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6052434566019040837}
   - component: {fileID: 6375265192506542829}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Circle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -247,8 +247,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -226196017
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 1, g: 0.8625782, b: 0, a: 1}

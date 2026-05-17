@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6127089242709787844}
   - component: {fileID: 999450693679256876}
   - component: {fileID: 2625644330906647157}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: testEnemyBullet_Barrage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -171,7 +171,7 @@ MonoBehaviour:
   bullettype: 0
   rotate: {x: 0, y: 0, z: 0}
   rarelity: 1
-  bulletName: enemyBullet
+  bulletName: testEnemyBullet_Barrage
   addDmg: 0
   piercingCount: 0
   localPierceDamageReductionRate: -1
