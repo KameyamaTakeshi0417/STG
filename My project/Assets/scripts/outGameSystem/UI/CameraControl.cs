@@ -1,48 +1,109 @@
-using UnityEngine;
+﻿using UnityEngine;
 
+[RequireComponent(typeof(Camera))]
 public class CameraControl : MonoBehaviour
 {
-    public Vector3 cameraPositionOffset;
+    [Header("Follow")]
+    public Vector3 cameraPositionOffset = Vector3.zero;
     public GameObject player;
-    public float range = 0.0f;
-    public float followSpeed = 2.0f;
+    public float range = 0.0f;          // プレイヤー向き方向へのオフセット量
+    public float followSmoothTime = 0.15f;
 
+    [Header("Zoom (Orthographic)")]
+    [Tooltip("ズームイン最大（小さいほど拡大）")]
+    public float minOrthoSize = 4.0f;
+
+    [Tooltip("ズームアウト最大（大きいほど縮小）")]
+    public float maxOrthoSize = 12.0f;
+
+    [Tooltip("フィールド中央（ズームアウト最大時に画角中心になる点）")]
+    public Vector3 fieldCenter = Vector3.zero;
+
+    [Tooltip("ホイールの感度")]
+    public float zoomSpeed = 2.0f;
+
+    [Tooltip("スクロール奥側（+）でズームアウトにしたい場合ON")]
+    public bool scrollForwardZoomOut = true;
+
+    private Camera cam;
     private Vector3 velocity = Vector3.zero;
+
+    // 0=ズームアウト最大（fieldCenter中心）, 1=ズームイン最大（player中心）
+    private float zoomT = 1f;
 
     void Awake()
     {
-        player = GameObject.Find("Player");
+        cam = GetComponent<Camera>();
+
+        if (player == null)
+            player = GameObject.Find("Player"); // Tag運用なら FindWithTag 推奨
     }
 
-    void FixedUpdate()
+    void Start()
     {
-        ObeyPlayer();
+        // 初期orthographicSizeからzoomTを推定（設定を変えても自然に追従）
+        float size = cam.orthographicSize;
+        zoomT = Mathf.InverseLerp(maxOrthoSize, minOrthoSize, size); // size=min→1, size=max→0
+        zoomT = Mathf.Clamp01(zoomT);
     }
 
-    void ObeyPlayer()
+    void Update()
     {
-        // プレイヤーの回転角度を取得
+        HandleZoomInput(Time.deltaTime);
+    }
+
+    void LateUpdate()
+    {
+        ObeyPlayer(Time.deltaTime);
+    }
+
+    void HandleZoomInput(float dt)
+    {
+        if (cam == null) return;
+
+        float scroll = Input.mouseScrollDelta.y;
+        if (Mathf.Abs(scroll) < 0.0001f) return;
+
+        // Unityのscrollは一般に「上(奥)が +」になりやすい
+        // 要件：奥側でズームアウト、手前側でズームイン
+        float sign = scrollForwardZoomOut ? -1f : 1f; // 奥(+)=ズームアウトになるように反転
+        float delta = scroll * sign;
+
+        // zoomT: 1がズームイン、0がズームアウト
+        zoomT = Mathf.Clamp01(zoomT + delta * zoomSpeed * dt);
+
+        // orthographicSize: ズームインほど小、ズームアウトほど大
+        cam.orthographicSize = Mathf.Lerp(maxOrthoSize, minOrthoSize, zoomT);
+    }
+
+    void ObeyPlayer(float dt)
+    {
+        if (player == null) return;
+
+        // プレイヤーの回転角度（Z）を向きとして使う
         float rotationZ = player.transform.eulerAngles.z;
-
-        // 角度をラジアンに変換
         float radians = rotationZ * Mathf.Deg2Rad;
 
-        // 向きベクトルを計算
+        // 向き方向へrange分だけカメラをずらす（既存仕様）
         Vector3 direction = new Vector3(
             Mathf.Cos(radians) * range,
             Mathf.Sin(radians) * range,
-            -10f
+            0f
         );
 
-        // カメラの目標位置を計算
-        Vector3 targetPosition = player.transform.position + cameraPositionOffset + direction;
+        // フォーカス点：ズームアウトほどfieldCenter寄り、ズームインほどplayer寄り
+        // zoomT=0 → fieldCenter、zoomT=1 → player
+        Vector3 focusPoint = Vector3.Lerp(fieldCenter, player.transform.position, zoomT);
 
-        // カメラの現在位置を目標位置に向かってスムーズに移動
+        // 目標位置（Zは固定）
+        Vector3 targetPosition = focusPoint + cameraPositionOffset + direction;
+        targetPosition.z = -10f;
+
         transform.position = Vector3.SmoothDamp(
             transform.position,
             targetPosition,
             ref velocity,
-            followSpeed * Time.fixedDeltaTime
+            followSmoothTime
         );
     }
 }
