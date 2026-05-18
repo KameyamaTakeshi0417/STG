@@ -166,7 +166,7 @@ MonoBehaviour:
   isEnemyBullet: 1
   canHitBoth: 0
   Objname: 
-  dmg: 1
+  dmg: 10
   Speed: 10
   DestroyTime: 15
   bullettype: 0

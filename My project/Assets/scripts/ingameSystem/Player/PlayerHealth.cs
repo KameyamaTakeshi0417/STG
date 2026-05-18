@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +8,8 @@ public class PlayerHealth : _Health_Base
     
     // マネージャーの参照をキャッシュ
     private playerStatusManager_Alpha statusManager;
+    public GameObject gaugeCanvas;
+    public CircleHPBarManager circleHPBarManager;
 
     void Start()
     {
@@ -28,6 +30,8 @@ public class PlayerHealth : _Health_Base
             HP = statusManager.HP;
             currentHP = statusManager.currentHP;
         }
+        circleHPBarManager = gaugeCanvas.GetComponent<CircleHPBarManager>();
+        circleHPBarManager.SetCircleBar(statusManager.HPGauge);
     }
 
     protected override void Update()
@@ -42,7 +46,9 @@ public class PlayerHealth : _Health_Base
             currentHP = statusManager.currentHP;
         }
     }
-
+    public void gaugeUpdate() {
+        circleHPBarManager.UpdateCircleBar(statusManager.nowHPGauge, (statusManager.currentHP / statusManager.HP));
+    }
     public override void TakeDamage(float damage)
     {
         if (isInvincible) return; // 無敵中ならダメージを無視する
@@ -63,5 +69,6 @@ public class PlayerHealth : _Health_Base
         {
             Debug.LogWarning("[PlayerHealth] StatusManager is missing. Cannot apply damage.");
         }
+        gaugeUpdate();
     }
 }

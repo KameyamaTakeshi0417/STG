@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -74,7 +74,13 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
 
         if (currentHP <= 0)
         {
-            Die();
+            nowHPGauge--;
+            if (nowHPGauge < 1) {
+                Die();
+            }           
+            
+            currentHP = HP;
+            OnPlayerHPChanged?.Invoke(currentHP, HP);
         }
     }
 

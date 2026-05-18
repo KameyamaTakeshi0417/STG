@@ -7,6 +7,8 @@ public class ObjectStatus_Alpha : MonoBehaviour
     // Start is called before the first frame update
     public float HP;
     public float currentHP;
+    public int HPGauge = 1;
+    public int nowHPGauge = 1;
 
     public float pow;
     public float DamageAdd = 0.0f; //バフとかで増やす値
