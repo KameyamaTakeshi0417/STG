@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 7484428815723738645}
   - component: {fileID: 6127089242709787844}
   - component: {fileID: 999450693679256876}
-  - component: {fileID: 2625644330906647157}
+  - component: {fileID: -4229948109697822146}
   m_Layer: 7
-  m_Name: testEnemyBullet_Huge
+  m_Name: RICH_testEnemyBullet_Huge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -150,7 +150,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &2625644330906647157
+--- !u!114 &-4229948109697822146
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -159,16 +159,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 3312735464239202653}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70d6ba0d861724f44af1d7c5356b966b, type: 3}
+  m_Script: {fileID: 11500000, guid: 3194bc178fcc0334688531c3e7d37455, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   sourcePrefab: {fileID: 0}
-  isEnemyBullet: 1
+  isEnemyBullet: 0
   canHitBoth: 0
-  CreateBulletInfo:
-  - prefab: {fileID: 3312735464239202653, guid: 81f4479554461d140b5a13037f9c5553, type: 3}
-    offset: {x: 0, y: 0, z: 0}
-    rotate: {x: 0, y: 0, z: 0}
   Objname: 
   dmg: 10
   Speed: 10
@@ -181,6 +177,15 @@ MonoBehaviour:
   piercingCount: 0
   localPierceDamageReductionRate: -1
   canUseAllEffects: 0
+  CreateBulletInfo:
+  - bulletPrefab: {fileID: 3312735464239202653, guid: 81f4479554461d140b5a13037f9c5553, type: 3}
+    timing: 0
+    flightInterval: 0
+    speed: 100
+    damageMultiplier: 0.75
+    offset: {x: 0, y: 1, z: 0}
+    rotate: {x: 0, y: 0, z: 0}
+    behaviorsToRunInParallel: []
 --- !u!1 &7792122813783585514
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,7 +14,7 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
     public bool isEnemyBullet = false;
     [Tooltip("trueなら敵味方関係なく両方にダメージを与えます。")]
     public bool canHitBoth = false;
-
+ 
     public virtual void OnRentFromPool()
     {
         // 再登場時のリセット処理
@@ -216,7 +216,7 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
         }
         else
         {
-            Destroy(this.gameObject);
+           DestroyAction();
         }
         yield break;
     }
@@ -249,7 +249,7 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
             }
             else
             {
-                Destroy(this.gameObject);
+               DestroyAction();
             }
         }
     }
@@ -352,7 +352,7 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
                 }
                 else
                 {
-                    Destroy(this.gameObject);
+                   DestroyAction();
                 }
             }
             // 貫通枠が残っている場合は1フレーム無効化してすり抜ける
@@ -408,4 +408,9 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
     {
         return rarelity;
     }
+    public virtual void DestroyAction() {
+        
+        Destroy(this.gameObject);
+    }
+    public void GenerateAnotherChildBullet() { }
 }
