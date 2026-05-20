@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 3312735464239202653}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -15.151253, y: -13.459573, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -163,29 +163,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sourcePrefab: {fileID: 0}
-  isEnemyBullet: 0
+  isEnemyBullet: 1
   canHitBoth: 0
-  Objname: 
+  Objname: RICH_testEnemyBullet_Huge
   dmg: 10
   Speed: 10
-  DestroyTime: 15
+  DestroyTime: 100
   bullettype: 0
   rotate: {x: 0, y: 0, z: 0}
   rarelity: 1
-  bulletName: testEnemyBullet_Huge
+  bulletName: RICH_testEnemyBullet_Huge
   addDmg: 0
-  piercingCount: 0
+  piercingCount: 1
   localPierceDamageReductionRate: -1
   canUseAllEffects: 0
   CreateBulletInfo:
   - bulletPrefab: {fileID: 3312735464239202653, guid: 81f4479554461d140b5a13037f9c5553, type: 3}
     timing: 0
     flightInterval: 0
-    speed: 100
+    speed: 1000
     damageMultiplier: 0.75
+    spawnPositionType: 0
     offset: {x: 0, y: 1, z: 0}
+    aimType: 2
     rotate: {x: 0, y: 0, z: 0}
     behaviorsToRunInParallel: []
+  maxGeneration: 1
+  currentGeneration: 0
 --- !u!1 &7792122813783585514
 GameObject:
   m_ObjectHideFlags: 0

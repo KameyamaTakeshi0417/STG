@@ -74,6 +74,47 @@ public class Alpha_EliteEnemyAI : Alpha_EnemyAI
         {
             eliteHealth.OnPhaseBreak -= HandlePhaseBreak;
         }
+
+        // エリート死亡時に画面上の敵弾とサーキュレーターを一掃する
+        ClearEnemyProjectilesAndMinions();
+    }
+
+    private void ClearEnemyProjectilesAndMinions()
+    {
+        // 敵の弾を全て検索して消去（またはプールに返却）
+        Bullet_Base[] bullets = FindObjectsOfType<Bullet_Base>();
+        foreach (var bullet in bullets)
+        {
+            if (bullet != null && bullet.isEnemyBullet && bullet.gameObject.activeInHierarchy)
+            {
+                if (Alpha_ObjectPoolManager.Instance != null && bullet.sourcePrefab != null)
+                {
+                    Alpha_ObjectPoolManager.Instance.Return(bullet.gameObject, bullet.sourcePrefab);
+                }
+                else
+                {
+                    Destroy(bullet.gameObject);
+                }
+            }
+        }
+
+        // サーキュレーターなどの召喚物（PhaseSpawnedObjectsに登録漏れしていた場合へのフェイルセーフ）も消去
+        CirculatorEnemy[] circulators = FindObjectsOfType<CirculatorEnemy>();
+        foreach (var c in circulators)
+        {
+            if (c != null && c.gameObject.activeInHierarchy)
+            {
+                // サーキュレーターのプール元プレハブが判別しづらいため、安全に非アクティブまたはDestroyする
+                if (Alpha_ObjectPoolManager.Instance != null)
+                {
+                    c.gameObject.SetActive(false);
+                }
+                else
+                {
+                    Destroy(c.gameObject);
+                }
+            }
+        }
     }
 
     private void HandlePhaseBreak(int newPhaseIndex)

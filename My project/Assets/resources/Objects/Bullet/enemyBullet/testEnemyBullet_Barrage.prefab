@@ -164,14 +164,10 @@ MonoBehaviour:
   sourcePrefab: {fileID: 0}
   isEnemyBullet: 1
   canHitBoth: 0
-  CreateBulletInfo:
-  - behaviorsToRunInParallel: []
-    offset: {x: 0, y: 0, z: 0}
-    rotate: {x: 0, y: 0, z: 0}
   Objname: 
   dmg: 3
-  Speed: 10
-  DestroyTime: 15
+  Speed: 1000
+  DestroyTime: 1000
   bullettype: 0
   rotate: {x: 0, y: 0, z: 0}
   rarelity: 1

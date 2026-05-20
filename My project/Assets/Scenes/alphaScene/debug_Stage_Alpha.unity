@@ -698,7 +698,6 @@ GameObject:
   - component: {fileID: 374857686}
   - component: {fileID: 374857685}
   - component: {fileID: 374857684}
-  - component: {fileID: 374857683}
   - component: {fileID: 374857682}
   - component: {fileID: 374857681}
   - component: {fileID: 374857680}
@@ -708,7 +707,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &374857680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -785,22 +784,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &374857683
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 374857679}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 88bd77b03aa67174ba1e3ada61a0328f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  initialMovementBehavior: {fileID: 0}
-  initialAttackBehavior: {fileID: 0}
-  initialSummonBehavior: {fileID: 0}
-  PhaseSpawnedObjects: []
 --- !u!61 &374857684
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1739,6 +1722,9 @@ MonoBehaviour:
     initialPoolSize: 70
     parentNode: {fileID: 0}
   - prefab: {fileID: 3312735464239202653, guid: 81f4479554461d140b5a13037f9c5553, type: 3}
+    initialPoolSize: 70
+    parentNode: {fileID: 0}
+  - prefab: {fileID: 3312735464239202653, guid: cdaca6cf0a99233469ca2fa0c1fe73ee, type: 3}
     initialPoolSize: 70
     parentNode: {fileID: 0}
 --- !u!4 &617176558
@@ -5094,7 +5080,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8385712929244095037, guid: 5ac464201da131c438a8a25b0f86473c, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

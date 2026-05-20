@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -88,6 +88,9 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
 
     //弾丸の貫通回数設定
 
+
+    [Tooltip("trueの間は寿命や壁ヒットで勝手に消滅しなくなります")]
+    public bool preventAutoDestroy = false;
 
     // 貫通弾用のローカルダメージ減衰率（-1の場合はグローバル設定を使用）
     public float localPierceDamageReductionRate = -1f;
@@ -183,10 +186,13 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
             rb.velocity = rotate.normalized * (Speed * 0.02f);
         }
 
-        while (count <= DestroyTime)
+        while (count <= DestroyTime || preventAutoDestroy)
         {
-            // 弾の位置を更新する
-            count++;
+            // 弾の位置を更新する（保護されている間は寿命カウントを進めない）
+            if (!preventAutoDestroy)
+            {
+                count++;
+            }
 
             // 毎フレーム、現在の進行方向(rotate)とスピード(Speed)で速度を上書きし続ける
             // （プレイヤー移動系の改修と同様、物理演算による意図しない減速を完全に防ぐ）
@@ -346,13 +352,21 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
             // 残りの貫通回数が0未満（＝もう貫通枠がない）もしくは壁に当たった場合は消滅
             if (piercingCount < 0 || collision.CompareTag("wall"))
             {
-                if (Alpha_ObjectPoolManager.Instance != null && sourcePrefab != null)
+                if (preventAutoDestroy)
                 {
-                    Alpha_ObjectPoolManager.Instance.Return(this.gameObject, sourcePrefab);
+                    // 保護されている場合は消滅せず、すり抜けさせる
+                    StartCoroutine(TemporaryDisableCollider(collision));
                 }
                 else
                 {
-                   DestroyAction();
+                    if (Alpha_ObjectPoolManager.Instance != null && sourcePrefab != null)
+                    {
+                        Alpha_ObjectPoolManager.Instance.Return(this.gameObject, sourcePrefab);
+                    }
+                    else
+                    {
+                       DestroyAction();
+                    }
                 }
             }
             // 貫通枠が残っている場合は1フレーム無効化してすり抜ける

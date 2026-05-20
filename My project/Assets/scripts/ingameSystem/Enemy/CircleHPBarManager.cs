@@ -29,6 +29,7 @@ public class CircleHPBarManager : MonoBehaviour
         currentCircleBarCount = num;
     }
     public void UpdateCircleBar(int targetCircle,float ratio) {
+        if (targetCircle - 1 < 0) return;
         CircleHPBar[targetCircle-1].transform.Find("fill").GetComponent<Image>().fillAmount = ratio;
 
 
