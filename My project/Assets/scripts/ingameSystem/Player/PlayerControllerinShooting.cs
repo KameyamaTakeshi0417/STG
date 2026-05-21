@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,6 +18,12 @@ public class PlayerControllerinShooting : Player
     }
     protected override void FixedUpdate()
     {
+        var health = GetComponent<_Health_Base>();
+        if (health != null && health.isStunned)
+        {
+            rb.velocity = Vector2.zero;
+            return;
+        }
 
         // 入力がない場合は何もしない
         Vector2 input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));

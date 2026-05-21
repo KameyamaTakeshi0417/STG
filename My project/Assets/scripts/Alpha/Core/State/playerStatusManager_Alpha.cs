@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,6 +9,10 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
     // HPBar更新用などのイベント（引数で現在HPと最大HPを渡す）
     public delegate void PlayerHPChangedHandler(float current, float max);
     public static event PlayerHPChangedHandler OnPlayerHPChanged;
+
+    [Header("Initial Stun Settings")]
+    public float initialStunResistance = 0f;
+    public float initialBaseStunResistance = 0.5f;
 
     [Header("Movement Settings")]
     public float moveSpeed;

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -55,10 +55,44 @@ public class Alpha_EnemyAI : MonoBehaviour
         if (playerObj != null)
         {
             TargetTransform = playerObj.transform;
+            IgnorePlayerSolidCollisions(playerObj);
         }
 
         // 初期挙動を開始（必要なスロットだけ）
         StartBehaviors(initialMovementBehavior, initialAttackBehavior, initialSummonBehavior);
+    }
+
+    private void IgnorePlayerSolidCollisions(GameObject playerObj)
+    {
+        // 自分（敵）のすべてのColliderを取得
+        Collider2D[] myColliders = GetComponentsInChildren<Collider2D>();
+        // プレイヤーのすべてのColliderを取得
+        Collider2D[] playerColliders = playerObj.GetComponentsInChildren<Collider2D>();
+
+        foreach (var myCol in myColliders)
+        {
+            // トリガー（攻撃判定など）は衝突を無視しない
+            if (myCol.isTrigger) continue;
+
+            foreach (var pCol in playerColliders)
+            {
+                // プレイヤー側のトリガーも衝突を無視しない
+                if (pCol.isTrigger) continue;
+
+                // お互いに「実体（Solid）」のコライダー同士だけ物理的な衝突判定を無効化する
+                // これにより、物理的に押し合うことはなくなるが、突進などのTrigger判定は正常に動作する
+                Physics2D.IgnoreCollision(myCol, pCol, true);
+            }
+        }
+    }
+
+    protected virtual void Update()
+    {
+        var health = GetComponent<_Health_Base>();
+        if (health != null && health.isStunned)
+        {
+            if (Rb != null) Rb.velocity = Vector2.zero;
+        }
     }
 
     /// <summary>

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5396171580745879740}
   - component: {fileID: 1083373542017260666}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Triangle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97,9 +97,10 @@ GameObject:
   - component: {fileID: 6048313009277118190}
   - component: {fileID: 4552635738997091107}
   - component: {fileID: 4350757800342573159}
-  m_Layer: 0
+  - component: {fileID: 593568275983048327}
+  m_Layer: 8
   m_Name: circulator
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -184,8 +185,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11185de400b385d43829235c1729776b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 100
-  currentHP: 100
+  HP: 1000
+  currentHP: 1000
   Exp: 0
   VulnerableTime: 0
   VulnerableFlg: 0
@@ -249,3 +250,38 @@ MonoBehaviour:
   initialAttackBehavior: {fileID: 11400000, guid: cf88d0ea421f094448d2bc7478af30ee, type: 2}
   initialSummonBehavior: {fileID: 0}
   PhaseSpawnedObjects: []
+--- !u!58 &593568275983048327
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5387300706021733573}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.59

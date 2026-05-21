@@ -23,6 +23,15 @@ public class _Health_Base : MonoBehaviour
     [Tooltip("感電の蓄積値。0より大きい場合帯電状態")]
     public int VoltCount = 0;
 
+    [Header("Stun Settings")]
+    [Tooltip("現在のスタン耐性値（この値以上のスタン秒数でないとスタンしない）")]
+    public float StunResistance = 0f;
+    [Tooltip("スタンを受けた際に増加するスタン耐性値")]
+    public float BaseStunResistance = 0.5f;
+    
+    [HideInInspector] public bool isStunned = false;
+    protected float currentStunTime = 0f;
+
     // Start is called before the first frame update
     void Start() { }
 
@@ -31,11 +40,47 @@ public class _Health_Base : MonoBehaviour
     {
         if (VulnerableFlg)
         {
-            VulnerableTime -= 0.1f;
+            VulnerableTime -= Time.deltaTime; // 0.1f から Time.deltaTime に修正
             if (VulnerableTime <= 0f)
             {
                 VulnerableFlg = false;
             }
+        }
+
+        if (isStunned)
+        {
+            currentStunTime -= Time.deltaTime;
+            if (currentStunTime <= 0f)
+            {
+                isStunned = false;
+            }
+        }
+    }
+
+    /// <summary>
+    /// スタンを付与する。耐性値によって軽減され、0以下になれば無効化される。
+    /// 一度スタンを受けると、耐性値が加算される。
+    /// </summary>
+    public virtual void ApplyStun(float stunDuration)
+    {
+        float effectiveStun = stunDuration - StunResistance;
+        
+        if (effectiveStun > 0f)
+        {
+            isStunned = true;
+            // すでにスタン中で、より長いスタンを受けた場合は上書き
+            if (currentStunTime < effectiveStun)
+            {
+                currentStunTime = effectiveStun;
+            }
+            
+            // スタン耐性を上昇させる
+            StunResistance += BaseStunResistance;
+            Debug.Log($"[{gameObject.name}] Stunned for {effectiveStun}s. Next Resistance: {StunResistance}");
+        }
+        else
+        {
+            Debug.Log($"[{gameObject.name}] Resisted Stun! (Resistance: {StunResistance} >= Duration: {stunDuration})");
         }
     }
 

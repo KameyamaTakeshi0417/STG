@@ -52,6 +52,12 @@ public class Player : MonoBehaviour
         if (Time.timeScale == 0f)
             return;
 
+        var health = GetComponent<_Health_Base>();
+        if (health != null && health.isStunned)
+        {
+            return; // スタン中は操作不可
+        }
+
         // マウスの位置を取得
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePosition.z = 0; // Z座標は0に固定
@@ -87,6 +93,12 @@ public class Player : MonoBehaviour
 
     protected virtual void FixedUpdate()
     {
+        var health = GetComponent<_Health_Base>();
+        if (health != null && health.isStunned)
+        {
+            rb.velocity = Vector2.zero;
+            return;
+        }
 
         // 入力がない場合は何もしない
         Vector2 input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
