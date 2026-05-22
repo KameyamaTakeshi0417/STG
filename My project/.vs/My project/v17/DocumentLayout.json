@@ -3,7 +3,27 @@
   "WorkspaceRootPath": "C:\\Users\\kanin\\Documents\\STG\\My project\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{32C3BDE6-E125-3128-82C1-25D0441455A3}|Assembly-CSharp.csproj|c:\\users\\kanin\\documents\\stg\\my project\\assets\\scripts\\alpha\\core\\state\\playerstatusmanager_alpha.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{32C3BDE6-E125-3128-82C1-25D0441455A3}|Assembly-CSharp.csproj|c:\\users\\kanin\\documents\\stg\\my project\\assets\\scripts\\alpha\\flow\\treasuremanager_alpha.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{32C3BDE6-E125-3128-82C1-25D0441455A3}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\alpha\\flow\\treasuremanager_alpha.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{32C3BDE6-E125-3128-82C1-25D0441455A3}|Assembly-CSharp.csproj|c:\\users\\kanin\\documents\\stg\\my project\\assets\\scripts\\alpha\\battle\\orbitem_alpha.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{32C3BDE6-E125-3128-82C1-25D0441455A3}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\alpha\\battle\\orbitem_alpha.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{32C3BDE6-E125-3128-82C1-25D0441455A3}|Assembly-CSharp.csproj|c:\\users\\kanin\\documents\\stg\\my project\\assets\\scripts\\alpha\\core\\state\\treasuremanager_alpha.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{32C3BDE6-E125-3128-82C1-25D0441455A3}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\alpha\\core\\state\\treasuremanager_alpha.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{32C3BDE6-E125-3128-82C1-25D0441455A3}|Assembly-CSharp.csproj|C:\\Users\\kanin\\Documents\\STG\\My project\\assets\\scripts\\alpha\\enemy\\alpha_damagebarrier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{32C3BDE6-E125-3128-82C1-25D0441455A3}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\alpha\\enemy\\alpha_damagebarrier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{32C3BDE6-E125-3128-82C1-25D0441455A3}|Assembly-CSharp.csproj|C:\\Users\\kanin\\Documents\\STG\\My project\\assets\\scripts\\alpha\\enemy\\ai\\alpha_pillbugai.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{32C3BDE6-E125-3128-82C1-25D0441455A3}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\alpha\\enemy\\ai\\alpha_pillbugai.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{32C3BDE6-E125-3128-82C1-25D0441455A3}|Assembly-CSharp.csproj|C:\\Users\\kanin\\Documents\\STG\\My project\\assets\\scripts\\alpha\\core\\state\\playerstatusmanager_alpha.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{32C3BDE6-E125-3128-82C1-25D0441455A3}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\alpha\\core\\state\\playerstatusmanager_alpha.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -98,11 +118,74 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 18,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "OrbItem_Alpha.cs",
+              "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\Alpha\\Battle\\OrbItem_Alpha.cs",
+              "RelativeDocumentMoniker": "Assets\\scripts\\Alpha\\Battle\\OrbItem_Alpha.cs",
+              "ToolTip": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\Alpha\\Battle\\OrbItem_Alpha.cs*",
+              "RelativeToolTip": "Assets\\scripts\\Alpha\\Battle\\OrbItem_Alpha.cs*",
+              "ViewState": "AgIAADYAAAAAAAAAAAAIwBEAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-22T16:29:57.693Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "treasureManager_Alpha.cs",
+              "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\Alpha\\Core\\State\\treasureManager_Alpha.cs",
+              "RelativeDocumentMoniker": "Assets\\scripts\\Alpha\\Core\\State\\treasureManager_Alpha.cs",
+              "ToolTip": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\Alpha\\Core\\State\\treasureManager_Alpha.cs",
+              "RelativeToolTip": "Assets\\scripts\\Alpha\\Core\\State\\treasureManager_Alpha.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-22T16:29:51.405Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "TreasureManager_Alpha.cs",
+              "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\Alpha\\Flow\\TreasureManager_Alpha.cs",
+              "RelativeDocumentMoniker": "Assets\\scripts\\Alpha\\Flow\\TreasureManager_Alpha.cs",
+              "ToolTip": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\Alpha\\Flow\\TreasureManager_Alpha.cs",
+              "RelativeToolTip": "Assets\\scripts\\Alpha\\Flow\\TreasureManager_Alpha.cs",
+              "ViewState": "AgIAACgAAAAAAAAAAAAUwDYAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-22T16:29:26.074Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Alpha_DamageBarrier.cs",
+              "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\Alpha\\Enemy\\Alpha_DamageBarrier.cs",
+              "RelativeDocumentMoniker": "Assets\\scripts\\Alpha\\Enemy\\Alpha_DamageBarrier.cs",
+              "ToolTip": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\Alpha\\Enemy\\Alpha_DamageBarrier.cs",
+              "RelativeToolTip": "Assets\\scripts\\Alpha\\Enemy\\Alpha_DamageBarrier.cs",
+              "ViewState": "AgIAADEAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-21T14:32:50.081Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Alpha_PillbugAI.cs",
+              "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\Alpha\\Enemy\\AI\\Alpha_PillbugAI.cs",
+              "RelativeDocumentMoniker": "Assets\\scripts\\Alpha\\Enemy\\AI\\Alpha_PillbugAI.cs",
+              "ToolTip": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\Alpha\\Enemy\\AI\\Alpha_PillbugAI.cs",
+              "RelativeToolTip": "Assets\\scripts\\Alpha\\Enemy\\AI\\Alpha_PillbugAI.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-21T13:24:52.519Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
               "Title": "PlayerHealth.cs",
               "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\ingameSystem\\Player\\PlayerHealth.cs",
               "RelativeDocumentMoniker": "Assets\\scripts\\ingameSystem\\Player\\PlayerHealth.cs",
@@ -110,12 +193,11 @@
               "RelativeToolTip": "Assets\\scripts\\ingameSystem\\Player\\PlayerHealth.cs",
               "ViewState": "AgIAAC8AAAAAAAAAAADwvzAAAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-17T17:59:37.903Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-17T17:59:37.903Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 7,
               "Title": "CircleHPBarManager.cs",
               "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\ingameSystem\\Enemy\\CircleHPBarManager.cs",
               "RelativeDocumentMoniker": "Assets\\scripts\\ingameSystem\\Enemy\\CircleHPBarManager.cs",
@@ -123,12 +205,11 @@
               "RelativeToolTip": "Assets\\scripts\\ingameSystem\\Enemy\\CircleHPBarManager.cs",
               "ViewState": "AgIAABEAAAAAAAAAAAAxwB4AAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-17T17:49:02.078Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-17T17:49:02.078Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 12,
               "Title": "HPBarFollower.cs",
               "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\outGameSystem\\UI\\HPBarFollower.cs",
               "RelativeDocumentMoniker": "Assets\\scripts\\outGameSystem\\UI\\HPBarFollower.cs",
@@ -140,7 +221,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 13,
               "Title": "PiercingBullet.cs",
               "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\ingameSystem\\Reward\\Ammo\\\u5F3E\u4E38(Bullet)\\PiercingBullet.cs",
               "RelativeDocumentMoniker": "Assets\\scripts\\ingameSystem\\Reward\\Ammo\\\u5F3E\u4E38(Bullet)\\PiercingBullet.cs",
@@ -152,7 +233,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 15,
               "Title": "SpreadBullet.cs",
               "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\ingameSystem\\Reward\\Ammo\\\u5F3E\u4E38(Bullet)\\SpreadBullet.cs",
               "RelativeDocumentMoniker": "Assets\\scripts\\ingameSystem\\Reward\\Ammo\\\u5F3E\u4E38(Bullet)\\SpreadBullet.cs",
@@ -164,7 +245,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 14,
               "Title": "NormalBullet.cs",
               "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\ingameSystem\\Reward\\Ammo\\\u5F3E\u4E38(Bullet)\\NormalBullet.cs",
               "RelativeDocumentMoniker": "Assets\\scripts\\ingameSystem\\Reward\\Ammo\\\u5F3E\u4E38(Bullet)\\NormalBullet.cs",
@@ -176,7 +257,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 16,
               "Title": "Behavior_KeepDistance.cs",
               "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\Alpha\\Enemy\\AI\\Behaviors\\Behavior_KeepDistance.cs",
               "RelativeDocumentMoniker": "Assets\\scripts\\Alpha\\Enemy\\AI\\Behaviors\\Behavior_KeepDistance.cs",
@@ -188,7 +269,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 17,
               "Title": "Health.cs",
               "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\ingameSystem\\Enemy\\Health.cs",
               "RelativeDocumentMoniker": "Assets\\scripts\\ingameSystem\\Enemy\\Health.cs",
@@ -200,7 +281,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 18,
               "Title": "DamageUI3D.cs",
               "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\outGameSystem\\UI\\DamageUI3D.cs",
               "RelativeDocumentMoniker": "Assets\\scripts\\outGameSystem\\UI\\DamageUI3D.cs",
@@ -212,7 +293,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 19,
               "Title": "Alpha_EnemyAI.cs",
               "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\Alpha\\Enemy\\AI\\Alpha_EnemyAI.cs",
               "RelativeDocumentMoniker": "Assets\\scripts\\Alpha\\Enemy\\AI\\Alpha_EnemyAI.cs",
@@ -224,7 +305,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 20,
               "Title": "Alpha_EliteEnemyAI.cs",
               "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\Alpha\\Enemy\\AI\\Elite\\Alpha_EliteEnemyAI.cs",
               "RelativeDocumentMoniker": "Assets\\scripts\\Alpha\\Enemy\\AI\\Elite\\Alpha_EliteEnemyAI.cs",
@@ -236,7 +317,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 21,
               "Title": "Behavior_ZigZagMove.cs",
               "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\Alpha\\Enemy\\AI\\Behaviors\\Behavior_ZigZagMove.cs",
               "RelativeDocumentMoniker": "Assets\\scripts\\Alpha\\Enemy\\AI\\Behaviors\\Behavior_ZigZagMove.cs",
@@ -248,7 +329,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 22,
               "Title": "Effect_Volt_Alpha.cs",
               "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\Alpha\\Battle\\Bullet\\Effects\\Effect_Volt_Alpha.cs",
               "RelativeDocumentMoniker": "Assets\\scripts\\Alpha\\Battle\\Bullet\\Effects\\Effect_Volt_Alpha.cs",
@@ -260,7 +341,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 23,
               "Title": "Effect_Explosion.cs",
               "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\ingameSystem\\AttackEffect\\Effect_Explosion.cs",
               "RelativeDocumentMoniker": "Assets\\scripts\\ingameSystem\\AttackEffect\\Effect_Explosion.cs",
@@ -272,7 +353,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 11,
               "Title": "Alpha_Effect_Base.cs",
               "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\Alpha\\Battle\\Bullet\\Alpha_Effect_Base.cs",
               "RelativeDocumentMoniker": "Assets\\scripts\\Alpha\\Battle\\Bullet\\Alpha_Effect_Base.cs",
@@ -284,7 +365,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 24,
               "Title": "Effect_Explosion.cs",
               "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\Alpha\\Battle\\Bullet\\Effects\\Effect_Explosion.cs",
               "RelativeDocumentMoniker": "Assets\\scripts\\Alpha\\Battle\\Bullet\\Effects\\Effect_Explosion.cs",
@@ -296,7 +377,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 25,
               "Title": "Player.cs",
               "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\ingameSystem\\Player\\Player.cs",
               "RelativeDocumentMoniker": "Assets\\scripts\\ingameSystem\\Player\\Player.cs",
@@ -308,7 +389,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 26,
               "Title": "Alpha_Effect_Pierce.cs",
               "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\Alpha\\Battle\\BattleEffects\\Alpha_Effect_Pierce.cs",
               "RelativeDocumentMoniker": "Assets\\scripts\\Alpha\\Battle\\BattleEffects\\Alpha_Effect_Pierce.cs",
@@ -320,20 +401,19 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 5,
               "Title": "playerStatusManager_Alpha.cs",
               "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\Alpha\\Core\\State\\playerStatusManager_Alpha.cs",
               "RelativeDocumentMoniker": "Assets\\scripts\\Alpha\\Core\\State\\playerStatusManager_Alpha.cs",
               "ToolTip": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\Alpha\\Core\\State\\playerStatusManager_Alpha.cs",
               "RelativeToolTip": "Assets\\scripts\\Alpha\\Core\\State\\playerStatusManager_Alpha.cs",
-              "ViewState": "AgIAAD0AAAAAAAAAAAAQwEAAAAAbAAAAAAAAAA==",
+              "ViewState": "AgIAAD0AAAAAAAAAAAAQwEAAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-15T08:59:47.991Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-15T08:59:47.991Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 9,
               "Title": "Player_Shooter_Alpha.cs",
               "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\Alpha\\Battle\\Player\\Player_Shooter_Alpha.cs",
               "RelativeDocumentMoniker": "Assets\\scripts\\Alpha\\Battle\\Player\\Player_Shooter_Alpha.cs",
@@ -345,7 +425,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 10,
               "Title": "Player_Control_Alpha.cs",
               "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\Alpha\\Battle\\Player\\Player_Control_Alpha.cs",
               "RelativeDocumentMoniker": "Assets\\scripts\\Alpha\\Battle\\Player\\Player_Control_Alpha.cs",
@@ -357,7 +437,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 8,
               "Title": "Bullet_Base.cs",
               "DocumentMoniker": "C:\\Users\\kanin\\Documents\\STG\\My project\\Assets\\scripts\\ingameSystem\\Reward\\Ammo\\Bullet_Base.cs",
               "RelativeDocumentMoniker": "Assets\\scripts\\ingameSystem\\Reward\\Ammo\\Bullet_Base.cs",

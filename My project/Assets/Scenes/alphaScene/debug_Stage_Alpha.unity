@@ -4199,7 +4199,6 @@ GameObject:
   - component: {fileID: 1634642369}
   - component: {fileID: 1634642368}
   - component: {fileID: 1634642370}
-  - component: {fileID: 1634642371}
   - component: {fileID: 1634642372}
   - component: {fileID: 1634642374}
   - component: {fileID: 1634642373}
@@ -4337,19 +4336,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stackDisplayList: 
---- !u!114 &1634642371
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1634642365}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cca6689b9bfa2dc428bf6f2e806d6abd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  toEliteTime: 30
 --- !u!114 &1634642372
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5009,7 +4995,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2959965544481616050, guid: fc1de8ed7b5444f44afa375dc99a7a3b, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8113866865903580295, guid: fc1de8ed7b5444f44afa375dc99a7a3b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5310,6 +5296,10 @@ PrefabInstance:
     - target: {fileID: 1805729669060774162, guid: a30538392bd7a594c9485c1ec6310a4a, type: 3}
       propertyPath: m_Name
       value: testElite
+      objectReference: {fileID: 0}
+    - target: {fileID: 1805729669060774162, guid: a30538392bd7a594c9485c1ec6310a4a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8352146819504850448, guid: a30538392bd7a594c9485c1ec6310a4a, type: 3}
       propertyPath: m_LocalPosition.x

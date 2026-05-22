@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -107,6 +107,23 @@ public class Health : _Health_Base
             if (expScript != null)
             {
                 expScript.SetupScatter(i, Exp, transform.position);
+            }
+        }
+
+        // ドロップ処理
+        if (Alpha.Flow.RewardManager_Alpha.Instance != null)
+        {
+            if (isBoss)
+            {
+                Alpha.Flow.RewardManager_Alpha.Instance.DropBossReward(transform.position, bossId);
+            }
+            else if (isMidBoss)
+            {
+                Alpha.Flow.RewardManager_Alpha.Instance.DropMidBossReward(transform.position);
+            }
+            else
+            {
+                Alpha.Flow.RewardManager_Alpha.Instance.CheckMobDrop(transform.position, orbDropChance);
             }
         }
 

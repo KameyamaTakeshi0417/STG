@@ -38,7 +38,13 @@ namespace Alpha.UI
             }
             activeMarkers.Clear();
 
-            progressSlider.value = 0f;
+            // スライダーの最大値を1に強制する（スクリプト側で0〜1の正規化値を使用するため）
+            if (progressSlider != null)
+            {
+                progressSlider.maxValue = 1f;
+                progressSlider.minValue = 0f;
+                progressSlider.value = 0f;
+            }
 
             // 新しいマーカーを配置
             foreach (var markerData in sequence.markers)

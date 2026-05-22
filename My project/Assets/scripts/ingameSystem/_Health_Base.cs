@@ -32,6 +32,16 @@ public class _Health_Base : MonoBehaviour
     [HideInInspector] public bool isStunned = false;
     protected float currentStunTime = 0f;
 
+    [Header("Reward Settings")]
+    [Tooltip("オーブドロップ確率 (0.0 〜 1.0)")]
+    public float orbDropChance = 0.05f;
+    [Tooltip("中ボスかどうか")]
+    public bool isMidBoss = false;
+    [Tooltip("ボスかどうか")]
+    public bool isBoss = false;
+    [Tooltip("ボスのID（ボスの場合のみ）")]
+    public string bossId = "";
+
     // Start is called before the first frame update
     void Start() { }
 

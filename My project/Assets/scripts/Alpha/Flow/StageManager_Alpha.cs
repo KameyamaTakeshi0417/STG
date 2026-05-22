@@ -102,6 +102,12 @@ namespace Alpha.Flow
 
             activeSequence = currentStageData.firstHalf;
             currentSequenceTime = 0f;
+
+            // ステージ（前半）開始時にテンポラリー枠のアイテムを自動売却
+            if (InventoryManager_Alpha.Instance != null)
+            {
+                InventoryManager_Alpha.Instance.SellTemporaryItems();
+            }
             
             sequenceBarUI.Setup(activeSequence);
             spawnManager.SetupSequence(activeSequence);
@@ -123,7 +129,21 @@ namespace Alpha.Flow
                 if (currentState == StageState_Alpha.FirstHalf)
                     SetState(StageState_Alpha.MidBossWait);
                 else
+                {
                     SetState(StageState_Alpha.BossWait);
+                    
+                    // ステージクリア時にフリースロットを1つ追加
+                    if (InventoryManager_Alpha.Instance != null)
+                    {
+                        InventoryManager_Alpha.Instance.AddFreeSlot();
+                    }
+                    
+                    // ボス前の休憩（待機）到達時にオーブを一斉開封
+                    if (treasureManager_Alpha.Instance != null)
+                    {
+                        treasureManager_Alpha.Instance.OpenAllOrbs();
+                    }
+                }
             }
         }
 
@@ -131,15 +151,48 @@ namespace Alpha.Flow
         {
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.LeftShift))
             {
-                float nextWaveTime = spawnManager.GetNextWaveTime();
-                if (nextWaveTime > currentSequenceTime && nextWaveTime <= activeSequence.duration)
+                if (activeSequence == null) return;
+
+                // 現在時刻(currentSequenceTime)より未来にある最も近いウェーブの時間を検索する
+                float targetTime = activeSequence.duration;
+                float previousTime = 0f;
+                bool foundNextWave = false;
+
+                foreach (var wave in activeSequence.waves)
                 {
-                    Debug.Log($"[StageManager] Wave Skipped! Jumped from {currentSequenceTime:F1} to {nextWaveTime:F1}");
+                    if (wave.time <= currentSequenceTime + 0.01f)
+                    {
+                        previousTime = wave.time;
+                    }
                     
-                    // 次のウェーブの時間までジャンプ
-                    currentSequenceTime = nextWaveTime;
+                    // わずかな浮動小数点誤差を考慮して少し余裕を持たせる
+                    if (wave.time > currentSequenceTime + 0.01f)
+                    {
+                        targetTime = wave.time;
+                        foundNextWave = true;
+                        break;
+                    }
+                }
+
+                if (targetTime > currentSequenceTime)
+                {
+                    // スキップ時の残り割合の計算
+                    float totalDistance = targetTime - previousTime;
+                    float remainingTime = targetTime - currentSequenceTime;
+                    float remainingRatio = totalDistance > 0f ? remainingTime / totalDistance : 0f;
+
+                    Debug.Log($"[StageManager] Wave Skipped! Jumped from {currentSequenceTime:F1} to {targetTime:F1}. Remaining Ratio: {remainingRatio:F2}");
                     
-                    // ジャンプ後の時間でUIとスポーンを即時更新
+                    // 報酬付与
+                    if (RewardManager_Alpha.Instance != null)
+                    {
+                        RewardManager_Alpha.Instance.GrantSkipReward(remainingRatio);
+                    }
+
+                    // 次のウェーブの開始時間へ正確にジャンプ
+                    currentSequenceTime = targetTime;
+                    
+                    // UIとスポーンを即時更新
                     sequenceBarUI.UpdateProgress(currentSequenceTime / activeSequence.duration);
                     spawnManager.CheckSpawn(currentSequenceTime);
                 }
@@ -172,6 +225,12 @@ namespace Alpha.Flow
                     // 暗転中（真っ黒）のフック処理
                     Debug.Log("[StageManager] Fade Out Complete. Hook for Equipment Turn.");
                     
+                    // 中ボス撃破報酬のオーブを一斉開封
+                    if (treasureManager_Alpha.Instance != null)
+                    {
+                        treasureManager_Alpha.Instance.OpenAllOrbs();
+                    }
+
                     // 今回はそのまま後半待機へ
                     SetState(StageState_Alpha.WaitToStartSecondHalf);
                     
