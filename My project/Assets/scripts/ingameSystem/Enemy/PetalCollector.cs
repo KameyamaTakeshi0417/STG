@@ -8,7 +8,7 @@ public class PetalCollector : MonoBehaviour
     public float reachForward; //遠いかどうか
     public float reachBehind; //近いかどうか
     public float moveMag;
-    private int actionCount = 0; //
+
     protected EliteHealth myHealth;
     public bool isLifeBroken = false;
     public int Level = 1; //行動を変更する指標であり倒したら貰える花弁の最低枚数

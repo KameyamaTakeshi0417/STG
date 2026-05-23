@@ -161,10 +161,8 @@ public class InventoryManager_Alpha : MonoBehaviour
             {
                 if (effectSO != null && effectSO.effectType == effectType)
                 {
-                    bool isAnySlot = item.series.anySlotEffects.Contains(effectSO);
-                    bool isBestSlot = item.series.bestSlotEffects.Contains(effectSO);
-
-                    if (isAnySlot || (isBestSlot && isBasicSlot))
+                    // passiveEffects に含まれていれば加算（ベストスロットやエニースロットの区別はなくなりました）
+                    if (item.series.passiveEffects.Contains(effectSO))
                     {
                         totalValue += effectSO.GetValue(item.rarity);
                     }

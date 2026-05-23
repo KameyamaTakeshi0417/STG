@@ -12,9 +12,8 @@ public abstract class Alpha_Effect_Base
     protected float flightEffectInterval = 0f;
     private float flightEffectTimer = 0f;
 
-    public Alpha_Effect_Base(BASE_WeaponData_Alpha data, int position, int rarity = 1)
+    public Alpha_Effect_Base(int position, int rarity = 1)
     {
-        this.sourceData = data;
         this.equipPosition = position;
         this.rarity = rarity;
     }
@@ -80,11 +79,11 @@ public abstract class Alpha_Effect_Base
 // 効果のサンプル例（デバッグ等用）
 public class Sample_Effect_Alpha : Alpha_Effect_Base
 {
-    public Sample_Effect_Alpha(BASE_WeaponData_Alpha data, int pos, int rarity = 1) : base(data, pos, rarity) { }
+    public Sample_Effect_Alpha(int pos, int rarity = 1) : base(pos, rarity) { }
 
     protected override void DoFireEffect(Bullet_Base bullet)
     {
-        Debug.Log($"[{sourceData.name}] DoFireEffect: 弾が発射されました (Stack: {stackCount}) - 装備位置: {equipPosition}");
+        Debug.Log($"[SampleEffect] DoFireEffect: 弾が発射されました (Stack: {stackCount}) - 装備位置: {equipPosition}");
     }
 
     protected override void DoFlightEffect(Bullet_Base bullet)
@@ -96,6 +95,6 @@ public class Sample_Effect_Alpha : Alpha_Effect_Base
     protected override void DoHitEffect(Bullet_Base bullet, Collider2D target)
     {
         string targetName = target != null ? target.name : "寿命・壁";
-        Debug.Log($"[{sourceData.name}] DoHitEffect: 着弾しました - 対象: {targetName} (Stack: {stackCount})");
+        Debug.Log($"[SampleEffect] DoHitEffect: 着弾しました - 対象: {targetName} (Stack: {stackCount})");
     }
 }

@@ -113,6 +113,8 @@ namespace Alpha.Flow
             // 通常のプールから抽選
             foreach (var s in allSeriesPool)
             {
+                // Hybrid構成になったため、ベストスロットかどうかの追加プールはなく、パッシブ効果プールからのみ引く
+                // アクティブ効果（弾への付与）はシリーズ自身が持っている activeEffectClassName を元に生成される
                 if (s.minQuality <= quality)
                 {
                     validPool.Add(s);
@@ -141,24 +143,24 @@ namespace Alpha.Flow
             // 効果の付与
             int effectCount = Random.Range(1, 4); // 最大3
             
-            // 最適部位の場合は、bestSlotEffectsから1つ確定で付与
-            if (partType == series.bestSlot && series.bestSlotEffects.Count > 0)
+            // 最適部位の場合は、passiveEffectsから1つ確定で付与
+            if (partType == series.bestSlot && series.passiveEffects.Count > 0)
             {
-                instance.currentEffects.Add(series.bestSlotEffects[Random.Range(0, series.bestSlotEffects.Count)]);
+                instance.currentEffects.Add(series.passiveEffects[Random.Range(0, series.passiveEffects.Count)]);
                 effectCount--;
             }
-            else if (series.anySlotEffects.Count > 0)
+            else if (series.passiveEffects.Count > 0)
             {
                 // AnySlot効果を最低1つ保証
-                instance.currentEffects.Add(series.anySlotEffects[Random.Range(0, series.anySlotEffects.Count)]);
+                instance.currentEffects.Add(series.passiveEffects[Random.Range(0, series.passiveEffects.Count)]);
                 effectCount--;
             }
 
             // 残りの枠をランダムに埋める
             for (int i = 0; i < effectCount; i++)
             {
-                var pool = (partType == series.bestSlot && series.bestSlotEffects.Count > 0) ? series.bestSlotEffects : series.anySlotEffects;
-                if (pool.Count > 0)
+                var pool = series.passiveEffects;
+                if (pool != null && pool.Count > 0)
                 {
                     instance.currentEffects.Add(pool[Random.Range(0, pool.Count)]);
                 }

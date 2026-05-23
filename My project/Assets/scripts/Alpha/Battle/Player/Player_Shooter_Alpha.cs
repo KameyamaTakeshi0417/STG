@@ -131,9 +131,9 @@ public class Player_Shooter_Alpha : MonoBehaviour
         Vector3 NcreatePos = Vector3.Normalize(watch);
         
         // InventoryManagerから現在のグループ(y = currentWeaponGroup)の3つの武器データを取得
-        BASE_WeaponData_Alpha data1 = null;
-        BASE_WeaponData_Alpha data2 = null;
-        BASE_WeaponData_Alpha data3 = null;
+        Alpha.Data.WeaponSeriesData_Alpha series1 = null;
+        Alpha.Data.WeaponSeriesData_Alpha series2 = null;
+        Alpha.Data.WeaponSeriesData_Alpha series3 = null;
         
         int rarity1 = 1;
         int rarity2 = 1;
@@ -145,25 +145,30 @@ public class Player_Shooter_Alpha : MonoBehaviour
             var inst2 = inventoryManager.Get(1, currentWeaponGroup);
             var inst3 = inventoryManager.Get(2, currentWeaponGroup);
             
-            data1 = inst1.affix;
+            series1 = inst1.series;
             rarity1 = inst1.rarity > 0 ? inst1.rarity : 1;
             
-            data2 = inst2.affix;
+            series2 = inst2.series;
             rarity2 = inst2.rarity > 0 ? inst2.rarity : 1;
             
-            data3 = inst3.affix;
+            series3 = inst3.series;
             rarity3 = inst3.rarity > 0 ? inst3.rarity : 1;
         }
 
         GameObject prefabToInstantiate = Resources.Load<GameObject>("Objects/Bullet/NormalBullet");
         
-        if (data3 != null && data3.bulletPrefab != null)
+        // 雷管（インデックス2＝series3）の弾プレハブを優先
+        if (series3 != null && series3.bulletPrefab != null)
         {
-            prefabToInstantiate = data3.bulletPrefab;
+            prefabToInstantiate = series3.bulletPrefab;
+        }
+        else if (series1 != null && series1.bulletPrefab != null) // フォールバック
+        {
+            prefabToInstantiate = series1.bulletPrefab;
         }
         else
         {
-            Debug.LogWarning($"[Player_Shooter] {currentWeaponGroup + 1}段目の3つ目の武器にプレハブが未設定か武器がありません。デフォルト弾を使用します。");
+            Debug.LogWarning($"[Player_Shooter] {currentWeaponGroup + 1}段目の武器に弾プレハブが未設定です。デフォルト弾を使用します。");
         }
 
         // --- 追加: ObjectPoolManager を使って弾を取り出す ---
@@ -202,8 +207,26 @@ public class Player_Shooter_Alpha : MonoBehaviour
         float baseBulletSpeed = playerStatusScript.bulletSpeed * 1.5f * (bulletScript.Speed * 0.01f);
         bulletScript.setStatus(watch, baseBulletSpeed, playerStatusScript.pow);
 
-        // 各武器の効果を弾に渡す
-        bulletScript.SetWeaponEffects(data1, rarity1, data2, rarity2, data3, rarity3, playerStatusScript.canUseAllEffects);
+        // 各武器の効果を実体化して弾に渡す
+        List<Alpha_Effect_Base> effectsToApply = new List<Alpha_Effect_Base>();
+
+        if (series1 != null && !string.IsNullOrEmpty(series1.activeEffectClassName))
+        {
+            var ef = Alpha.Battle.Bullet.EffectFactory_Alpha.CreateEffect(series1.activeEffectClassName, 0, rarity1);
+            if (ef != null) effectsToApply.Add(ef);
+        }
+        if (series2 != null && !string.IsNullOrEmpty(series2.activeEffectClassName))
+        {
+            var ef = Alpha.Battle.Bullet.EffectFactory_Alpha.CreateEffect(series2.activeEffectClassName, 1, rarity2);
+            if (ef != null) effectsToApply.Add(ef);
+        }
+        if (series3 != null && !string.IsNullOrEmpty(series3.activeEffectClassName))
+        {
+            var ef = Alpha.Battle.Bullet.EffectFactory_Alpha.CreateEffect(series3.activeEffectClassName, 2, rarity3);
+            if (ef != null) effectsToApply.Add(ef);
+        }
+
+        bulletScript.SetWeaponEffects(effectsToApply, playerStatusScript.canUseAllEffects);
 
         // ※ 追加: PlayerBulletManager_Alphaの貫通回数を弾に上乗せする
         PlayerBulletManager_Alpha bulletManager = null;

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Effect_Pierce_Alpha : Alpha_Effect_Base
 {
-    public Effect_Pierce_Alpha(BASE_WeaponData_Alpha data, int pos, int rarity = 1) : base(data, pos, rarity) 
+    public Effect_Pierce_Alpha(int pos, int rarity = 1) : base(pos, rarity) 
     {
         // 航行中の処理は最初の一回だけステータス反映すればよいため、基本はDoFlightEffectは使用しない
         flightEffectInterval = 0f;

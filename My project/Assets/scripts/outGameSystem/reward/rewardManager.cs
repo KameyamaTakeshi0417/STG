@@ -11,7 +11,6 @@ public class rewardManager : MonoBehaviour
     public int[] normalRewardArray = new int[300];
     private int[] specialRewardArray = new int[12];
     public delegate void RewardTakeHandler();
-    public static event RewardTakeHandler BoxisOpened;
     public int currentIndex;
 
     void Start()

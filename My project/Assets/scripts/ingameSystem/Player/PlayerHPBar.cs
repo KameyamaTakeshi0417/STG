@@ -7,7 +7,6 @@ public class PlayerHPBar : HPBar_Base
 {
     public GameObject playerObj;
     public delegate void HPChangedHandler();
-    public static event HPChangedHandler OnPlayerHPChanged;
 
     void OnEnable()
     {

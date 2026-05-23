@@ -28,16 +28,19 @@ public class Behavior_Composite : EnemyBehaviorData_Base
         if (executionMode == ExecutionMode.Parallel)
         {
             // 並行実行
+            int activeCoroutines = 0;
             foreach (var behavior in behaviors)
             {
                 if (behavior != null)
                 {
-                    ai.StartCoroutine(behavior.RunBehavior(ai));
+                    activeCoroutines++;
+                    ai.StartCoroutine(RunParallelCoroutine(ai, behavior, () => activeCoroutines--));
                 }
             }
 
-            // Parallelの場合は（これまでの互換性を維持し）フェーズが終わるまで生存し続ける
-            while (true)
+            // すべての並行処理が終わるまで待機する
+            // ※もし子Behaviorの中に無限ループするもの（repeatCount=0など）があれば、結果的に無限待機になります（後方互換性）
+            while (activeCoroutines > 0)
             {
                 yield return null;
             }
@@ -63,5 +66,12 @@ public class Behavior_Composite : EnemyBehaviorData_Base
 
             // Sequentialの場合はすべて終了したらコルーチンを抜ける（これによりLoopコンポーネント等で再利用しやすくなります）
         }
+    }
+
+    // 並行処理の完了をトラッキングするためのヘルパーコルーチン
+    private IEnumerator RunParallelCoroutine(Alpha_EnemyAI ai, EnemyBehaviorData_Base behavior, System.Action onComplete)
+    {
+        yield return ai.StartCoroutine(behavior.RunBehavior(ai));
+        onComplete?.Invoke();
     }
 }

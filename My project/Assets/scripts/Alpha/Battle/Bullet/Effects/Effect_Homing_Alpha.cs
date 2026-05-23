@@ -10,7 +10,7 @@ public class Effect_Homing_Alpha : Alpha_Effect_Base
     public int homingLevel = 0; // 追尾レベル
     private float trackingDamageTimer = 0f; // 追尾中のダメージ増加タイマー
 
-    public Effect_Homing_Alpha(BASE_WeaponData_Alpha data, int pos, int rarity = 1) : base(data, pos, rarity) 
+    public Effect_Homing_Alpha(int pos, int rarity = 1) : base(pos, rarity) 
     {
         // 航行中の処理を毎フレーム（deltaTimeベース）で行うため 0 以下に設定
         flightEffectInterval = 0f;

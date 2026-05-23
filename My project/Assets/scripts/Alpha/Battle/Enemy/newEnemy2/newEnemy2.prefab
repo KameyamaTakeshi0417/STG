@@ -50,8 +50,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adecb30a3579caf4abf4d199f8542e7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 10000
-  currentHP: 10000
+  HP: 400
+  currentHP: 400
   Exp: 3
   VulnerableTime: 5
   VulnerableFlg: 0
@@ -60,6 +60,10 @@ MonoBehaviour:
   StunResistance: 0
   BaseStunResistance: 0.5
   isStunned: 0
+  orbDropChance: 0.05
+  isMidBoss: 0
+  isBoss: 0
+  bossId: 
   damageTextPrefab: {fileID: 3988437868621658341, guid: 5ccc0cd62017e7542bc9974c88b5c92d, type: 3}
   DamageUIMagnitude: 0.1
 --- !u!114 &5962817069623276251

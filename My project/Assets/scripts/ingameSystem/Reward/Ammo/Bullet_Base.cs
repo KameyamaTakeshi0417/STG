@@ -105,28 +105,20 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
         dmg = pDmg;
     }
 
-    // 武器の効果データを弾に割り当てる（ファクトリを通じてC#クラスのインスタンス化）
-    public void SetWeaponEffects(BASE_WeaponData_Alpha w1, int rarity1, BASE_WeaponData_Alpha w2, int rarity2, BASE_WeaponData_Alpha w3, int rarity3, bool allEffects)
+    // 武器の効果データを弾に割り当てる
+    public void SetWeaponEffects(List<Alpha_Effect_Base> effects, bool allEffects)
     {
         canUseAllEffects = allEffects;
         activeEffects.Clear();
 
-        AddEffectFromWeapon(w1, 0, rarity1); // 0: 生成
-        AddEffectFromWeapon(w2, 1, rarity2); // 1: 航行
-        AddEffectFromWeapon(w3, 2, rarity3); // 2: 着弾
-    }
+        if (effects == null) return;
 
-    private void AddEffectFromWeapon(BASE_WeaponData_Alpha weaponData, int position, int rarity)
-    {
-        if (weaponData == null) return;
-
-        // ファクトリから効果クラスのインスタンスを生成
-        Alpha_Effect_Base newEffect = Alpha_EffectFactory.CreateEffect(weaponData, position, rarity);
-        if (newEffect != null)
+        foreach (var newEffect in effects)
         {
-            newEffect.canUseAllEffects = canUseAllEffects; // 全効果発動可能フラグを効果インスタンスにも渡す
+            if (newEffect == null) continue;
+            
+            newEffect.canUseAllEffects = canUseAllEffects; // 全効果発動可能フラグを渡す
 
-            // 同じ効果がすでにある場合はスタック数を増やす（重複対応）
             var existingEffect = activeEffects.Find(e => e.GetType() == newEffect.GetType());
             if (existingEffect != null)
             {

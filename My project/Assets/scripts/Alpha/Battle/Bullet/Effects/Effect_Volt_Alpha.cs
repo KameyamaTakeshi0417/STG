@@ -5,7 +5,7 @@ public class Effect_Volt_Alpha : Alpha_Effect_Base
 {
     private GameObject voltAreaPrefab;
 
-    public Effect_Volt_Alpha(BASE_WeaponData_Alpha data, int pos, int rarity = 1) : base(data, pos, rarity) 
+    public Effect_Volt_Alpha(int pos, int rarity = 1) : base(pos, rarity) 
     {
         // 航行中の展開間隔。例えば0.5秒おきに帯電領域を落としながら進む
         flightEffectInterval = 0.5f;

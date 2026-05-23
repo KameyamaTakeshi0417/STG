@@ -23,7 +23,6 @@ public class BackgroundScroller : MonoBehaviour
     private List<GameObject> backgrounds;
     private List<GameObject> copseBackgrounds;
     public bool isCleared = false; // Game cleared state
-    private bool isTransitioning = false; // Whether transitioning to the final phase
 
     void Start()
     {
@@ -96,8 +95,6 @@ public class BackgroundScroller : MonoBehaviour
 
     private IEnumerator TransitionToCopseBackgrounds()
     {
-        isTransitioning = true;
-
         foreach (GameObject bg in backgrounds)
         {
             bg.SetActive(false);
@@ -149,8 +146,6 @@ public class BackgroundScroller : MonoBehaviour
         }
 
         field.transform.position = finalPosition;
-
-        isTransitioning = false;
     }
 
     GameObject GetHighestCopse()

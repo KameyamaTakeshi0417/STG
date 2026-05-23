@@ -5,15 +5,7 @@ using UnityEngine.UI;
 
 public class HPBar_Enemy : HPBar_Base
 {
-    void OnEnable()
-    {
-        Health.OnHPChanged += setSlideHPBar;
-    }
 
-    void OnDisable()
-    {
-        Health.OnHPChanged -= setSlideHPBar;
-    }
 
     // Start is called before the first frame update
     public override void setSlideHPBar()

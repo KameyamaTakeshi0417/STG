@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,7 +7,6 @@ public class CircleHPBarManager : MonoBehaviour
 {
     public GameObject[] CircleHPBar ;
     private int currentCircleBarCount = 0;
-    private int nowCircleBarCount = 0;
 
     // Start is called before the first frame update
     void Start() { }
