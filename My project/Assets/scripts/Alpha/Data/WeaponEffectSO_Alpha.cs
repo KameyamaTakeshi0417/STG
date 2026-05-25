@@ -4,10 +4,29 @@ namespace Alpha.Data
 {
     public enum WeaponEffectType_Alpha
     {
+        // 旧仕様互換（必要に応じて削除可能）
         StatUp,
         BulletChange,
         Constraint,
-        Other
+        Other,
+
+        // --- 今回追加する8種類のステータス系 ---
+        MaxHP,                 // 最大HP上昇
+        StaminaRecoverySpeed,  // スタミナ回復速度上昇
+        AttackFlat,            // 火力上昇（固定値）
+        AttackDebuff,          // 火力デバフ（固定値）
+        AttackMultiplier,      // 火力倍率強化（パーセント）
+        BulletLife,            // 弾の生存時間延長
+        BulletSpeed,           // 弾速強化
+        BulletSpeedDebuff,         // 弾速減少
+        DefenseFlat,           // 防御力上昇（固定値）
+        DefenseMultiplier,      // 防御力倍率上昇（パーセント）
+        PierceCountPlus,       // 貫通数増加
+        ShotCountPlus,         // 発射弾数増加
+        SpawnPattern_Straight, // 発射挙動：ストレート
+        SpawnPattern_Reverse,  // 発射挙動：リバース
+        SpawnPattern_Barrage,  // 発射挙動：バラージ
+        SpawnPattern_Radial    // 発射挙動：放射状
     }
 
     [CreateAssetMenu(fileName = "NewWeaponEffect", menuName = "Alpha/Weapon Effect")]

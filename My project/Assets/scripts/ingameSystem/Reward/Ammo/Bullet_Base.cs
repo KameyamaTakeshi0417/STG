@@ -15,12 +15,16 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
     [Tooltip("trueなら敵味方関係なく両方にダメージを与えます。")]
     public bool canHitBoth = false;
  
+    public Vector3 originalAimDirection; // Reverseパターンで元の方向に戻るため記憶用
+    public float reverseTimeRemaining = 0f; // Reverseパターンの逆走残り時間
+
     public virtual void OnRentFromPool()
     {
         // 再登場時のリセット処理
         piercingCount = 0; // 継承先（PiercingBulletなど）で必要に応じて override して再設定するベースとして0クリア
         hitCountsPerEnemy.Clear();
         ignoredColliders.Clear();
+        reverseTimeRemaining = 0f;
         
         if (bulletCollider != null) bulletCollider.enabled = true;
         if (rb != null)
@@ -63,7 +67,27 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
     }
 
     // Update is called once per frame
-    void Update() { }
+    void Update() 
+    { 
+        if (reverseTimeRemaining > 0)
+        {
+            reverseTimeRemaining -= Time.deltaTime;
+            if (reverseTimeRemaining <= 0)
+            {
+                // リバース時間が終了した瞬間、本来の進行方向（originalAimDirection）へ向き直る
+                if (rb != null)
+                {
+                    rb.velocity = originalAimDirection.normalized * (Speed * 0.02f);
+                }
+                
+                // 向きも修正する
+                float rotationAngle = Mathf.Atan2(originalAimDirection.y, originalAimDirection.x) * Mathf.Rad2Deg;
+                transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotationAngle));
+                
+                // 以降、ホーミング等のエフェクトがあればそちらが自発的に効き始める
+            }
+        }
+    }
 
     public void setDmg(float damage)
     {
@@ -221,6 +245,8 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
 
     public void callHitEffect()
     {
+        if (!gameObject.activeInHierarchy) return;
+
         DrainEffect targetScript;
         targetScript = GetComponent<DrainEffect>();
         if (targetScript != null)

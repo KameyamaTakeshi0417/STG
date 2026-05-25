@@ -14,7 +14,19 @@ public class NormalBullet : Bullet_Base
 
     protected override void OnTriggerEnter2D(Collider2D collision)
     {
+        if (!gameObject.activeInHierarchy) return;
+
         base.callHitEffect();
+
+        // 弾の追加効果（アクティブエフェクト）の着弾処理を発火させる
+        if (activeEffects != null)
+        {
+            foreach (var effect in activeEffects)
+            {
+                effect.OnHit(this, collision);
+            }
+        }
+
         // 衝突したオブジェクトのタグをチェック
         if (collision.CompareTag("Enemy") || collision.CompareTag("Player"))
         {

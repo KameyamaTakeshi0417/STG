@@ -72,6 +72,8 @@ public class InventoryManager_Alpha : MonoBehaviour
             equipInstance.Add(new EquipInstance());
         }
         equipInstance[index] = v;
+        
+        playerStatusManager_Alpha.Instance?.UpdateEquipmentBuffs();
     }
 
     public void BattleStartEffect()
@@ -96,17 +98,19 @@ public class InventoryManager_Alpha : MonoBehaviour
 
     public void AddItem(EquipInstance item)
     {
-        // 空いている基本枠（null扱い）があればそこに入れる
+        // 空き枠（defIdがnullまたは空）があればそこに入れる
         for (int i = 0; i < equipInstance.Count; i++)
         {
             if (string.IsNullOrEmpty(equipInstance[i].defId) && equipInstance[i].series == null)
             {
                 equipInstance[i] = item;
+                playerStatusManager_Alpha.Instance?.UpdateEquipmentBuffs();
                 return;
             }
         }
         // 空きがなければ末尾に追加
         equipInstance.Add(item);
+        playerStatusManager_Alpha.Instance?.UpdateEquipmentBuffs();
     }
 
     public void AddFreeSlot()
@@ -146,23 +150,37 @@ public class InventoryManager_Alpha : MonoBehaviour
         return totalExpGained;
     }
 
-    public float GetTotalEffectValue(WeaponEffectType_Alpha effectType)
+    public float GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha effectType)
     {
         float totalValue = 0f;
 
         for (int i = 0; i < equipInstance.Count; i++)
         {
             var item = equipInstance[i];
-            if (item.series == null || item.currentEffects == null) continue;
+            if (item.series == null) continue;
 
+            // 基本枠（0〜8）のみを対象にするかどうかの判定用
+            // （現状は全枠合算ですが、もし「装備中のみ」にするならここで if (!isBasicSlot) continue; などを追加します）
             bool isBasicSlot = (i < BASIC_SLOT_COUNT);
 
-            foreach (var effectSO in item.currentEffects)
+            // 1. 武器のベース(series)に紐づくパッシブ効果を加算
+            if (item.series.passiveEffects != null)
             {
-                if (effectSO != null && effectSO.effectType == effectType)
+                foreach (var effectSO in item.series.passiveEffects)
                 {
-                    // passiveEffects に含まれていれば加算（ベストスロットやエニースロットの区別はなくなりました）
-                    if (item.series.passiveEffects.Contains(effectSO))
+                    if (effectSO != null && effectSO.effectType == effectType)
+                    {
+                        totalValue += effectSO.GetValue(item.rarity);
+                    }
+                }
+            }
+
+            // 2. プレイヤーが直接付与した固有効果(currentEffects)を加算
+            if (item.currentEffects != null)
+            {
+                foreach (var effectSO in item.currentEffects)
+                {
+                    if (effectSO != null && effectSO.effectType == effectType)
                     {
                         totalValue += effectSO.GetValue(item.rarity);
                     }

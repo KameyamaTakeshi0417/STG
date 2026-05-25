@@ -11,6 +11,13 @@ public class Player_Shooter_Alpha : MonoBehaviour
     [Header("Weapon Settings")]
     public BASE_WeaponData_Alpha equippedWeaponData; // 現在装備している武器データ（Inspectorからアタッチ可能）
 
+    [Header("Spawn Pattern Settings")]
+    public float shotIntervalSec = 0.05f;
+    public float lateralSpacingWorld = 0.5f;
+    public float spreadRangeDeg = 20f;
+    public float radialStepDeg = 5f;
+    public float reverseTravelTimeSec = 1.0f;
+
     private Vector3 watch;
     private bool isPaused = false;
     private Transform playerTransform;
@@ -125,19 +132,12 @@ public class Player_Shooter_Alpha : MonoBehaviour
 
     void ShootBullet()
     {
-        GameObject bulletPrefab;
-        float distance = moveRadius;
-        Vector3 createPos = playerTransform.position + (watch * distance);
-        Vector3 NcreatePos = Vector3.Normalize(watch);
-        
         // InventoryManagerから現在のグループ(y = currentWeaponGroup)の3つの武器データを取得
         Alpha.Data.WeaponSeriesData_Alpha series1 = null;
         Alpha.Data.WeaponSeriesData_Alpha series2 = null;
         Alpha.Data.WeaponSeriesData_Alpha series3 = null;
         
-        int rarity1 = 1;
-        int rarity2 = 1;
-        int rarity3 = 1;
+        int rarity1 = 1, rarity2 = 1, rarity3 = 1;
         
         if (inventoryManager != null)
         {
@@ -171,82 +171,169 @@ public class Player_Shooter_Alpha : MonoBehaviour
             Debug.LogWarning($"[Player_Shooter] {currentWeaponGroup + 1}段目の武器に弾プレハブが未設定です。デフォルト弾を使用します。");
         }
 
-        // --- 追加: ObjectPoolManager を使って弾を取り出す ---
+        // --- 発射に必要な共通パラメータの計算 ---
+        float finalDamage = playerStatusScript.GetFinalDamage();
+        int totalShotCount = 1 + playerStatusScript.extraShotCount;
+        var pattern = playerStatusScript.currentSpawnPattern;
+
+        Vector3 aimPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        aimPoint.z = 0;
+        bool isTargetLocked = false;
+        if (pointerSystem != null && pointerSystem.CurrentTarget != null)
+        {
+            aimPoint = pointerSystem.CurrentTarget.position;
+            aimPoint.z = 0;
+            isTargetLocked = true;
+        }
+
+        Vector3 muzzlePos = playerTransform.position + (watch * moveRadius);
+        Vector3 aimDirection = watch; // マウスがプレイヤーに近すぎると (aimPoint - muzzlePos) が逆転するバグを防ぐため、常にwatch方向を使用
+
+        StartCoroutine(SpawnBulletRoutine(prefabToInstantiate, muzzlePos, aimDirection, aimPoint, totalShotCount, pattern, finalDamage, series1, series2, series3, rarity1, rarity2, rarity3, isTargetLocked));
+    }
+
+    private IEnumerator SpawnBulletRoutine(GameObject prefab, Vector3 muzzlePos, Vector3 aimDir, Vector3 aimPoint, int shotCount, playerStatusManager_Alpha.SpawnPattern pattern, float finalDmg, Alpha.Data.WeaponSeriesData_Alpha s1, Alpha.Data.WeaponSeriesData_Alpha s2, Alpha.Data.WeaponSeriesData_Alpha s3, int r1, int r2, int r3, bool isTargetLocked)
+    {
+        for (int i = 0; i < shotCount; i++)
+        {
+            Vector3 spawnPos = muzzlePos;
+            Vector3 spawnDir = aimDir;
+            float currentReverseTime = 0f;
+
+            if (pattern == playerStatusManager_Alpha.SpawnPattern.Straight)
+            {
+                Vector3 rightDir = new Vector3(aimDir.y, -aimDir.x, 0).normalized;
+                float offset = 0f;
+                if (shotCount % 2 == 1)
+                {
+                    int step = (i + 1) / 2;
+                    float sign = (i % 2 == 1) ? 1f : -1f;
+                    if (i == 0) step = 0;
+                    offset = step * lateralSpacingWorld * sign;
+                }
+                else
+                {
+                    int step = i / 2;
+                    float sign = (i % 2 == 0) ? 1f : -1f;
+                    offset = (step + 0.5f) * lateralSpacingWorld * sign;
+                }
+                spawnPos += rightDir * offset;
+            }
+            else if (pattern == playerStatusManager_Alpha.SpawnPattern.Radial)
+            {
+                float offsetDeg = 0f;
+                if (shotCount % 2 == 1)
+                {
+                    int step = (i + 1) / 2;
+                    float sign = (i % 2 == 1) ? 1f : -1f;
+                    if (i == 0) step = 0;
+                    offsetDeg = step * radialStepDeg * sign;
+                }
+                else
+                {
+                    int step = i / 2;
+                    float sign = (i % 2 == 0) ? 1f : -1f;
+                    offsetDeg = (step + 0.5f) * radialStepDeg * sign;
+                }
+                spawnDir = Quaternion.Euler(0, 0, offsetDeg) * aimDir;
+            }
+            else if (pattern == playerStatusManager_Alpha.SpawnPattern.Barrage)
+            {
+                float randomAngle = Random.Range(-spreadRangeDeg / 2f, spreadRangeDeg / 2f);
+                spawnDir = Quaternion.Euler(0, 0, randomAngle) * aimDir;
+            }
+            else if (pattern == playerStatusManager_Alpha.SpawnPattern.Reverse)
+            {
+                if (isTargetLocked)
+                {
+                    float randomAngle = Random.Range(-spreadRangeDeg / 2f, spreadRangeDeg / 2f);
+                    spawnDir = Quaternion.Euler(0, 0, randomAngle) * (-aimDir);
+                    currentReverseTime = reverseTravelTimeSec;
+                }
+                else
+                {
+                    // ターゲットロックされていない場合は単純に真っすぐ航行
+                    spawnDir = aimDir;
+                    currentReverseTime = 0f;
+                }
+            }
+
+            // 各弾ごとにエフェクトインスタンスを生成する
+            List<Alpha_Effect_Base> effectsToApply = new List<Alpha_Effect_Base>();
+            if (s1 != null && !string.IsNullOrEmpty(s1.activeEffectClassName))
+            {
+                var ef = Alpha.Battle.Bullet.EffectFactory_Alpha.CreateEffect(s1.activeEffectClassName, 0, r1);
+                if (ef != null) effectsToApply.Add(ef);
+            }
+            if (s2 != null && !string.IsNullOrEmpty(s2.activeEffectClassName))
+            {
+                var ef = Alpha.Battle.Bullet.EffectFactory_Alpha.CreateEffect(s2.activeEffectClassName, 1, r2);
+                if (ef != null) effectsToApply.Add(ef);
+            }
+            if (s3 != null && !string.IsNullOrEmpty(s3.activeEffectClassName))
+            {
+                var ef = Alpha.Battle.Bullet.EffectFactory_Alpha.CreateEffect(s3.activeEffectClassName, 2, r3);
+                if (ef != null) effectsToApply.Add(ef);
+            }
+
+            CreateSingleBullet(prefab, spawnPos, spawnDir, aimDir, currentReverseTime, finalDmg, effectsToApply);
+
+            // サウンドエフェクトの再生（必要に応じて）
+            // if (shootAudioSource != null) shootAudioSource.Play();
+
+            if (pattern == playerStatusManager_Alpha.SpawnPattern.Barrage || pattern == playerStatusManager_Alpha.SpawnPattern.Reverse)
+            {
+                yield return new WaitForSeconds(shotIntervalSec);
+            }
+        }
+    }
+
+    private void CreateSingleBullet(GameObject prefabToInstantiate, Vector3 spawnPos, Vector3 spawnDir, Vector3 originalAimDir, float reverseTime, float finalDamage, List<Alpha_Effect_Base> effectsToApply)
+    {
+        GameObject bulletPrefab;
         if (Alpha_ObjectPoolManager.Instance != null)
         {
-            bulletPrefab = Alpha_ObjectPoolManager.Instance.Rent(
-                prefabToInstantiate,
-                createPos,
-                Quaternion.identity
-            );
+            bulletPrefab = Alpha_ObjectPoolManager.Instance.Rent(prefabToInstantiate, spawnPos, Quaternion.identity);
         }
         else
         {
-            // マネージャーが無い場合は直接生成（保険）
-            bulletPrefab = Instantiate(
-                prefabToInstantiate,
-                createPos,
-                Quaternion.identity
-            );
+            bulletPrefab = Instantiate(prefabToInstantiate, spawnPos, Quaternion.identity);
         }
 
-        // 弾の向きを変更
-        float rotationAngle = Mathf.Atan2(watch.y, watch.x) * Mathf.Rad2Deg;
+        float rotationAngle = Mathf.Atan2(spawnDir.y, spawnDir.x) * Mathf.Rad2Deg;
         bulletPrefab.transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotationAngle));
         Bullet_Base bulletScript = bulletPrefab.GetComponent<Bullet_Base>();
         
-        // --- 追加: 自分が生まれたプレハブを記憶させる（Return時に必要なため） ---
         if (bulletScript != null)
         {
             bulletScript.sourcePrefab = prefabToInstantiate;
+            bulletScript.originalAimDirection = originalAimDir;
+            bulletScript.reverseTimeRemaining = reverseTime;
+
+            Bullet_Base prefabScript = prefabToInstantiate.GetComponent<Bullet_Base>();
+            float originalSpeed = prefabScript != null ? prefabScript.Speed : bulletScript.Speed;
+            float originalDestroyTime = prefabScript != null ? prefabScript.DestroyTime : bulletScript.DestroyTime;
+            
+            float baseBulletSpeed = playerStatusScript.bulletSpeed * playerStatusScript.bulletSpeedMag * 1.5f * (originalSpeed * 0.01f);
+            
+            bulletScript.setStatus(spawnDir, baseBulletSpeed, finalDamage);
+            bulletScript.DestroyTime = originalDestroyTime * playerStatusScript.bulletLifeMag;
+
+            bulletScript.SetWeaponEffects(effectsToApply, playerStatusScript.canUseAllEffects);
+
+            PlayerBulletManager_Alpha bulletManager = null;
+            GameObject manager = GameObject.Find("manager");
+            if (manager != null) bulletManager = manager.GetComponent<PlayerBulletManager_Alpha>();
+            if (bulletManager == null) bulletManager = FindObjectOfType<PlayerBulletManager_Alpha>();
+            
+            if (bulletManager != null)
+            {
+                bulletScript.piercingCount += bulletManager.pierceCount;
+            }
+
+            bulletScript.piercingCount += playerStatusScript.extraPierceCount;
+
+            bulletScript.shoot();
         }
-        
-        // 弾のステータス（角度、弾速、ダメージ）を設定
-        // 関数が干渉する前の弾速の基本スピードを今の1.5倍にする
-        // さらに、弾オブジェクト固有のSpeedパラメータ（100基準）を0.01倍して反映する
-        float baseBulletSpeed = playerStatusScript.bulletSpeed * 1.5f * (bulletScript.Speed * 0.01f);
-        bulletScript.setStatus(watch, baseBulletSpeed, playerStatusScript.pow);
-
-        // 各武器の効果を実体化して弾に渡す
-        List<Alpha_Effect_Base> effectsToApply = new List<Alpha_Effect_Base>();
-
-        if (series1 != null && !string.IsNullOrEmpty(series1.activeEffectClassName))
-        {
-            var ef = Alpha.Battle.Bullet.EffectFactory_Alpha.CreateEffect(series1.activeEffectClassName, 0, rarity1);
-            if (ef != null) effectsToApply.Add(ef);
-        }
-        if (series2 != null && !string.IsNullOrEmpty(series2.activeEffectClassName))
-        {
-            var ef = Alpha.Battle.Bullet.EffectFactory_Alpha.CreateEffect(series2.activeEffectClassName, 1, rarity2);
-            if (ef != null) effectsToApply.Add(ef);
-        }
-        if (series3 != null && !string.IsNullOrEmpty(series3.activeEffectClassName))
-        {
-            var ef = Alpha.Battle.Bullet.EffectFactory_Alpha.CreateEffect(series3.activeEffectClassName, 2, rarity3);
-            if (ef != null) effectsToApply.Add(ef);
-        }
-
-        bulletScript.SetWeaponEffects(effectsToApply, playerStatusScript.canUseAllEffects);
-
-        // ※ 追加: PlayerBulletManager_Alphaの貫通回数を弾に上乗せする
-        PlayerBulletManager_Alpha bulletManager = null;
-        GameObject manager = GameObject.Find("manager");
-        if (manager != null) bulletManager = manager.GetComponent<PlayerBulletManager_Alpha>();
-        if (bulletManager == null) bulletManager = FindObjectOfType<PlayerBulletManager_Alpha>(); // managerにいなかった場合用
-
-        if (bulletManager != null)
-        {
-            // プレハブの設定値(Awake) ＋ マネージャーの指定値
-            bulletScript.piercingCount += bulletManager.pierceCount;
-        }
-
-        bulletScript.shoot();
-
-
-
-        //ドレイン効果が付与できるなら付与する
-        DrainHandler targetHandler = GetComponent<DrainHandler>();
-        // サウンドエフェクトの再生
-       // shootAudioSource.Play();
     }
 }
