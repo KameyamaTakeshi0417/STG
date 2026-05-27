@@ -186,8 +186,19 @@ public class Player_Shooter_Alpha : MonoBehaviour
             }
         }
 
+        // 武器（プレハブ）の基本ダメージを取得
+        float baseWeaponDamage = 0f;
+        if (prefabToInstantiate != null)
+        {
+            Bullet_Base baseBullet = prefabToInstantiate.GetComponent<Bullet_Base>();
+            if (baseBullet != null)
+            {
+                baseWeaponDamage = baseBullet.dmg;
+            }
+        }
+
         // --- 発射に必要な共通パラメータの計算 ---
-        float finalDamage = playerStatusScript.GetFinalDamage();
+        float finalDamage = playerStatusScript.GetFinalDamage(baseWeaponDamage);
         int totalShotCount = 1 + playerStatusScript.extraShotCount;
         var pattern = playerStatusScript.currentSpawnPattern;
 

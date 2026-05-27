@@ -124,31 +124,33 @@ namespace Alpha.Flow
 
             if (selectedReward != null)
             {
-                // インベントリUIを開き、テンポラリに配置させる
+                // 先にインベントリにアイテムを自動追加する
+                InventoryManager_Alpha.EquipInstance newEquip = new InventoryManager_Alpha.EquipInstance();
+                newEquip.series = selectedReward.series;
+                newEquip.partType = selectedReward.partType;
+                newEquip.rarity = selectedReward.quality;
+                newEquip.currentEffects = selectedReward.currentEffects;
+                newEquip.defId = selectedReward.series.seriesName;
+                
+                if (InventoryManager_Alpha.Instance != null)
+                {
+                    InventoryManager_Alpha.Instance.AddItem(newEquip);
+                }
+
+                // インベントリUIを開き、整理させる（nullを渡して整理モードにする）
                 if (inventoryUI != null)
                 {
-                    inventoryUI.Show(selectedReward, OnInventoryOrganized);
+                    inventoryUI.Show(null, OnInventoryOrganized);
                 }
                 else
                 {
-                    // UIがない場合は自動で裏側のマネージャーに突っ込む（旧仕様）
-                    InventoryManager_Alpha.EquipInstance newEquip = new InventoryManager_Alpha.EquipInstance();
-                    newEquip.series = selectedReward.series;
-                    newEquip.partType = selectedReward.partType;
-                    newEquip.rarity = selectedReward.quality;
-                    newEquip.currentEffects = selectedReward.currentEffects;
-                    newEquip.defId = selectedReward.series.seriesName;
-                    
-                    if (InventoryManager_Alpha.Instance != null)
-                    {
-                        InventoryManager_Alpha.Instance.AddItem(newEquip);
-                    }
+                    // UIがない場合は自動で進む
                     OnInventoryOrganized();
                 }
             }
             else
             {
-                // 報酬なし（スキップ等）の場合はすぐ次へ
+                // 何も選ばなかった場合のスキップ処理
                 OnInventoryOrganized();
             }
         }
@@ -157,6 +159,12 @@ namespace Alpha.Flow
         {
             // インベントリ画面の「次へ/確定」ボタンが押されたら呼ばれる
             if (inventoryUI != null) inventoryUI.Hide();
+
+            // 初期装備(InitialSeries)が一時スロットに残っている場合は削除する
+            if (InventoryManager_Alpha.Instance != null)
+            {
+                InventoryManager_Alpha.Instance.CleanUpInitialSeriesInEXSlots();
+            }
 
             // 次のオーブへ
             ProcessNextOrb();

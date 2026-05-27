@@ -26,7 +26,10 @@ namespace Alpha.Data
         SpawnPattern_Straight, // 発射挙動：ストレート
         SpawnPattern_Reverse,  // 発射挙動：リバース
         SpawnPattern_Barrage,  // 発射挙動：バラージ
-        SpawnPattern_Radial    // 発射挙動：放射状
+        SpawnPattern_Radial,   // 発射挙動：放射
+        
+        // --- 装備制限解除 ---
+        AllEquipable           // どこにでも装備可能
     }
 
     [CreateAssetMenu(fileName = "NewWeaponEffect", menuName = "Alpha/Weapon Effect")]

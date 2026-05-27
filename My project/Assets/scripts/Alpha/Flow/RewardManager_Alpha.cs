@@ -92,13 +92,21 @@ namespace Alpha.Flow
         /// </summary>
         public void DropMidBossReward(Vector3 position)
         {
-            // 100%ドロップ
-            SpawnOrb(position, midBossDropTable.GetRandomRarity(), OrbSource_Alpha.MidBoss);
-
-            // 追加ドロップ判定
-            if (Random.value <= midBossDropTable.extraDropChance)
+            int dropCount = Alpha.Flow.StageManager_Alpha.Instance != null ? Alpha.Flow.StageManager_Alpha.Instance.GetCurrentRewardDropCount() : 1;
+            
+            for (int i = 0; i < dropCount; i++)
             {
-                SpawnOrb(position + new Vector3(0.5f, 0, 0), midBossDropTable.GetRandomRarity(), OrbSource_Alpha.MidBoss);
+                // 横に少しずらしてドロップさせる
+                Vector3 spawnPos = position + new Vector3(i * 0.5f - ((dropCount - 1) * 0.25f), 0, 0);
+                
+                // 100%ドロップ
+                SpawnOrb(spawnPos, midBossDropTable.GetRandomRarity(), OrbSource_Alpha.MidBoss);
+
+                // 追加ドロップ判定
+                if (Random.value <= midBossDropTable.extraDropChance)
+                {
+                    SpawnOrb(spawnPos + new Vector3(0.2f, 0.2f, 0), midBossDropTable.GetRandomRarity(), OrbSource_Alpha.MidBoss);
+                }
             }
         }
 
@@ -107,13 +115,20 @@ namespace Alpha.Flow
         /// </summary>
         public void DropBossReward(Vector3 position, string bossId)
         {
-            // 100%ドロップ
-            SpawnOrb(position, bossDropTable.GetRandomRarity(), OrbSource_Alpha.Boss, bossId);
+            int dropCount = Alpha.Flow.StageManager_Alpha.Instance != null ? Alpha.Flow.StageManager_Alpha.Instance.GetCurrentRewardDropCount() : 1;
 
-            // 追加ドロップ判定
-            if (Random.value <= bossDropTable.extraDropChance)
+            for (int i = 0; i < dropCount; i++)
             {
-                SpawnOrb(position + new Vector3(0.5f, 0, 0), bossDropTable.GetRandomRarity(), OrbSource_Alpha.Boss, bossId);
+                Vector3 spawnPos = position + new Vector3(i * 0.5f - ((dropCount - 1) * 0.25f), 0, 0);
+
+                // 100%ドロップ
+                SpawnOrb(spawnPos, bossDropTable.GetRandomRarity(), OrbSource_Alpha.Boss, bossId);
+
+                // 追加ドロップ判定
+                if (Random.value <= bossDropTable.extraDropChance)
+                {
+                    SpawnOrb(spawnPos + new Vector3(0.2f, 0.2f, 0), bossDropTable.GetRandomRarity(), OrbSource_Alpha.Boss, bossId);
+                }
             }
         }
 

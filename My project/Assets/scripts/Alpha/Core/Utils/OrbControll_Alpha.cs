@@ -34,10 +34,13 @@ public class OrbControll_Alpha : MonoBehaviour
 
     private IEnumerator Homing()
     {
-        // 3. 散らばるアニメーション（約0.5秒かけてスムーズに移動）
+        // 3. 散らばるアニメーション
         float scatterDuration = 0.5f;
         float timer = 0f;
         Vector3 startPos = transform.position;
+        // ランダムな方向へ散らばる目標位置を計算
+        Vector2 randomDir = Random.insideUnitCircle.normalized;
+        Vector3 targetScatterPos = startPos + new Vector3(randomDir.x, randomDir.y, 0f) * Random.Range(1.0f, 2.0f);
 
         while (timer < scatterDuration)
         {
@@ -47,10 +50,10 @@ public class OrbControll_Alpha : MonoBehaviour
             // イーズアウト（徐々に減速するような動き）で移動
             float t = timer / scatterDuration;
             t = 1f - (1f - t) * (1f - t);
-            transform.position = Vector3.Lerp(startPos, playerTransform.position, t);
+            transform.position = Vector3.Lerp(startPos, targetScatterPos, t);
             yield return null;
         }
-        if (!isCollected) transform.position = playerTransform.position;
+        if (!isCollected) transform.position = targetScatterPos;
 
         // 4. 1秒間待機する
         yield return new WaitForSeconds(1.0f);

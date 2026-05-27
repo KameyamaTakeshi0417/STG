@@ -11,6 +11,9 @@ namespace Alpha.UI
         [Header("UI References")]
         public GameObject panel;
         
+        [Header("Detail Popup")]
+        public EquipDetailPopupUI_Alpha detailPopup;
+        
         [Header("Grid (3x3)")]
         [Tooltip("装備枠(3x3)のボタンスロット。インデックスは 0〜8 (y*3+x)")]
         public Button[] gridSlots = new Button[9];
@@ -24,13 +27,16 @@ namespace Alpha.UI
         public Button confirmButton;
 
         private System.Action onConfirmCallback;
-        private WeaponPartInstance_Alpha currentNewItem;
-        
-        private bool isReadOnly = false;
         private bool openedByEscape = false;
+        private bool isReadOnly = false;
+        
+        // 選択中のスロットインデックス（-1は未選択）
+        private int selectedIndex = -1;
 
         private void Awake()
         {
+            if (detailPopup != null) detailPopup.gameObject.SetActive(false);
+            
             if (panel != null) panel.SetActive(false);
 
             if (confirmButton != null)
@@ -45,6 +51,9 @@ namespace Alpha.UI
                 if (gridSlots[index] != null)
                 {
                     gridSlots[index].onClick.AddListener(() => OnGridSlotClicked(index));
+                    
+                    var rcd = gridSlots[index].gameObject.AddComponent<RightClickDetector_Alpha>();
+                    rcd.onRightClick = (eventData) => OnSlotRightClicked(index, eventData);
                 }
             }
         }
@@ -70,6 +79,7 @@ namespace Alpha.UI
             Time.timeScale = 0f;
             
             if (panel != null) panel.SetActive(true);
+            if (detailPopup != null) detailPopup.gameObject.SetActive(false);
             RefreshUI();
         }
 
@@ -78,6 +88,20 @@ namespace Alpha.UI
             openedByEscape = false;
             Time.timeScale = 1f;
             if (panel != null) panel.SetActive(false);
+            if (detailPopup != null) detailPopup.gameObject.SetActive(false);
+        }
+
+        public void ShowForCheck(System.Action callback)
+        {
+            openedByEscape = false;
+            isReadOnly = false;
+            onConfirmCallback = callback;
+            selectedIndex = -1;
+
+            if (panel != null) panel.SetActive(true);
+            if (detailPopup != null) detailPopup.gameObject.SetActive(false);
+
+            RefreshUI();
         }
 
         public void Show(WeaponPartInstance_Alpha newItem, System.Action callback)
@@ -85,20 +109,18 @@ namespace Alpha.UI
             openedByEscape = false;
             isReadOnly = false;
             onConfirmCallback = callback;
-            currentNewItem = newItem;
+            selectedIndex = -1;
 
             if (panel != null) panel.SetActive(true);
+            if (detailPopup != null) detailPopup.gameObject.SetActive(false);
 
             RefreshUI();
-            
-            // TODO: newItem を「現在カーソルに持っているアイテム」として表示する、
-            // もしくは一時インベントリに追加して表示する処理
-            Debug.Log($"[InventoryUI] Please place: {newItem.series.seriesName}");
         }
 
         public void Hide()
         {
             if (panel != null) panel.SetActive(false);
+            if (detailPopup != null) detailPopup.gameObject.SetActive(false);
         }
 
         private void RefreshUI()
@@ -112,7 +134,7 @@ namespace Alpha.UI
             {
                 if (gridSlots[i] != null && i < equipList.Count)
                 {
-                    SetSlotVisual(gridSlots[i], equipList[i]);
+                    SetSlotVisual(gridSlots[i], equipList[i], i == selectedIndex);
                 }
             }
 
@@ -139,6 +161,10 @@ namespace Alpha.UI
                         int currentListCount = spawnedExtraSlots.Count; 
                         int slotIndex = 9 + currentListCount;
                         btn.onClick.AddListener(() => OnGridSlotClicked(slotIndex));
+                        
+                        var rcd = btn.gameObject.AddComponent<RightClickDetector_Alpha>();
+                        rcd.onRightClick = (eventData) => OnSlotRightClicked(slotIndex, eventData);
+                        
                         spawnedExtraSlots.Add(btn);
                     }
                 }
@@ -157,62 +183,104 @@ namespace Alpha.UI
                 Button btn = spawnedExtraSlots[i];
                 if (invIndex < equipList.Count)
                 {
-                    SetSlotVisual(btn, equipList[invIndex]);
-
-                    // 背景枠はButtonのTargetGraphic（通常は背景Image）として取得する
-                    Image bg = btn.targetGraphic as Image;
-                    if (bg != null)
-                    {
-                        if (i < freeSlotCount)
-                        {
-                            bg.color = Color.white; // フリー枠
-                        }
-                        else
-                        {
-                            bg.color = new Color(0.8f, 0.9f, 1f, 1f); // テンポラリ枠
-                        }
-                    }
+                    bool isTempSlot = i >= freeSlotCount;
+                    SetSlotVisual(btn, equipList[invIndex], invIndex == selectedIndex, isTempSlot);
                 }
             }
         }
 
-        private void SetSlotVisual(Button btn, InventoryManager_Alpha.EquipInstance item)
+        private void SetSlotVisual(Button btn, InventoryManager_Alpha.EquipInstance item, bool isSelected = false, bool isTempSlot = false)
         {
             if (btn == null) return;
 
-            // "Icon" という名前の子オブジェクトを探す
-            Transform iconTransform = btn.transform.Find("Icon");
-            Image iconImage = null;
+            // 背景枠の取得と色設定
+            Image bg = btn.targetGraphic as Image;
+            
+            // 【不具合対策】Unityインスペクタ上のボタン自体の色が茶色に設定されていると、
+            // スクリプトで何色を指定しても茶色に上塗り（乗算）されてしまうため、強制的にボタン自体を真っ白にリセットします。
+            ColorBlock cb = btn.colors;
+            cb.normalColor = Color.white;
+            cb.selectedColor = Color.yellow; // インベントリの選択色は黄色にする
+            btn.colors = cb;
 
-            if (iconTransform != null)
+            if (bg != null)
             {
-                iconImage = iconTransform.GetComponent<Image>();
-            }
-
-            if (iconImage != null)
-            {
-                // 中身がある場合
-                if (!string.IsNullOrEmpty(item.defId) || item.series != null)
+                if (isSelected)
                 {
-                    if (item.series != null && item.series.icon != null)
+                    bg.color = Color.yellow; // 選択中は最優先
+                }
+                else if (item.series != null)
+                {
+                    // 中身がある場合はレアリティに応じた色を設定
+                    switch (item.rarity)
                     {
-                        iconImage.sprite = item.series.icon;
+                        case 1: bg.color = new Color32(128, 38, 5, 255); break;
+                        case 2: bg.color = new Color32(136, 136, 136, 255); break;
+                        case 3: bg.color = new Color32(238, 156, 23, 255); break;
+                        case 4: bg.color = new Color32(1, 240, 91, 255); break;
+                        default: bg.color = Color.white; break;
                     }
-                    iconImage.color = Color.white; // 不透明にする
-                    iconImage.gameObject.SetActive(true);
                 }
                 else
                 {
-                    iconImage.sprite = null;
-                    iconImage.color = new Color(1, 1, 1, 0); // 空枠は透明にする
+                    // 空枠の場合
+                    bg.color = isTempSlot ? new Color(0.8f, 0.9f, 1f, 1f) : Color.white;
+                }
+            }
+
+            // "Icon" という名前の子オブジェクトを探す
+            Image iconImg = null;
+            foreach (Transform child in btn.transform)
+            {
+                if (child.name == "Icon")
+                {
+                    iconImg = child.GetComponent<Image>();
+                    break;
+                }
+            }
+
+            if (iconImg != null)
+            {
+                if (item.series != null)
+                {
+                    bool isAllEq = false;
+                    if (item.currentEffects != null)
+                    {
+                        foreach(var eff in item.currentEffects)
+                        {
+                            if (eff != null && eff.effectType == Alpha.Data.WeaponEffectType_Alpha.AllEquipable) { isAllEq = true; break; }
+                        }
+                    }
+                    
+                    Sprite targetSprite = item.series.icon;
+                    if (isAllEq && item.series.iconAllEquipable != null) targetSprite = item.series.iconAllEquipable;
+                    else if (item.partType == Alpha.Data.WeaponPartType_Alpha.Bullet && item.series.iconBullet != null) targetSprite = item.series.iconBullet;
+                    else if (item.partType == Alpha.Data.WeaponPartType_Alpha.Casing && item.series.iconCasing != null) targetSprite = item.series.iconCasing;
+                    else if (item.partType == Alpha.Data.WeaponPartType_Alpha.Primer && item.series.iconPrimer != null) targetSprite = item.series.iconPrimer;
+
+                    if (targetSprite != null)
+                    {
+                        iconImg.sprite = targetSprite;
+                        iconImg.color = Color.white;
+                    }
+                    else
+                    {
+                        iconImg.sprite = null;
+                        iconImg.color = Color.clear;
+                    }
+                }
+                else
+                {
+                    iconImg.sprite = null;
+                    iconImg.color = Color.clear; // 空枠またはアイコンがない場合は透明にする
                 }
             }
             else
             {
                 // 開発者への警告：Icon子要素がない場合
-                if (!string.IsNullOrEmpty(item.defId) || item.series != null)
+                if (item.series != null)
                 {
-                    Debug.LogWarning($"[InventoryUI] 装備スロット '{btn.gameObject.name}' に 'Icon' という名前の子要素(Image)がありません！枠画像を維持してアイコンを表示するために、子要素を追加してください。");
+                    Debug.LogWarning($"[InventoryUI] 装備スロット '{btn.gameObject.name}' に 'Icon' という名前の子要素(Image)がありません。枠画像を維持してアイコンを表示するために、子要素を追加してください。");
                 }
             }
         }
@@ -221,28 +289,85 @@ namespace Alpha.UI
         {
             if (isReadOnly)
             {
-                Debug.Log("[InventoryUI] Read-only mode. Cannot equip items.");
+                Debug.Log("[InventoryUI] Read-only mode. Cannot modify items.");
                 return;
             }
 
-            // TODO: ドロップ＆ドロップの代わりに、クリックでアイテムを配置する仮処理
-            // x = index % 3, y = index / 3
-            if (currentNewItem != null)
+            if (InventoryManager_Alpha.Instance == null) return;
+
+            if (selectedIndex == -1)
             {
-                InventoryManager_Alpha.EquipInstance newEquip = new InventoryManager_Alpha.EquipInstance();
-                newEquip.series = currentNewItem.series;
-                newEquip.partType = currentNewItem.partType;
-                newEquip.rarity = currentNewItem.quality;
-                newEquip.currentEffects = currentNewItem.currentEffects;
-                newEquip.defId = currentNewItem.series.seriesName;
-
-                if (InventoryManager_Alpha.Instance != null)
+                // まだ何も選択されていない場合、クリックしたスロットを選択状態にする
+                selectedIndex = index;
+                Debug.Log($"[InventoryUI] Selected slot {index}");
+                RefreshUI();
+            }
+            else
+            {
+                // すでに選択されているスロットがある場合
+                if (selectedIndex == index)
                 {
-                    InventoryManager_Alpha.Instance.SetByIndex(index, newEquip);
-                    Debug.Log($"[InventoryUI] Equipped to slot index {index}");
+                    // 同じスロットをクリックしたらキャンセル
+                    selectedIndex = -1;
+                    Debug.Log("[InventoryUI] Selection cancelled.");
                 }
+                else
+                {
+                    // 違うスロットをクリックしたら入れ替える（スワップ）
+                    var list = InventoryManager_Alpha.Instance.equipInstance;
+                    if (selectedIndex < list.Count && index < list.Count)
+                    {
+                        var item1 = list[selectedIndex];
+                        var item2 = list[index];
 
-                currentNewItem = null;
+                        bool CheckEquipRestriction(int targetSlotIndex, InventoryManager_Alpha.EquipInstance item)
+                        {
+                            if (item.series == null) return true; // Empty item can go anywhere
+                            if (targetSlotIndex >= InventoryManager_Alpha.BASIC_SLOT_COUNT) return true; // Free/Temp slots have no restriction
+
+                            // 0-8 are basic slots. column (x) is targetSlotIndex % 3
+                            int column = targetSlotIndex % 3;
+                            Alpha.Data.WeaponPartType_Alpha expectedPart = (Alpha.Data.WeaponPartType_Alpha)column;
+
+                            // Check AllEquipable
+                            if (item.currentEffects != null)
+                            {
+                                foreach (var eff in item.currentEffects)
+                                {
+                                    if (eff != null && eff.effectType == Alpha.Data.WeaponEffectType_Alpha.AllEquipable)
+                                        return true;
+                                }
+                            }
+
+                            return item.partType == expectedPart;
+                        }
+
+                        if (!CheckEquipRestriction(index, item1) || !CheckEquipRestriction(selectedIndex, item2))
+                        {
+                            Debug.LogWarning("[InventoryUI] 装備部位が一致しないため、スワップをキャンセルしました。");
+                        }
+                        else
+                        {
+                            InventoryManager_Alpha.Instance.SetByIndex(selectedIndex, item2);
+                            InventoryManager_Alpha.Instance.SetByIndex(index, item1);
+
+                            // 一時スロットが空になった場合の削除処理
+                            int tempStartIndex = InventoryManager_Alpha.BASIC_SLOT_COUNT + InventoryManager_Alpha.Instance.freeSlotCount;
+                            
+                            // 後ろからチェックして削除する（インデックスがずれないように）
+                            for (int i = list.Count - 1; i >= tempStartIndex; i--)
+                            {
+                                if (list[i].series == null)
+                                {
+                                    list.RemoveAt(i);
+                                }
+                            }
+
+                            Debug.Log($"[InventoryUI] Swapped slot {selectedIndex} with {index}");
+                        }
+                    }
+                    selectedIndex = -1;
+                }
                 RefreshUI();
             }
         }
@@ -255,22 +380,25 @@ namespace Alpha.UI
                 return;
             }
 
-            // アイテムが未配置のまま決定されたら、自動的にインベントリの空き枠・または末尾に追加する
-            if (currentNewItem != null && InventoryManager_Alpha.Instance != null)
-            {
-                InventoryManager_Alpha.EquipInstance newEquip = new InventoryManager_Alpha.EquipInstance();
-                newEquip.series = currentNewItem.series;
-                newEquip.partType = currentNewItem.partType;
-                newEquip.rarity = currentNewItem.quality;
-                newEquip.currentEffects = currentNewItem.currentEffects;
-                newEquip.defId = currentNewItem.series.seriesName;
-
-                InventoryManager_Alpha.Instance.AddItem(newEquip);
-                Debug.Log($"[InventoryUI] Auto-added {newEquip.series.seriesName} to extra slots.");
-                currentNewItem = null;
-            }
-
+            // 新規取得アイテムの自動追加はRewardSequenceManager側で行うため、ここでは何もしない
+            selectedIndex = -1;
+            Hide(); // UI自身を隠す
             onConfirmCallback?.Invoke();
+        }
+
+        private void OnSlotRightClicked(int index, UnityEngine.EventSystems.PointerEventData eventData)
+        {
+            if (InventoryManager_Alpha.Instance == null) return;
+            var equipList = InventoryManager_Alpha.Instance.equipInstance;
+            if (index < 0 || index >= equipList.Count) return;
+
+            var item = equipList[index];
+            if (item.series == null) return;
+
+            if (detailPopup != null)
+            {
+                detailPopup.Setup(item.series, item.partType, item.rarity, item.currentEffects, eventData.position);
+            }
         }
     }
 }

@@ -1,0 +1,131 @@
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using TMPro;
+using Alpha.Data;
+
+namespace Alpha.UI
+{
+    public class EquipDetailPopupUI_Alpha : MonoBehaviour, IPointerExitHandler, IPointerClickHandler
+    {
+        [Header("UI References")]
+        public Image iconImage;
+        public TextMeshProUGUI detailText;
+
+        [Header("Settings")]
+        [Tooltip("クリックした位置から画面中央方向へズラすための基準ポイント数")]
+        public float offsetDistance = 100f;
+
+        public void Setup(WeaponSeriesData_Alpha series, WeaponPartType_Alpha partType, int quality, List<WeaponEffectSO_Alpha> effects, Vector2 clickPos)
+        {
+            // 1. バフ一覧と基本情報の生成
+            string effectStr = "";
+            bool isAllEquipable = false;
+
+            if (effects != null)
+            {
+                foreach (var eff in effects)
+                {
+                    if (eff != null)
+                    {
+                        effectStr += $"\n- {eff.effectName}";
+                        if (eff.effectType == WeaponEffectType_Alpha.AllEquipable)
+                        {
+                            isAllEquipable = true;
+                        }
+                    }
+                }
+            }
+
+            string partStr = "";
+            switch (partType)
+            {
+                case WeaponPartType_Alpha.Bullet: partStr = "弾頭 (Bullet)"; break;
+                case WeaponPartType_Alpha.Casing: partStr = "薬莢 (Casing)"; break;
+                case WeaponPartType_Alpha.Primer: partStr = "雷管 (Primer)"; break;
+            }
+            if (isAllEquipable) partStr += " (どこでも装備可能)";
+
+            string seriesName = series != null ? series.seriesName : "Unknown";
+            
+            if (detailText != null)
+            {
+                detailText.text = $"<size=120%><b>{seriesName}</b></size>\n" +
+                                  $"部位: {partStr}\n" +
+                                  $"Quality: {quality}\n" +
+                                  $"\n<color=#FFFF00>【効果】</color>{effectStr}";
+            }
+
+            // 2. アイコンの設定
+            if (iconImage != null)
+            {
+                if (series != null)
+                {
+                    Sprite targetSprite = series.icon;
+                    if (isAllEquipable && series.iconAllEquipable != null) targetSprite = series.iconAllEquipable;
+                    else if (partType == WeaponPartType_Alpha.Bullet && series.iconBullet != null) targetSprite = series.iconBullet;
+                    else if (partType == WeaponPartType_Alpha.Casing && series.iconCasing != null) targetSprite = series.iconCasing;
+                    else if (partType == WeaponPartType_Alpha.Primer && series.iconPrimer != null) targetSprite = series.iconPrimer;
+
+                    iconImage.sprite = targetSprite;
+                    iconImage.color = targetSprite != null ? Color.white : Color.clear;
+                }
+                else
+                {
+                    iconImage.sprite = null;
+                    iconImage.color = Color.clear;
+                }
+            }
+
+            // 3. 表示位置の調整
+            if (transform.parent is RectTransform parentRect)
+            {
+                Canvas canvas = GetComponentInParent<Canvas>();
+                Camera cam = (canvas != null && canvas.renderMode == RenderMode.ScreenSpaceOverlay) ? null : (canvas != null ? canvas.worldCamera : null);
+
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    parentRect, 
+                    clickPos, 
+                    cam,
+                    out Vector2 localPoint);
+                
+                Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    parentRect, 
+                    screenCenter, 
+                    cam, 
+                    out Vector2 localCenter);
+                
+                Vector2 dirToCenter = (localCenter - localPoint).normalized;
+                
+                RectTransform myRect = (RectTransform)transform;
+                myRect.localPosition = localPoint + dirToCenter * offsetDistance;
+            }
+            else
+            {
+                Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
+                Vector2 dirToCenter = (screenCenter - clickPos).normalized;
+                transform.position = clickPos + dirToCenter * offsetDistance;
+            }
+
+            // アクティブにする
+            gameObject.SetActive(true);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            // マウスカーソルが外れたら消す
+            gameObject.SetActive(false);
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            // もう一度右クリックしたら消す
+            if (eventData.button == PointerEventData.InputButton.Right)
+            {
+                gameObject.SetActive(false);
+            }
+        }
+    }
+}

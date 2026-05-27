@@ -221,6 +221,7 @@ GameObject:
   - component: {fileID: 2470908652326813020}
   - component: {fileID: 171324063962572442}
   - component: {fileID: 7223468692344758599}
+  - component: {fileID: 3304075716437411588}
   m_Layer: 5
   m_Name: ExISlotPref
   m_TagString: Untagged
@@ -331,3 +332,15 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3304075716437411588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7294253378424265127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb3cb3e99d6acb14387b69e8c90abc4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

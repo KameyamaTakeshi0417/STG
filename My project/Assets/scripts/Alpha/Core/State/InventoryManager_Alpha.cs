@@ -106,7 +106,7 @@ public class InventoryManager_Alpha : MonoBehaviour
         // 空き枠（defIdがnullまたは空）があればそこに入れる
         for (int i = 0; i < equipInstance.Count; i++)
         {
-            if (string.IsNullOrEmpty(equipInstance[i].defId) && equipInstance[i].series == null)
+            if (equipInstance[i].series == null)
             {
                 equipInstance[i] = item;
                 playerStatusManager_Alpha.Instance?.UpdateEquipmentBuffs();
@@ -135,11 +135,16 @@ public class InventoryManager_Alpha : MonoBehaviour
             for (int i = equipInstance.Count - 1; i >= keepCount; i--)
             {
                 var item = equipInstance[i];
-                if (!string.IsNullOrEmpty(item.defId) || item.series != null)
+                if (item.series != null)
                 {
-                    // 売却処理: rarity * 2 の EXP
-                    int exp = item.rarity * 2;
-                    if (exp <= 0) exp = 2; // 最低保証
+                    int exp = 0;
+                    if (item.series.name != "InitialSeries")
+                    {
+                        // 売却処理: rarity * 2 の EXP
+                        exp = item.rarity * 2;
+                        if (exp <= 0) exp = 2; // 最低保証
+                    }
+                    
                     totalExpGained += exp;
                     Debug.Log($"[InventoryManager] Sold temporary item for {exp} EXP.");
                 }
@@ -154,6 +159,30 @@ public class InventoryManager_Alpha : MonoBehaviour
         }
 
         return totalExpGained;
+    }
+
+    /// <summary>
+    /// 一時スロットにある初期装備(InitialSeries)を直ちに削除します
+    /// 報酬獲得画面等で装備整理が終わった際に呼び出されます
+    /// </summary>
+    public void CleanUpInitialSeriesInEXSlots()
+    {
+        int keepCount = BASIC_SLOT_COUNT + freeSlotCount;
+
+        if (equipInstance.Count > keepCount)
+        {
+            // 後ろから調べて削除
+            for (int i = equipInstance.Count - 1; i >= keepCount; i--)
+            {
+                var item = equipInstance[i];
+                if (item.series != null && item.series.name == "InitialSeries")
+                {
+                    // 初期装備なら即削除
+                    equipInstance.RemoveAt(i);
+                    Debug.Log("[InventoryManager] Cleaned up InitialSeries from EX slot.");
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -174,6 +203,9 @@ public class InventoryManager_Alpha : MonoBehaviour
 
             // 1つでも空枠があればNG
             if (seriesA == null || seriesB == null || seriesC == null) return false;
+
+            // 初期装備(InitialSeries)の場合はブーケモードを発動しない
+            if (seriesA.name == "InitialSeries" || seriesB.name == "InitialSeries" || seriesC.name == "InitialSeries") return false;
 
             // シリーズが一致していなければNG
             if (seriesA != seriesB || seriesA != seriesC) return false;

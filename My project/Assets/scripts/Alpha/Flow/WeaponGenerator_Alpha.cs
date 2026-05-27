@@ -21,6 +21,13 @@ namespace Alpha.Flow
         }
         public List<BossRewardMapping> bossRewardMappings = new List<BossRewardMapping>();
 
+        [Header("Global Random Effects")]
+        [Tooltip("ランダム付与されるバフエフェクトのプール")]
+        public List<WeaponEffectSO_Alpha> globalBuffEffects = new List<WeaponEffectSO_Alpha>();
+
+        [Tooltip("将来用：ランダム付与されるデバフエフェクトのプール")]
+        public List<WeaponEffectSO_Alpha> globalDebuffEffects = new List<WeaponEffectSO_Alpha>();
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -135,36 +142,53 @@ namespace Alpha.Flow
         {
             if (series == null) return null;
 
-            // 部位を完全等確率で決定
-            WeaponPartType_Alpha partType = (WeaponPartType_Alpha)Random.Range(0, 3);
+            // 部位の決定 (bestSlot が 50%, それ以外が 25% ずつ)
+            WeaponPartType_Alpha partType;
+            float rand = Random.value;
+            if (rand <= 0.5f)
+            {
+                partType = series.bestSlot;
+            }
+            else
+            {
+                // 残りの2部位からランダムに選ぶ（それぞれ25%）
+                List<WeaponPartType_Alpha> otherParts = new List<WeaponPartType_Alpha>();
+                foreach (WeaponPartType_Alpha type in System.Enum.GetValues(typeof(WeaponPartType_Alpha)))
+                {
+                    if (type != series.bestSlot) otherParts.Add(type);
+                }
+                partType = otherParts[Random.Range(0, otherParts.Count)];
+            }
             
             WeaponPartInstance_Alpha instance = new WeaponPartInstance_Alpha(series, partType, quality);
 
-            // 効果の付与
-            int effectCount = Random.Range(1, 4); // 最大3
-            
-            // 最適部位の場合は、passiveEffectsから1つ確定で付与
-            if (partType == series.bestSlot && series.passiveEffects.Count > 0)
+            // 固有効果の付与（無制限で全て付与）
+            if (series.passiveEffects != null)
             {
-                instance.currentEffects.Add(series.passiveEffects[Random.Range(0, series.passiveEffects.Count)]);
-                effectCount--;
-            }
-            else if (series.passiveEffects.Count > 0)
-            {
-                // AnySlot効果を最低1つ保証
-                instance.currentEffects.Add(series.passiveEffects[Random.Range(0, series.passiveEffects.Count)]);
-                effectCount--;
-            }
-
-            // 残りの枠をランダムに埋める
-            for (int i = 0; i < effectCount; i++)
-            {
-                var pool = series.passiveEffects;
-                if (pool != null && pool.Count > 0)
+                foreach (var effect in series.passiveEffects)
                 {
-                    instance.currentEffects.Add(pool[Random.Range(0, pool.Count)]);
+                    if (effect != null)
+                    {
+                        instance.currentEffects.Add(effect);
+                    }
                 }
             }
+
+            // グローバルバフのランダム付与（基本1つ）
+            if (globalBuffEffects != null && globalBuffEffects.Count > 0)
+            {
+                var randomBuff = globalBuffEffects[Random.Range(0, globalBuffEffects.Count)];
+                if (randomBuff != null)
+                {
+                    instance.currentEffects.Add(randomBuff);
+                }
+            }
+
+            // 将来用：グローバルデバフの付与
+            // if (globalDebuffEffects != null && globalDebuffEffects.Count > 0)
+            // {
+            //     // 難易度や品質などに応じてデバフを抽選・付与する処理をここに追加
+            // }
 
             return instance;
         }

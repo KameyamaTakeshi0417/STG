@@ -16,8 +16,14 @@ namespace Alpha.Data
     {
         public string seriesName;
         
-        [Tooltip("UI用アイコン")]
+        [Tooltip("旧仕様互換のため残していますが、基本は下の4つのアイコンを使用してください")]
         public Sprite icon;
+        
+        [Header("Icons (Per Part Type)")]
+        public Sprite iconBullet;
+        public Sprite iconCasing;
+        public Sprite iconPrimer;
+        public Sprite iconAllEquipable;
         
         [Tooltip("レア枠として扱うか（全30中7シリーズをtrueにする想定）")]
         public bool isRareSeries;

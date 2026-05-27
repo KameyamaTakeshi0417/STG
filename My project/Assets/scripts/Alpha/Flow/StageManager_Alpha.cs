@@ -73,10 +73,36 @@ namespace Alpha.Flow
 
                 case StageState_Alpha.MidBossWait:
                 case StageState_Alpha.BossWait:
-                    // 雑魚が全滅したらボス戦開始
+                    // 雑魚が全滅したら次の処理へ
                     if (spawnManager.IsMobCleared())
                     {
-                        StartBossFight();
+                        if (currentState == StageState_Alpha.BossWait)
+                        {
+                            SetState(StageState_Alpha.Transition); // 待機用ステートへ移行
+                            StartCoroutine(WaitUntilAllOrbsCollected(() => {
+                                // ステージクリア時にフリースロットを1つ追加
+                                if (InventoryManager_Alpha.Instance != null)
+                                {
+                                    InventoryManager_Alpha.Instance.AddFreeSlot();
+                                }
+                                
+                                // ボス前の休憩（待機）到達時にオーブを一斉開封
+                                if (RewardSequenceManager_Alpha.Instance != null)
+                                {
+                                    RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
+                                        StartBossFight();
+                                    });
+                                }
+                                else
+                                {
+                                    StartBossFight();
+                                }
+                            }));
+                        }
+                        else
+                        {
+                            StartBossFight();
+                        }
                     }
                     break;
 
@@ -97,6 +123,15 @@ namespace Alpha.Flow
         {
             currentState = newState;
             Debug.Log($"[StageManager] Changed State to: {currentState}");
+        }
+
+        public int GetCurrentRewardDropCount()
+        {
+            if (activeSequence != null && activeSequence.rewardDropCount > 0)
+            {
+                return activeSequence.rewardDropCount;
+            }
+            return 1;
         }
 
         private void StartFirstHalf()
@@ -143,18 +178,6 @@ namespace Alpha.Flow
                 else
                 {
                     SetState(StageState_Alpha.BossWait);
-                    
-                    // ステージクリア時にフリースロットを1つ追加
-                    if (InventoryManager_Alpha.Instance != null)
-                    {
-                        InventoryManager_Alpha.Instance.AddFreeSlot();
-                    }
-                    
-                    // ボス前の休憩（待機）到達時にオーブを一斉開封
-                    if (RewardSequenceManager_Alpha.Instance != null)
-                    {
-                        RewardSequenceManager_Alpha.Instance.StartRewardSequence(null);
-                    }
                 }
             }
         }
@@ -242,26 +265,43 @@ namespace Alpha.Flow
                         // 中ボス撃破報酬のオーブを一斉開封
                         if (RewardSequenceManager_Alpha.Instance != null)
                         {
-                            RewardSequenceManager_Alpha.Instance.StartRewardSequence(null);
-                        }
-
-                        // 今回はそのまま後半待機へ
-                        SetState(StageState_Alpha.WaitToStartSecondHalf);
-                        
-                        // UIをクリアしておく（または後半用に再構成）
-                        if (currentStageData != null && currentStageData.secondHalf != null)
-                        {
-                            activeSequence = currentStageData.secondHalf;
-                            sequenceBarUI.Setup(activeSequence);
-                            spawnManager.SetupSequence(activeSequence);
+                            RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
+                                // 報酬画面が終わってから後半待機へ
+                                SetState(StageState_Alpha.WaitToStartSecondHalf);
+                                
+                                // UIをクリアしておく、または後半用に再構築
+                                if (currentStageData != null && currentStageData.secondHalf != null)
+                                {
+                                    activeSequence = currentStageData.secondHalf;
+                                    sequenceBarUI.Setup(activeSequence);
+                                    spawnManager.SetupSequence(activeSequence);
+                                }
+                                else
+                                {
+                                    Debug.LogError("[StageManager] currentStageData or its secondHalf is not assigned! Cannot prepare second half.");
+                                    activeSequence = null; // 安全のためnullにする
+                                }
+                                
+                                fadeController.FadeIn();
+                            });
                         }
                         else
                         {
-                            Debug.LogError("[StageManager] currentStageData or its secondHalf is not assigned! Cannot prepare second half.");
-                            activeSequence = null; // 安全のためnullにする
+                            SetState(StageState_Alpha.WaitToStartSecondHalf);
+                            
+                            if (currentStageData != null && currentStageData.secondHalf != null)
+                            {
+                                activeSequence = currentStageData.secondHalf;
+                                sequenceBarUI.Setup(activeSequence);
+                                spawnManager.SetupSequence(activeSequence);
+                            }
+                            else
+                            {
+                                activeSequence = null;
+                            }
+                            
+                            fadeController.FadeIn();
                         }
-                        
-                        fadeController.FadeIn();
                     });
                 }));
             }
@@ -277,12 +317,12 @@ namespace Alpha.Flow
             Debug.Log("[StageManager] Waiting for orbs to be collected...");
             
             // 全てのオーブが画面上から消える（取得される）まで待機
-            while (FindObjectsOfType<OrbControll_Alpha>().Length > 0)
+            while (FindObjectsOfType<OrbControll_Alpha>().Length > 0 || FindObjectsOfType<Alpha.Battle.OrbItem_Alpha>().Length > 0)
             {
                 yield return new WaitForSeconds(0.25f);
             }
             
-            // 回収後の処理ズレを防ぐため少し待つ
+            // 回収後の処理ズレを防ぐため少し待機
             yield return new WaitForSeconds(0.5f);
 
             onComplete?.Invoke();

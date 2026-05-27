@@ -17,5 +17,8 @@ namespace Alpha.Data
         
         [Tooltip("フェーズの最後に出現するボス/中ボスのプレハブ")]
         public GameObject bossPrefab;
+        
+        [Tooltip("このフェーズ完了時（ボス・中ボス撃破時）の基本報酬オーブドロップ数")]
+        public int rewardDropCount = 1;
     }
 }
