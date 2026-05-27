@@ -179,7 +179,14 @@ MonoBehaviour:
   VulnerableFlg: 0
   PierceVolume: 1
   VoltCount: 0
-  damageTextPrefab: {fileID: 0}
+  StunResistance: 0
+  BaseStunResistance: 0.5
+  isStunned: 0
+  orbDropChance: 1
+  isMidBoss: 1
+  isBoss: 0
+  bossId: 0
+  damageTextPrefab: {fileID: 3988437868621658341, guid: 5ccc0cd62017e7542bc9974c88b5c92d, type: 3}
   DamageUIMagnitude: 0.1
   phaseHPs:
   - 1000

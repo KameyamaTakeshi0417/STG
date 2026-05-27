@@ -60,7 +60,16 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
     public void UpdateEquipmentBuffs()
     {
         if (InventoryManager_Alpha.Instance == null) return;
+        var inv = InventoryManager_Alpha.Instance;
         
+        // --- アクティブな武器グループを取得 ---
+        int activeGroup = 0;
+        Player_Shooter_Alpha shooter = Object.FindAnyObjectByType<Player_Shooter_Alpha>();
+        if (shooter != null) activeGroup = shooter.currentWeaponGroup;
+        
+        bool isBouquet = inv.IsBouquetActive();
+        int groupToPass = isBouquet ? -1 : activeGroup;
+
         // --- 1. 計算前の基礎値リセット ---
         HP = baseMaxHP;
         staminaRecoveryRate = baseStaminaRecovery;
@@ -75,41 +84,45 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         currentSpawnPattern = SpawnPattern.Straight; // デフォルトはStraight
 
         // --- 2. 各ステータスバフを取得・加算 ---
-        var inv = InventoryManager_Alpha.Instance;
         
-        float hpBuff = inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.MaxHP);
+        float hpBuff = inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.MaxHP, groupToPass);
         HP += hpBuff;
         
-        staminaRecoveryRate += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.StaminaRecoverySpeed);
-        DamageAdd += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.AttackFlat);
-        DamageAdd -= inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.AttackDebuff);
-        DamageMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.AttackMultiplier);
-        BlockDmg += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.DefenseFlat);
-        BlockMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.DefenseMultiplier);
-        bulletSpeedMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletSpeed);
-        bulletSpeedMag -= inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletSpeedDebuff);
-        bulletLifeMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletLife);
+        staminaRecoveryRate += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.StaminaRecoverySpeed, groupToPass);
+        DamageAdd += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.AttackFlat, groupToPass);
+        DamageAdd -= inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.AttackDebuff, groupToPass);
+        DamageMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.AttackMultiplier, groupToPass);
+        BlockDmg += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.DefenseFlat, groupToPass);
+        BlockMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.DefenseMultiplier, groupToPass);
+        bulletSpeedMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletSpeed, groupToPass);
+        bulletSpeedMag -= inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletSpeedDebuff, groupToPass);
+        bulletLifeMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletLife, groupToPass);
 
         // 貫通回数の加算（floatをintにキャストして適用）
-        extraPierceCount += (int)inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.PierceCountPlus);
+        extraPierceCount += (int)inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.PierceCountPlus, groupToPass);
 
         // 発射弾数の加算
-        extraShotCount += (int)inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.ShotCountPlus);
+        extraShotCount += (int)inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.ShotCountPlus, groupToPass);
+        
+        if (isBouquet)
+        {
+            extraShotCount += 2; // ブーケ状態のボーナス発射数
+        }
 
         // --- 3. 発射パターンの優先度決定 ---
-        if (inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.SpawnPattern_Reverse) > 0)
+        if (inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.SpawnPattern_Reverse, groupToPass) > 0)
         {
             currentSpawnPattern = SpawnPattern.Reverse;
         }
-        else if (inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.SpawnPattern_Radial) > 0)
+        else if (inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.SpawnPattern_Radial, groupToPass) > 0)
         {
             currentSpawnPattern = SpawnPattern.Radial;
         }
-        else if (inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.SpawnPattern_Barrage) > 0)
+        else if (inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.SpawnPattern_Barrage, groupToPass) > 0)
         {
             currentSpawnPattern = SpawnPattern.Barrage;
         }
-        else if (inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.SpawnPattern_Straight) > 0)
+        else if (inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.SpawnPattern_Straight, groupToPass) > 0)
         {
             currentSpawnPattern = SpawnPattern.Straight; // 明示的なStraight付与（なくてもデフォルトがStraight）
         }
@@ -144,7 +157,7 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
     public float GetTakenDamage(float enemyDamage)
     {
         // 被ダメージ = (敵の元々のダメージ - 防御力上昇(BlockDmg)) * 防御力倍率(BlockMag / 100)
-        // ※BlockMag は 100 を基準とし、90なら10%カット、110なら10%増加とする（被ダメージ倍率）
+        // ※BlockMag は 100 を基準とし、50なら50%カット、150なら50%増加とする（被ダメージ倍率）
         float dmg = (enemyDamage - BlockDmg) * (BlockMag / 100f);
         return Mathf.Max(1f, dmg); // 最低1ダメージは受ける仕様にするか、0を許容するか。ここでは最低1とする。
     }

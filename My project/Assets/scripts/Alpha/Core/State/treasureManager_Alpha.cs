@@ -35,29 +35,17 @@ public class treasureManager_Alpha : MonoBehaviour
         Debug.Log($"[TreasureManager] Queued Orb. Total in queue: {orbQueue.Count}");
     }
 
-    public void OpenAllOrbs()
+    /// <summary>
+    /// 現在溜まっているオーブのキューを取得してクリアする
+    /// </summary>
+    public Queue<OrbData_Alpha> FlushOrbQueue()
     {
-        if (orbQueue.Count == 0)
-        {
-            Debug.Log("[TreasureManager] No orbs to open.");
-            return;
-        }
-
-        Debug.Log($"[TreasureManager] Opening {orbQueue.Count} orbs...");
-        
-        if (Alpha.UI.OrbSelectionUI_Alpha.Instance != null)
-        {
-            Alpha.UI.OrbSelectionUI_Alpha.Instance.StartOpeningOrbs(orbQueue);
-        }
-        else
-        {
-            Debug.LogWarning("[TreasureManager] OrbSelectionUI_Alpha instance not found. Just dequeueing.");
-            while(orbQueue.Count > 0)
-            {
-                var orb = orbQueue.Dequeue();
-                Debug.Log($"[TreasureManager] Opened Orb -> Rarity: {orb.orbRarity}, Source: {orb.source}");
-            }
-        }
+        // 現在のキューをコピーして返し、元のキューはクリアする
+        Queue<OrbData_Alpha> currentOrbs = new Queue<OrbData_Alpha>(orbQueue);
+        orbQueue.Clear();
+        treasure.Clear();
+        SyncToDisplay();
+        return currentOrbs;
     }
 
     // 既存の OrbControll_Alpha などからのアクセス用

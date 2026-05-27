@@ -163,6 +163,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85b8d690adf860b4d8cade3d3bd69b11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sourcePrefab: {fileID: 0}
+  isEnemyBullet: 0
+  canHitBoth: 0
+  originalAimDirection: {x: 0, y: 0, z: 0}
+  reverseTimeRemaining: 0
   Objname: 
   dmg: 10
   Speed: 200
@@ -173,7 +178,9 @@ MonoBehaviour:
   bulletName: 
   addDmg: 0
   piercingCount: 0
-  canUseAllEffects: 0
+  preventAutoDestroy: 0
+  localPierceDamageReductionRate: -1
+  canUseAllEffects: 1
 --- !u!114 &-7321520396698675924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -186,6 +193,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c940adb9cd747ae4c9103d73e6db9022, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sourcePrefab: {fileID: 0}
+  explosionTime: 10
 --- !u!1 &8145559979507579680
 GameObject:
   m_ObjectHideFlags: 0

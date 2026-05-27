@@ -4,12 +4,60 @@ using Alpha.Battle;
 
 namespace Alpha.Flow
 {
+    [System.Serializable]
+    public struct DropTable
+    {
+        [Tooltip("追加ドロップが発生する確率（0.0 〜 1.0）")]
+        public float extraDropChance;
+        
+        [Tooltip("Rarity 1 (Common) のドロップウェイト（重み）")]
+        public float weightR1;
+        [Tooltip("Rarity 2 (Uncommon) のドロップウェイト（重み）")]
+        public float weightR2;
+        [Tooltip("Rarity 3 (Rare) のドロップウェイト（重み）")]
+        public float weightR3;
+        [Tooltip("Rarity 4 (Epic/Legendary) のドロップウェイト（重み）")]
+        public float weightR4;
+
+        /// <summary>
+        /// 設定されたウェイトに基づいて1〜4のレアリティを抽選して返します
+        /// </summary>
+        public int GetRandomRarity()
+        {
+            float totalWeight = weightR1 + weightR2 + weightR3 + weightR4;
+            if (totalWeight <= 0) return 1; // フェールセーフ
+
+            float rand = Random.value * totalWeight;
+
+            if (rand <= weightR1) return 1;
+            rand -= weightR1;
+
+            if (rand <= weightR2) return 2;
+            rand -= weightR2;
+
+            if (rand <= weightR3) return 3;
+            
+            return 4;
+        }
+    }
+
     public class RewardManager_Alpha : MonoBehaviour
     {
         public static RewardManager_Alpha Instance { get; private set; }
 
         [Header("Prefabs")]
-        public GameObject orbPrefab;
+        [Tooltip("レアリティ1〜4に対応するオーブプレハブ（インデックス0がレアリティ1、インデックス3がレアリティ4）")]
+        public GameObject[] orbPrefabs = new GameObject[4];
+
+        [Header("Drop Tables")]
+        [Tooltip("雑魚敵のドロップ確率とレアリティテーブル")]
+        public DropTable mobDropTable = new DropTable { extraDropChance = 0.01f, weightR1 = 60f, weightR2 = 35f, weightR3 = 4.9f, weightR4 = 0.1f };
+        
+        [Tooltip("中ボスのドロップ確率とレアリティテーブル")]
+        public DropTable midBossDropTable = new DropTable { extraDropChance = 0.10f, weightR1 = 0f, weightR2 = 60f, weightR3 = 37f, weightR4 = 3f };
+        
+        [Tooltip("ボスのドロップ確率とレアリティテーブル")]
+        public DropTable bossDropTable = new DropTable { extraDropChance = 0.20f, weightR1 = 0f, weightR2 = 0f, weightR3 = 80f, weightR4 = 20f };
 
         private void Awake()
         {
@@ -29,12 +77,12 @@ namespace Alpha.Flow
             // 基本ドロップ判定
             if (Random.value <= dropChance)
             {
-                SpawnOrb(position, GetRandomMobOrbRarity(), OrbSource_Alpha.Mob);
+                SpawnOrb(position, mobDropTable.GetRandomRarity(), OrbSource_Alpha.Mob);
                 
-                // 追加ドロップ判定(1%)
-                if (Random.value <= 0.01f)
+                // 追加ドロップ判定
+                if (Random.value <= mobDropTable.extraDropChance)
                 {
-                    SpawnOrb(position + new Vector3(0.5f, 0, 0), GetRandomMobOrbRarity(), OrbSource_Alpha.Mob);
+                    SpawnOrb(position + new Vector3(0.5f, 0, 0), mobDropTable.GetRandomRarity(), OrbSource_Alpha.Mob);
                 }
             }
         }
@@ -45,12 +93,12 @@ namespace Alpha.Flow
         public void DropMidBossReward(Vector3 position)
         {
             // 100%ドロップ
-            SpawnOrb(position, GetRandomMidBossOrbRarity(), OrbSource_Alpha.MidBoss);
+            SpawnOrb(position, midBossDropTable.GetRandomRarity(), OrbSource_Alpha.MidBoss);
 
-            // 追加ドロップ判定(10%)
-            if (Random.value <= 0.10f)
+            // 追加ドロップ判定
+            if (Random.value <= midBossDropTable.extraDropChance)
             {
-                SpawnOrb(position + new Vector3(0.5f, 0, 0), GetRandomMidBossOrbRarity(), OrbSource_Alpha.MidBoss);
+                SpawnOrb(position + new Vector3(0.5f, 0, 0), midBossDropTable.GetRandomRarity(), OrbSource_Alpha.MidBoss);
             }
         }
 
@@ -60,12 +108,12 @@ namespace Alpha.Flow
         public void DropBossReward(Vector3 position, string bossId)
         {
             // 100%ドロップ
-            SpawnOrb(position, GetRandomBossOrbRarity(), OrbSource_Alpha.Boss, bossId);
+            SpawnOrb(position, bossDropTable.GetRandomRarity(), OrbSource_Alpha.Boss, bossId);
 
-            // 追加ドロップ判定(20%)
-            if (Random.value <= 0.20f)
+            // 追加ドロップ判定
+            if (Random.value <= bossDropTable.extraDropChance)
             {
-                SpawnOrb(position + new Vector3(0.5f, 0, 0), GetRandomBossOrbRarity(), OrbSource_Alpha.Boss, bossId);
+                SpawnOrb(position + new Vector3(0.5f, 0, 0), bossDropTable.GetRandomRarity(), OrbSource_Alpha.Boss, bossId);
             }
         }
 
@@ -74,13 +122,17 @@ namespace Alpha.Flow
         /// </summary>
         public void SpawnOrb(Vector3 position, int rarity, OrbSource_Alpha source, string bossId = "")
         {
-            if (orbPrefab == null)
+            // レアリティからプレハブの配列インデックスを計算 (rarity: 1〜4 -> index: 0〜3)
+            int index = Mathf.Clamp(rarity - 1, 0, orbPrefabs.Length - 1);
+            GameObject prefabToSpawn = orbPrefabs[index];
+
+            if (prefabToSpawn == null)
             {
-                Debug.LogError("[RewardManager] Orb Prefab is not assigned!");
+                Debug.LogError($"[RewardManager] Orb Prefab for rarity {rarity} (index {index}) is not assigned!");
                 return;
             }
 
-            GameObject obj = Instantiate(orbPrefab, position, Quaternion.identity);
+            GameObject obj = Instantiate(prefabToSpawn, position, Quaternion.identity);
             OrbItem_Alpha orbItem = obj.GetComponent<OrbItem_Alpha>();
             if (orbItem != null)
             {
@@ -126,33 +178,6 @@ namespace Alpha.Flow
             // TODO: EXP付与のロジックをここに繋げる
             Debug.Log($"[RewardManager] Granted {amount} EXP from Skip.");
         }
-
-        // --- レアリティ抽選テーブル ---
-
-        private int GetRandomMobOrbRarity()
-        {
-            float rand = Random.value * 100f; // 0〜100
-            if (rand <= 60f) return 1;
-            if (rand <= 95f) return 2; // 60 + 35
-            if (rand <= 99.9f) return 3; // 95 + 4.9
-            return 4; // 0.1
-        }
-
-        private int GetRandomMidBossOrbRarity()
-        {
-            float rand = Random.value * 100f;
-            // R1=0, R2=60, R3=37, R4=3
-            if (rand <= 60f) return 2;
-            if (rand <= 97f) return 3; // 60 + 37
-            return 4; // 3
-        }
-
-        private int GetRandomBossOrbRarity()
-        {
-            float rand = Random.value * 100f;
-            // R1=0, R2=0, R3=80, R4=20
-            if (rand <= 80f) return 3;
-            return 4;
-        }
     }
 }
+

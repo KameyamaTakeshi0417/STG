@@ -67,6 +67,11 @@ public class InventoryManager_Alpha : MonoBehaviour
     public void Set(int x, int y, EquipInstance v)
     {
         int index = y * W + x;
+        SetByIndex(index, v);
+    }
+
+    public void SetByIndex(int index, EquipInstance v)
+    {
         while (equipInstance.Count <= index)
         {
             equipInstance.Add(new EquipInstance());
@@ -134,8 +139,9 @@ public class InventoryManager_Alpha : MonoBehaviour
                 {
                     // 売却処理: rarity * 2 の EXP
                     int exp = item.rarity * 2;
+                    if (exp <= 0) exp = 2; // 最低保証
                     totalExpGained += exp;
-                    Debug.Log($"[InventoryManager] Sold temporary item (Rarity {item.rarity}) for {exp} EXP.");
+                    Debug.Log($"[InventoryManager] Sold temporary item for {exp} EXP.");
                 }
                 equipInstance.RemoveAt(i);
             }
@@ -150,7 +156,34 @@ public class InventoryManager_Alpha : MonoBehaviour
         return totalExpGained;
     }
 
-    public float GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha effectType)
+    /// <summary>
+    /// ブーケ状態の判定
+    /// 全てのセット(行)が、それぞれ同じシリーズで統一されているか（全9枠が埋まっている必要がある）
+    /// </summary>
+    public bool IsBouquetActive()
+    {
+        if (equipInstance == null || equipInstance.Count < BASIC_SLOT_COUNT) return false;
+
+        // 3つの行（セット）それぞれについて、3枠がすべて同じシリーズかチェックする
+        for (int row = 0; row < 3; row++)
+        {
+            int startIndex = row * 3;
+            var seriesA = equipInstance[startIndex].series;
+            var seriesB = equipInstance[startIndex + 1].series;
+            var seriesC = equipInstance[startIndex + 2].series;
+
+            // 1つでも空枠があればNG
+            if (seriesA == null || seriesB == null || seriesC == null) return false;
+
+            // シリーズが一致していなければNG
+            if (seriesA != seriesB || seriesA != seriesC) return false;
+        }
+
+        // 全ての行がそれぞれ統一されていればTrue
+        return true;
+    }
+
+    public float GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha effectType, int activeGroup = -1)
     {
         float totalValue = 0f;
 
@@ -163,6 +196,9 @@ public class InventoryManager_Alpha : MonoBehaviour
             // （現状は全枠合算ですが、もし「装備中のみ」にするならここで if (!isBasicSlot) continue; などを追加します）
             bool isBasicSlot = (i < BASIC_SLOT_COUNT);
 
+            // この装備枠が属しているグループ(行)を計算 (3枠で1行とする)
+            int itemGroup = i / 3;
+
             // 1. 武器のベース(series)に紐づくパッシブ効果を加算
             if (item.series.passiveEffects != null)
             {
@@ -170,6 +206,9 @@ public class InventoryManager_Alpha : MonoBehaviour
                 {
                     if (effectSO != null && effectSO.effectType == effectType)
                     {
+                        // 常時発動ではなく、かつ現在構えている武器グループでない場合はスキップ
+                        if (!effectSO.isGlobalEffect && activeGroup != -1 && itemGroup != activeGroup) continue;
+
                         totalValue += effectSO.GetValue(item.rarity);
                     }
                 }
@@ -182,6 +221,9 @@ public class InventoryManager_Alpha : MonoBehaviour
                 {
                     if (effectSO != null && effectSO.effectType == effectType)
                     {
+                        // 常時発動ではなく、かつ現在構えている武器グループでない場合はスキップ
+                        if (!effectSO.isGlobalEffect && activeGroup != -1 && itemGroup != activeGroup) continue;
+
                         totalValue += effectSO.GetValue(item.rarity);
                     }
                 }

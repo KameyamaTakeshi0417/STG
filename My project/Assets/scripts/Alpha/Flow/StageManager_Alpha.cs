@@ -22,6 +22,8 @@ namespace Alpha.Flow
 
     public class StageManager_Alpha : MonoBehaviour
     {
+        public static StageManager_Alpha Instance { get; private set; }
+
         [Header("Data")]
         public StageData_Alpha currentStageData;
 
@@ -35,6 +37,16 @@ namespace Alpha.Flow
         public float currentSequenceTime = 0f;
 
         private StageSequenceData_Alpha activeSequence;
+
+        private void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
+        }
 
         void Start()
         {
@@ -139,9 +151,9 @@ namespace Alpha.Flow
                     }
                     
                     // ボス前の休憩（待機）到達時にオーブを一斉開封
-                    if (treasureManager_Alpha.Instance != null)
+                    if (RewardSequenceManager_Alpha.Instance != null)
                     {
-                        treasureManager_Alpha.Instance.OpenAllOrbs();
+                        RewardSequenceManager_Alpha.Instance.StartRewardSequence(null);
                     }
                 }
             }
@@ -219,42 +231,61 @@ namespace Alpha.Flow
             {
                 SetState(StageState_Alpha.Transition);
                 
-                // 暗転開始
-                fadeController.FadeOut(() => 
+                StartCoroutine(WaitUntilAllOrbsCollected(() => 
                 {
-                    // 暗転中（真っ黒）のフック処理
-                    Debug.Log("[StageManager] Fade Out Complete. Hook for Equipment Turn.");
-                    
-                    // 中ボス撃破報酬のオーブを一斉開封
-                    if (treasureManager_Alpha.Instance != null)
+                    // 暗転開始
+                    fadeController.FadeOut(() => 
                     {
-                        treasureManager_Alpha.Instance.OpenAllOrbs();
-                    }
+                        // 暗転中（真っ黒）のフック処理
+                        Debug.Log("[StageManager] Fade Out Complete. Hook for Equipment Turn.");
+                        
+                        // 中ボス撃破報酬のオーブを一斉開封
+                        if (RewardSequenceManager_Alpha.Instance != null)
+                        {
+                            RewardSequenceManager_Alpha.Instance.StartRewardSequence(null);
+                        }
 
-                    // 今回はそのまま後半待機へ
-                    SetState(StageState_Alpha.WaitToStartSecondHalf);
-                    
-                    // UIをクリアしておく（または後半用に再構成）
-                    if (currentStageData != null && currentStageData.secondHalf != null)
-                    {
-                        activeSequence = currentStageData.secondHalf;
-                        sequenceBarUI.Setup(activeSequence);
-                        spawnManager.SetupSequence(activeSequence);
-                    }
-                    else
-                    {
-                        Debug.LogError("[StageManager] currentStageData or its secondHalf is not assigned! Cannot prepare second half.");
-                        activeSequence = null; // 安全のためnullにする
-                    }
-                    
-                    fadeController.FadeIn();
-                });
+                        // 今回はそのまま後半待機へ
+                        SetState(StageState_Alpha.WaitToStartSecondHalf);
+                        
+                        // UIをクリアしておく（または後半用に再構成）
+                        if (currentStageData != null && currentStageData.secondHalf != null)
+                        {
+                            activeSequence = currentStageData.secondHalf;
+                            sequenceBarUI.Setup(activeSequence);
+                            spawnManager.SetupSequence(activeSequence);
+                        }
+                        else
+                        {
+                            Debug.LogError("[StageManager] currentStageData or its secondHalf is not assigned! Cannot prepare second half.");
+                            activeSequence = null; // 安全のためnullにする
+                        }
+                        
+                        fadeController.FadeIn();
+                    });
+                }));
             }
             else if (currentState == StageState_Alpha.BossFight)
             {
                 SetState(StageState_Alpha.StageClear);
                 Debug.Log("[StageManager] STAGE CLEAR!");
             }
+        }
+
+        private System.Collections.IEnumerator WaitUntilAllOrbsCollected(System.Action onComplete)
+        {
+            Debug.Log("[StageManager] Waiting for orbs to be collected...");
+            
+            // 全てのオーブが画面上から消える（取得される）まで待機
+            while (FindObjectsOfType<OrbControll_Alpha>().Length > 0)
+            {
+                yield return new WaitForSeconds(0.25f);
+            }
+            
+            // 回収後の処理ズレを防ぐため少し待つ
+            yield return new WaitForSeconds(0.5f);
+
+            onComplete?.Invoke();
         }
 
         private void StartSecondHalf()

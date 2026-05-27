@@ -34,7 +34,7 @@ namespace Alpha.UI
             
             while (time < fadeDuration)
             {
-                time += Time.deltaTime;
+                time += Time.unscaledDeltaTime;
                 fadeGroup.alpha = Mathf.Lerp(startAlpha, endAlpha, time / fadeDuration);
                 yield return null;
             }

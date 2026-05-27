@@ -35,8 +35,11 @@ namespace Alpha.Data
         public WeaponEffectType_Alpha effectType;
         public string effectName;
         public string description;
+        
+        [Tooltip("trueの場合、どの装備枠にセットしていても常に発動します。falseの場合、現在構えている装備セットの時だけ発動します。")]
+        public bool isGlobalEffect = false;
 
-        [Tooltip("各品質(1〜4)における効果量。インデックス0=品質1、インデックス3=品質4")]
+        [Tooltip("品質(1〜4)による効果量。インデックス0=品質1、インデックス3=品質4")]
         public float[] qualityValues = new float[4];
 
         public float GetValue(int quality)
