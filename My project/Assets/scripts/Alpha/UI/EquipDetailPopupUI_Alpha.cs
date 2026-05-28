@@ -109,8 +109,9 @@ namespace Alpha.UI
                 transform.position = clickPos + dirToCenter * offsetDistance;
             }
 
-            // アクティブにする
+            // アクティブにして最前面に表示する
             gameObject.SetActive(true);
+            transform.SetAsLastSibling();
         }
 
         public void OnPointerExit(PointerEventData eventData)

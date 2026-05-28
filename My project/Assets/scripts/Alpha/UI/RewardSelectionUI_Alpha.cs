@@ -208,7 +208,7 @@ namespace Alpha.UI
 
         private void OnChoiceRightClicked(int index, UnityEngine.EventSystems.PointerEventData eventData)
         {
-            if (currentChoices == null || index < currentChoices.Count == false || index < 0) return;
+            if (currentChoices == null || index < 0 || index >= currentChoices.Count) return;
             var choice = currentChoices[index];
             if (choice == null || choice.series == null) return;
 
@@ -218,20 +218,23 @@ namespace Alpha.UI
             }
         }
 
-        private void OnCheckEquipClicked()
+        public void OnCheckEquipClicked()
         {
+            Debug.Log($"[RewardSelectionUI] OnCheckEquipClicked called. inventoryUI is null? {inventoryUI == null}");
             if (inventoryUI != null)
             {
                 // 報酬UIを一時的に隠す
                 if (panel != null) panel.SetActive(false);
                 
                 // インベントリ画面を確認モードで開く
+                Debug.Log("[RewardSelectionUI] Calling inventoryUI.ShowForCheck()");
                 inventoryUI.ShowForCheck(OnCheckEquipFinished);
             }
         }
 
         private void OnCheckEquipFinished()
         {
+            Debug.Log("[RewardSelectionUI] OnCheckEquipFinished called.");
             // インベントリ画面が閉じられたら、報酬UIを再表示する
             if (panel != null) panel.SetActive(true);
         }

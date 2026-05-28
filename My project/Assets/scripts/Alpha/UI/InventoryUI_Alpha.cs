@@ -93,12 +93,21 @@ namespace Alpha.UI
 
         public void ShowForCheck(System.Action callback)
         {
+            Debug.Log("[InventoryUI] ShowForCheck called.");
             openedByEscape = false;
             isReadOnly = false;
             onConfirmCallback = callback;
             selectedIndex = -1;
 
-            if (panel != null) panel.SetActive(true);
+            if (panel != null)
+            {
+                panel.SetActive(true);
+                Debug.Log($"[InventoryUI] panel.SetActive(true) executed. Is active in hierarchy? {panel.activeInHierarchy}");
+            }
+            else
+            {
+                Debug.LogError("[InventoryUI] panel is NULL in ShowForCheck!");
+            }
             if (detailPopup != null) detailPopup.gameObject.SetActive(false);
 
             RefreshUI();
@@ -342,9 +351,35 @@ namespace Alpha.UI
                             return item.partType == expectedPart;
                         }
 
-                        if (!CheckEquipRestriction(index, item1) || !CheckEquipRestriction(selectedIndex, item2))
+                        if (!CheckEquipRestriction(index, item1))
                         {
-                            Debug.LogWarning("[InventoryUI] 装備部位が一致しないため、スワップをキャンセルしました。");
+                            Debug.LogWarning("[InventoryUI] 装備先のスロットと部位が一致しないため、移動をキャンセルしました。");
+                        }
+                        else if (!CheckEquipRestriction(selectedIndex, item2))
+                        {
+                            // item2 は item1 の元のスロットには移動できない（AllEquipableなどで部位が違う場合）
+                            // 別の空きスロット(フリー枠)を探して退避させる
+                            int freeSlotIdx = -1;
+                            for (int i = InventoryManager_Alpha.BASIC_SLOT_COUNT; i < list.Count; i++)
+                            {
+                                if (list[i].series == null)
+                                {
+                                    freeSlotIdx = i;
+                                    break;
+                                }
+                            }
+
+                            if (freeSlotIdx != -1)
+                            {
+                                InventoryManager_Alpha.Instance.SetByIndex(freeSlotIdx, item2);
+                                InventoryManager_Alpha.Instance.SetByIndex(index, item1);
+                                InventoryManager_Alpha.Instance.SetByIndex(selectedIndex, new InventoryManager_Alpha.EquipInstance());
+                                Debug.Log($"[InventoryUI] 装備を入れ替え、元の装備は空きスロット({freeSlotIdx})に退避しました。");
+                            }
+                            else
+                            {
+                                Debug.LogWarning("[InventoryUI] 退避用の空きスロットがないため、入れ替えをキャンセルしました。");
+                            }
                         }
                         else
                         {
