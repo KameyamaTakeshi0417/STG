@@ -11,11 +11,14 @@ namespace Alpha.Environment
         private float lifespan;
         private float fps;
 
-        public void Initialize(DynamicFlowerManager_Alpha.FlowerData flowerData, float flowerLifespan)
+        private DynamicFlowerManager_Alpha manager;
+
+        public void Initialize(DynamicFlowerManager_Alpha.FlowerData flowerData, float flowerLifespan, DynamicFlowerManager_Alpha flowerManager)
         {
             sr = GetComponent<SpriteRenderer>();
             data = flowerData;
             lifespan = flowerLifespan;
+            manager = flowerManager;
             fps = data.animationFPS > 0 ? data.animationFPS : 12f;
 
             // 初期スプライトを設定（空の場合はエラー回避）
@@ -55,7 +58,6 @@ namespace Alpha.Environment
             }
 
             // 寿命まで待機
-            // 出現アニメーションにかかった時間を差し引いて待機する
             float timeSpent = (data.spawnSprites != null ? data.spawnSprites.Length : 0) * delay;
             float waitTime = Mathf.Max(0f, lifespan - timeSpent);
             
@@ -71,8 +73,15 @@ namespace Alpha.Environment
                 }
             }
 
-            // アニメーション終了後に破棄
-            Destroy(gameObject);
+            // アニメーション終了後にプールへ返却
+            if (manager != null)
+            {
+                manager.ReturnFlowerToPool(gameObject);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
         }
     }
 }

@@ -48,6 +48,9 @@ namespace Alpha.Environment
         public float clusterSpread = 1.5f;
 
         private float spawnTimer = 0f;
+        
+        // オブジェクトプール
+        private Queue<GameObject> flowerPool = new Queue<GameObject>();
 
         private void Update()
         {
@@ -61,6 +64,24 @@ namespace Alpha.Environment
                 spawnTimer -= spawnInterval;
                 SpawnFlowerCluster();
             }
+        }
+
+        public void ReturnFlowerToPool(GameObject flowerObj)
+        {
+            flowerObj.SetActive(false);
+            flowerPool.Enqueue(flowerObj);
+        }
+
+        private GameObject GetFlowerFromPool(Vector3 spawnPos)
+        {
+            if (flowerPool.Count > 0)
+            {
+                GameObject obj = flowerPool.Dequeue();
+                obj.transform.position = spawnPos;
+                obj.SetActive(true);
+                return obj;
+            }
+            return Instantiate(flowerPrefab, spawnPos, Quaternion.identity);
         }
 
         private void SpawnFlowerCluster()
@@ -82,14 +103,18 @@ namespace Alpha.Environment
                 FlowerData selectedFlower = GetRandomFlower();
                 if (selectedFlower == null) continue;
 
-                // 生成
-                GameObject obj = Instantiate(flowerPrefab, spawnPos, Quaternion.identity, transform);
+                // プールから取得または生成
+                GameObject obj = GetFlowerFromPool(spawnPos);
                 DynamicFlower_Alpha flowerScript = obj.GetComponent<DynamicFlower_Alpha>();
                 
                 if (flowerScript != null)
                 {
                     float lifespan = Random.Range(lifespanRange.x, lifespanRange.y);
-                    flowerScript.Initialize(selectedFlower, lifespan);
+                    flowerScript.Initialize(selectedFlower, lifespan, this);
+                }
+                else
+                {
+                    Debug.LogError("[FlowerManager] 生成したプレハブに 'DynamicFlower_Alpha' スクリプトがアタッチされていません！");
                 }
             }
         }
