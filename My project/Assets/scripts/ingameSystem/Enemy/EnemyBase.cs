@@ -64,4 +64,5 @@ public class EnemyBase : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
     }
+
 }

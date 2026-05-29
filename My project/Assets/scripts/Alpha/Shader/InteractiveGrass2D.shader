@@ -8,6 +8,7 @@ Shader "Alpha/InteractiveGrass2D"
         [Header(Wind Settings)]
         _WindSpeed ("Wind Speed", Float) = 2.0
         _WindStrength ("Wind Strength", Float) = 0.1
+        [Range(0,1)] _UniformSway ("Uniform Sway (0=Rooted, 1=Whole)", Float) = 0.0
         
         [Header(Interaction Settings)]
         _InteractRadius ("Interact Radius", Float) = 1.5
@@ -68,6 +69,7 @@ Shader "Alpha/InteractiveGrass2D"
             fixed4 _Color;
             float _WindSpeed;
             float _WindStrength;
+            float _UniformSway;
             float _InteractRadius;
             float _InteractStrength;
             
@@ -107,9 +109,10 @@ Shader "Alpha/InteractiveGrass2D"
                     interact = (1.0 - (dist / _InteractRadius)) * _InteractStrength * dir;
                 }
 
-                // 3. Apply bending only to the top vertices
-                // Assume the pivot is at the bottom (IN.vertex.y >= 0).
-                float bendFactor = max(0, IN.vertex.y);
+                // 3. Apply bending
+                // 以前は「上に行くほど大きく揺れる(max(0, IN.vertex.y))」固定でしたが、
+                // UniformSwayの割合で全体が均等に揺れるようにブレンドします。
+                float bendFactor = lerp(max(0, IN.vertex.y), 1.0, _UniformSway);
                 
                 // Add the horizontal bend (X axis in object space)
                 IN.vertex.x += (wind + interact) * bendFactor;

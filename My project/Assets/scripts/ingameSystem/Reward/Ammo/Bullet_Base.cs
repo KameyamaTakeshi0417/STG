@@ -217,6 +217,15 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
                 rb.velocity = rotate.normalized * (Speed * 0.02f);
             }
 
+            // 画面外（バウンダリ）チェック
+            if (Alpha.Core.ScreenBoundaryManager_Alpha.Instance != null)
+            {
+                if (Alpha.Core.ScreenBoundaryManager_Alpha.Instance.IsOutOfBounds(transform.position))
+                {
+                    break; // ループを抜けて消滅処理へ
+                }
+            }
+
             // 航行時効果を発動 (ループ自体は0.01秒周期)
             foreach (var effect in activeEffects)
             {

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
 public class CameraControl : MonoBehaviour
@@ -22,8 +22,8 @@ public class CameraControl : MonoBehaviour
     [Tooltip("ホイールの感度")]
     public float zoomSpeed = 2.0f;
 
-    [Tooltip("スクロール奥側（+）でズームアウトにしたい場合ON")]
-    public bool scrollForwardZoomOut = true;
+    [Tooltip("ズームのホイール方向を反転させる場合はON")]
+    public bool invertZoomDirection = false;
 
     private Camera cam;
     private Vector3 velocity = Vector3.zero;
@@ -64,9 +64,9 @@ public class CameraControl : MonoBehaviour
         float scroll = Input.mouseScrollDelta.y;
         if (Mathf.Abs(scroll) < 0.0001f) return;
 
-        // Unityのscrollは一般に「上(奥)が +」になりやすい
-        // 要件：奥側でズームアウト、手前側でズームイン
-        float sign = scrollForwardZoomOut ? -1f : 1f; // 奥(+)=ズームアウトになるように反転
+        // 変数名を変更したことでインスペクタの古い設定がリセットされ、確実に新しい挙動が適用されます。
+        // デフォルト(invertZoomDirection=false)では、奥スクロール(+)でズームイン(sign=1)になります。
+        float sign = invertZoomDirection ? -1f : 1f; 
         float delta = scroll * sign;
 
         // zoomT: 1がズームイン、0がズームアウト
@@ -99,11 +99,47 @@ public class CameraControl : MonoBehaviour
         Vector3 targetPosition = focusPoint + cameraPositionOffset + direction;
         targetPosition.z = -10f;
 
-        transform.position = Vector3.SmoothDamp(
+        // SmoothDampでカメラを滑らかに移動
+        Vector3 newPos = Vector3.SmoothDamp(
             transform.position,
             targetPosition,
             ref velocity,
             followSmoothTime
         );
+
+        // 【追加】カメラが壁の外を絶対に映さないように、現在の位置を厳密にクランプする
+        if (Alpha.Core.ScreenBoundaryManager_Alpha.Instance != null)
+        {
+            var bounds = Alpha.Core.ScreenBoundaryManager_Alpha.Instance;
+            float camHalfHeight = cam.orthographicSize;
+            float camHalfWidth = camHalfHeight * cam.aspect;
+
+            float minX = bounds.MinX + camHalfWidth;
+            float maxX = bounds.MaxX - camHalfWidth;
+            float minY = bounds.MinY + camHalfHeight;
+            float maxY = bounds.MaxY - camHalfHeight;
+
+            // X軸の制限（広すぎる場合は中央に固定）
+            if (minX > maxX)
+            {
+                newPos.x = (bounds.MinX + bounds.MaxX) / 2f;
+            }
+            else
+            {
+                newPos.x = Mathf.Clamp(newPos.x, minX, maxX);
+            }
+
+            // Y軸の制限（広すぎる場合は中央に固定）
+            if (minY > maxY)
+            {
+                newPos.y = (bounds.MinY + bounds.MaxY) / 2f;
+            }
+            else
+            {
+                newPos.y = Mathf.Clamp(newPos.y, minY, maxY);
+            }
+        }
+
+        transform.position = newPos;
     }
 }

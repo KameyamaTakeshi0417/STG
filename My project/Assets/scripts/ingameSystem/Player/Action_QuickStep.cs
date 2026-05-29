@@ -46,6 +46,12 @@ public class Action_QuickStep : MonoBehaviour
         Vector3 startPosition = transform.position;
         Vector3 targetPosition = startPosition + (Vector3)direction * stepLength;
 
+        // 壁を突き抜けないように制限する
+        if (Alpha.Core.ScreenBoundaryManager_Alpha.Instance != null)
+        {
+            targetPosition = Alpha.Core.ScreenBoundaryManager_Alpha.Instance.ClampPositionToScreen(targetPosition);
+        }
+
         // 瞬間移動の処理
         transform.position = targetPosition;
 
