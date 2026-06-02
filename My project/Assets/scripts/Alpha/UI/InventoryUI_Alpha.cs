@@ -369,17 +369,16 @@ namespace Alpha.UI
                                 }
                             }
 
-                            if (freeSlotIdx != -1)
+                            if (freeSlotIdx == -1)
                             {
-                                InventoryManager_Alpha.Instance.SetByIndex(freeSlotIdx, item2);
-                                InventoryManager_Alpha.Instance.SetByIndex(index, item1);
-                                InventoryManager_Alpha.Instance.SetByIndex(selectedIndex, new InventoryManager_Alpha.EquipInstance());
-                                Debug.Log($"[InventoryUI] 装備を入れ替え、元の装備は空きスロット({freeSlotIdx})に退避しました。");
+                                // 空きがない場合、リストの末尾（新しい一時枠）に強制退避させる
+                                freeSlotIdx = list.Count;
                             }
-                            else
-                            {
-                                Debug.LogWarning("[InventoryUI] 退避用の空きスロットがないため、入れ替えをキャンセルしました。");
-                            }
+
+                            InventoryManager_Alpha.Instance.SetByIndex(freeSlotIdx, item2);
+                            InventoryManager_Alpha.Instance.SetByIndex(index, item1);
+                            InventoryManager_Alpha.Instance.SetByIndex(selectedIndex, new InventoryManager_Alpha.EquipInstance());
+                            Debug.Log($"[InventoryUI] 装備を入れ替え、元の装備は一時枠({freeSlotIdx})に退避しました。");
                         }
                         else
                         {

@@ -22,6 +22,7 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
     {
         // 再登場時のリセット処理
         piercingCount = 0; // 継承先（PiercingBulletなど）で必要に応じて override して再設定するベースとして0クリア
+        extraShotCount = 0; // 追加発射数のリセット
         hitCountsPerEnemy.Clear();
         ignoredColliders.Clear();
         reverseTimeRemaining = 0f;
@@ -52,6 +53,7 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
     public string bulletName;
     public float addDmg; //ダメージ倍率のかからない固定ダメージ
     public int piercingCount = 0;
+    public int extraShotCount = 0; // サーキュラー等のサブバレット増加用
 
     // 貫通処理用ステート
     protected float initialDmg; // 減衰計算ベースの初期ダメージ
@@ -66,8 +68,7 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
         return bulletName;
     }
 
-    // Update is called once per frame
-    void Update() 
+    protected virtual void Update() 
     { 
         if (reverseTimeRemaining > 0)
         {

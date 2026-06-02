@@ -3,19 +3,29 @@ using UnityEngine;
 public abstract class Alpha_Effect_Base
 {
     public BASE_WeaponData_Alpha sourceData; // 元の武器・パーツデータ
+    public Alpha.Data.WeaponSeriesData_Alpha sourceSeries; // 新仕様用シリーズデータ
     public int stackCount = 1; // 重複回数
     public int equipPosition; // 装備スロット位置（0:生成, 1:航行, 2:着弾）
     public bool canUseAllEffects = false; // 全効果発動可能フラグ
     public int rarity = 1; // レアリティ
+    public bool isSubBullet = false; // サブバレットとして発射された弾に付与されているかどうかの判定フラグ
     
-    // 航行エフェクトの発動間隔（秒）。0以下なら毎フレーム（OnFlightの従来の挙動）
+    // 航行エフェクトの発動間隔（秒）、0以下なら毎フレーム
     protected float flightEffectInterval = 0f;
     private float flightEffectTimer = 0f;
+    
+    // 高頻度での生成時に位置を補間するための変数。サブクラスで参照する。
+    protected Vector3 flightEffectInterpolatedPos;
 
     public Alpha_Effect_Base(int position, int rarity = 1)
     {
         this.equipPosition = position;
         this.rarity = rarity;
+    }
+
+    public virtual Alpha_Effect_Base Clone()
+    {
+        return (Alpha_Effect_Base)this.MemberwiseClone();
     }
 
     // 弾にアタッチされた直後に初期化用として呼ばれる（ステータス反映などに使用）
@@ -37,8 +47,7 @@ public abstract class Alpha_Effect_Base
     // サブクラスは生成時の効果をこちらに記述する
     protected virtual void DoFireEffect(Bullet_Base bullet) { }
 
-    // 弾が航行中に毎フレーム呼ばれる。
-    // インターバルを独自のタイミングで処理するため、インターバル経過時のみ実際のエフェクト処理 (DoFlightEffect) を呼ぶ
+    // 弾が航行中に毎フレーム呼ばれる
     public virtual void OnFlight(Bullet_Base bullet, float deltaTime)
     {
         // 装備か全効果フラグが許可していなければ実行しない
@@ -51,10 +60,11 @@ public abstract class Alpha_Effect_Base
         }
 
         flightEffectTimer += deltaTime;
+        
+        // 指定された時間（フレーム経過に相当）ごとに1つだけ生成するシンプルなロジック
         if (flightEffectTimer >= flightEffectInterval)
         {
             DoFlightEffect(bullet);
-            // 余剰時間を残すか0にリセットするか（ここでは0リセット）
             flightEffectTimer = 0f; 
         }
     }

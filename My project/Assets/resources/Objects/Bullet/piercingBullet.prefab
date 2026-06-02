@@ -188,16 +188,19 @@ MonoBehaviour:
   sourcePrefab: {fileID: 0}
   isEnemyBullet: 0
   canHitBoth: 0
+  originalAimDirection: {x: 0, y: 0, z: 0}
+  reverseTimeRemaining: 0
   Objname: 
-  dmg: 0
+  dmg: 30
   Speed: 900
-  DestroyTime: 150
+  DestroyTime: 70
   bullettype: 0
   rotate: {x: 0, y: 0, z: 0}
   rarelity: 1
   bulletName: 
   addDmg: 0
   piercingCount: 1
+  preventAutoDestroy: 0
   localPierceDamageReductionRate: -1
   canUseAllEffects: 0
 --- !u!50 &5198347656691870225

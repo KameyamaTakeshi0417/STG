@@ -16,20 +16,20 @@ public class NormalBullet : Bullet_Base
     {
         if (!gameObject.activeInHierarchy) return;
 
-        base.callHitEffect();
-
-        // 弾の追加効果（アクティブエフェクト）の着弾処理を発火させる
-        if (activeEffects != null)
-        {
-            foreach (var effect in activeEffects)
-            {
-                effect.OnHit(this, collision);
-            }
-        }
-
         // 衝突したオブジェクトのタグをチェック
         if (collision.CompareTag("Enemy") || collision.CompareTag("Player"))
         {
+            base.callHitEffect();
+
+            // 弾の追加効果（アクティブエフェクト）の着弾処理を発火させる
+            if (activeEffects != null)
+            {
+                foreach (var effect in activeEffects)
+                {
+                    effect.OnHit(this, collision);
+                }
+            }
+
             // HPを持つコンポーネントを取得
             Health health = collision.GetComponent<Health>();
             if (health != null)
@@ -41,8 +41,17 @@ public class NormalBullet : Bullet_Base
             // 弾を破壊
             DestroyCheck();
         }
-
-        if (collision.CompareTag("wall"))
+        else if (collision.CompareTag("wall"))
+        {
+            base.callHitEffect();
+            if (activeEffects != null)
+            {
+                foreach (var effect in activeEffects)
+                {
+                    effect.OnHit(this, collision);
+                }
+            }
             DestroyCheck();
+        }
     }
 }

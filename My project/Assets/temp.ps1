@@ -1,0 +1,1 @@
+ = Get-ChildItem -Path 'C:\Users\kanin\Documents\STG\My project\Assets\scripts\ingameSystem\Reward\Ammo' -Filter 'VoltBullet.cs' -Recurse | Select-Object -ExpandProperty FullName; Copy-Item -Path  -Destination 'C:\Users\kanin\Documents\STG\My project\Assets\scripts\ingameSystem\Reward\Ammo\VoltBullet_Temp.cs'

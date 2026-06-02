@@ -7,46 +7,86 @@ public class Effect_Volt_Alpha : Alpha_Effect_Base
 
     public Effect_Volt_Alpha(int pos, int rarity = 1) : base(pos, rarity) 
     {
-        // 航行中の展開間隔。例えば0.5秒おきに帯電領域を落としながら進む
-        flightEffectInterval = 0.5f;
+        // 航行中の展開間隔。ユーザーの設定値をそのまま使用する
+        flightEffectInterval = 0.2f; // デフォルト値。必要に応じて変更してください
 
-        // リソース等から帯電領域プレハブをロード（仮のパスや名前。必要に応じて修正してください）
-        voltAreaPrefab = Resources.Load<GameObject>("Objects/Effect_Volt");
+        // リソース等から帯電領域プレハブをロード
+        voltAreaPrefab = Resources.Load<GameObject>("Objects/Effect_VoltArea_Alpha") 
+                      ?? Resources.Load<GameObject>("Objects/Effect_Volt");
     }
 
-    public override void Setup(Bullet_Base bullet, playerStatusManager_Alpha playerStatus)
+    protected virtual float CalculateVoltDamage(Bullet_Base bullet)
     {
-        if (playerStatus != null)
+        float ratio = 0.30f * rarity;
+        
+        // ベスト部位が一致していればさらに+0.03f
+        if (sourceSeries != null)
         {
-            // バフ等で航行中の雷配置間隔を短縮
-            flightEffectInterval = 0.5f * playerStatus.BulletSpanMag;
+            if (equipPosition == 0 && sourceSeries.bestSlot == Alpha.Data.WeaponPartType_Alpha.Primer) ratio += 0.03f;
+            else if (equipPosition == 1 && sourceSeries.bestSlot == Alpha.Data.WeaponPartType_Alpha.Casing) ratio += 0.03f;
+            else if (equipPosition == 2 && sourceSeries.bestSlot == Alpha.Data.WeaponPartType_Alpha.Bullet) ratio += 0.03f;
         }
+        
+        return bullet.dmg * ratio;
     }
 
     protected override void DoFireEffect(Bullet_Base bullet)
     {
-        // 生成時に足元に帯電領域を展開
-        SpawnVoltArea(bullet.transform.position, bullet.dmg, bullet.getRarelity());
+        // 弾頭がサーキュラーであり、自分がサブバレットである場合は雷管エフェクト(生成時)をスキップ
+        // （親であるサーキュラー生成時のみプレイヤー中心に展開する）
+        // ※念のため、確実に親ドローンには発動させるため CircularObject の判定を入れる
+        if (isSubBullet && bullet.GetComponent<CircularObject>() == null) return;
+
+        Debug.Log($"[Effect_Volt_Alpha] DoFireEffect Triggered! equipPosition: {equipPosition}, canUseAllEffects: {canUseAllEffects}, bullet: {bullet.name}");
+        // 雷管装備時(0): 弾を発射した瞬間、プレイヤーの位置に生成
+        Vector3 spawnPos = bullet.transform.position;
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            spawnPos = player.transform.position;
+        }
+        else if (playerStatusManager_Alpha.Instance != null && playerStatusManager_Alpha.Instance.transform.parent != null)
+        {
+            // Playerタグが見つからない場合のフォールバック
+            spawnPos = playerStatusManager_Alpha.Instance.transform.position;
+        }
+        
+        SpawnVoltArea(spawnPos, CalculateVoltDamage(bullet), rarity);
     }
 
     protected override void DoFlightEffect(Bullet_Base bullet)
     {
-        // 航行中にポロポロと帯電領域を展開
-        SpawnVoltArea(bullet.transform.position, bullet.dmg, bullet.getRarelity());
+        // 弾頭がサーキュラーであり、自分がサブバレットである場合は薬莢エフェクト(航行時)をスキップ
+        // （親であるサーキュラー航行中のみ帯電を展開する）
+        // ※確実に親ドローンには発動させるため CircularObject の判定を入れる
+        if (isSubBullet && bullet.GetComponent<CircularObject>() == null) return;
+
+        // 薬莢装備時(1): 航行中にポロポロと弾の位置に帯電領域を展開
+        SpawnVoltArea(bullet.transform.position, CalculateVoltDamage(bullet), rarity);
     }
 
     protected override void DoHitEffect(Bullet_Base bullet, Collider2D target)
     {
-        // 着弾時にも帯電領域を展開
-        SpawnVoltArea(bullet.transform.position, bullet.dmg, bullet.getRarelity());
+        // 弾頭がサーキュラーであり、自分が親（サーキュラー本体）である場合は弾頭エフェクト(着弾時)をスキップ
+        // （サーキュラー本体が敵に当たった時は発動せず、そこから発射されたサブバレット着弾時のみ発動する）
+        if (!isSubBullet && bullet.GetComponent<CircularObject>() != null) return;
+
+        // 弾頭装備時(2): 着弾時に帯電領域を展開
+        Vector3 spawnPos = bullet.transform.position;
+        if (target != null)
+        {
+            // 敵など、衝突対象がある場合はその位置を中心にする
+            spawnPos = target.transform.position;
+        }
+        SpawnVoltArea(spawnPos, CalculateVoltDamage(bullet), rarity);
     }
 
     private void SpawnVoltArea(Vector3 position, float dmg, int rarity)
     {
-        // xは装備のレアリティに等しい
+        // xは弾のレアリティに等しい(chainVolt)
         int voltLevelX = rarity;
         
-        // 最低1はないと全く連鎖・付与されないため、0以下の場合は補正（任意）
+        // 最低は1
         if (voltLevelX <= 0) voltLevelX = 1;
 
         if (voltAreaPrefab != null)

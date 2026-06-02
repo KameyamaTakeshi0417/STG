@@ -28,6 +28,9 @@ namespace Alpha.Data
         SpawnPattern_Barrage,  // 発射挙動：バラージ
         SpawnPattern_Radial,   // 発射挙動：放射
         
+        // --- 特殊効果 ---
+        AddActiveEffect_Volt,  // 雷生成パッシブ効果
+
         // --- 装備制限解除 ---
         AllEquipable           // どこにでも装備可能
     }

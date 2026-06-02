@@ -12,10 +12,22 @@ public class ExplosionBullet : Bullet_Base
 
     protected override void OnTriggerEnter2D(Collider2D collision)
     {
-        base.callHitEffect();
+        if (!gameObject.activeInHierarchy) return;
+
         // 衝突したオブジェクトのタグをチェック
         if (collision.CompareTag("Enemy") || collision.CompareTag("Player"))
         {
+            base.callHitEffect();
+
+            // 弾の追加効果（エフェクト等）の到達処理を呼び出す
+            if (activeEffects != null)
+            {
+                foreach (var effect in activeEffects)
+                {
+                    effect.OnHit(this, collision);
+                }
+            }
+
             // HPを持つコンポーネントを取得
             Health health = collision.GetComponent<Health>();
             if (health != null)
@@ -33,8 +45,17 @@ public class ExplosionBullet : Bullet_Base
             // 弾を破壊
             Destroy(this.gameObject);
         }
-
-        if (collision.CompareTag("wall"))
+        else if (collision.CompareTag("wall"))
+        {
+            base.callHitEffect();
+            if (activeEffects != null)
+            {
+                foreach (var effect in activeEffects)
+                {
+                    effect.OnHit(this, collision);
+                }
+            }
             DestroyCheck();
+        }
     }
 }

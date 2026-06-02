@@ -65,7 +65,10 @@ public class Effect_Homing_Alpha : Alpha_Effect_Base
     // 引数を追加したカスタム用のDoFlightEffect
     private void DoFlightEffect(Bullet_Base bullet, float deltaTime)
     {
-        // 追尾レベルが0の場合は何もしない（通常は最低1はあるはず）
+        // 親であるサーキュラー(ドローン)自体は追尾しない。サブバレットのみ追尾する。
+        if (bullet.GetComponent<CircularObject>() != null) return;
+
+        // 追尾レベルが0以下の場合は何もしない（通常は最低1はあるはず）
         if (homingLevel <= 0) return;
 
         // 最初からロックオンしていなかった場合は真っ直ぐ飛ぶ

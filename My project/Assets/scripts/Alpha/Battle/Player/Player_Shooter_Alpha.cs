@@ -171,18 +171,45 @@ public class Player_Shooter_Alpha : MonoBehaviour
         }
         else
         {
-            // 雷管（インデックス2＝series3）の弾プレハブを優先
-            if (series3 != null && series3.bulletPrefab != null)
+            // --- 案1: サーキュラー弾の優先処理 ---
+            // どの部位に装備されていても、プレハブにCircularObjectがアタッチされていれば最優先とする
+            bool circularFound = false;
+            if (series3 != null && series3.bulletPrefab != null && series3.bulletPrefab.GetComponent<CircularObject>() != null)
             {
                 prefabToInstantiate = series3.bulletPrefab;
+                circularFound = true;
             }
-            else if (series1 != null && series1.bulletPrefab != null) // フォールバック
+            else if (series2 != null && series2.bulletPrefab != null && series2.bulletPrefab.GetComponent<CircularObject>() != null)
+            {
+                prefabToInstantiate = series2.bulletPrefab;
+                circularFound = true;
+            }
+            else if (series1 != null && series1.bulletPrefab != null && series1.bulletPrefab.GetComponent<CircularObject>() != null)
             {
                 prefabToInstantiate = series1.bulletPrefab;
+                circularFound = true;
             }
-            else
+
+            // サーキュラー弾が見つからなかった場合の通常のフォールバック処理
+            if (!circularFound)
             {
-                Debug.LogWarning($"[Player_Shooter] {currentWeaponGroup + 1}段目の武器に弾プレハブが未設定です。デフォルト弾を使用します。");
+                // 弾頭（インデックス2、series3）を最優先
+                if (series3 != null && series3.bulletPrefab != null)
+                {
+                    prefabToInstantiate = series3.bulletPrefab;
+                }
+                else if (series2 != null && series2.bulletPrefab != null) // 薬莢(インデックス1)のフォールバックを追加
+                {
+                    prefabToInstantiate = series2.bulletPrefab;
+                }
+                else if (series1 != null && series1.bulletPrefab != null) // 雷管(インデックス0)のフォールバック
+                {
+                    prefabToInstantiate = series1.bulletPrefab;
+                }
+                else
+                {
+                    Debug.LogWarning($"[Player_Shooter] {currentWeaponGroup + 1}段目の武器に弾プレハブが未設定です。デフォルト弾を使用します。");
+                }
             }
         }
 
@@ -202,6 +229,45 @@ public class Player_Shooter_Alpha : MonoBehaviour
         int totalShotCount = 1 + playerStatusScript.extraShotCount;
         var pattern = playerStatusScript.currentSpawnPattern;
 
+        int localExtraShots = 0;
+        int localExtraPierce = 0;
+
+        if (inventoryManager != null)
+        {
+            int loopCount = isBouquet ? 9 : 3;
+            for (int n = 0; n < loopCount; n++)
+            {
+                int x = isBouquet ? (n % 3) : n;
+                int y = isBouquet ? (n / 3) : currentWeaponGroup;
+                var inst = inventoryManager.Get(x, y);
+                if (inst.series != null && inst.currentEffects != null)
+                {
+                    foreach (var eff in inst.currentEffects)
+                    {
+                        if (eff != null)
+                        {
+                            int rarity = inst.rarity > 0 ? inst.rarity : 1;
+                            if (eff.effectType == Alpha.Data.WeaponEffectType_Alpha.ShotCountPlus)
+                                localExtraShots += (int)eff.GetValue(rarity);
+                            else if (eff.effectType == Alpha.Data.WeaponEffectType_Alpha.PierceCountPlus)
+                                localExtraPierce += (int)eff.GetValue(rarity);
+                        }
+                    }
+                }
+            }
+        }
+
+        int bulletExtraShots = 0;
+        if (prefabToInstantiate != null && prefabToInstantiate.GetComponent<CircularObject>() != null)
+        {
+            bulletExtraShots = localExtraShots + playerStatusScript.extraShotCount;
+            totalShotCount = 1; // サーキュラー自体は1つだけスポーンする
+        }
+        else
+        {
+            totalShotCount += localExtraShots;
+        }
+
         Vector3 aimPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         aimPoint.z = 0;
         bool isTargetLocked = false;
@@ -215,10 +281,10 @@ public class Player_Shooter_Alpha : MonoBehaviour
         Vector3 muzzlePos = playerTransform.position + (watch * moveRadius);
         Vector3 aimDirection = watch; // マウスがプレイヤーに近すぎると (aimPoint - muzzlePos) が逆転するバグを防ぐため、常にwatch方向を使用
 
-        StartCoroutine(SpawnBulletRoutine(prefabToInstantiate, muzzlePos, aimDirection, aimPoint, totalShotCount, pattern, finalDamage, isTargetLocked, isBouquet));
+        StartCoroutine(SpawnBulletRoutine(prefabToInstantiate, muzzlePos, aimDirection, aimPoint, totalShotCount, pattern, finalDamage, isTargetLocked, isBouquet, bulletExtraShots, localExtraPierce));
     }
 
-    private IEnumerator SpawnBulletRoutine(GameObject prefab, Vector3 muzzlePos, Vector3 aimDir, Vector3 aimPoint, int shotCount, playerStatusManager_Alpha.SpawnPattern pattern, float finalDmg, bool isTargetLocked, bool isBouquet)
+    private IEnumerator SpawnBulletRoutine(GameObject prefab, Vector3 muzzlePos, Vector3 aimDir, Vector3 aimPoint, int shotCount, playerStatusManager_Alpha.SpawnPattern pattern, float finalDmg, bool isTargetLocked, bool isBouquet, int extraShotsForBullet = 0, int extraPierceForBullet = 0)
     {
         for (int i = 0; i < shotCount; i++)
         {
@@ -294,10 +360,34 @@ public class Player_Shooter_Alpha : MonoBehaviour
                     for (int n = 0; n < 9; n++)
                     {
                         var inst = inventoryManager.Get(n % 3, n / 3);
-                        if (inst.series != null && !string.IsNullOrEmpty(inst.series.activeEffectClassName))
+                        if (inst.series != null)
                         {
-                            var ef = Alpha.Battle.Bullet.EffectFactory_Alpha.CreateEffect(inst.series.activeEffectClassName, n % 3, inst.rarity > 0 ? inst.rarity : 1);
-                            if (ef != null) effectsToApply.Add(ef);
+                            if (!string.IsNullOrEmpty(inst.series.activeEffectClassName))
+                            {
+                                var ef = Alpha.Battle.Bullet.EffectFactory_Alpha.CreateEffect(inst.series.activeEffectClassName, n % 3, inst.rarity > 0 ? inst.rarity : 1);
+                                if (ef != null) 
+                                {
+                                    ef.sourceSeries = inst.series;
+                                    effectsToApply.Add(ef);
+                                }
+                            }
+                            
+                            // パッシブ効果の判定
+                            if (inst.currentEffects != null)
+                            {
+                                foreach (var effSO in inst.currentEffects)
+                                {
+                                    if (effSO != null && effSO.effectType == Alpha.Data.WeaponEffectType_Alpha.AddActiveEffect_Volt)
+                                    {
+                                        float interval = effSO.GetValue(inst.rarity);
+                                        // 薬莢の部位(1)として扱うか、現在の装備箇所(n % 3)として扱うか
+                                        // 航行中に落としたいので部位に関わらずパッシブとして追加
+                                        var passiveVolt = new Effect_VoltPassive_Alpha(n % 3, inst.rarity > 0 ? inst.rarity : 1, interval);
+                                        passiveVolt.sourceSeries = inst.series;
+                                        effectsToApply.Add(passiveVolt);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -309,16 +399,39 @@ public class Player_Shooter_Alpha : MonoBehaviour
                     for (int n = 0; n < 3; n++)
                     {
                         var inst = inventoryManager.Get(n, currentWeaponGroup);
-                        if (inst.series != null && !string.IsNullOrEmpty(inst.series.activeEffectClassName))
+                        if (inst.series != null)
                         {
-                            var ef = Alpha.Battle.Bullet.EffectFactory_Alpha.CreateEffect(inst.series.activeEffectClassName, n, inst.rarity > 0 ? inst.rarity : 1);
-                            if (ef != null) effectsToApply.Add(ef);
+                            Debug.Log($"[Player_Shooter] Slot {n} has series: {inst.series.name}");
+                            if (!string.IsNullOrEmpty(inst.series.activeEffectClassName))
+                            {
+                                var ef = Alpha.Battle.Bullet.EffectFactory_Alpha.CreateEffect(inst.series.activeEffectClassName, n, inst.rarity > 0 ? inst.rarity : 1);
+                                if (ef != null) 
+                                {
+                                    ef.sourceSeries = inst.series;
+                                    effectsToApply.Add(ef);
+                                }
+                            }
+
+                            // パッシブ効果の判定
+                            if (inst.currentEffects != null)
+                            {
+                                foreach (var effSO in inst.currentEffects)
+                                {
+                                    if (effSO != null && effSO.effectType == Alpha.Data.WeaponEffectType_Alpha.AddActiveEffect_Volt)
+                                    {
+                                        float interval = effSO.GetValue(inst.rarity);
+                                        var passiveVolt = new Effect_VoltPassive_Alpha(n, inst.rarity > 0 ? inst.rarity : 1, interval);
+                                        passiveVolt.sourceSeries = inst.series;
+                                        effectsToApply.Add(passiveVolt);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
 
-            CreateSingleBullet(prefab, spawnPos, spawnDir, aimDir, currentReverseTime, finalDmg, effectsToApply);
+            CreateSingleBullet(prefab, spawnPos, spawnDir, aimDir, currentReverseTime, finalDmg, effectsToApply, extraShotsForBullet, extraPierceForBullet);
 
             // サウンドエフェクトの再生（必要に応じて）
             // if (shootAudioSource != null) shootAudioSource.Play();
@@ -330,7 +443,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
         }
     }
 
-    private void CreateSingleBullet(GameObject prefabToInstantiate, Vector3 spawnPos, Vector3 spawnDir, Vector3 originalAimDir, float reverseTime, float finalDamage, List<Alpha_Effect_Base> effectsToApply)
+    private void CreateSingleBullet(GameObject prefabToInstantiate, Vector3 spawnPos, Vector3 spawnDir, Vector3 originalAimDir, float reverseTime, float finalDamage, List<Alpha_Effect_Base> effectsToApply, int extraShotsForBullet = 0, int extraPierceForBullet = 0)
     {
         GameObject bulletPrefab;
         if (Alpha_ObjectPoolManager.Instance != null)
@@ -374,6 +487,8 @@ public class Player_Shooter_Alpha : MonoBehaviour
             }
 
             bulletScript.piercingCount += playerStatusScript.extraPierceCount;
+            bulletScript.piercingCount += extraPierceForBullet;
+            bulletScript.extraShotCount += extraShotsForBullet;
 
             bulletScript.shoot();
         }

@@ -12,29 +12,42 @@ public class VoltBullet : Bullet_Base
 
     protected override void OnTriggerEnter2D(Collider2D collision)
     {
-        base.callHitEffect();
-        // 衝突したオブジェクトのタグをチェック
+        if (!gameObject.activeInHierarchy) return;
+
         if (collision.CompareTag("Enemy") || collision.CompareTag("Player"))
         {
+            base.callHitEffect();
+
+            if (activeEffects != null)
+            {
+                foreach (var effect in activeEffects)
+                {
+                    effect.OnHit(this, collision);
+                }
+            }
+
             // HPを持つコンポーネントを取得
             Health health = collision.GetComponent<Health>();
             if (health != null)
             {
-                // HPを減らす
+                // 弾自体の基本ダメージを与える
                 health.TakeDamage(dmg);
-                GameObject voltPrefab = Instantiate(
-                    Resources.Load<GameObject>("Objects/Effect_Volt"),
-                    collision.transform.position,
-                    Quaternion.identity
-                );
-                voltPrefab.GetComponent<Effect_Volt>().startVolt(30, 50, 2);
             }
 
-            // 弾を破壊
+            // 弾を破壊（貫通などのチェック）
             DestroyCheck();
         }
-
-        if (collision.CompareTag("wall"))
+        else if (collision.CompareTag("wall"))
+        {
+            base.callHitEffect();
+            if (activeEffects != null)
+            {
+                foreach (var effect in activeEffects)
+                {
+                    effect.OnHit(this, collision);
+                }
+            }
             DestroyCheck();
+        }
     }
 }

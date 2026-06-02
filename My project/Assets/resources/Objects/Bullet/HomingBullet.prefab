@@ -99,6 +99,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69c4f19c8e66ea645a90822c0a037004, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sourcePrefab: {fileID: 0}
+  isEnemyBullet: 0
+  canHitBoth: 0
+  originalAimDirection: {x: 0, y: 0, z: 0}
+  reverseTimeRemaining: 1
   Objname: 
   dmg: 10
   Speed: 200
@@ -109,6 +114,9 @@ MonoBehaviour:
   bulletName: HomingBullet
   addDmg: 5
   piercingCount: 0
+  preventAutoDestroy: 0
+  localPierceDamageReductionRate: -1
+  canUseAllEffects: 0
   pullForce: 10
 --- !u!50 &1892329032998698401
 Rigidbody2D:
