@@ -4,8 +4,14 @@ using UnityEngine;
 public class Alpha_EliteHealth : Health
 {
     [Header("Elite Multi-Phase Settings")]
-    [Tooltip("各フェーズの最大HP。要素数がそのままフェーズ数になります")]
+    [Tooltip("各フェーズの最大HP。要素数がフェーズ数になる")]
     public List<float> phaseHPs = new List<float>() { 1000f, 1500f };
+
+    // ---------- Elite HP Canvas ----------
+    [Header("UI Settings")]
+    [Tooltip("Elite 用円形 HP Canvas（Resources 配下）")]
+    public string eliteCanvasResourcePath = "UI/CircleHPBar/EliteEnemyHPCanvas";
+    private Alpha.UI.Alpha_EliteCircleHPBar eliteHPBar;
 
     public int CurrentPhaseIndex { get; private set; } = 0;
 
@@ -34,8 +40,38 @@ public class Alpha_EliteHealth : Health
         }
         
         m_handler = gameObject.GetComponent<HPBar_Base>();
-        
-        // baseのStartは使用しない（currentHPを再上書きされるのを防ぐため）
+
+        // ----- Elite HP Canvas の生成 -----
+        var canvasPrefab = Resources.Load<GameObject>(eliteCanvasResourcePath);
+        if (canvasPrefab != null)
+        {
+            GameObject canvasObj = Instantiate(canvasPrefab, transform);
+            // Canvas を World Space に設定（Prefab で設定されているはずだが念のため）
+            var canvas = canvasObj.GetComponent<Canvas>();
+            if (canvas != null) canvas.renderMode = RenderMode.WorldSpace;
+
+            // UI 管理コンポーネント取得
+            // 子階層にスクリプトが無い場合は追加
+            eliteHPBar = canvasObj.GetComponentInChildren<Alpha.UI.Alpha_EliteCircleHPBar>(true);
+            if (eliteHPBar == null)
+            {
+                Debug.LogWarning("[Alpha_EliteHealth] Alpha_EliteCircleHPBar not found – adding component dynamically.");
+                eliteHPBar = canvasObj.AddComponent<Alpha.UI.Alpha_EliteCircleHPBar>();
+            }
+            Debug.Log($"[Alpha_EliteHealth] eliteHPBar ready: {eliteHPBar != null}");
+            if (eliteHPBar != null)
+            {
+                eliteHPBar.Initialise(phaseHPs.Count, GetComponent<Alpha_EnemyAI>());
+                Debug.Log("[Alpha_EliteHealth] Called Initialise on eliteHPBar");
+            }
+        }
+        else
+        {
+            Debug.LogError($"[Alpha_EliteHealth] Elite HP Canvas prefab not found at {eliteCanvasResourcePath}");
+        }
+
+        // 頭上のスライダーは使用しないので非表示
+        if (hpSlider != null) hpSlider.gameObject.SetActive(false);
     }
 
     public override void TakeDamage(float damage)
@@ -43,13 +79,18 @@ public class Alpha_EliteHealth : Health
         if (VulnerableFlg) return; // 無敵中などの判定が必要ならここで行う
 
         currentHP -= damage;
-        
-        if (hpSlider != null)
-        {
-            SliderUpdate();
-            ShowDamage(damage);
-        }
 
+        // HPバーは使用しないので SliderUpdate は不要（ただし UI がある場合は呼び出す）
+        if (hpSlider != null) SliderUpdate();
+        ShowDamage(damage);
+
+        // UI に現在フェーズの残HP比率を通知
+        if (eliteHPBar != null)
+        {
+            float ratio = Mathf.Clamp01(currentHP / HP);
+            eliteHPBar.SetRingFill(CurrentPhaseIndex, ratio);
+        }
+        
         // HPが0以下になった際のブレイク（フェーズ移行）判定
         if (currentHP <= 0)
         {
@@ -84,12 +125,6 @@ public class Alpha_EliteHealth : Health
         
         currentHP = HP;
         
-        if (hpSlider != null)
-        {
-            hpSlider.maxValue = HP;
-            SliderUpdate();
-        }
-
         Debug.Log($"<color=orange>[Elite Break]</color> Phase transition to {CurrentPhaseIndex + 1} / {phaseHPs.Count}");
         
         // AI側へ通知

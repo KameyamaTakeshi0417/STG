@@ -182,6 +182,12 @@ MonoBehaviour:
   StunResistance: 0
   BaseStunResistance: 0.5
   isStunned: 0
+  isBarrierActive: 0
+  barrierEndurableDamage: 0
+  barrierBaseRespawnTime: 0
+  currentBarrierRespawnTime: 0
+  barrierRespawnTimer: 0
+  barrierVisualObject: {fileID: 0}
   orbDropChance: 1
   isMidBoss: 1
   isBoss: 0
@@ -191,6 +197,7 @@ MonoBehaviour:
   phaseHPs:
   - 1000
   - 1500
+  eliteCanvasResourcePath: UI/CircleHPBar/EliteEnemyHPCanvas
 --- !u!114 &3508095160209487777
 MonoBehaviour:
   m_ObjectHideFlags: 0

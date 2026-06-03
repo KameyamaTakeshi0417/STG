@@ -12,10 +12,17 @@ namespace Alpha.Flow
         // フィールド上に存在する敵（雑魚）のリスト
         private List<GameObject> activeMobs = new List<GameObject>();
 
+        [Tooltip("敵出現の2秒前に表示する予兆マーカー（未設定時はResourcesからロードします）")]
+        public GameObject spawnIndicatorPrefab;
+
         public void SetupSequence(StageSequenceData_Alpha sequence)
         {
             currentSequence = sequence;
             currentWaveIndex = 0;
+            if (spawnIndicatorPrefab == null)
+            {
+                spawnIndicatorPrefab = Resources.Load<GameObject>("Objects/SpawnSign");
+            }
         }
 
         public void CheckSpawn(float currentTime)
@@ -35,7 +42,35 @@ namespace Alpha.Flow
         private void SpawnWave(WaveData_Alpha wave)
         {
             Debug.Log($"[SpawnManager] Spawning Wave at {wave.time}s");
-            
+            StartCoroutine(SpawnWaveDelayed(wave));
+        }
+
+        private System.Collections.IEnumerator SpawnWaveDelayed(WaveData_Alpha wave)
+        {
+            List<GameObject> indicators = new List<GameObject>();
+
+            // 1. 予兆マーカーの生成
+            foreach (var spawn in wave.spawns)
+            {
+                if (spawn.enemyPrefab != null && spawnIndicatorPrefab != null)
+                {
+                    GameObject indicator = Instantiate(spawnIndicatorPrefab, spawn.spawnPosition, Quaternion.identity);
+                    indicators.Add(indicator);
+                }
+            }
+
+            // 2秒待機
+            yield return new WaitForSeconds(2.0f);
+
+            // 2. マーカーを削除し、実際の敵を生成
+            foreach (var indicator in indicators)
+            {
+                if (indicator != null)
+                {
+                    Destroy(indicator);
+                }
+            }
+
             foreach (var spawn in wave.spawns)
             {
                 if (spawn.enemyPrefab != null)
@@ -45,7 +80,7 @@ namespace Alpha.Flow
                 }
             }
             
-            // 破棄されたオブジェクトのリスト整理は IsMobCleared など適当なタイミングで行う
+            // 破壊されたオブジェクトのリスト整理は IsMobCleared など適当なタイミングで行う
             CleanUpDeadMobs();
         }
 

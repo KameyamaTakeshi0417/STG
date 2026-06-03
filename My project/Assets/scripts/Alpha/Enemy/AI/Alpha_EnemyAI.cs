@@ -245,6 +245,35 @@ public class Alpha_EnemyAI : MonoBehaviour
         }
         PhaseSpawnedObjects.Clear();
     }
+    
+    /// <summary>
+    /// カットイン中に無敵化/復帰させる
+    /// </summary>
+    /// <param name="flag">true = 無敵化, false = 復帰</param>
+    public void SetInvulnerable(bool flag)
+    {
+        // 速度リセット
+        if (Rb != null) Rb.velocity = Vector2.zero;
+
+        // コライダー有効/無効切替
+        var colliders = GetComponentsInChildren<Collider2D>();
+        foreach (var col in colliders)
+        {
+            col.enabled = !flag;
+        }
+
+        // 攻撃ビヘイビア停止/再開
+        if (flag)
+        {
+            // 現在の攻撃コルーチン停止
+            if (attackCoroutine != null)
+            {
+                StopCoroutine(attackCoroutine);
+                attackCoroutine = null;
+                CurrentAttackBehavior = null;
+            }
+        }
+    }
 
     protected virtual void OnDestroy()
     {

@@ -127,7 +127,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &1575179885564896515
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -188,6 +188,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   staminaGauge: {fileID: 8400286780016255442}
+  playerManagerObj: {fileID: 0}
+  playerStatusManager: {fileID: 0}
 --- !u!1 &3625501642947433047
 GameObject:
   m_ObjectHideFlags: 0
