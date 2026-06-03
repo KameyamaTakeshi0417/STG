@@ -25,6 +25,8 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
     public float bulletLifeMag = 1.0f;
     private float baseBulletLifeMag = 1.0f;
     
+    public bool ignorePierceDecay = false;
+    
     public int extraPierceCount = 0;
     private int baseExtraPierceCount = 0;
 
@@ -97,6 +99,9 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         bulletSpeedMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletSpeed, groupToPass);
         bulletSpeedMag -= inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletSpeedDebuff, groupToPass);
         bulletLifeMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletLife, groupToPass);
+        bulletLifeMag -= inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletLifeDebuff, groupToPass);
+        
+        ignorePierceDecay = inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.IgnorePierceDecay, groupToPass) > 0;
 
         // 貫通回数の加算（floatをintにキャストして適用）
         extraPierceCount += (int)inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.PierceCountPlus, groupToPass);

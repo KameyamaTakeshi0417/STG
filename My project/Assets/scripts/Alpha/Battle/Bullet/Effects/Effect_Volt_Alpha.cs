@@ -51,7 +51,7 @@ public class Effect_Volt_Alpha : Alpha_Effect_Base
             spawnPos = playerStatusManager_Alpha.Instance.transform.position;
         }
         
-        SpawnVoltArea(spawnPos, CalculateVoltDamage(bullet), rarity);
+        SpawnVoltArea(spawnPos, CalculateVoltDamage(bullet), rarity, 1.4f);
     }
 
     protected override void DoFlightEffect(Bullet_Base bullet)
@@ -73,15 +73,15 @@ public class Effect_Volt_Alpha : Alpha_Effect_Base
 
         // 弾頭装備時(2): 着弾時に帯電領域を展開
         Vector3 spawnPos = bullet.transform.position;
-        if (target != null)
+        if (target != null && (target.CompareTag("Enemy") || target.CompareTag("Player")))
         {
-            // 敵など、衝突対象がある場合はその位置を中心にする
+            // 敵などの場合はその位置を中心に展開
             spawnPos = target.transform.position;
         }
         SpawnVoltArea(spawnPos, CalculateVoltDamage(bullet), rarity);
     }
 
-    private void SpawnVoltArea(Vector3 position, float dmg, int rarity)
+    private void SpawnVoltArea(Vector3 position, float dmg, int rarity, float scaleMultiplier = 1.0f)
     {
         // xは弾のレアリティに等しい(chainVolt)
         int voltLevelX = rarity;
@@ -101,6 +101,12 @@ public class Effect_Volt_Alpha : Alpha_Effect_Base
                 obj = GameObject.Instantiate(voltAreaPrefab, position, Quaternion.identity);
             }
             
+            // スケールの適用（プールからの再利用時にもリセット・適用されるように必ず設定）
+            if (obj != null)
+            {
+                obj.transform.localScale = voltAreaPrefab.transform.localScale * scaleMultiplier;
+            }
+
             // 帯電領域側にダメージとVoltレベルを渡す
             Alpha_VoltArea areaScript = obj.GetComponent<Alpha_VoltArea>();
             if (areaScript != null)

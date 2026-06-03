@@ -386,6 +386,13 @@ public class Player_Shooter_Alpha : MonoBehaviour
                                         passiveVolt.sourceSeries = inst.series;
                                         effectsToApply.Add(passiveVolt);
                                     }
+                                    if (effSO != null && effSO.effectType == Alpha.Data.WeaponEffectType_Alpha.AddActiveEffect_Explosion)
+                                    {
+                                        float interval = effSO.GetValue(inst.rarity);
+                                        var passiveExplosion = new Effect_ExplosionPassive_Alpha(n % 3, inst.rarity > 0 ? inst.rarity : 1, interval);
+                                        passiveExplosion.sourceSeries = inst.series;
+                                        effectsToApply.Add(passiveExplosion);
+                                    }
                                 }
                             }
                         }
@@ -423,6 +430,13 @@ public class Player_Shooter_Alpha : MonoBehaviour
                                         var passiveVolt = new Effect_VoltPassive_Alpha(n, inst.rarity > 0 ? inst.rarity : 1, interval);
                                         passiveVolt.sourceSeries = inst.series;
                                         effectsToApply.Add(passiveVolt);
+                                    }
+                                    if (effSO != null && effSO.effectType == Alpha.Data.WeaponEffectType_Alpha.AddActiveEffect_Explosion)
+                                    {
+                                        float interval = effSO.GetValue(inst.rarity);
+                                        var passiveExplosion = new Effect_ExplosionPassive_Alpha(n, inst.rarity > 0 ? inst.rarity : 1, interval);
+                                        passiveExplosion.sourceSeries = inst.series;
+                                        effectsToApply.Add(passiveExplosion);
                                     }
                                 }
                             }
@@ -473,6 +487,15 @@ public class Player_Shooter_Alpha : MonoBehaviour
             
             bulletScript.setStatus(spawnDir, baseBulletSpeed, finalDamage);
             bulletScript.DestroyTime = originalDestroyTime * playerStatusScript.bulletLifeMag;
+
+            if (playerStatusScript != null && playerStatusScript.ignorePierceDecay)
+            {
+                bulletScript.localPierceDamageReductionRate = 0f;
+            }
+            else
+            {
+                bulletScript.localPierceDamageReductionRate = -1f;
+            }
 
             bulletScript.SetWeaponEffects(effectsToApply, playerStatusScript.canUseAllEffects);
 

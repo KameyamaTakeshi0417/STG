@@ -17,19 +17,22 @@ namespace Alpha.Data
         AttackDebuff,          // 火力デバフ（固定値）
         AttackMultiplier,      // 火力倍率強化（パーセント）
         BulletLife,            // 弾の生存時間延長
+        BulletLifeDebuff,      // 弾の生存時間短縮
         BulletSpeed,           // 弾速強化
-        BulletSpeedDebuff,         // 弾速減少
+        BulletSpeedDebuff,     // 弾速減衰
         DefenseFlat,           // 防御力上昇（固定値）
-        DefenseMultiplier,      // 防御力倍率上昇（パーセント）
+        DefenseMultiplier,     // 防御力倍率上昇（パーセント）
         PierceCountPlus,       // 貫通数増加
-        ShotCountPlus,         // 発射弾数増加
+        ShotCountPlus,         // 発射数増加
         SpawnPattern_Straight, // 発射挙動：ストレート
         SpawnPattern_Reverse,  // 発射挙動：リバース
         SpawnPattern_Barrage,  // 発射挙動：バラージ
         SpawnPattern_Radial,   // 発射挙動：放射
         
         // --- 特殊効果 ---
-        AddActiveEffect_Volt,  // 雷生成パッシブ効果
+        AddActiveEffect_Volt,      // 雷生成パッシブ効果
+        AddActiveEffect_Explosion, // 爆発生成パッシブ効果
+        IgnorePierceDecay,         // 貫通減衰無効化
 
         // --- 装備制限解除 ---
         AllEquipable           // どこにでも装備可能

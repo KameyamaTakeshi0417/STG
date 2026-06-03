@@ -125,18 +125,41 @@ public class Alpha_EnemyAI : MonoBehaviour
         {
             case BehaviorSlot.Movement:
                 CurrentMovementBehavior = behavior;
-                movementCoroutine = StartCoroutine(behavior.RunBehavior(this));
+                movementCoroutine = StartCoroutine(RunWithStunCheck(behavior.RunBehavior(this)));
                 break;
 
             case BehaviorSlot.Attack:
                 CurrentAttackBehavior = behavior;
-                attackCoroutine = StartCoroutine(behavior.RunBehavior(this));
+                attackCoroutine = StartCoroutine(RunWithStunCheck(behavior.RunBehavior(this)));
                 break;
 
             case BehaviorSlot.Summon:
                 CurrentSummonBehavior = behavior;
-                summonCoroutine = StartCoroutine(behavior.RunBehavior(this));
+                summonCoroutine = StartCoroutine(RunWithStunCheck(behavior.RunBehavior(this)));
                 break;
+        }
+    }
+
+    private System.Collections.IEnumerator RunWithStunCheck(System.Collections.IEnumerator coreRoutine)
+    {
+        var health = GetComponent<_Health_Base>();
+        while (true)
+        {
+            // スタン中は元のコルーチンを進めずに待機
+            if (health != null && health.isStunned)
+            {
+                yield return null;
+                continue;
+            }
+
+            // 次のステップに進めるか確認
+            if (!coreRoutine.MoveNext())
+            {
+                break; // 終了
+            }
+
+            // 元のコルーチンが返したyield instructionをそのまま返す
+            yield return coreRoutine.Current;
         }
     }
 
