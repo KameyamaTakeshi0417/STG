@@ -224,44 +224,48 @@ public class InventoryManager_Alpha : MonoBehaviour
             var item = equipInstance[i];
             if (item.series == null) continue;
 
-            // 基本枠（0〜8）のみを対象にするかどうかの判定用
-            // （現状は全枠合算ですが、もし「装備中のみ」にするならここで if (!isBasicSlot) continue; などを追加します）
-            bool isBasicSlot = (i < BASIC_SLOT_COUNT);
-
-            // この装備枠が属しているグループ(行)を計算 (3枠で1行とする)
             int itemGroup = i / 3;
 
             // 1. 武器のベース(series)に紐づくパッシブ効果を加算
             if (item.series.passiveEffects != null)
             {
-                foreach (var effectSO in item.series.passiveEffects)
-                {
-                    if (effectSO != null && effectSO.effectType == effectType)
-                    {
-                        // 常時発動ではなく、かつ現在構えている武器グループでない場合はスキップ
-                        if (!effectSO.isGlobalEffect && activeGroup != -1 && itemGroup != activeGroup) continue;
-
-                        totalValue += effectSO.GetValue(item.rarity);
-                    }
-                }
+                totalValue += GetTotalEffectValueRecursive(item.series.passiveEffects, effectType, item.rarity, itemGroup, activeGroup);
             }
 
             // 2. プレイヤーが直接付与した固有効果(currentEffects)を加算
             if (item.currentEffects != null)
             {
-                foreach (var effectSO in item.currentEffects)
-                {
-                    if (effectSO != null && effectSO.effectType == effectType)
-                    {
-                        // 常時発動ではなく、かつ現在構えている武器グループでない場合はスキップ
-                        if (!effectSO.isGlobalEffect && activeGroup != -1 && itemGroup != activeGroup) continue;
-
-                        totalValue += effectSO.GetValue(item.rarity);
-                    }
-                }
+                totalValue += GetTotalEffectValueRecursive(item.currentEffects, effectType, item.rarity, itemGroup, activeGroup);
             }
         }
 
         return totalValue;
+    }
+
+    private float GetTotalEffectValueRecursive(List<Alpha.Data.WeaponEffectSO_Alpha> effects, Alpha.Data.WeaponEffectType_Alpha targetType, int rarity, int itemGroup, int activeGroup)
+    {
+        float value = 0f;
+        foreach (var effectSO in effects)
+        {
+            if (effectSO == null) continue;
+
+            // 複合スキルの場合は再帰的に中身を取り出す
+            if (effectSO.effectType == Alpha.Data.WeaponEffectType_Alpha.Composite)
+            {
+                var comp = effectSO as Alpha.Data.CompositeWeaponEffectSO_Alpha;
+                if (comp != null && comp.subEffects != null)
+                {
+                    value += GetTotalEffectValueRecursive(comp.subEffects, targetType, rarity, itemGroup, activeGroup);
+                }
+            }
+            else if (effectSO.effectType == targetType)
+            {
+                // 常時発動ではなく、かつ現在構えている武器グループでない場合はスキップ
+                if (!effectSO.isGlobalEffect && activeGroup != -1 && itemGroup != activeGroup) continue;
+
+                value += effectSO.GetValue(rarity);
+            }
+        }
+        return value;
     }
 }

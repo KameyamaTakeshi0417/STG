@@ -319,7 +319,7 @@ public class petalBullet : MonoBehaviour, IAlphaPoolable
             if (health != null)
             {
                 // HPを減らす
-                health.TakeDamage(damage);
+                health.ApplyDamage(damage);
             }
 
             ReturnToPoolOrDestroy();

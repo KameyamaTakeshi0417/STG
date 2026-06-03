@@ -32,7 +32,7 @@ public class DebugManager_Alpha : MonoBehaviour
             if (enemy != null && enemy.gameObject != null)
             {
                 // 超絶ダメージを与えて死亡処理を呼び出す（これによりDropMidBossRewardなども走る）
-                enemy.TakeDamage(999999f);
+                enemy.ApplyDamage(999999f);
                 killedCount++;
             }
         }

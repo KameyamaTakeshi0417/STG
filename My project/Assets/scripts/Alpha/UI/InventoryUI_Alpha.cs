@@ -336,7 +336,13 @@ namespace Alpha.UI
 
                             // 0-8 are basic slots. column (x) is targetSlotIndex % 3
                             int column = targetSlotIndex % 3;
-                            Alpha.Data.WeaponPartType_Alpha expectedPart = (Alpha.Data.WeaponPartType_Alpha)column;
+                            
+                            // システム上（Player_Shooter_Alpha等）の扱いに合わせて
+                            // 0 = 雷管(Primer)、1 = 薬莢(Casing)、2 = 弾頭(Bullet) にマッピングする
+                            Alpha.Data.WeaponPartType_Alpha expectedPart = Alpha.Data.WeaponPartType_Alpha.Bullet;
+                            if (column == 0) expectedPart = Alpha.Data.WeaponPartType_Alpha.Primer;
+                            else if (column == 1) expectedPart = Alpha.Data.WeaponPartType_Alpha.Casing;
+                            else if (column == 2) expectedPart = Alpha.Data.WeaponPartType_Alpha.Bullet;
 
                             // Check AllEquipable
                             if (item.currentEffects != null)

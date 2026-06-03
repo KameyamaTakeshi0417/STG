@@ -120,7 +120,7 @@ public class ArmorBeetle : EnemyBase
             PlayerHealth health = collision.gameObject.GetComponent<PlayerHealth>();
             if (health != null)
             {
-                health.TakeDamage(pow);
+                health.ApplyDamage(pow);
             }
         }
     }

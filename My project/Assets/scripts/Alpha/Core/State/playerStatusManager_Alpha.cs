@@ -33,6 +33,15 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
     public int extraShotCount = 0;
     private int baseExtraShotCount = 0;
 
+    [Header("Burst Status")]
+    public int burstCount = 1;
+    private int baseBurstCount = 1;
+
+    [Header("Barrier Status")]
+    public bool hasBarrierBuff = false;
+    public float barrierEndurableDamage = 0f;
+    public float barrierRespawnTime = 0f;
+
     public enum SpawnPattern { Straight, Barrage, Radial, Reverse }
     public SpawnPattern currentSpawnPattern = SpawnPattern.Straight;
 
@@ -56,6 +65,38 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         baseBulletLifeMag = bulletLifeMag;
         baseExtraPierceCount = extraPierceCount;
         baseExtraShotCount = extraShotCount;
+    }
+
+    private void Start()
+    {
+        // 起動時に初期装備のバフを適用する
+        UpdateEquipmentBuffs();
+    }
+
+    /// <summary>
+    /// スキル等でプレイヤーにバリアを付与・設定するメソッド
+    /// </summary>
+    public void ApplyBarrierToPlayer(int quality, float respawnTime)
+    {
+        hasBarrierBuff = true;
+        barrierEndurableDamage = Mathf.Max(1, quality) * 7f; // 最低でも品質1相当の耐久値を保証
+        barrierRespawnTime = respawnTime;
+
+        PlayerHealth[] pHealths = Object.FindObjectsByType<PlayerHealth>(FindObjectsSortMode.None);
+        if (pHealths.Length > 0)
+        {
+            foreach(var pHealth in pHealths)
+            {
+                Debug.Log($"[PlayerStatusManager] Applying barrier to PlayerHealth on GameObject: '{pHealth.gameObject.name}'. EndurableDamage: {barrierEndurableDamage}");
+                pHealth.isBarrierActive = true;
+                pHealth.barrierEndurableDamage = barrierEndurableDamage;
+                pHealth.barrierBaseRespawnTime = barrierRespawnTime;
+            }
+        }
+        else
+        {
+            Debug.LogWarning("[PlayerStatusManager] ApplyBarrierToPlayer called but no PlayerHealth was found in scene!");
+        }
     }
 
     [ContextMenu("Recalculate Buffs")]
@@ -83,6 +124,7 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         bulletLifeMag = baseBulletLifeMag;
         extraPierceCount = baseExtraPierceCount;
         extraShotCount = baseExtraShotCount;
+        burstCount = baseBurstCount;
         currentSpawnPattern = SpawnPattern.Straight; // デフォルトはStraight
 
         // --- 2. 各ステータスバフを取得・加算 ---
@@ -100,8 +142,66 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         bulletSpeedMag -= inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletSpeedDebuff, groupToPass);
         bulletLifeMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletLife, groupToPass);
         bulletLifeMag -= inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletLifeDebuff, groupToPass);
-        
+        // バースト回数
+        float burstVal = inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BurstFire, groupToPass);
+        if (burstVal > 0)
+        {
+            burstCount = Mathf.Max(1, Mathf.FloorToInt(burstVal));
+        }
+
+        // 貫通減衰無効化フラグ
         ignorePierceDecay = inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.IgnorePierceDecay, groupToPass) > 0;
+
+        // バリアの判定（品質とリスポーン時間を取得）
+        int maxBarrierQuality = -1; // 0の装備も検知できるように-1からスタート
+        float bestRespawnTime = 9999f;
+        for (int i = 0; i < inv.equipInstance.Count; i++)
+        {
+            var item = inv.equipInstance[i];
+            if (item.series == null) continue;
+            int itemGroup = i / 3;
+
+            System.Action<Alpha.Data.WeaponEffectSO_Alpha> checkBarrier = (effectSO) =>
+            {
+                if (effectSO != null && effectSO.effectType == Alpha.Data.WeaponEffectType_Alpha.MakeBarrier)
+                {
+                    if (!effectSO.isGlobalEffect && groupToPass != -1 && itemGroup != groupToPass) return;
+                    if (item.rarity > maxBarrierQuality) maxBarrierQuality = item.rarity;
+                    float rTime = effectSO.GetValue(item.rarity);
+                    if (rTime < bestRespawnTime) bestRespawnTime = rTime; // 一番短い復活時間を採用
+                }
+            };
+
+            if (item.series.passiveEffects != null)
+            {
+                foreach (var e in item.series.passiveEffects) checkBarrier(e);
+            }
+            if (item.currentEffects != null)
+            {
+                foreach (var e in item.currentEffects) checkBarrier(e);
+            }
+        }
+
+        if (maxBarrierQuality >= 0)
+        {
+            Debug.Log($"[PlayerStatusManager] Barrier Found! Quality: {maxBarrierQuality}, RespawnTime: {bestRespawnTime}");
+            ApplyBarrierToPlayer(maxBarrierQuality, bestRespawnTime);
+        }
+        else
+        {
+            Debug.Log("[PlayerStatusManager] No Barrier Buff Found.");
+            hasBarrierBuff = false;
+            barrierEndurableDamage = 0f;
+            barrierRespawnTime = 0f;
+
+            // バリアがない場合、無効化する
+            PlayerHealth[] pHealths = Object.FindObjectsByType<PlayerHealth>(FindObjectsSortMode.None);
+            foreach(var pHealth in pHealths)
+            {
+                pHealth.isBarrierActive = false;
+                pHealth.barrierEndurableDamage = 0f;
+            }
+        }
 
         // 貫通回数の加算（floatをintにキャストして適用）
         extraPierceCount += (int)inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.PierceCountPlus, groupToPass);

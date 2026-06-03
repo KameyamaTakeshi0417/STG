@@ -106,7 +106,7 @@ public class Lizard : MonoBehaviour
             if (health != null)
             {
                 // HPを減らす
-                health.TakeDamage(pow);
+                health.ApplyDamage(pow);
             }
         }
     }

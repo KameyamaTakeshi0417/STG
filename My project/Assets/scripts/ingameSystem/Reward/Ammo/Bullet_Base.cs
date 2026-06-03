@@ -16,16 +16,18 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
     public bool canHitBoth = false;
  
     public Vector3 originalAimDirection; // Reverseパターンで元の方向に戻るため記憶用
-    public float reverseTimeRemaining = 0f; // Reverseパターンの逆走残り時間
+    public float reverseTimeRemaining = 0f; // Reverseパターンの後退残り時間
+    public Transform lockedTarget; // ロックオン対象を保持
 
     public virtual void OnRentFromPool()
     {
-        // 再登場時のリセット処理
+        // 再登場時にリセット処理
         piercingCount = 0; // 継承先（PiercingBulletなど）で必要に応じて override して再設定するベースとして0クリア
         extraShotCount = 0; // 追加発射数のリセット
         hitCountsPerEnemy.Clear();
         ignoredColliders.Clear();
         reverseTimeRemaining = 0f;
+        lockedTarget = null;
         
         if (bulletCollider != null) bulletCollider.enabled = true;
         if (rb != null)
@@ -144,7 +146,7 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
             
             newEffect.canUseAllEffects = canUseAllEffects; // 全効果発動可能フラグを渡す
 
-            var existingEffect = activeEffects.Find(e => e.GetType() == newEffect.GetType());
+            var existingEffect = activeEffects.Find(e => e.GetType() == newEffect.GetType() && e.equipPosition == newEffect.equipPosition);
             if (existingEffect != null)
             {
                 existingEffect.stackCount++;
@@ -350,11 +352,11 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
                 // actualHitsの回数分ループ
                 for (int i = 0; i < actualHits; i++)
                 {
-                    // HPを減らす（1回目は今のdmg、2回目以降はさっき減衰されたdmgを使う）
-                    health.TakeDamage(dmg);
+                    // HPを減らす。1回目は今のdmg、2回目以降はさっき減衰されたdmgを使う。
+                    health.ApplyDamage(dmg, this);
                     hitCountsPerEnemy[targetObj]++;
 
-                    // 貫通枠を消費する（最後の1ヒット＝もう貫通できない時は消費しない、もしくは0未満になる）
+                    // 貫通枠を消費する。（最後の1ヒット＝もう貫通できない時は消費しない、もしくは0未満になる）
                     piercingCount--;
 
                     // 次のヒット（同じ敵の連続ヒット、もしくは次の敵へのヒット）のために威力を減衰させる

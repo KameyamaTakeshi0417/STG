@@ -59,7 +59,7 @@ public class Alpha_ExplosionArea : MonoBehaviour, IAlphaPoolable
             _Health_Base health = enemyObj.GetComponent<_Health_Base>();
             if (health != null)
             {
-                health.TakeDamage(dmg);
+                health.ApplyDamage(dmg);
             }
         }
     }

@@ -33,7 +33,9 @@ namespace Alpha.Data
         AddActiveEffect_Volt,      // 雷生成パッシブ効果
         AddActiveEffect_Explosion, // 爆発生成パッシブ効果
         IgnorePierceDecay,         // 貫通減衰無効化
-
+        MakeBarrier,               // バリア付与
+        BurstFire,                 // 指定回数のバースト発射化
+        Composite,                 // 複合スキル
         // --- 装備制限解除 ---
         AllEquipable           // どこにでも装備可能
     }

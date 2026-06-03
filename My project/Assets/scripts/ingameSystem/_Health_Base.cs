@@ -32,6 +32,15 @@ public class _Health_Base : MonoBehaviour
     [HideInInspector] public bool isStunned = false;
     protected float currentStunTime = 0f;
 
+    [Header("Barrier Settings")]
+    public bool isBarrierActive = false;
+    public float barrierEndurableDamage = 0f;
+    public float barrierBaseRespawnTime = 0f;
+    [HideInInspector] public float currentBarrierRespawnTime = 0f;
+    [HideInInspector] public float barrierRespawnTimer = 0f;
+    public GameObject barrierVisualObject = null;
+
+
     [Header("Reward Settings")]
     [Tooltip("オーブドロップ確率 (0.0 〜 1.0)")]
     public float orbDropChance = 0.05f;
@@ -41,6 +50,10 @@ public class _Health_Base : MonoBehaviour
     public bool isBoss = false;
     [Tooltip("ボスのID（ボスの場合のみ）")]
     public string bossId = "";
+
+    protected virtual void Awake()
+    {
+    }
 
     // Start is called before the first frame update
     void Start() { }
@@ -63,6 +76,19 @@ public class _Health_Base : MonoBehaviour
             if (currentStunTime <= 0f)
             {
                 isStunned = false;
+            }
+        }
+
+        if (!isBarrierActive && barrierBaseRespawnTime > 0f)
+        {
+            barrierRespawnTimer -= Time.deltaTime;
+            if (barrierRespawnTimer <= 0f)
+            {
+                isBarrierActive = true;
+                if (barrierVisualObject != null)
+                {
+                    barrierVisualObject.SetActive(true);
+                }
             }
         }
     }
@@ -97,6 +123,50 @@ public class _Health_Base : MonoBehaviour
     public void SliderUpdate()
     {
         hpSlider.value = currentHP; //スライダは０〜1.0で表現するため最大HPで割って少数点数字に変換
+    }
+
+    public void ApplyDamage(float damage, Bullet_Base sourceBullet = null)
+    {
+        if (isBarrierActive)
+        {
+            bool hasPierce = sourceBullet != null && sourceBullet.piercingCount > 0;
+            if (hasPierce)
+            {
+                // ピアス攻撃の場合、バリア破壊＆ピアスの残機を0にしてダメージは受けない
+                BreakBarrier();
+                sourceBullet.piercingCount = 0;
+                return;
+            }
+            else
+            {
+                if (damage > barrierEndurableDamage)
+                {
+                    // 耐久値以上のダメージを受けた場合、差分ダメージを受けてバリア破壊
+                    BreakBarrier();
+                    damage -= barrierEndurableDamage;
+                }
+                else
+                {
+                    // 耐久値以下の場合は無効化
+                    return;
+                }
+            }
+        }
+
+        TakeDamage(damage);
+    }
+
+    protected void BreakBarrier()
+    {
+        isBarrierActive = false;
+        if (barrierVisualObject != null)
+        {
+            barrierVisualObject.SetActive(false);
+        }
+
+        // 次回の復活時間を設定し、次回用の復活時間を延長する
+        barrierRespawnTimer = currentBarrierRespawnTime;
+        currentBarrierRespawnTime += barrierBaseRespawnTime;
     }
 
     public virtual void TakeDamage(float damage) { }

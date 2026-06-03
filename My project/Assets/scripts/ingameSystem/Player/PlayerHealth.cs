@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,8 +27,36 @@ public class PlayerHealth : _Health_Base
         // 初期化時にマネージャー側のHPでローカル変数を同期しておく
         if (statusManager != null)
         {
+            // まず最新の装備バフを確実に計算させる（実行順序のズレ防止）
+            statusManager.UpdateEquipmentBuffs();
+
             HP = statusManager.HP;
             currentHP = statusManager.currentHP;
+
+            // 初期化時にマネージャー側でバリアバフが掛かっていれば適用する
+            if (statusManager.hasBarrierBuff)
+            {
+                Debug.Log($"[PlayerHealth] Start: statusManager has barrier buff. Setting isBarrierActive to true.");
+                isBarrierActive = true;
+                barrierEndurableDamage = statusManager.barrierEndurableDamage;
+                barrierBaseRespawnTime = statusManager.barrierRespawnTime;
+                
+                if (barrierVisualObject != null)
+                {
+                    barrierVisualObject.SetActive(true);
+                }
+            }
+            else
+            {
+                Debug.Log($"[PlayerHealth] Start: statusManager DOES NOT have barrier buff. Setting isBarrierActive to false.");
+                isBarrierActive = false;
+                barrierEndurableDamage = 0f;
+                
+                if (barrierVisualObject != null)
+                {
+                    barrierVisualObject.SetActive(false);
+                }
+            }
         }
         circleHPBarManager = gaugeCanvas.GetComponent<CircleHPBarManager>();
         circleHPBarManager.SetCircleBar(statusManager.HPGauge);

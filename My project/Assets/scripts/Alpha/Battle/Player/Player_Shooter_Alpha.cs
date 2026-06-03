@@ -109,17 +109,30 @@ public class Player_Shooter_Alpha : MonoBehaviour
         if (Time.timeScale != 0f && (Input.GetMouseButton(0) && !onCoolTime))
         {
             onCoolTime = true;
-            ShootBullet();
-            StartCoroutine(CoolTime());
+            StartCoroutine(ShootAndCooldownRoutine());
         }
     }
 
-    private IEnumerator CoolTime()
+    private IEnumerator ShootAndCooldownRoutine()
     {
+        int burstCount = playerStatusScript != null ? Mathf.Max(1, playerStatusScript.burstCount) : 1;
+        float burstInterval = 0.05f; // ユーザー要望により0.1秒または2-3フレーム程度の短い間隔
+
+        for (int i = 0; i < burstCount; i++)
+        {
+            ShootBullet(); // 単発発射（SpawnBulletRoutineを呼び出す）
+            
+            if (i < burstCount - 1)
+            {
+                yield return new WaitForSeconds(burstInterval);
+            }
+        }
+
+        // バースト発射終了後にクールタイム（リロード）を開始する
         // 基準の発射間隔を0.8秒に設定
         float baseInterval = 0.8f;
         // 関数の倍率を適用 (例: BulletSpanMagが100の場合は1倍、50の場合は0.5倍)
-        float targetInterval = baseInterval * (playerStatusScript.BulletSpanMag * 0.01f);
+        float targetInterval = baseInterval * (playerStatusScript != null ? playerStatusScript.BulletSpanMag * 0.01f : 1f);
         
         yield return new WaitForSecondsRealtime(targetInterval);
         onCoolTime = false;
@@ -271,20 +284,22 @@ public class Player_Shooter_Alpha : MonoBehaviour
         Vector3 aimPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         aimPoint.z = 0;
         bool isTargetLocked = false;
+        Transform lockedTarget = null;
         if (pointerSystem != null && pointerSystem.CurrentTarget != null)
         {
             aimPoint = pointerSystem.CurrentTarget.position;
             aimPoint.z = 0;
             isTargetLocked = true;
+            lockedTarget = pointerSystem.CurrentTarget;
         }
 
         Vector3 muzzlePos = playerTransform.position + (watch * moveRadius);
         Vector3 aimDirection = watch; // マウスがプレイヤーに近すぎると (aimPoint - muzzlePos) が逆転するバグを防ぐため、常にwatch方向を使用
 
-        StartCoroutine(SpawnBulletRoutine(prefabToInstantiate, muzzlePos, aimDirection, aimPoint, totalShotCount, pattern, finalDamage, isTargetLocked, isBouquet, bulletExtraShots, localExtraPierce));
+        StartCoroutine(SpawnBulletRoutine(prefabToInstantiate, muzzlePos, aimDirection, aimPoint, totalShotCount, pattern, finalDamage, isTargetLocked, lockedTarget, isBouquet, bulletExtraShots, localExtraPierce));
     }
 
-    private IEnumerator SpawnBulletRoutine(GameObject prefab, Vector3 muzzlePos, Vector3 aimDir, Vector3 aimPoint, int shotCount, playerStatusManager_Alpha.SpawnPattern pattern, float finalDmg, bool isTargetLocked, bool isBouquet, int extraShotsForBullet = 0, int extraPierceForBullet = 0)
+    private IEnumerator SpawnBulletRoutine(GameObject prefab, Vector3 muzzlePos, Vector3 aimDir, Vector3 aimPoint, int shotCount, playerStatusManager_Alpha.SpawnPattern pattern, float finalDmg, bool isTargetLocked, Transform lockedTarget, bool isBouquet, int extraShotsForBullet = 0, int extraPierceForBullet = 0)
     {
         for (int i = 0; i < shotCount; i++)
         {
@@ -445,7 +460,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
                 }
             }
 
-            CreateSingleBullet(prefab, spawnPos, spawnDir, aimDir, currentReverseTime, finalDmg, effectsToApply, extraShotsForBullet, extraPierceForBullet);
+            CreateSingleBullet(prefab, spawnPos, spawnDir, aimDir, currentReverseTime, finalDmg, effectsToApply, lockedTarget, extraShotsForBullet, extraPierceForBullet);
 
             // サウンドエフェクトの再生（必要に応じて）
             // if (shootAudioSource != null) shootAudioSource.Play();
@@ -457,7 +472,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
         }
     }
 
-    private void CreateSingleBullet(GameObject prefabToInstantiate, Vector3 spawnPos, Vector3 spawnDir, Vector3 originalAimDir, float reverseTime, float finalDamage, List<Alpha_Effect_Base> effectsToApply, int extraShotsForBullet = 0, int extraPierceForBullet = 0)
+    private void CreateSingleBullet(GameObject prefabToInstantiate, Vector3 spawnPos, Vector3 spawnDir, Vector3 originalAimDir, float reverseTime, float finalDamage, List<Alpha_Effect_Base> effectsToApply, Transform lockedTarget, int extraShotsForBullet = 0, int extraPierceForBullet = 0)
     {
         GameObject bulletPrefab;
         if (Alpha_ObjectPoolManager.Instance != null)
@@ -478,6 +493,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
             bulletScript.sourcePrefab = prefabToInstantiate;
             bulletScript.originalAimDirection = originalAimDir;
             bulletScript.reverseTimeRemaining = reverseTime;
+            bulletScript.lockedTarget = lockedTarget;
 
             Bullet_Base prefabScript = prefabToInstantiate.GetComponent<Bullet_Base>();
             float originalSpeed = prefabScript != null ? prefabScript.Speed : bulletScript.Speed;

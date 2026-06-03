@@ -55,6 +55,18 @@ MonoBehaviour:
   VulnerableFlg: 0
   PierceVolume: 2
   VoltCount: 0
+  StunResistance: 0
+  BaseStunResistance: 0.5
+  isStunned: 0
+  isBarrierActive: 0
+  barrierEndurableDamage: 10
+  barrierBaseRespawnTime: 15
+  currentBarrierRespawnTime: 0
+  barrierRespawnTimer: 0
+  orbDropChance: 0.05
+  isMidBoss: 0
+  isBoss: 0
+  bossId: 
   damageTextPrefab: {fileID: 3988437868621658341, guid: 5ccc0cd62017e7542bc9974c88b5c92d, type: 3}
   DamageUIMagnitude: 0.1
 --- !u!114 &913196973694937862

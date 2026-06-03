@@ -165,8 +165,11 @@ MonoBehaviour:
   sourcePrefab: {fileID: 0}
   isEnemyBullet: 1
   canHitBoth: 0
+  originalAimDirection: {x: 0, y: 0, z: 0}
+  reverseTimeRemaining: 0
+  lockedTarget: {fileID: 0}
   Objname: RICH_testEnemyBullet_Huge
-  dmg: 10
+  dmg: 17
   Speed: 10
   DestroyTime: 100
   bullettype: 0
@@ -175,6 +178,8 @@ MonoBehaviour:
   bulletName: RICH_testEnemyBullet_Huge
   addDmg: 0
   piercingCount: 1
+  extraShotCount: 0
+  preventAutoDestroy: 0
   localPierceDamageReductionRate: -1
   canUseAllEffects: 0
   CreateBulletInfo:

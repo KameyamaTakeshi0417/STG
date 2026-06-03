@@ -52,7 +52,7 @@ namespace Alpha.Enemy
             if (targetHealth != null)
             {
                 // ダメージを与える
-                targetHealth.TakeDamage(damageAmount);
+                targetHealth.ApplyDamage(damageAmount);
 
                 // スタンを付与する
                 if (stunDuration > 0f)

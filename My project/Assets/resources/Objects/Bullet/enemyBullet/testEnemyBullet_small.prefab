@@ -164,8 +164,11 @@ MonoBehaviour:
   sourcePrefab: {fileID: 0}
   isEnemyBullet: 1
   canHitBoth: 0
+  originalAimDirection: {x: 0, y: 0, z: 0}
+  reverseTimeRemaining: 0
+  lockedTarget: {fileID: 0}
   Objname: 
-  dmg: 5
+  dmg: 9
   Speed: 10
   DestroyTime: 15
   bullettype: 0
@@ -174,5 +177,7 @@ MonoBehaviour:
   bulletName: enemyBulletsmall
   addDmg: 0
   piercingCount: 0
+  extraShotCount: 0
+  preventAutoDestroy: 0
   localPierceDamageReductionRate: -1
   canUseAllEffects: 0

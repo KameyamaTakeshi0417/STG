@@ -26,15 +26,15 @@ public class VoltBullet : Bullet_Base
                 }
             }
 
-            // HPを持つコンポーネントを取得
+            // HPを持つコンポ�Eネントを取征E
             Health health = collision.GetComponent<Health>();
             if (health != null)
             {
-                // 弾自体の基本ダメージを与える
-                health.TakeDamage(dmg);
+                // 弾自体�E基本ダメージを与えめE
+                health.ApplyDamage(dmg);
             }
 
-            // 弾を破壊（貫通などのチェック）
+            // 弾を破壊（貫通などのチェチE���E�E
             DestroyCheck();
         }
         else if (collision.CompareTag("wall"))
@@ -51,3 +51,4 @@ public class VoltBullet : Bullet_Base
         }
     }
 }
+

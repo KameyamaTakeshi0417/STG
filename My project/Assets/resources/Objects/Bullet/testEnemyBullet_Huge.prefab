@@ -165,12 +165,11 @@ MonoBehaviour:
   sourcePrefab: {fileID: 0}
   isEnemyBullet: 1
   canHitBoth: 0
-  CreateBulletInfo:
-  - prefab: {fileID: 3312735464239202653, guid: 81f4479554461d140b5a13037f9c5553, type: 3}
-    offset: {x: 0, y: 0, z: 0}
-    rotate: {x: 0, y: 0, z: 0}
+  originalAimDirection: {x: 0, y: 0, z: 0}
+  reverseTimeRemaining: 0
+  lockedTarget: {fileID: 0}
   Objname: 
-  dmg: 10
+  dmg: 25
   Speed: 10
   DestroyTime: 15
   bullettype: 0
@@ -179,6 +178,8 @@ MonoBehaviour:
   bulletName: testEnemyBullet_Huge
   addDmg: 0
   piercingCount: 0
+  extraShotCount: 0
+  preventAutoDestroy: 0
   localPierceDamageReductionRate: -1
   canUseAllEffects: 0
 --- !u!1 &7792122813783585514

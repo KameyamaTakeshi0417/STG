@@ -15,12 +15,12 @@ public class StrawBerry : _Relic_Base
         base.GetEffect();
         m_Playerhealth.addHP(10);
         m_Playerhealth.AddCurrentHP(10);
-    } //取得時のみ呼び出す
+    } //取得時のみ呼び出ぁE
 
     public override void EquipEffect()
     {
         base.EquipEffect();
-        m_Playerhealth.TakeDamage(30);
+        m_Playerhealth.ApplyDamage(30);
         if (m_Player.GetComponent<DrainHandler>() == null)
         {
             m_Player.AddComponent<DrainHandler>();
@@ -42,5 +42,5 @@ public class StrawBerry : _Relic_Base
                 Destroy(m_Player.GetComponent<DrainHandler>());
             }
         }
-    } //装備解除時に呼び出す。バフを打ち消したりするためのもの
+    } //裁E��解除時に呼び出す。バフを打ち消したりするためのも�E
 }

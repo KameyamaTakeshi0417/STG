@@ -25,17 +25,7 @@ namespace Alpha.UI
 
             if (effects != null)
             {
-                foreach (var eff in effects)
-                {
-                    if (eff != null)
-                    {
-                        effectStr += $"\n- {eff.effectName}";
-                        if (eff.effectType == WeaponEffectType_Alpha.AllEquipable)
-                        {
-                            isAllEquipable = true;
-                        }
-                    }
-                }
+                effectStr = BuildEffectString(effects, ref isAllEquipable, "");
             }
 
             string partStr = "";
@@ -127,6 +117,44 @@ namespace Alpha.UI
             {
                 gameObject.SetActive(false);
             }
+        }
+
+        private string BuildEffectString(List<WeaponEffectSO_Alpha> effects, ref bool isAllEquipable, string indent)
+        {
+            string result = "";
+            foreach (var eff in effects)
+            {
+                if (eff == null) continue;
+
+                if (eff.effectType == WeaponEffectType_Alpha.Composite)
+                {
+                    var comp = eff as CompositeWeaponEffectSO_Alpha;
+                    if (comp != null)
+                    {
+                        // 複合スキル自体の名前を表示（トップレベルなら-、ネストされていれば└）
+                        string prefix = string.IsNullOrEmpty(indent) ? "-" : "└";
+                        result += $"\n{indent}{prefix} {eff.effectName}";
+                        
+                        // 中身を再帰的に展開し、インデントを1段下げる
+                        if (comp.subEffects != null && comp.subEffects.Count > 0)
+                        {
+                            string newIndent = string.IsNullOrEmpty(indent) ? "  " : indent + "  ";
+                            result += BuildEffectString(comp.subEffects, ref isAllEquipable, newIndent);
+                        }
+                    }
+                }
+                else
+                {
+                    string prefix = string.IsNullOrEmpty(indent) ? "-" : "└";
+                    result += $"\n{indent}{prefix} {eff.effectName}";
+
+                    if (eff.effectType == WeaponEffectType_Alpha.AllEquipable)
+                    {
+                        isAllEquipable = true;
+                    }
+                }
+            }
+            return result;
         }
     }
 }

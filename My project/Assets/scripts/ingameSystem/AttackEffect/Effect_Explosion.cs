@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -59,7 +59,7 @@ public class Effect_Explosion : MonoBehaviour, IAlphaPoolable
             if (damagedCount > 0)
             {
                 _Health_Base health = collision.gameObject.GetComponent<_Health_Base>();
-                if (health != null) health.TakeDamage(dmg);
+                if (health != null) health.ApplyDamage(dmg);
                 damagedCount -= 1;
             }
         }

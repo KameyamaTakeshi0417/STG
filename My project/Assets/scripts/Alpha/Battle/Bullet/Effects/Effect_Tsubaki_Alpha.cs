@@ -37,21 +37,24 @@ public class Effect_Tsubaki_Alpha : Alpha_Effect_Base
             {
                 var primerCtrl = bullet.GetComponent<TsubakiPrimerController>();
                 // ターゲットが存在し、ヒットした敵がターゲットそのものである場合
-                if (primerCtrl != null && primerCtrl.currentTarget != null && primerCtrl.currentTarget.gameObject == target.gameObject)
+                // ※ Colliderが子オブジェクトにある可能性があるため、_Health_Base同士で比較する
+                if (primerCtrl != null && primerCtrl.currentTarget != null)
                 {
-                    _Health_Base health = target.GetComponentInParent<_Health_Base>();
-                    if (health != null)
+                    _Health_Base targetHealth = primerCtrl.currentTarget.GetComponentInParent<_Health_Base>();
+                    _Health_Base hitHealth = target.GetComponentInParent<_Health_Base>();
+
+                    if (targetHealth != null && hitHealth != null && targetHealth == hitHealth)
                     {
                         // (0.5 * 品質)秒のスタン
-                        health.ApplyStun(0.5f * rarity);
+                        hitHealth.ApplyStun(0.5f * rarity);
 
-                        // 相手の貫通最大分ダメージを与える（残りの貫通回数分）
+                        // 相手に貫通最大分ダメージを与える（残りの貫通回数分）
                         // ※貫通減衰は無効化されている前提なので純粋に威力を掛け算
                         int remainingPierce = bullet.piercingCount;
                         if (remainingPierce > 0)
                         {
                             float totalDamage = bullet.dmg * remainingPierce;
-                            health.TakeDamage(totalDamage);
+                            hitHealth.ApplyDamage(totalDamage);
                             
                             // 貫通を使い切って消滅
                             bullet.piercingCount = 0;
@@ -162,6 +165,17 @@ public class TsubakiPrimerController : MonoBehaviour
         {
             _Health_Base h = currentTarget.GetComponent<_Health_Base>();
             if (h != null && h.getCurrentHP() > 0) return;
+        }
+
+        // ロックオン対象が存在し有効ならそれを優先する
+        if (bullet != null && bullet.lockedTarget != null && bullet.lockedTarget.gameObject.activeInHierarchy)
+        {
+            _Health_Base lockedH = bullet.lockedTarget.GetComponent<_Health_Base>();
+            if (lockedH != null && lockedH.getCurrentHP() > 0)
+            {
+                currentTarget = bullet.lockedTarget;
+                return;
+            }
         }
 
         // 新しいターゲットを検索（一番近い敵）

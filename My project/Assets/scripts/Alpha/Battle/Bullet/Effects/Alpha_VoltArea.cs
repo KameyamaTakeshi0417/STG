@@ -141,7 +141,7 @@ public class Alpha_VoltArea : MonoBehaviour, IAlphaPoolable
         if (health != null && health.getCurrentHP() > 0)
         {
             // ① ダメージを与える
-            health.TakeDamage(dmg);
+            health.ApplyDamage(dmg);
 
             // ② 帯電x を付与する
             health.VoltCount += voltLevel;
