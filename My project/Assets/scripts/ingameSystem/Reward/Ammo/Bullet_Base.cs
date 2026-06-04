@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class Bullet_Base : MonoBehaviour, IAlphaPoolable
+using Alpha.Core.Utils;
+
+public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
 {
     // 追加: 自分が生まれた元のプレハブの参照を保持する
     public GameObject sourcePrefab;
@@ -61,6 +63,9 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
     protected float initialDmg; // 減衰計算ベースの初期ダメージ
     protected Dictionary<GameObject, int> hitCountsPerEnemy = new Dictionary<GameObject, int>(); // 敵ごとのヒット回数
     protected Collider2D bulletCollider; // 再判定用にコライダーを一時的に制御
+
+    // Bomb destruction flag
+    public bool canDestructByBomb { get; set; } = true;
 
     // Start is called before the first frame update
     void Start() { }
@@ -457,4 +462,24 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable
         Destroy(this.gameObject);
     }
     public void GenerateAnotherChildBullet() { }
+
+    public void OnBombDestruct()
+    {
+        if (canDestructByBomb)
+        {
+            if (isEnemyBullet)
+            {
+                int currentMNE = PlayerPrefs.GetInt("MoneyAndExp", 0);
+                PlayerPrefs.SetInt("MoneyAndExp", currentMNE + 1);
+            }
+            if (Alpha_ObjectPoolManager.Instance != null && sourcePrefab != null)
+            {
+                Alpha_ObjectPoolManager.Instance.Return(this.gameObject, sourcePrefab);
+            }
+            else
+            {
+                DestroyAction();
+            }
+        }
+    }
 }

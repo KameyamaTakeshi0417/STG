@@ -1,7 +1,8 @@
 using System.Collections;
 using UnityEngine;
+using Alpha.Core.Utils;
 
-public class petalBullet : MonoBehaviour, IAlphaPoolable
+public class petalBullet : MonoBehaviour, IAlphaPoolable, IBombDestructible
 {
     public int cycleCount;
     public int cycleCountMax;
@@ -9,6 +10,8 @@ public class petalBullet : MonoBehaviour, IAlphaPoolable
     public int involuteTimeMax = 1000;
     public float involuteRadius = 1.0f;
     public float damage;
+
+    public bool canDestructByBomb { get; set; } = true;
 
     public GameObject sourcePrefab;
     private float defaultBulletSpeedMag;
@@ -321,6 +324,17 @@ public class petalBullet : MonoBehaviour, IAlphaPoolable
                 // HPを減らす
                 health.ApplyDamage(damage);
             }
+
+            ReturnToPoolOrDestroy();
+        }
+    }
+
+    public void OnBombDestruct()
+    {
+        if (canDestructByBomb)
+        {
+            int currentMNE = PlayerPrefs.GetInt("MoneyAndExp", 0);
+            PlayerPrefs.SetInt("MoneyAndExp", currentMNE + 1);
 
             ReturnToPoolOrDestroy();
         }

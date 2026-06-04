@@ -3,6 +3,15 @@ using System.Collections.Generic;
 
 namespace Alpha.Data
 {
+    [System.Serializable]
+    public class TutorialEventData_Alpha
+    {
+        [Tooltip("チュートリアルを起動するタイミング（秒）")]
+        public float time;
+        [Tooltip("チュートリアルのID（Canvas内の対応するオブジェクト名）")]
+        public string tutorialId;
+    }
+
     [CreateAssetMenu(fileName = "NewStageSequence", menuName = "Alpha/Stage Sequence Data")]
     public class StageSequenceData_Alpha : ScriptableObject
     {
@@ -14,6 +23,9 @@ namespace Alpha.Data
         
         [Tooltip("シークエンスバーに表示するマーカーのリスト")]
         public List<MarkerData_Alpha> markers = new List<MarkerData_Alpha>();
+
+        [Tooltip("チュートリアルイベントのリスト")]
+        public List<TutorialEventData_Alpha> tutorialEvents = new List<TutorialEventData_Alpha>();
         
         [Tooltip("フェーズの最後に出現するボス/中ボスのプレハブ")]
         public GameObject bossPrefab;

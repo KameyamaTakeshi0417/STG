@@ -46,6 +46,12 @@ public class Alpha_EliteEnemyAI : Alpha_EnemyAI
         // 親クラス(Alpha_EnemyAI)のStartを呼ばないことで、
         // 誤ってInitialBehaviorが裏で無限に動き続けるのを完全に防ぎます。
         InitialPosition = transform.position;
+
+        // エリート初遭遇時のチュートリアル表示
+        if (Alpha.UI.TutorialManager_Alpha.Instance != null)
+        {
+            Alpha.UI.TutorialManager_Alpha.Instance.ShowTutorial("Tutorial_Elite");
+        }
         
         GameObject playerObj = GameObject.FindWithTag("Player");
         if (playerObj != null) TargetTransform = playerObj.transform;

@@ -33,6 +33,12 @@ public class treasureManager_Alpha : MonoBehaviour
         SyncToDisplay();
 
         Debug.Log($"[TreasureManager] Queued Orb. Total in queue: {orbQueue.Count}");
+
+        // 初めてオーブを拾った時のチュートリアル表示
+        if (Alpha.UI.TutorialManager_Alpha.Instance != null)
+        {
+            Alpha.UI.TutorialManager_Alpha.Instance.ShowTutorial("Tutorial_Orb");
+        }
     }
 
     /// <summary>

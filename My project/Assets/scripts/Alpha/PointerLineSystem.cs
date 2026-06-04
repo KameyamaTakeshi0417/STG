@@ -54,6 +54,14 @@ namespace Alpha
         {
             if (playerTransform == null || mainCamera == null) return;
 
+            // ポーズ時やチュートリアル表示時（TimeScale == 0）はラインを非表示にする
+            if (Time.timeScale == 0f)
+            {
+                if (lineRenderer.enabled) lineRenderer.enabled = false;
+                return;
+            }
+
+            if (!lineRenderer.enabled) lineRenderer.enabled = true;
             DrawLine();
         }
 

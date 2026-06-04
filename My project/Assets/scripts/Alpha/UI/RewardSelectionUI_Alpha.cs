@@ -16,6 +16,9 @@ namespace Alpha.UI
         public Button checkEquipButton;
         public InventoryUI_Alpha inventoryUI;
         
+        [Header("Skip Reward")]
+        public Button skipButton;
+        
         [Header("Detail Popup")]
         public EquipDetailPopupUI_Alpha detailPopup;
         
@@ -48,6 +51,17 @@ namespace Alpha.UI
             {
                 checkEquipButton.onClick.AddListener(OnCheckEquipClicked);
             }
+
+            if (skipButton != null)
+            {
+                skipButton.onClick.AddListener(OnSkipClicked);
+            }
+        }
+
+        private void OnSkipClicked()
+        {
+            if (detailPopup != null) detailPopup.gameObject.SetActive(false);
+            onChoiceSelected?.Invoke(null);
         }
 
         public void ShowChoices(OrbData_Alpha orb, System.Action<WeaponPartInstance_Alpha> callback)
@@ -153,14 +167,18 @@ namespace Alpha.UI
                     {
                         if (choice.series != null)
                         {
-                            Sprite targetSprite = choice.series.icon; // 互換性フォールバック
-                            if (isAllEquipable && choice.series.iconAllEquipable != null)
-                            {
-                                targetSprite = choice.series.iconAllEquipable;
-                            }
+                            Sprite targetSprite = null;
+                            if (isAllEquipable && choice.series.iconAllEquipable != null) targetSprite = choice.series.iconAllEquipable;
                             else if (choice.partType == Alpha.Data.WeaponPartType_Alpha.Bullet && choice.series.iconBullet != null) targetSprite = choice.series.iconBullet;
                             else if (choice.partType == Alpha.Data.WeaponPartType_Alpha.Casing && choice.series.iconCasing != null) targetSprite = choice.series.iconCasing;
                             else if (choice.partType == Alpha.Data.WeaponPartType_Alpha.Primer && choice.series.iconPrimer != null) targetSprite = choice.series.iconPrimer;
+
+                            // 堅牢なフォールバック
+                            if (targetSprite == null) targetSprite = choice.series.icon;
+                            if (targetSprite == null) targetSprite = choice.series.iconBullet;
+                            if (targetSprite == null) targetSprite = choice.series.iconCasing;
+                            if (targetSprite == null) targetSprite = choice.series.iconPrimer;
+                            if (targetSprite == null) targetSprite = choice.series.iconAllEquipable;
 
                             if (targetSprite != null)
                             {

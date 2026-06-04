@@ -9,6 +9,7 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
     // HPBar更新用などのイベント（引数で現在HPと最大HPを渡す）
     public delegate void PlayerHPChangedHandler(float current, float max);
     public static event PlayerHPChangedHandler OnPlayerHPChanged;
+    public static event System.Action OnGaugeLost;
 
     public static playerStatusManager_Alpha Instance { get; private set; }
 
@@ -140,8 +141,12 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         BlockMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.DefenseMultiplier, groupToPass);
         bulletSpeedMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletSpeed, groupToPass);
         bulletSpeedMag -= inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletSpeedDebuff, groupToPass);
+        bulletSpeedMag = Mathf.Max(bulletSpeedMag, 0.2f); // 下限20%
+
         bulletLifeMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletLife, groupToPass);
         bulletLifeMag -= inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletLifeDebuff, groupToPass);
+        bulletLifeMag = Mathf.Max(bulletLifeMag, 0.5f); // 下限50%
+
         // バースト回数
         float burstVal = inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BurstFire, groupToPass);
         if (burstVal > 0)
@@ -256,7 +261,9 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
     public float GetFinalDamage(float baseWeaponDamage = 0f)
     {
         // 最終火力 = (基礎火力(pow) + 武器の基本ダメージ + 火力上昇(DamageAdd)) * 火力倍率(DamageMag / 100)
-        return (pow + baseWeaponDamage + DamageAdd) * (DamageMag / 100f);
+        float baseDmg = pow + baseWeaponDamage + DamageAdd;
+        baseDmg = Mathf.Max(baseDmg, 10f); // AttackDebuffによるステータスの下限は10
+        return baseDmg * (DamageMag / 100f);
     }
 
     public float GetTakenDamage(float enemyDamage)
@@ -337,8 +344,11 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         if (currentHP <= 0)
         {
             nowHPGauge--;
+            
             if (nowHPGauge < 1) {
                 Die();
+            } else {
+                OnGaugeLost?.Invoke();
             }           
             
             currentHP = HP;

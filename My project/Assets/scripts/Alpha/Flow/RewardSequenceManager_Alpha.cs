@@ -108,6 +108,11 @@ namespace Alpha.Flow
             {
                 // 3択を生成してパネルを表示
                 rewardSelectionUI.ShowChoices(orb, OnRewardSelected);
+
+                if (TutorialManager_Alpha.Instance != null)
+                {
+                    TutorialManager_Alpha.Instance.ShowTutorial("Tutorial_Reward");
+                }
             }
             else
             {

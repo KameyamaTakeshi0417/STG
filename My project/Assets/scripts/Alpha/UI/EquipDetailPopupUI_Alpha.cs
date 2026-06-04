@@ -25,7 +25,7 @@ namespace Alpha.UI
 
             if (effects != null)
             {
-                effectStr = BuildEffectString(effects, ref isAllEquipable, "");
+                effectStr = BuildEffectString(effects, ref isAllEquipable, "", quality);
             }
 
             string partStr = "";
@@ -119,7 +119,7 @@ namespace Alpha.UI
             }
         }
 
-        private string BuildEffectString(List<WeaponEffectSO_Alpha> effects, ref bool isAllEquipable, string indent)
+        private string BuildEffectString(List<WeaponEffectSO_Alpha> effects, ref bool isAllEquipable, string indent, int quality)
         {
             string result = "";
             foreach (var eff in effects)
@@ -133,20 +133,41 @@ namespace Alpha.UI
                     {
                         // 複合スキル自体の名前を表示（トップレベルなら-、ネストされていれば└）
                         string prefix = string.IsNullOrEmpty(indent) ? "-" : "└";
-                        result += $"\n{indent}{prefix} {eff.effectName}";
+                        result += $"\n{indent}{prefix} <color=#FFDDDD>{eff.effectName}</color>";
                         
                         // 中身を再帰的に展開し、インデントを1段下げる
                         if (comp.subEffects != null && comp.subEffects.Count > 0)
                         {
                             string newIndent = string.IsNullOrEmpty(indent) ? "  " : indent + "  ";
-                            result += BuildEffectString(comp.subEffects, ref isAllEquipable, newIndent);
+                            result += BuildEffectString(comp.subEffects, ref isAllEquipable, newIndent, quality);
                         }
                     }
                 }
                 else
                 {
                     string prefix = string.IsNullOrEmpty(indent) ? "-" : "└";
-                    result += $"\n{indent}{prefix} {eff.effectName}";
+                    
+                    string descStr = "";
+                    if (!string.IsNullOrEmpty(eff.description))
+                    {
+                        try 
+                        { 
+                            descStr = string.Format(eff.description, eff.GetValue(quality)); 
+                        }
+                        catch 
+                        { 
+                            descStr = eff.description; 
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(descStr))
+                    {
+                        result += $"\n{indent}{prefix} {eff.effectName}\n{indent}  <size=80%><color=#BBBBBB>{descStr}</color></size>";
+                    }
+                    else
+                    {
+                        result += $"\n{indent}{prefix} {eff.effectName}";
+                    }
 
                     if (eff.effectType == WeaponEffectType_Alpha.AllEquipable)
                     {

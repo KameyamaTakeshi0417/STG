@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening; // DOTween
+using TMPro; // TextMeshPro
 
 namespace Alpha.UI
 {
@@ -9,8 +10,7 @@ namespace Alpha.UI
     /// シーン上に配置した 1 枚の Canvas (UltCanvas) の子に
     ///   FadePanel (Image + CanvasGroup)
     ///   PlayerImg, EliteImg (Image)
-    ///   PlayerTxt, EliteTxt (Text or TMP_Text)
-    ///   を配置した構造を想定しています。
+    ///   PlayerTxt, EliteTxt (TMP_Text) を配置した構造を想定しています。
     ///   呼び出し側は <c>PlayCutIn(isPlayer, sprite, skillName)</c> を呼ぶだけで完結します。
     /// </summary>
     public class UltCutInController : MonoBehaviour
@@ -21,8 +21,8 @@ namespace Alpha.UI
 
         [SerializeField] private Image playerImg;        // プレイヤーキャラ画像
         [SerializeField] private Image eliteImg;         // エリートキャラ画像
-        [SerializeField] private Text playerTxt;        // プレイヤー技名テキスト
-        [SerializeField] private Text eliteTxt;         // エリート技名テキスト
+        [SerializeField] private TMP_Text playerTxt;    // プレイヤー技名テキスト
+        [SerializeField] private TMP_Text eliteTxt;     // エリート技名テキスト
 
         // 画面幅（Screen Space - Camera 用）
         private float ScreenWidth => Screen.width;
@@ -43,7 +43,7 @@ namespace Alpha.UI
         {
             // 目的オブジェクトを選択
             Image img = isPlayer ? playerImg : eliteImg;
-            Text txt   = isPlayer ? playerTxt : eliteTxt;
+            TMP_Text txt   = isPlayer ? playerTxt : eliteTxt;
             // プレイヤーは左 → 右、エリートは右 → 左 にスライド
             float direction = isPlayer ? -1f : 1f;
 

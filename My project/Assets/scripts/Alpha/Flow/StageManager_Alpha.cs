@@ -37,6 +37,7 @@ namespace Alpha.Flow
         public float currentSequenceTime = 0f;
 
         private StageSequenceData_Alpha activeSequence;
+        private int currentTutorialIndex = 0;
 
         private void Awake()
         {
@@ -149,6 +150,7 @@ namespace Alpha.Flow
 
             activeSequence = currentStageData.firstHalf;
             currentSequenceTime = 0f;
+            currentTutorialIndex = 0;
 
             // ステージ（前半）開始時にテンポラリー枠のアイテムを自動売却
             if (InventoryManager_Alpha.Instance != null)
@@ -170,6 +172,20 @@ namespace Alpha.Flow
             sequenceBarUI.UpdateProgress(currentSequenceTime / activeSequence.duration);
             spawnManager.CheckSpawn(currentSequenceTime);
 
+            // チュートリアルイベントのチェック
+            if (activeSequence.tutorialEvents != null)
+            {
+                while (currentTutorialIndex < activeSequence.tutorialEvents.Count &&
+                       currentSequenceTime >= activeSequence.tutorialEvents[currentTutorialIndex].time)
+                {
+                    if (TutorialManager_Alpha.Instance != null)
+                    {
+                        TutorialManager_Alpha.Instance.ShowTutorial(activeSequence.tutorialEvents[currentTutorialIndex].tutorialId);
+                    }
+                    currentTutorialIndex++;
+                }
+            }
+
             if (currentSequenceTime >= activeSequence.duration)
             {
                 // 時間到達で待機状態へ
@@ -184,6 +200,10 @@ namespace Alpha.Flow
 
         private void HandleWaveSkip()
         {
+            // ポーズ時やチュートリアル表示時はスキップを受け付けない
+            if (Time.timeScale == 0f) return;
+            if (Alpha.UI.TutorialManager_Alpha.Instance != null && Alpha.UI.TutorialManager_Alpha.Instance.IsShowing) return;
+
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.LeftShift))
             {
                 if (activeSequence == null) return;
@@ -331,6 +351,7 @@ namespace Alpha.Flow
         private void StartSecondHalf()
         {
             currentSequenceTime = 0f;
+            currentTutorialIndex = 0;
             sequenceBarUI.UpdateProgress(0f);
             SetState(StageState_Alpha.SecondHalf);
         }

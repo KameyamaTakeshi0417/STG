@@ -23,8 +23,10 @@ namespace Alpha.UI
         public GameObject extraSlotPrefab;
         private List<Button> spawnedExtraSlots = new List<Button>();
         
-        [Header("Confirm")]
+        [Header("Confirm & Check Mode")]
         public Button confirmButton;
+        [Tooltip("確認モード時のみ表示される戻るボタン")]
+        public Button backButtonForCheck;
 
         private System.Action onConfirmCallback;
         private bool openedByEscape = false;
@@ -38,10 +40,16 @@ namespace Alpha.UI
             if (detailPopup != null) detailPopup.gameObject.SetActive(false);
             
             if (panel != null) panel.SetActive(false);
+            if (backButtonForCheck != null) backButtonForCheck.gameObject.SetActive(false);
 
             if (confirmButton != null)
             {
                 confirmButton.onClick.AddListener(OnConfirmClicked);
+            }
+            if (backButtonForCheck != null)
+            {
+                // 戻るボタンの挙動はConfirmと同じ（UIを閉じてコールバックを実行）
+                backButtonForCheck.onClick.AddListener(OnConfirmClicked);
             }
             
             // スロットクリック時の仮実装
@@ -54,6 +62,10 @@ namespace Alpha.UI
                     
                     var rcd = gridSlots[index].gameObject.AddComponent<RightClickDetector_Alpha>();
                     rcd.onRightClick = (eventData) => OnSlotRightClicked(index, eventData);
+
+                    var dragHandler = gridSlots[index].gameObject.AddComponent<InventorySlotDragHandler_Alpha>();
+                    dragHandler.slotIndex = index;
+                    dragHandler.onSlotDropped = HandleSlotDropped;
                 }
             }
         }
@@ -80,13 +92,29 @@ namespace Alpha.UI
             
             if (panel != null) panel.SetActive(true);
             if (detailPopup != null) detailPopup.gameObject.SetActive(false);
+            
+            if (confirmButton != null) confirmButton.gameObject.SetActive(true);
+            if (backButtonForCheck != null) backButtonForCheck.gameObject.SetActive(false);
+
             RefreshUI();
+            TryShowEquipTutorial();
         }
 
         private void CloseEscapeInventory()
         {
             openedByEscape = false;
-            Time.timeScale = 1f;
+            
+            if (TutorialManager_Alpha.Instance != null && TutorialManager_Alpha.Instance.IsShowing)
+            {
+                // チュートリアルがまだ開いている場合は、ゲームを再開させず
+                // チュートリアルが閉じたタイミングでゲームが再開されるように仕込む
+                TutorialManager_Alpha.Instance.OverridePreviousTimeScale(1f);
+            }
+            else
+            {
+                Time.timeScale = 1f;
+            }
+            
             if (panel != null) panel.SetActive(false);
             if (detailPopup != null) detailPopup.gameObject.SetActive(false);
         }
@@ -109,8 +137,12 @@ namespace Alpha.UI
                 Debug.LogError("[InventoryUI] panel is NULL in ShowForCheck!");
             }
             if (detailPopup != null) detailPopup.gameObject.SetActive(false);
+            
+            if (confirmButton != null) confirmButton.gameObject.SetActive(false);
+            if (backButtonForCheck != null) backButtonForCheck.gameObject.SetActive(true);
 
             RefreshUI();
+            TryShowEquipTutorial();
         }
 
         public void Show(WeaponPartInstance_Alpha newItem, System.Action callback)
@@ -123,7 +155,19 @@ namespace Alpha.UI
             if (panel != null) panel.SetActive(true);
             if (detailPopup != null) detailPopup.gameObject.SetActive(false);
 
+            if (confirmButton != null) confirmButton.gameObject.SetActive(true);
+            if (backButtonForCheck != null) backButtonForCheck.gameObject.SetActive(false);
+
             RefreshUI();
+            TryShowEquipTutorial();
+        }
+
+        private void TryShowEquipTutorial()
+        {
+            if (TutorialManager_Alpha.Instance != null)
+            {
+                TutorialManager_Alpha.Instance.ShowTutorial("Tutorial_Equip");
+            }
         }
 
         public void Hide()
@@ -173,6 +217,10 @@ namespace Alpha.UI
                         
                         var rcd = btn.gameObject.AddComponent<RightClickDetector_Alpha>();
                         rcd.onRightClick = (eventData) => OnSlotRightClicked(slotIndex, eventData);
+
+                        var dragHandler = btn.gameObject.AddComponent<InventorySlotDragHandler_Alpha>();
+                        dragHandler.slotIndex = slotIndex;
+                        dragHandler.onSlotDropped = HandleSlotDropped;
                         
                         spawnedExtraSlots.Add(btn);
                     }
@@ -261,11 +309,18 @@ namespace Alpha.UI
                         }
                     }
                     
-                    Sprite targetSprite = item.series.icon;
+                    Sprite targetSprite = null;
                     if (isAllEq && item.series.iconAllEquipable != null) targetSprite = item.series.iconAllEquipable;
                     else if (item.partType == Alpha.Data.WeaponPartType_Alpha.Bullet && item.series.iconBullet != null) targetSprite = item.series.iconBullet;
                     else if (item.partType == Alpha.Data.WeaponPartType_Alpha.Casing && item.series.iconCasing != null) targetSprite = item.series.iconCasing;
                     else if (item.partType == Alpha.Data.WeaponPartType_Alpha.Primer && item.series.iconPrimer != null) targetSprite = item.series.iconPrimer;
+
+                    // 堅牢なフォールバック
+                    if (targetSprite == null) targetSprite = item.series.icon;
+                    if (targetSprite == null) targetSprite = item.series.iconBullet;
+                    if (targetSprite == null) targetSprite = item.series.iconCasing;
+                    if (targetSprite == null) targetSprite = item.series.iconPrimer;
+                    if (targetSprite == null) targetSprite = item.series.iconAllEquipable;
 
                     if (targetSprite != null)
                     {
@@ -322,93 +377,107 @@ namespace Alpha.UI
                 }
                 else
                 {
-                    // 違うスロットをクリックしたら入れ替える（スワップ）
-                    var list = InventoryManager_Alpha.Instance.equipInstance;
-                    if (selectedIndex < list.Count && index < list.Count)
-                    {
-                        var item1 = list[selectedIndex];
-                        var item2 = list[index];
-
-                        bool CheckEquipRestriction(int targetSlotIndex, InventoryManager_Alpha.EquipInstance item)
-                        {
-                            if (item.series == null) return true; // Empty item can go anywhere
-                            if (targetSlotIndex >= InventoryManager_Alpha.BASIC_SLOT_COUNT) return true; // Free/Temp slots have no restriction
-
-                            // 0-8 are basic slots. column (x) is targetSlotIndex % 3
-                            int column = targetSlotIndex % 3;
-                            
-                            // システム上（Player_Shooter_Alpha等）の扱いに合わせて
-                            // 0 = 雷管(Primer)、1 = 薬莢(Casing)、2 = 弾頭(Bullet) にマッピングする
-                            Alpha.Data.WeaponPartType_Alpha expectedPart = Alpha.Data.WeaponPartType_Alpha.Bullet;
-                            if (column == 0) expectedPart = Alpha.Data.WeaponPartType_Alpha.Primer;
-                            else if (column == 1) expectedPart = Alpha.Data.WeaponPartType_Alpha.Casing;
-                            else if (column == 2) expectedPart = Alpha.Data.WeaponPartType_Alpha.Bullet;
-
-                            // Check AllEquipable
-                            if (item.currentEffects != null)
-                            {
-                                foreach (var eff in item.currentEffects)
-                                {
-                                    if (eff != null && eff.effectType == Alpha.Data.WeaponEffectType_Alpha.AllEquipable)
-                                        return true;
-                                }
-                            }
-
-                            return item.partType == expectedPart;
-                        }
-
-                        if (!CheckEquipRestriction(index, item1))
-                        {
-                            Debug.LogWarning("[InventoryUI] 装備先のスロットと部位が一致しないため、移動をキャンセルしました。");
-                        }
-                        else if (!CheckEquipRestriction(selectedIndex, item2))
-                        {
-                            // item2 は item1 の元のスロットには移動できない（AllEquipableなどで部位が違う場合）
-                            // 別の空きスロット(フリー枠)を探して退避させる
-                            int freeSlotIdx = -1;
-                            for (int i = InventoryManager_Alpha.BASIC_SLOT_COUNT; i < list.Count; i++)
-                            {
-                                if (list[i].series == null)
-                                {
-                                    freeSlotIdx = i;
-                                    break;
-                                }
-                            }
-
-                            if (freeSlotIdx == -1)
-                            {
-                                // 空きがない場合、リストの末尾（新しい一時枠）に強制退避させる
-                                freeSlotIdx = list.Count;
-                            }
-
-                            InventoryManager_Alpha.Instance.SetByIndex(freeSlotIdx, item2);
-                            InventoryManager_Alpha.Instance.SetByIndex(index, item1);
-                            InventoryManager_Alpha.Instance.SetByIndex(selectedIndex, new InventoryManager_Alpha.EquipInstance());
-                            Debug.Log($"[InventoryUI] 装備を入れ替え、元の装備は一時枠({freeSlotIdx})に退避しました。");
-                        }
-                        else
-                        {
-                            InventoryManager_Alpha.Instance.SetByIndex(selectedIndex, item2);
-                            InventoryManager_Alpha.Instance.SetByIndex(index, item1);
-
-                            // 一時スロットが空になった場合の削除処理
-                            int tempStartIndex = InventoryManager_Alpha.BASIC_SLOT_COUNT + InventoryManager_Alpha.Instance.freeSlotCount;
-                            
-                            // 後ろからチェックして削除する（インデックスがずれないように）
-                            for (int i = list.Count - 1; i >= tempStartIndex; i--)
-                            {
-                                if (list[i].series == null)
-                                {
-                                    list.RemoveAt(i);
-                                }
-                            }
-
-                            Debug.Log($"[InventoryUI] Swapped slot {selectedIndex} with {index}");
-                        }
-                    }
+                    SwapItems(selectedIndex, index);
                     selectedIndex = -1;
                 }
                 RefreshUI();
+            }
+        }
+
+        private void HandleSlotDropped(int fromIndex, int toIndex)
+        {
+            if (isReadOnly) return;
+            if (InventoryManager_Alpha.Instance == null) return;
+            
+            SwapItems(fromIndex, toIndex);
+            
+            // もし選択中だったものが移動したら選択解除するなどのケア
+            selectedIndex = -1;
+            RefreshUI();
+        }
+
+        private void SwapItems(int index1, int index2)
+        {
+            var list = InventoryManager_Alpha.Instance.equipInstance;
+            if (index1 < list.Count && index2 < list.Count)
+            {
+                var item1 = list[index1];
+                var item2 = list[index2];
+
+                bool CheckEquipRestriction(int targetSlotIndex, InventoryManager_Alpha.EquipInstance item)
+                {
+                    if (item.series == null) return true; // Empty item can go anywhere
+                    if (targetSlotIndex >= InventoryManager_Alpha.BASIC_SLOT_COUNT) return true; // Free/Temp slots have no restriction
+
+                    int column = targetSlotIndex % 3;
+                    Alpha.Data.WeaponPartType_Alpha expectedPart = Alpha.Data.WeaponPartType_Alpha.Bullet;
+                    if (column == 0) expectedPart = Alpha.Data.WeaponPartType_Alpha.Primer;
+                    else if (column == 1) expectedPart = Alpha.Data.WeaponPartType_Alpha.Casing;
+                    else if (column == 2) expectedPart = Alpha.Data.WeaponPartType_Alpha.Bullet;
+
+                    if (item.currentEffects != null)
+                    {
+                        foreach (var eff in item.currentEffects)
+                        {
+                            if (eff != null && eff.effectType == Alpha.Data.WeaponEffectType_Alpha.AllEquipable)
+                                return true;
+                        }
+                    }
+
+                    return item.partType == expectedPart;
+                }
+
+                if (!CheckEquipRestriction(index2, item1))
+                {
+                    Debug.LogWarning("[InventoryUI] 装備先のスロットと部位が一致しないため、移動をキャンセルしました。");
+                    return;
+                }
+                else if (!CheckEquipRestriction(index1, item2))
+                {
+                    // テンポラリー枠にあるアイテム(item2)と装備枠のアイテム(item1)を入れ替えようとしたが、
+                    // テンポラリー枠のアイテムが装備枠の部位と一致しない場合は、装備を解除するのではなくキャンセルにする
+                    if (index2 >= InventoryManager_Alpha.BASIC_SLOT_COUNT)
+                    {
+                        Debug.LogWarning("[InventoryUI] 入れ替え先のアイテムが元のスロットに装備できないため、移動をキャンセルしました。");
+                        return;
+                    }
+
+                    int freeSlotIdx = -1;
+                    for (int i = InventoryManager_Alpha.BASIC_SLOT_COUNT; i < list.Count; i++)
+                    {
+                        if (list[i].series == null)
+                        {
+                            freeSlotIdx = i;
+                            break;
+                        }
+                    }
+
+                    if (freeSlotIdx == -1)
+                    {
+                        freeSlotIdx = list.Count;
+                    }
+
+                    InventoryManager_Alpha.Instance.SetByIndex(freeSlotIdx, item2);
+                    InventoryManager_Alpha.Instance.SetByIndex(index2, item1);
+                    InventoryManager_Alpha.Instance.SetByIndex(index1, new InventoryManager_Alpha.EquipInstance());
+                    Debug.Log($"[InventoryUI] 装備を入れ替え、元の装備は一時枠({freeSlotIdx})に退避しました。");
+                }
+                else
+                {
+                    InventoryManager_Alpha.Instance.SetByIndex(index1, item2);
+                    InventoryManager_Alpha.Instance.SetByIndex(index2, item1);
+
+                    int tempStartIndex = InventoryManager_Alpha.BASIC_SLOT_COUNT + InventoryManager_Alpha.Instance.freeSlotCount;
+                    for (int i = list.Count - 1; i >= tempStartIndex; i--)
+                    {
+                        if (list[i].series == null)
+                        {
+                            list.RemoveAt(i);
+                        }
+                    }
+
+                    Debug.Log($"[InventoryUI] Swapped slot {index1} with {index2}");
+                }
             }
         }
 

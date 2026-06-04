@@ -60,6 +60,9 @@ public class CameraControl : MonoBehaviour
     void HandleZoomInput(float dt)
     {
         if (cam == null) return;
+        
+        // ポーズ中やチュートリアル中はズームしない
+        if (Time.timeScale == 0f) return;
 
         float scroll = Input.mouseScrollDelta.y;
         if (Mathf.Abs(scroll) < 0.0001f) return;
