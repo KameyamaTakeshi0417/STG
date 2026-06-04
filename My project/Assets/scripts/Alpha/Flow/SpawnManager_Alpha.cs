@@ -11,6 +11,8 @@ namespace Alpha.Flow
         
         // フィールド上に存在する敵（雑魚）のリスト
         private List<GameObject> activeMobs = new List<GameObject>();
+        // 予兆中でまだスポーンしていない敵の数
+        private int pendingSpawns = 0;
 
         [Tooltip("敵出現の2秒前に表示する予兆マーカー（未設定時はResourcesからロードします）")]
         public GameObject spawnIndicatorPrefab;
@@ -23,6 +25,8 @@ namespace Alpha.Flow
             {
                 spawnIndicatorPrefab = Resources.Load<GameObject>("Objects/SpawnSign");
             }
+            pendingSpawns = 0;
+            activeMobs.Clear();
         }
 
         public void CheckSpawn(float currentTime)
@@ -52,10 +56,14 @@ namespace Alpha.Flow
             // 1. 予兆マーカーの生成
             foreach (var spawn in wave.spawns)
             {
-                if (spawn.enemyPrefab != null && spawnIndicatorPrefab != null)
+                if (spawn.enemyPrefab != null)
                 {
-                    GameObject indicator = Instantiate(spawnIndicatorPrefab, spawn.spawnPosition, Quaternion.identity);
-                    indicators.Add(indicator);
+                    pendingSpawns++;
+                    if (spawnIndicatorPrefab != null)
+                    {
+                        GameObject indicator = Instantiate(spawnIndicatorPrefab, spawn.spawnPosition, Quaternion.identity);
+                        indicators.Add(indicator);
+                    }
                 }
             }
 
@@ -75,6 +83,7 @@ namespace Alpha.Flow
             {
                 if (spawn.enemyPrefab != null)
                 {
+                    pendingSpawns--;
                     GameObject enemy = Instantiate(spawn.enemyPrefab, spawn.spawnPosition, Quaternion.identity);
                     activeMobs.Add(enemy);
                 }
@@ -117,7 +126,7 @@ namespace Alpha.Flow
         public bool IsMobCleared()
         {
             CleanUpDeadMobs();
-            return activeMobs.Count == 0;
+            return activeMobs.Count == 0 && pendingSpawns <= 0;
         }
 
         private void CleanUpDeadMobs()

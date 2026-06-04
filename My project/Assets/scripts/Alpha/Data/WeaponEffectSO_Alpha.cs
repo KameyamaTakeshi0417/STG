@@ -35,6 +35,7 @@ namespace Alpha.Data
         IgnorePierceDecay,         // 貫通減衰無効化
         MakeBarrier,               // バリア付与
         BurstFire,                 // 指定回数のバースト発射化
+        Homing,                    // ホーミング（旋回力0〜100）
         Composite,                 // 複合スキル
         // --- 装備制限解除 ---
         AllEquipable           // どこにでも装備可能
@@ -49,6 +50,9 @@ namespace Alpha.Data
         
         [Tooltip("trueの場合、どの装備枠にセットしていても常に発動します。falseの場合、現在構えている装備セットの時だけ発動します。")]
         public bool isGlobalEffect = false;
+
+        [Tooltip("trueの場合、同シリーズが3部位揃っており、かつこのパーツが最適部位（BestSlot）に装備されている時のみ発動します。")]
+        public bool isBestSlotEffect = false;
 
         [Tooltip("品質(1〜4)による効果量。インデックス0=品質1、インデックス3=品質4")]
         public float[] qualityValues = new float[4];

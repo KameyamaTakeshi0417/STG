@@ -17,7 +17,7 @@ namespace Alpha.UI
         [Tooltip("クリックした位置から画面中央方向へズラすための基準ポイント数")]
         public float offsetDistance = 100f;
 
-        public void Setup(WeaponSeriesData_Alpha series, WeaponPartType_Alpha partType, int quality, List<WeaponEffectSO_Alpha> effects, Vector2 clickPos)
+        public void Setup(WeaponSeriesData_Alpha series, WeaponPartType_Alpha partType, int quality, List<WeaponEffectSO_Alpha> effects, Vector2 clickPos, bool isBestSlotMet = false)
         {
             // 1. バフ一覧と基本情報の生成
             string effectStr = "";
@@ -25,7 +25,7 @@ namespace Alpha.UI
 
             if (effects != null)
             {
-                effectStr = BuildEffectString(effects, ref isAllEquipable, "", quality);
+                effectStr = BuildEffectString(effects, ref isAllEquipable, "", quality, isBestSlotMet);
             }
 
             string partStr = "";
@@ -119,27 +119,34 @@ namespace Alpha.UI
             }
         }
 
-        private string BuildEffectString(List<WeaponEffectSO_Alpha> effects, ref bool isAllEquipable, string indent, int quality)
+        private string BuildEffectString(List<WeaponEffectSO_Alpha> effects, ref bool isAllEquipable, string indent, int quality, bool isBestSlotMet)
         {
             string result = "";
             foreach (var eff in effects)
             {
                 if (eff == null) continue;
+                
+                // BestSlot専用効果なのに条件を満たしていない場合
+                bool isInactive = eff.isBestSlotEffect && !isBestSlotMet;
+                string inactiveTag = isInactive ? " <color=#888888>(未発動)</color>" : "";
+                string colorStart = isInactive ? "<color=#888888>" : "";
+                string colorEnd = isInactive ? "</color>" : "";
 
                 if (eff.effectType == WeaponEffectType_Alpha.Composite)
                 {
                     var comp = eff as CompositeWeaponEffectSO_Alpha;
                     if (comp != null)
                     {
-                        // 複合スキル自体の名前を表示（トップレベルなら-、ネストされていれば└）
+                        // 複合スキル自体の名前を表示
                         string prefix = string.IsNullOrEmpty(indent) ? "-" : "└";
-                        result += $"\n{indent}{prefix} <color=#FFDDDD>{eff.effectName}</color>";
+                        string nameColor = isInactive ? "#888888" : "#FFDDDD";
+                        result += $"\n{indent}{prefix} <color={nameColor}>{eff.effectName}</color>{inactiveTag}";
                         
                         // 中身を再帰的に展開し、インデントを1段下げる
                         if (comp.subEffects != null && comp.subEffects.Count > 0)
                         {
                             string newIndent = string.IsNullOrEmpty(indent) ? "  " : indent + "  ";
-                            result += BuildEffectString(comp.subEffects, ref isAllEquipable, newIndent, quality);
+                            result += BuildEffectString(comp.subEffects, ref isAllEquipable, newIndent, quality, isBestSlotMet);
                         }
                     }
                 }
@@ -162,14 +169,14 @@ namespace Alpha.UI
 
                     if (!string.IsNullOrEmpty(descStr))
                     {
-                        result += $"\n{indent}{prefix} {eff.effectName}\n{indent}  <size=80%><color=#BBBBBB>{descStr}</color></size>";
+                        result += $"\n{indent}{prefix} {colorStart}{eff.effectName}{inactiveTag}\n{indent}  <size=80%>{descStr}</size>{colorEnd}";
                     }
                     else
                     {
-                        result += $"\n{indent}{prefix} {eff.effectName}";
+                        result += $"\n{indent}{prefix} {colorStart}{eff.effectName}{inactiveTag}{colorEnd}";
                     }
 
-                    if (eff.effectType == WeaponEffectType_Alpha.AllEquipable)
+                    if (eff.effectType == WeaponEffectType_Alpha.AllEquipable && !isInactive)
                     {
                         isAllEquipable = true;
                     }

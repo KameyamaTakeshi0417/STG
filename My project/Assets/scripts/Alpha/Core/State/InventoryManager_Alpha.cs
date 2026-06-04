@@ -193,26 +193,58 @@ public class InventoryManager_Alpha : MonoBehaviour
     {
         if (equipInstance == null || equipInstance.Count < BASIC_SLOT_COUNT) return false;
 
-        // 3つの行（セット）それぞれについて、3枠がすべて同じシリーズかチェックする
         for (int row = 0; row < 3; row++)
         {
-            int startIndex = row * 3;
-            var seriesA = equipInstance[startIndex].series;
-            var seriesB = equipInstance[startIndex + 1].series;
-            var seriesC = equipInstance[startIndex + 2].series;
-
-            // 1つでも空枠があればNG
-            if (seriesA == null || seriesB == null || seriesC == null) return false;
-
-            // 初期装備(InitialSeries)の場合はブーケモードを発動しない
-            if (seriesA.name == "InitialSeries" || seriesB.name == "InitialSeries" || seriesC.name == "InitialSeries") return false;
-
-            // シリーズが一致していなければNG
-            if (seriesA != seriesB || seriesA != seriesC) return false;
+            if (!IsGroupSeriesAligned(row)) return false;
         }
 
-        // 全ての行がそれぞれ統一されていればTrue
         return true;
+    }
+
+    /// <summary>
+    /// 特定のグループ（行）の3つのパーツがすべて同じシリーズで統一されているか
+    /// </summary>
+    public bool IsGroupSeriesAligned(int groupIndex)
+    {
+        int startIndex = groupIndex * 3;
+        var seriesA = equipInstance[startIndex].series;
+        var seriesB = equipInstance[startIndex + 1].series;
+        var seriesC = equipInstance[startIndex + 2].series;
+
+        if (seriesA == null || seriesB == null || seriesC == null) return false;
+        if (seriesA.name == "InitialSeries" || seriesB.name == "InitialSeries" || seriesC.name == "InitialSeries") return false;
+        if (seriesA != seriesB || seriesA != seriesC) return false;
+
+        return true;
+    }
+
+    /// <summary>
+    /// 特定のアイテムがBestSlot条件を満たしているか
+    /// 条件1: そのグループのシリーズが完全に一致している
+    /// 条件2: アイテムの装備部位（0:雷管, 1:薬莢, 2:弾頭）が、シリーズで定義されたBestSlotと一致している
+    /// </summary>
+    public bool IsBestSlotConditionMet(int itemIndex)
+    {
+        var item = equipInstance[itemIndex];
+        if (item.series == null) return false;
+
+        int groupIndex = itemIndex / 3;
+        int equipPosition = itemIndex % 3; // 0=雷管(Primer), 1=薬莢(Casing), 2=弾頭(Bullet)
+
+        // 1. シリーズが揃っているか
+        if (!IsGroupSeriesAligned(groupIndex)) return false;
+
+        // 2. 装備部位が最適部位と一致しているか
+        Alpha.Data.WeaponPartType_Alpha currentPartType;
+        switch (equipPosition)
+        {
+            case 0: currentPartType = Alpha.Data.WeaponPartType_Alpha.Primer; break;
+            case 1: currentPartType = Alpha.Data.WeaponPartType_Alpha.Casing; break;
+            case 2: currentPartType = Alpha.Data.WeaponPartType_Alpha.Bullet; break;
+            default: return false;
+        }
+
+        return item.series.bestSlot == currentPartType;
     }
 
     public float GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha effectType, int activeGroup = -1)
@@ -225,24 +257,25 @@ public class InventoryManager_Alpha : MonoBehaviour
             if (item.series == null) continue;
 
             int itemGroup = i / 3;
+            bool isBestSlotMet = IsBestSlotConditionMet(i);
 
             // 1. 武器のベース(series)に紐づくパッシブ効果を加算
             if (item.series.passiveEffects != null)
             {
-                totalValue += GetTotalEffectValueRecursive(item.series.passiveEffects, effectType, item.rarity, itemGroup, activeGroup);
+                totalValue += GetTotalEffectValueRecursive(item.series.passiveEffects, effectType, item.rarity, itemGroup, activeGroup, isBestSlotMet);
             }
 
             // 2. プレイヤーが直接付与した固有効果(currentEffects)を加算
             if (item.currentEffects != null)
             {
-                totalValue += GetTotalEffectValueRecursive(item.currentEffects, effectType, item.rarity, itemGroup, activeGroup);
+                totalValue += GetTotalEffectValueRecursive(item.currentEffects, effectType, item.rarity, itemGroup, activeGroup, isBestSlotMet);
             }
         }
 
         return totalValue;
     }
 
-    private float GetTotalEffectValueRecursive(List<Alpha.Data.WeaponEffectSO_Alpha> effects, Alpha.Data.WeaponEffectType_Alpha targetType, int rarity, int itemGroup, int activeGroup)
+    private float GetTotalEffectValueRecursive(List<Alpha.Data.WeaponEffectSO_Alpha> effects, Alpha.Data.WeaponEffectType_Alpha targetType, int rarity, int itemGroup, int activeGroup, bool isBestSlotMet)
     {
         float value = 0f;
         foreach (var effectSO in effects)
@@ -255,11 +288,14 @@ public class InventoryManager_Alpha : MonoBehaviour
                 var comp = effectSO as Alpha.Data.CompositeWeaponEffectSO_Alpha;
                 if (comp != null && comp.subEffects != null)
                 {
-                    value += GetTotalEffectValueRecursive(comp.subEffects, targetType, rarity, itemGroup, activeGroup);
+                    value += GetTotalEffectValueRecursive(comp.subEffects, targetType, rarity, itemGroup, activeGroup, isBestSlotMet);
                 }
             }
             else if (effectSO.effectType == targetType)
             {
+                // BestSlot専用効果の場合、条件を満たしていなければスキップ
+                if (effectSO.isBestSlotEffect && !isBestSlotMet) continue;
+
                 // 常時発動ではなく、かつ現在構えている武器グループでない場合はスキップ
                 if (!effectSO.isGlobalEffect && activeGroup != -1 && itemGroup != activeGroup) continue;
 

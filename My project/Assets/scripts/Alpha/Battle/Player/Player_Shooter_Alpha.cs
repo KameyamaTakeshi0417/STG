@@ -307,6 +307,21 @@ public class Player_Shooter_Alpha : MonoBehaviour
             Vector3 spawnDir = aimDir;
             float currentReverseTime = 0f;
 
+            // 各弾ごとにエフェクトインスタンスを生成する
+            List<Alpha_Effect_Base> effectsToApply = new List<Alpha_Effect_Base>();
+
+            float totalHomingStrength = 0f;
+            if (inventoryManager != null)
+            {
+                totalHomingStrength = inventoryManager.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.Homing, isBouquet ? -1 : currentWeaponGroup);
+                if (totalHomingStrength > 0f)
+                {
+                    totalHomingStrength = Mathf.Min(totalHomingStrength, 100f); // 旋回力は最大100
+                    // 部位は弾頭(2)、レア度はダミー(1)として扱う
+                    effectsToApply.Add(new Effect_Homing_Alpha(2, 1, totalHomingStrength));
+                }
+            }
+
             if (pattern == playerStatusManager_Alpha.SpawnPattern.Straight)
             {
                 Vector3 rightDir = new Vector3(aimDir.y, -aimDir.x, 0).normalized;
@@ -351,22 +366,11 @@ public class Player_Shooter_Alpha : MonoBehaviour
             }
             else if (pattern == playerStatusManager_Alpha.SpawnPattern.Reverse)
             {
-                if (isTargetLocked)
-                {
-                    float randomAngle = Random.Range(-spreadRangeDeg / 2f, spreadRangeDeg / 2f);
-                    spawnDir = Quaternion.Euler(0, 0, randomAngle) * (-aimDir);
-                    currentReverseTime = reverseTravelTimeSec;
-                }
-                else
-                {
-                    // ターゲットロックされていない場合は単純に真っすぐ航行
-                    spawnDir = aimDir;
-                    currentReverseTime = 0f;
-                }
+                // ターゲットロックの有無に関わらず、狙った方向（マウスまたはターゲット）の逆へ発射し、一定時間後に本来の方向へ向かう
+                float randomAngle = Random.Range(-spreadRangeDeg / 2f, spreadRangeDeg / 2f);
+                spawnDir = Quaternion.Euler(0, 0, randomAngle) * (-aimDir);
+                currentReverseTime = reverseTravelTimeSec;
             }
-
-            // 各弾ごとにエフェクトインスタンスを生成する
-            List<Alpha_Effect_Base> effectsToApply = new List<Alpha_Effect_Base>();
             
             if (isBouquet)
             {

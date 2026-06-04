@@ -504,9 +504,15 @@ namespace Alpha.UI
             var item = equipList[index];
             if (item.series == null) return;
 
+            bool isBestSlotMet = false;
+            if (InventoryManager_Alpha.Instance != null)
+            {
+                isBestSlotMet = InventoryManager_Alpha.Instance.IsBestSlotConditionMet(index);
+            }
+
             if (detailPopup != null)
             {
-                detailPopup.Setup(item.series, item.partType, item.rarity, item.currentEffects, eventData.position);
+                detailPopup.Setup(item.series, item.partType, item.rarity, item.currentEffects, eventData.position, isBestSlotMet);
             }
         }
     }
