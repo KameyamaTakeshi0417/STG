@@ -42,6 +42,8 @@ public class _Health_Base : MonoBehaviour
 
 
     [Header("Reward Settings")]
+    [Tooltip("この敵を倒したときに得られる報酬ポイント")]
+    public int rewardPoints = 10;
     [Tooltip("オーブドロップ確率 (0.0 〜 1.0)")]
     public float orbDropChance = 0.05f;
     [Tooltip("中ボスかどうか")]

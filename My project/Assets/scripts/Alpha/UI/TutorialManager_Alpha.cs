@@ -17,8 +17,18 @@ namespace Alpha.UI
         public bool IsShowing => isShowing;
 
         private float previousTimeScale = 1f;
-        private Queue<string> tutorialQueue = new Queue<string>();
+        private struct TutorialRequest
+        {
+            public string tutorialId;
+            public bool useFadeMode;
+            public float displayDuration;
+        }
+        private Queue<TutorialRequest> tutorialQueue = new Queue<TutorialRequest>();
         private static HashSet<string> seenInSession = new HashSet<string>();
+
+        private Coroutine activeFadeCoroutine;
+        private CanvasGroup fadeCanvasGroup;
+        private bool isFadingTutorial = false;
 
         private void Awake()
         {
@@ -32,10 +42,15 @@ namespace Alpha.UI
             if (tutorialCanvas != null)
             {
                 tutorialCanvas.SetActive(false);
+                fadeCanvasGroup = tutorialCanvas.GetComponent<CanvasGroup>();
+                if (fadeCanvasGroup == null)
+                {
+                    fadeCanvasGroup = tutorialCanvas.AddComponent<CanvasGroup>();
+                }
             }
         }
 
-        public void ShowTutorial(string tutorialId)
+        public void ShowTutorial(string tutorialId, bool useFadeMode = false, float displayDuration = 3f)
         {
             if (Application.isEditor)
             {
@@ -52,22 +67,87 @@ namespace Alpha.UI
 
             if (isShowing)
             {
-                if (!tutorialQueue.Contains(tutorialId) && (currentTutorialObject == null || currentTutorialObject.name != tutorialId))
+                // フェード表示中にポーズ型のチュートリアルが来た場合はフェードを中断する
+                if (isFadingTutorial && !useFadeMode)
                 {
-                    tutorialQueue.Enqueue(tutorialId);
+                    if (activeFadeCoroutine != null) StopCoroutine(activeFadeCoroutine);
+                    CloseTutorialInstantly();
                 }
-                return;
+                else
+                {
+                    bool contains = false;
+                    foreach (var t in tutorialQueue) if (t.tutorialId == tutorialId) contains = true;
+                    if (!contains && (currentTutorialObject == null || currentTutorialObject.name != tutorialId))
+                    {
+                        tutorialQueue.Enqueue(new TutorialRequest { tutorialId = tutorialId, useFadeMode = useFadeMode, displayDuration = displayDuration });
+                    }
+                    return;
+                }
             }
 
-            // 初回ポーズ時のTimeScaleを保存
-            previousTimeScale = Time.timeScale;
-            Time.timeScale = 0f;
             isShowing = true;
+            isFadingTutorial = useFadeMode;
 
-            ShowTutorialInternal(tutorialId);
+            if (useFadeMode)
+            {
+                activeFadeCoroutine = StartCoroutine(FadeTutorialCoroutine(tutorialId, displayDuration));
+            }
+            else
+            {
+                previousTimeScale = Time.timeScale;
+                Time.timeScale = 0f;
+                ShowTutorialInternal(tutorialId, true);
+            }
         }
 
-        private void ShowTutorialInternal(string tutorialId)
+        private System.Collections.IEnumerator FadeTutorialCoroutine(string tutorialId, float duration)
+        {
+            ShowTutorialInternal(tutorialId, false);
+            fadeCanvasGroup.alpha = 0f;
+            
+            float elapsed = 0f;
+            while (elapsed < 0.5f)
+            {
+                elapsed += Time.deltaTime;
+                fadeCanvasGroup.alpha = Mathf.Clamp01(elapsed / 0.5f);
+                yield return null;
+            }
+            fadeCanvasGroup.alpha = 1f;
+
+            yield return new WaitForSeconds(duration);
+
+            elapsed = 0f;
+            while (elapsed < 0.5f)
+            {
+                elapsed += Time.deltaTime;
+                fadeCanvasGroup.alpha = 1f - Mathf.Clamp01(elapsed / 0.5f);
+                yield return null;
+            }
+            fadeCanvasGroup.alpha = 0f;
+
+            CloseTutorialInstantly();
+        }
+
+        private void CloseTutorialInstantly()
+        {
+            if (currentTutorialObject != null)
+            {
+                currentTutorialObject.SetActive(false);
+                currentTutorialObject = null;
+            }
+
+            if (tutorialCanvas != null)
+            {
+                tutorialCanvas.SetActive(false);
+            }
+            isShowing = false;
+            isFadingTutorial = false;
+            if (fadeCanvasGroup != null) fadeCanvasGroup.alpha = 1f;
+
+            CheckQueue();
+        }
+
+        private void ShowTutorialInternal(string tutorialId, bool showBackground)
         {
             if (tutorialCanvas == null)
             {
@@ -89,7 +169,8 @@ namespace Alpha.UI
 
             // UIの表示
             tutorialCanvas.SetActive(true);
-            if (backgroundPanel != null) backgroundPanel.SetActive(true);
+            if (fadeCanvasGroup != null) fadeCanvasGroup.alpha = 1f;
+            if (backgroundPanel != null) backgroundPanel.SetActive(showBackground);
             
             // 背景パネル以外の直下のオブジェクトを一旦すべて非表示にする
             foreach (Transform child in tutorialCanvas.transform)
@@ -118,8 +199,8 @@ namespace Alpha.UI
 
         private void Update()
         {
-            // 時間停止中の他の入力を防ぎつつ、右クリックだけ受け付ける
-            if (isShowing)
+            // 時間停止中の他の入力を防ぎつつ、右クリックだけ受け付ける（フェード中は除く）
+            if (isShowing && !isFadingTutorial)
             {
                 if (Input.GetMouseButtonDown(1))
                 {
@@ -130,26 +211,36 @@ namespace Alpha.UI
 
         public void CloseTutorial()
         {
+            if (isFadingTutorial)
+            {
+                if (activeFadeCoroutine != null) StopCoroutine(activeFadeCoroutine);
+                CloseTutorialInstantly();
+                return;
+            }
+
             if (currentTutorialObject != null)
             {
                 currentTutorialObject.SetActive(false);
                 currentTutorialObject = null;
             }
 
+            if (tutorialCanvas != null)
+            {
+                tutorialCanvas.SetActive(false);
+            }
+            // TimeScaleを元に戻す
+            Time.timeScale = previousTimeScale;
+            isShowing = false;
+
+            CheckQueue();
+        }
+
+        private void CheckQueue()
+        {
             if (tutorialQueue.Count > 0)
             {
-                string nextTutorial = tutorialQueue.Dequeue();
-                ShowTutorialInternal(nextTutorial);
-            }
-            else
-            {
-                if (tutorialCanvas != null)
-                {
-                    tutorialCanvas.SetActive(false);
-                }
-                // TimeScaleを元に戻す
-                Time.timeScale = previousTimeScale;
-                isShowing = false;
+                var req = tutorialQueue.Dequeue();
+                ShowTutorial(req.tutorialId, req.useFadeMode, req.displayDuration);
             }
         }
 

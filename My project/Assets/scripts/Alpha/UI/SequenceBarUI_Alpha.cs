@@ -24,6 +24,24 @@ namespace Alpha.UI
 
         private List<GameObject> activeMarkers = new List<GameObject>();
 
+        [Header("Reward Gauge UI")]
+        [Tooltip("報酬ゲージの中身（Image TypeがFilledのもの）")]
+        public Image rewardGaugeImage;
+        [Tooltip("報酬ゲージのテキスト（0/100などを表示するもの）")]
+        public TMPro.TextMeshProUGUI rewardGaugeText;
+
+        public static SequenceBarUI_Alpha Instance { get; private set; }
+
+        private void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
+        }
+
         /// <summary>
         /// シーケンス開始時にマーカーを配置してUIを再構成する
         /// </summary>
@@ -38,7 +56,7 @@ namespace Alpha.UI
             }
             activeMarkers.Clear();
 
-            // スライダーの最大値を1に強制する（スクリプト側で0〜1の正規化値を使用するため）
+            // スライダーの最大値を1に強制する
             if (progressSlider != null)
             {
                 progressSlider.maxValue = 1f;
@@ -58,15 +76,32 @@ namespace Alpha.UI
                     RectTransform rt = markerObj.GetComponent<RectTransform>();
                     if (rt != null)
                     {
-                        // AnchorをLeftに設定し、進行率(0〜1)に応じてX座標をずらす想定
-                        // またはアンカー(min.x, max.x)自体をいじる方法もある。
-                        // 今回は anchorMin = anchorMax = (progress, 0.5f) とする方法を採用
                         float progress = markerData.time / sequence.duration;
                         rt.anchorMin = new Vector2(progress, 0.5f);
                         rt.anchorMax = new Vector2(progress, 0.5f);
                         rt.anchoredPosition = Vector2.zero;
                     }
                 }
+            }
+        }
+
+        public void UpdateRewardGauge(int currentPoints, int targetPoints, int targetQuality)
+        {
+            if (rewardGaugeImage != null)
+            {
+                rewardGaugeImage.fillAmount = targetPoints > 0 ? (float)currentPoints / targetPoints : 0f;
+                switch (targetQuality)
+                {
+                    case 1: rewardGaugeImage.color = Color.white; break;
+                    case 2: rewardGaugeImage.color = Color.green; break;
+                    case 3: rewardGaugeImage.color = Color.blue; break;
+                    case 4: rewardGaugeImage.color = new Color(1f, 0.5f, 0f); break; // Orange for Epic
+                    default: rewardGaugeImage.color = Color.white; break;
+                }
+            }
+            if (rewardGaugeText != null)
+            {
+                rewardGaugeText.text = $"{currentPoints}/{targetPoints}";
             }
         }
 

@@ -207,6 +207,10 @@ public class InventoryManager_Alpha : MonoBehaviour
     public bool IsGroupSeriesAligned(int groupIndex)
     {
         int startIndex = groupIndex * 3;
+        
+        // 追加: リストの範囲外アクセスを防ぐ
+        if (startIndex + 2 >= equipInstance.Count) return false;
+
         var seriesA = equipInstance[startIndex].series;
         var seriesB = equipInstance[startIndex + 1].series;
         var seriesC = equipInstance[startIndex + 2].series;

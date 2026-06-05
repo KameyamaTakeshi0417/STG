@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Alpha.Data;
+using TMPro;
 
 namespace Alpha.UI.ADV
 {
@@ -39,8 +40,12 @@ namespace Alpha.UI.ADV
         private Image centerCharacterImage;
         private Image rightCharacterImage;
         private GameObject dialogBoxPanel;
-        private Text nameText;
-        private Text dialogText;
+        
+        [Header("Font Asset")]
+        [SerializeField] private TMP_FontAsset advFontAsset;
+
+        private TextMeshProUGUI nameText;
+        private TextMeshProUGUI dialogText;
         private Button skipButton;
 
         private ADVData_Alpha currentADVData;
@@ -70,26 +75,46 @@ namespace Alpha.UI.ADV
 
         private void CreateUI()
         {
+#if UNITY_EDITOR
+            if (advFontAsset == null)
+            {
+                string[] guids = UnityEditor.AssetDatabase.FindAssets("SoukouMincho SDF t:TMP_FontAsset");
+                if (guids.Length > 0)
+                {
+                    string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[0]);
+                    advFontAsset = UnityEditor.AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(path);
+                    if (advFontAsset != null) UnityEngine.Debug.Log("ADVManager: Auto-loaded font from " + path);
+                }
+            }
+#endif
+
             // Canvas
             GameObject canvasObj = new GameObject("ADVCanvas");
-            canvasObj.transform.SetParent(transform);
+            canvasObj.transform.SetParent(transform, false);
             advCanvas = canvasObj.AddComponent<Canvas>();
-            advCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            advCanvas.sortingOrder = 100; // 前面に表示
-            canvasObj.AddComponent<CanvasScaler>().uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            advCanvas.renderMode = RenderMode.ScreenSpaceCamera;
+            advCanvas.worldCamera = Camera.main;
+            advCanvas.planeDistance = 10f;
+            advCanvas.sortingLayerName = "SystemUI";
+            advCanvas.sortingOrder = 1500; // FadeBoard(1200)より前に表示
+
+            CanvasScaler scaler = canvasObj.AddComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920, 1080);
+
             canvasObj.AddComponent<GraphicRaycaster>();
 
             // 背景
             backgroundImage = CreateImage(canvasObj.transform, "Background", new Vector2(0, 0), new Vector2(1, 1), new Vector2(0.5f, 0.5f));
-            backgroundImage.color = Color.black;
+            backgroundImage.color = Color.white;
 
             // キャラクター（左、中央、右）
-            leftCharacterImage = CreateImage(canvasObj.transform, "LeftChar", new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0));
-            leftCharacterImage.rectTransform.anchoredPosition = new Vector2(200, 100);
+            leftCharacterImage = CreateImage(canvasObj.transform, "LeftChar", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
+            leftCharacterImage.rectTransform.anchoredPosition = new Vector2(-768, -440);
             leftCharacterImage.rectTransform.sizeDelta = new Vector2(500, 700);
 
-            rightCharacterImage = CreateImage(canvasObj.transform, "RightChar", new Vector2(1, 0), new Vector2(1, 0), new Vector2(1, 0));
-            rightCharacterImage.rectTransform.anchoredPosition = new Vector2(-200, 100);
+            rightCharacterImage = CreateImage(canvasObj.transform, "RightChar", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
+            rightCharacterImage.rectTransform.anchoredPosition = new Vector2(656, -440);
             rightCharacterImage.rectTransform.sizeDelta = new Vector2(500, 700);
 
             centerCharacterImage = CreateImage(canvasObj.transform, "CenterChar", new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0.5f, 0));
@@ -102,7 +127,7 @@ namespace Alpha.UI.ADV
 
             // ダイアログボックス枠
             dialogBoxPanel = new GameObject("DialogBox");
-            dialogBoxPanel.transform.SetParent(canvasObj.transform);
+            dialogBoxPanel.transform.SetParent(canvasObj.transform, false);
             Image dialogImage = dialogBoxPanel.AddComponent<Image>();
             dialogImage.color = new Color(0, 0, 0, 0.8f);
             RectTransform dialogRect = dialogBoxPanel.GetComponent<RectTransform>();
@@ -114,12 +139,13 @@ namespace Alpha.UI.ADV
 
             // 名前テキスト
             GameObject nameObj = new GameObject("NameText");
-            nameObj.transform.SetParent(dialogBoxPanel.transform);
-            nameText = nameObj.AddComponent<Text>();
-            nameText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
-            nameText.fontSize = 32;
+            nameObj.transform.SetParent(dialogBoxPanel.transform, false);
+            nameText = nameObj.AddComponent<TextMeshProUGUI>();
+            if (advFontAsset != null) nameText.font = advFontAsset;
+            nameText.fontSize = 48;
             nameText.color = Color.yellow;
-            nameText.fontStyle = FontStyle.Bold;
+            nameText.fontStyle = FontStyles.Bold;
+            nameText.overflowMode = TextOverflowModes.Overflow;
             RectTransform nameRect = nameObj.GetComponent<RectTransform>();
             nameRect.anchorMin = new Vector2(0.02f, 0.8f);
             nameRect.anchorMax = new Vector2(0.5f, 0.95f);
@@ -128,11 +154,12 @@ namespace Alpha.UI.ADV
 
             // セリフテキスト
             GameObject textObj = new GameObject("DialogText");
-            textObj.transform.SetParent(dialogBoxPanel.transform);
-            dialogText = textObj.AddComponent<Text>();
-            dialogText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
-            dialogText.fontSize = 28;
+            textObj.transform.SetParent(dialogBoxPanel.transform, false);
+            dialogText = textObj.AddComponent<TextMeshProUGUI>();
+            if (advFontAsset != null) dialogText.font = advFontAsset;
+            dialogText.fontSize = 36;
             dialogText.color = Color.white;
+            dialogText.overflowMode = TextOverflowModes.Overflow;
             RectTransform textRect = textObj.GetComponent<RectTransform>();
             textRect.anchorMin = new Vector2(0.05f, 0.1f);
             textRect.anchorMax = new Vector2(0.95f, 0.75f);
@@ -141,19 +168,19 @@ namespace Alpha.UI.ADV
 
             // スキップボタン
             GameObject skipObj = new GameObject("SkipButton");
-            skipObj.transform.SetParent(canvasObj.transform);
+            skipObj.transform.SetParent(canvasObj.transform, false);
             Image skipBg = skipObj.AddComponent<Image>();
             skipBg.color = new Color(0.2f, 0.2f, 0.2f, 0.8f);
             skipButton = skipObj.AddComponent<Button>();
             skipButton.onClick.AddListener(SkipADV);
             
             GameObject skipTextObj = new GameObject("SkipText");
-            skipTextObj.transform.SetParent(skipObj.transform);
-            Text skipTxt = skipTextObj.AddComponent<Text>();
-            skipTxt.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+            skipTextObj.transform.SetParent(skipObj.transform, false);
+            TextMeshProUGUI skipTxt = skipTextObj.AddComponent<TextMeshProUGUI>();
+            if (advFontAsset != null) skipTxt.font = advFontAsset;
             skipTxt.text = "Skip";
             skipTxt.fontSize = 24;
-            skipTxt.alignment = TextAnchor.MiddleCenter;
+            skipTxt.alignment = TextAlignmentOptions.Center;
             skipTxt.color = Color.white;
             skipTextObj.GetComponent<RectTransform>().sizeDelta = new Vector2(100, 40);
 
@@ -168,7 +195,7 @@ namespace Alpha.UI.ADV
         private Image CreateImage(Transform parent, string name, Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot)
         {
             GameObject obj = new GameObject(name);
-            obj.transform.SetParent(parent);
+            obj.transform.SetParent(parent, false);
             Image img = obj.AddComponent<Image>();
             RectTransform rect = obj.GetComponent<RectTransform>();
             rect.anchorMin = anchorMin;
@@ -260,8 +287,8 @@ namespace Alpha.UI.ADV
         {
             if (!isADVActive) return;
 
-            // Enterキーによる進行
-            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+            // Enterキーまたは左クリックによる進行
+            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetMouseButtonDown(0))
             {
                 if (isTyping)
                 {

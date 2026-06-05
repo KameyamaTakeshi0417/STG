@@ -5,6 +5,9 @@ namespace Alpha.Data
     [CreateAssetMenu(fileName = "NewStageData", menuName = "Alpha/Stage Data")]
     public class StageData_Alpha : ScriptableObject
     {
+        [Header("Stage Info")]
+        public string stageName = "Stage 1";
+
         [Tooltip("ステージ前半のシーケンスデータ")]
         public StageSequenceData_Alpha firstHalf;
         

@@ -359,9 +359,21 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
     public void Heal(float amount)
     {
         currentHP += amount;
-        if (currentHP > HP) currentHP = HP;
         
-        Debug.Log($"[PlayerStatusManager] Heal: {amount} | Current HP: {currentHP}");
+        // オーバーフロー処理：現在のHPが最大値を超え、かつ次のゲージが存在する場合
+        while (currentHP > HP && nowHPGauge < HPGauge)
+        {
+            currentHP -= HP;
+            nowHPGauge++;
+        }
+        
+        // 最終的に最大HPを超えないようにクリップ
+        if (currentHP > HP) 
+        {
+            currentHP = HP;
+        }
+        
+        Debug.Log($"[PlayerStatusManager] Heal: {amount} | Current HP: {currentHP} | Current Gauge: {nowHPGauge}");
 
         OnPlayerHPChanged?.Invoke(currentHP, HP);
     }

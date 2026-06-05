@@ -26,12 +26,20 @@ namespace Alpha.Flow
         public static StageManager_Alpha Instance { get; private set; }
 
         [Header("Data")]
+        [Tooltip("現在のステージデータ")]
         public StageData_Alpha currentStageData;
+        [Tooltip("連続プレイするステージのリスト")]
+        public StageData_Alpha[] stageList;
+        public int currentStageIndex = 0;
 
         [Header("References")]
         public SpawnManager_Alpha spawnManager;
         public SequenceBarUI_Alpha sequenceBarUI;
         public FadeController_Alpha fadeController;
+        [Tooltip("STAGE CLEARを表示するテキスト")]
+        public TMPro.TextMeshProUGUI stageClearText;
+        [Tooltip("ステージタイトルを表示するテキスト")]
+        public TMPro.TextMeshProUGUI stageTitleText;
 
         [Header("State (Read Only)")]
         public StageState_Alpha currentState = StageState_Alpha.None;
@@ -39,6 +47,7 @@ namespace Alpha.Flow
 
         private StageSequenceData_Alpha activeSequence;
         private int currentTutorialIndex = 0;
+        private bool wasMobCleared = false;
 
         private void Awake()
         {
@@ -48,29 +57,69 @@ namespace Alpha.Flow
                 return;
             }
             Instance = this;
+            
+            if (stageClearText != null) stageClearText.gameObject.SetActive(false);
+            if (stageTitleText != null) stageTitleText.gameObject.SetActive(false);
         }
 
         void Start()
         {
             SetState(StageState_Alpha.WaitToStartFirstHalf);
             
+            if (stageList != null && stageList.Length > 0)
+            {
+                currentStageData = stageList[currentStageIndex];
+            }
+
             // ゲーム開始時のフェードイン
             if (fadeController != null)
             {
-                fadeController.FadeIn();
+                if (stageTitleText != null && currentStageData != null)
+                {
+                    stageTitleText.text = currentStageData.stageName;
+                    stageTitleText.gameObject.SetActive(true);
+                    StartCoroutine(HideTitleTextAfterSeconds(3f));
+                }
+                
+                fadeController.FadeIn(() => {
+                    if (currentState == StageState_Alpha.WaitToStartFirstHalf)
+                    {
+                        StartFirstHalf();
+                    }
+                });
             }
+            else
+            {
+                // Fallback
+                StartFirstHalf();
+            }
+        }
+
+        private System.Collections.IEnumerator HideTitleTextAfterSeconds(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            if (stageTitleText != null) stageTitleText.gameObject.SetActive(false);
         }
 
         void Update()
         {
+            if (spawnManager != null)
+            {
+                bool currentMobCleared = spawnManager.IsMobCleared();
+                if (currentMobCleared && !wasMobCleared && 
+                    (currentState == StageState_Alpha.FirstHalf || 
+                     currentState == StageState_Alpha.SecondHalf || 
+                     currentState == StageState_Alpha.MidBossWait || 
+                     currentState == StageState_Alpha.BossWait))
+                {
+                    ClearAllEnemyBullets();
+                }
+                wasMobCleared = currentMobCleared;
+            }
+
             switch (currentState)
             {
                 case StageState_Alpha.WaitToStartFirstHalf:
-                    // プレイヤーの操作で前半開始
-                    if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
-                    {
-                        StartFirstHalf();
-                    }
                     break;
 
                 case StageState_Alpha.FirstHalf:
@@ -81,49 +130,118 @@ namespace Alpha.Flow
 
                 case StageState_Alpha.MidBossWait:
                 case StageState_Alpha.BossWait:
-                    // 雑魚が全滅したら次の処理へ
                     if (spawnManager.IsMobCleared())
                     {
                         if (currentState == StageState_Alpha.BossWait)
                         {
-                            SetState(StageState_Alpha.Transition); // 待機用ステートへ移行
+                            SetState(StageState_Alpha.Transition);
                             StartCoroutine(WaitUntilAllOrbsCollected(() => {
-                                // ステージクリア時にフリースロットを1つ追加
                                 if (InventoryManager_Alpha.Instance != null)
                                 {
                                     InventoryManager_Alpha.Instance.AddFreeSlot();
                                 }
                                 
-                                // ボス前の休憩（待機）到達時にオーブを一斉開封
-                                if (RewardSequenceManager_Alpha.Instance != null)
-                                {
-                                    RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
-                                        StartPreBossADVAndFight();
-                                    });
-                                }
-                                else
-                                {
-                                    StartPreBossADVAndFight();
-                                }
+                                StartPreBossADVAndFight();
                             }));
                         }
                         else
                         {
-                            StartBossFight();
+                            SetState(StageState_Alpha.MidBossFight);
+                            spawnManager.SpawnBoss(activeSequence.bossPrefab);
                         }
                     }
                     break;
+            }
+        }
 
-                case StageState_Alpha.WaitToStartSecondHalf:
-                    // プレイヤーの操作で後半開始
-                    if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
+        private void UpdateSequence()
+        {
+            if (activeSequence == null) return;
+
+            // ポーズ時やチュートリアル表示中は時間を進めない
+            if (Time.timeScale == 0f) return;
+            if (Alpha.UI.TutorialManager_Alpha.Instance != null && Alpha.UI.TutorialManager_Alpha.Instance.IsShowing) return;
+
+            currentSequenceTime += Time.deltaTime;
+            
+            // チュートリアルのチェック
+            CheckTutorials();
+
+            // ウェーブのチェック
+            spawnManager.CheckSpawn(currentSequenceTime);
+            sequenceBarUI.UpdateProgress(currentSequenceTime / activeSequence.duration);
+
+            if (currentSequenceTime >= activeSequence.duration)
+            {
+                if (currentState == StageState_Alpha.FirstHalf)
+                {
+                    SetState(StageState_Alpha.MidBossWait);
+                }
+                else if (currentState == StageState_Alpha.SecondHalf)
+                {
+                    SetState(StageState_Alpha.BossWait);
+                }
+            }
+        }
+
+        private void HandleWaveSkip()
+        {
+            // ポーズ時やチュートリアル表示中はスキップを受け付けない
+            if (Time.timeScale == 0f) return;
+            if (Alpha.UI.TutorialManager_Alpha.Instance != null && Alpha.UI.TutorialManager_Alpha.Instance.IsShowing) return;
+
+            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.LeftShift))
+            {
+                if (activeSequence == null) return;
+
+                float targetTime = activeSequence.duration;
+                float previousTime = 0f;
+
+                foreach (var wave in activeSequence.waves)
+                {
+                    if (wave.time <= currentSequenceTime + 0.01f)
                     {
-                        StartSecondHalf();
+                        previousTime = wave.time;
                     }
-                    break;
+                    
+                    if (wave.time > currentSequenceTime + 0.01f)
+                    {
+                        targetTime = wave.time;
+                        break;
+                    }
+                }
 
-                // ボス戦中などは別途クリア条件（ボス撃破）を監視するが
-                // 最小実装としてここでは何もしない。外部（EnemyEscape等）から遷移を呼ぶ。
+                if (targetTime > currentSequenceTime)
+                {
+                    float skipRatio = activeSequence.duration > 0f ? (targetTime - currentSequenceTime) / activeSequence.duration : 0f;
+                    
+                    if (RewardManager_Alpha.Instance != null)
+                    {
+                        int pointsToGain = Mathf.RoundToInt(RewardManager_Alpha.Instance.targetPoints * skipRatio);
+                        RewardManager_Alpha.Instance.AddPoints(pointsToGain);
+                    }
+
+                    currentSequenceTime = targetTime;
+                    
+                    sequenceBarUI.UpdateProgress(currentSequenceTime / activeSequence.duration);
+                    spawnManager.CheckSpawn(currentSequenceTime);
+                }
+            }
+        }
+
+        private void CheckTutorials()
+        {
+            if (activeSequence.tutorialEvents == null) return;
+
+            while (currentTutorialIndex < activeSequence.tutorialEvents.Count &&
+                   currentSequenceTime >= activeSequence.tutorialEvents[currentTutorialIndex].time)
+            {
+                if (Alpha.UI.TutorialManager_Alpha.Instance != null)
+                {
+                    var tEvent = activeSequence.tutorialEvents[currentTutorialIndex];
+                    Alpha.UI.TutorialManager_Alpha.Instance.ShowTutorial(tEvent.tutorialId, tEvent.useFadeMode, tEvent.displayDuration);
+                }
+                currentTutorialIndex++;
             }
         }
 
@@ -146,12 +264,7 @@ namespace Alpha.Flow
         {
             if (currentStageData == null || currentStageData.firstHalf == null)
             {
-                Debug.LogError("[StageManager] currentStageData or its firstHalf is not assigned! Cannot start first half.");
-                return;
-            }
-            if (sequenceBarUI == null || spawnManager == null)
-            {
-                Debug.LogError("[StageManager] References (SequenceBarUI or SpawnManager) are not assigned in the inspector!");
+                Debug.LogError("[StageManager] First Half sequence data is missing!");
                 return;
             }
 
@@ -159,193 +272,81 @@ namespace Alpha.Flow
             currentSequenceTime = 0f;
             currentTutorialIndex = 0;
 
-            // ステージ（前半）開始時にテンポラリー枠のアイテムを自動売却
-            if (InventoryManager_Alpha.Instance != null)
-            {
-                InventoryManager_Alpha.Instance.SellTemporaryItems();
-            }
-            
             sequenceBarUI.Setup(activeSequence);
             spawnManager.SetupSequence(activeSequence);
-            
+
             SetState(StageState_Alpha.FirstHalf);
-        }
-
-        private void UpdateSequence()
-        {
-            if (activeSequence == null) return;
-
-            currentSequenceTime += Time.deltaTime;
-            sequenceBarUI.UpdateProgress(currentSequenceTime / activeSequence.duration);
-            spawnManager.CheckSpawn(currentSequenceTime);
-
-            // チュートリアルイベントのチェック
-            if (activeSequence.tutorialEvents != null)
-            {
-                while (currentTutorialIndex < activeSequence.tutorialEvents.Count &&
-                       currentSequenceTime >= activeSequence.tutorialEvents[currentTutorialIndex].time)
-                {
-                    if (TutorialManager_Alpha.Instance != null)
-                    {
-                        TutorialManager_Alpha.Instance.ShowTutorial(activeSequence.tutorialEvents[currentTutorialIndex].tutorialId);
-                    }
-                    currentTutorialIndex++;
-                }
-            }
-
-            if (currentSequenceTime >= activeSequence.duration)
-            {
-                // 時間到達で待機状態へ
-                if (currentState == StageState_Alpha.FirstHalf)
-                    SetState(StageState_Alpha.MidBossWait);
-                else
-                {
-                    SetState(StageState_Alpha.BossWait);
-                }
-            }
-        }
-
-        private void HandleWaveSkip()
-        {
-            // ポーズ時やチュートリアル表示時はスキップを受け付けない
-            if (Time.timeScale == 0f) return;
-            if (Alpha.UI.TutorialManager_Alpha.Instance != null && Alpha.UI.TutorialManager_Alpha.Instance.IsShowing) return;
-
-            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.LeftShift))
-            {
-                if (activeSequence == null) return;
-
-                // 現在時刻(currentSequenceTime)より未来にある最も近いウェーブの時間を検索する
-                float targetTime = activeSequence.duration;
-                float previousTime = 0f;
-                bool foundNextWave = false;
-
-                foreach (var wave in activeSequence.waves)
-                {
-                    if (wave.time <= currentSequenceTime + 0.01f)
-                    {
-                        previousTime = wave.time;
-                    }
-                    
-                    // わずかな浮動小数点誤差を考慮して少し余裕を持たせる
-                    if (wave.time > currentSequenceTime + 0.01f)
-                    {
-                        targetTime = wave.time;
-                        foundNextWave = true;
-                        break;
-                    }
-                }
-
-                if (targetTime > currentSequenceTime)
-                {
-                    // スキップ時の残り割合の計算
-                    float totalDistance = targetTime - previousTime;
-                    float remainingTime = targetTime - currentSequenceTime;
-                    float remainingRatio = totalDistance > 0f ? remainingTime / totalDistance : 0f;
-
-                    Debug.Log($"[StageManager] Wave Skipped! Jumped from {currentSequenceTime:F1} to {targetTime:F1}. Remaining Ratio: {remainingRatio:F2}");
-                    
-                    // 報酬付与
-                    if (RewardManager_Alpha.Instance != null)
-                    {
-                        RewardManager_Alpha.Instance.GrantSkipReward(remainingRatio);
-                    }
-
-                    // 次のウェーブの開始時間へ正確にジャンプ
-                    currentSequenceTime = targetTime;
-                    
-                    // UIとスポーンを即時更新
-                    sequenceBarUI.UpdateProgress(currentSequenceTime / activeSequence.duration);
-                    spawnManager.CheckSpawn(currentSequenceTime);
-                }
-            }
         }
 
         private void StartBossFight()
         {
-            if (currentState == StageState_Alpha.MidBossWait)
+            SetState(StageState_Alpha.BossFight);
+            spawnManager.SpawnBoss(activeSequence.bossPrefab);
+        }
+
+        private void ClearAllEnemyBullets()
+        {
+            Bullet_Base[] bullets = FindObjectsOfType<Bullet_Base>();
+            foreach (var b in bullets)
             {
-                SetState(StageState_Alpha.MidBossFight);
-                spawnManager.SpawnBoss(activeSequence.bossPrefab);
+                if (b != null && b.gameObject.activeInHierarchy && b.isEnemyBullet)
+                {
+                    if (Alpha_ObjectPoolManager.Instance != null && b.sourcePrefab != null)
+                    {
+                        Alpha_ObjectPoolManager.Instance.Return(b.gameObject, b.sourcePrefab);
+                    }
+                    else
+                    {
+                        Destroy(b.gameObject);
+                    }
+                }
             }
-            else if (currentState == StageState_Alpha.BossWait)
-            {
-                SetState(StageState_Alpha.BossFight);
-                spawnManager.SpawnBoss(activeSequence.bossPrefab);
-            }
+            Debug.Log("[StageManager] Cleared all enemy bullets.");
         }
 
         public void OnBossDefeated()
         {
+            ClearAllEnemyBullets();
+            
             if (currentState == StageState_Alpha.MidBossFight)
             {
                 SetState(StageState_Alpha.Transition);
                 
                 StartCoroutine(WaitUntilAllOrbsCollected(() => 
                 {
-                    // 暗転開始
                     fadeController.FadeOut(() => 
                     {
-                        // 暗転中（真っ黒）のフック処理
                         Debug.Log("[StageManager] Fade Out Complete. Hook for Equipment Turn.");
                         
-                        // 中ボス撃破報酬のオーブを一斉開封
-                        if (RewardSequenceManager_Alpha.Instance != null)
+                        fadeController.FadeIn(() => 
                         {
-                            RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
-                                // 報酬画面が終わってから後半待機へ
-                                SetState(StageState_Alpha.WaitToStartSecondHalf);
-                                
-                                // UIをクリアしておく、または後半用に再構築
-                                if (currentStageData != null && currentStageData.secondHalf != null)
-                                {
-                                    activeSequence = currentStageData.secondHalf;
-                                    sequenceBarUI.Setup(activeSequence);
-                                    spawnManager.SetupSequence(activeSequence);
-                                }
-                                else
-                                {
-                                    Debug.LogError("[StageManager] currentStageData or its secondHalf is not assigned! Cannot prepare second half.");
-                                    activeSequence = null; // 安全のためnullにする
-                                }
-                                
-                                fadeController.FadeIn();
-                            });
-                        }
-                        else
-                        {
-                            SetState(StageState_Alpha.WaitToStartSecondHalf);
-                            
-                            if (currentStageData != null && currentStageData.secondHalf != null)
+                            activeSequence = currentStageData.secondHalf;
+                            if (activeSequence != null)
                             {
-                                activeSequence = currentStageData.secondHalf;
                                 sequenceBarUI.Setup(activeSequence);
                                 spawnManager.SetupSequence(activeSequence);
+                                StartSecondHalf();
                             }
-                            else
-                            {
-                                activeSequence = null;
-                            }
-                            
-                            fadeController.FadeIn();
-                        }
+                        });
                     });
                 }));
             }
             else if (currentState == StageState_Alpha.BossFight)
             {
-                StartPostBossADVAndClear();
+                SetState(StageState_Alpha.Transition);
+                StartCoroutine(WaitUntilAllOrbsCollected(() => 
+                {
+                    StartPostBossADVAndClear();
+                }));
             }
         }
 
         private void StartPreBossADVAndFight()
         {
-            if (currentStageData.preBossADV != null && ADVManager_Alpha.Instance != null)
+            if (currentStageData.preBossADV != null && ADVManager_Alpha.Instance != null && currentStageData.preBossADV.pages != null && currentStageData.preBossADV.pages.Count > 0)
             {
-                // フェードアウトしてからADV開始
                 fadeController.FadeOut(() => {
                     ADVManager_Alpha.Instance.StartADV(currentStageData.preBossADV, () => {
-                        // ADV終了後、フェードインしてボス戦開始
                         fadeController.FadeIn(() => {
                             StartBossFight();
                         });
@@ -360,12 +361,10 @@ namespace Alpha.Flow
 
         private void StartPostBossADVAndClear()
         {
-            if (currentStageData.postBossADV != null && ADVManager_Alpha.Instance != null)
+            if (currentStageData.postBossADV != null && ADVManager_Alpha.Instance != null && currentStageData.postBossADV.pages != null && currentStageData.postBossADV.pages.Count > 0)
             {
-                // フェードアウトしてからADV開始
                 fadeController.FadeOut(() => {
                     ADVManager_Alpha.Instance.StartADV(currentStageData.postBossADV, () => {
-                        // ADV終了後、ステージクリア処理
                         fadeController.FadeIn(() => {
                             ExecuteStageClear();
                         });
@@ -382,7 +381,99 @@ namespace Alpha.Flow
         {
             SetState(StageState_Alpha.StageClear);
             Debug.Log("[StageManager] STAGE CLEAR!");
-            // クリアリザルトなどの処理へ移行
+
+            // 1. 報酬ゲージのリセット
+            if (RewardManager_Alpha.Instance != null)
+            {
+                RewardManager_Alpha.Instance.ResetRewardCycle();
+            }
+
+            // 2. プレイヤーの回復処理
+            if (playerStatusManager_Alpha.Instance != null)
+            {
+                // スタミナ全快
+                playerStatusManager_Alpha.Instance.currentStamina = playerStatusManager_Alpha.Instance.maxStamina;
+                
+                // HPを最大HPの30%回復 (オーバーフロー処理は Heal 内で対応済み)
+                float healAmount = playerStatusManager_Alpha.Instance.HP * 0.3f;
+                playerStatusManager_Alpha.Instance.Heal(healAmount);
+                
+                Debug.Log($"[StageManager] Player recovered. Healed {healAmount} HP.");
+            }
+
+            // 3. 次ステージへの遷移演出を開始
+            StartCoroutine(StageClearTransitionRoutine());
+        }
+
+        private System.Collections.IEnumerator StageClearTransitionRoutine()
+        {
+            // STAGE CLEAR テキスト表示
+            if (stageClearText != null)
+            {
+                stageClearText.gameObject.SetActive(true);
+            }
+
+            // 3秒待機（スコア表示などは今回はスキップ）
+            yield return new WaitForSeconds(3f);
+
+            if (stageClearText != null)
+            {
+                stageClearText.gameObject.SetActive(false);
+            }
+
+            // フェードアウト（暗転）
+            bool isFaded = false;
+            if (fadeController != null)
+            {
+                fadeController.FadeOut(() => { isFaded = true; });
+            }
+            else
+            {
+                isFaded = true;
+            }
+            yield return new WaitUntil(() => isFaded);
+
+            // --- ここで裏側のクリーンアップと次ステージ準備 ---
+            currentStageIndex++;
+            if (stageList != null && currentStageIndex < stageList.Length && stageList[currentStageIndex] != null)
+            {
+                currentStageData = stageList[currentStageIndex];
+                
+                // 敵や弾などを掃除
+                ClearAllEnemyBullets();
+                
+                // タイトルテキストの更新
+                if (stageTitleText != null)
+                {
+                    stageTitleText.text = currentStageData.stageName;
+                    stageTitleText.gameObject.SetActive(true);
+                }
+
+                // 次ステージの初期化
+                SetState(StageState_Alpha.WaitToStartFirstHalf);
+                wasMobCleared = false;
+                
+                if (fadeController != null)
+                {
+                    fadeController.FadeIn(() => {
+                        if (stageTitleText != null)
+                        {
+                            StartCoroutine(HideTitleTextAfterSeconds(3f));
+                        }
+                        StartFirstHalf();
+                    });
+                }
+                else
+                {
+                    StartFirstHalf();
+                }
+            }
+            else
+            {
+                // 全ステージクリア
+                Debug.Log("[StageManager] ALL STAGES CLEARED!");
+                // 拠点やタイトルに戻る処理を記述
+            }
         }
 
         private System.Collections.IEnumerator WaitUntilAllOrbsCollected(System.Action onComplete)

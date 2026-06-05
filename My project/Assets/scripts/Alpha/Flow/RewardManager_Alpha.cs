@@ -59,6 +59,12 @@ namespace Alpha.Flow
         [Tooltip("ボスのドロップ確率とレアリティテーブル")]
         public DropTable bossDropTable = new DropTable { extraDropChance = 0.20f, weightR1 = 0f, weightR2 = 0f, weightR3 = 80f, weightR4 = 20f };
 
+        [Header("Reward Gauge System")]
+        public int currentPoints = 0;
+        public int targetPoints = 100;
+        public int targetQuality = 1;
+        public int currentRewardIndex = 1;
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -69,22 +75,74 @@ namespace Alpha.Flow
             Instance = this;
         }
 
-        /// <summary>
-        /// 雑魚撃破時のドロップ判定
-        /// </summary>
-        public void CheckMobDrop(Vector3 position, float dropChance)
+        private void Start()
         {
-            // 基本ドロップ判定
-            if (Random.value <= dropChance)
+            DetermineNextReward();
+            if (Alpha.UI.SequenceBarUI_Alpha.Instance != null)
             {
-                SpawnOrb(position, mobDropTable.GetRandomRarity(), OrbSource_Alpha.Mob);
+                Alpha.UI.SequenceBarUI_Alpha.Instance.UpdateRewardGauge(currentPoints, targetPoints, targetQuality);
+            }
+        }
+
+        /// <summary>
+        /// 報酬ポイントを加算する
+        /// </summary>
+        public void AddPoints(int points)
+        {
+            currentPoints += points;
+            
+            if (Alpha.UI.SequenceBarUI_Alpha.Instance != null)
+            {
+                Alpha.UI.SequenceBarUI_Alpha.Instance.UpdateRewardGauge(currentPoints, targetPoints, targetQuality);
+            }
+
+            if (currentPoints >= targetPoints)
+            {
+                // 超過分は切り捨て
+                currentPoints = 0;
                 
-                // 追加ドロップ判定
-                if (Random.value <= mobDropTable.extraDropChance)
+                // 指定位置 (0, 5, 0) にオーブをドロップ
+                SpawnOrb(new Vector3(0, 5f, 0), targetQuality, OrbSource_Alpha.Mob);
+                
+                currentRewardIndex++;
+                DetermineNextReward();
+                
+                if (Alpha.UI.SequenceBarUI_Alpha.Instance != null)
                 {
-                    SpawnOrb(position + new Vector3(0.5f, 0, 0), mobDropTable.GetRandomRarity(), OrbSource_Alpha.Mob);
+                    Alpha.UI.SequenceBarUI_Alpha.Instance.UpdateRewardGauge(currentPoints, targetPoints, targetQuality);
                 }
             }
+        }
+
+        /// <summary>
+        /// 報酬サイクルをリセットする（ステージ遷移時などに使用）
+        /// </summary>
+        public void ResetRewardCycle()
+        {
+            currentPoints = 0;
+            currentRewardIndex = 1;
+            DetermineNextReward();
+            
+            if (Alpha.UI.SequenceBarUI_Alpha.Instance != null)
+            {
+                Alpha.UI.SequenceBarUI_Alpha.Instance.UpdateRewardGauge(currentPoints, targetPoints, targetQuality);
+            }
+            
+            Debug.Log("[RewardManager] Reward cycle has been reset.");
+        }
+
+        private void DetermineNextReward()
+        {
+            switch (currentRewardIndex)
+            {
+                case 1: targetQuality = 1; break;
+                case 2: targetQuality = mobDropTable.GetRandomRarity(); break;
+                case 3: targetQuality = 2; break;
+                case 4: targetQuality = 3; break;
+                case 5: targetQuality = 4; break;
+                default: targetQuality = mobDropTable.GetRandomRarity(); break;
+            }
+            targetPoints = targetQuality * 100;
         }
 
         /// <summary>
@@ -96,13 +154,8 @@ namespace Alpha.Flow
             
             for (int i = 0; i < dropCount; i++)
             {
-                // 横に少しずらしてドロップさせる
                 Vector3 spawnPos = position + new Vector3(i * 0.5f - ((dropCount - 1) * 0.25f), 0, 0);
-                
-                // 100%ドロップ
                 SpawnOrb(spawnPos, midBossDropTable.GetRandomRarity(), OrbSource_Alpha.MidBoss);
-
-                // 追加ドロップ判定
                 if (Random.value <= midBossDropTable.extraDropChance)
                 {
                     SpawnOrb(spawnPos + new Vector3(0.2f, 0.2f, 0), midBossDropTable.GetRandomRarity(), OrbSource_Alpha.MidBoss);
@@ -120,11 +173,7 @@ namespace Alpha.Flow
             for (int i = 0; i < dropCount; i++)
             {
                 Vector3 spawnPos = position + new Vector3(i * 0.5f - ((dropCount - 1) * 0.25f), 0, 0);
-
-                // 100%ドロップ
                 SpawnOrb(spawnPos, bossDropTable.GetRandomRarity(), OrbSource_Alpha.Boss, bossId);
-
-                // 追加ドロップ判定
                 if (Random.value <= bossDropTable.extraDropChance)
                 {
                     SpawnOrb(spawnPos + new Vector3(0.2f, 0.2f, 0), bossDropTable.GetRandomRarity(), OrbSource_Alpha.Boss, bossId);
@@ -137,7 +186,6 @@ namespace Alpha.Flow
         /// </summary>
         public void SpawnOrb(Vector3 position, int rarity, OrbSource_Alpha source, string bossId = "")
         {
-            // レアリティからプレハブの配列インデックスを計算 (rarity: 1〜4 -> index: 0〜3)
             int index = Mathf.Clamp(rarity - 1, 0, orbPrefabs.Length - 1);
             GameObject prefabToSpawn = orbPrefabs[index];
 
@@ -153,45 +201,6 @@ namespace Alpha.Flow
             {
                 orbItem.orbData = new OrbData_Alpha(rarity, source, bossId);
             }
-        }
-
-        /// <summary>
-        /// スキップ報酬を直接TreasureManagerに付与する（画面に出さない）
-        /// </summary>
-        public void GrantSkipReward(float remainingRatio)
-        {
-            if (remainingRatio >= 0.70f)
-            {
-                // Rarity 2 確定
-                treasureManager_Alpha.Instance.PushOrb(new OrbData_Alpha(2, OrbSource_Alpha.Skip));
-                RollSkipAdditionalOrb();
-            }
-            else if (remainingRatio >= 0.30f)
-            {
-                // Rarity 1 確定
-                treasureManager_Alpha.Instance.PushOrb(new OrbData_Alpha(1, OrbSource_Alpha.Skip));
-                RollSkipAdditionalOrb();
-            }
-            else
-            {
-                // 30%未満は経験値ドロップ
-                GrantExp(remainingRatio);
-            }
-        }
-
-        private void RollSkipAdditionalOrb()
-        {
-            if (Random.value <= 0.01f)
-            {
-                // 追加のレアリティはとりあえずR1とする（必要なら雑魚テーブルなどを引く）
-                treasureManager_Alpha.Instance.PushOrb(new OrbData_Alpha(1, OrbSource_Alpha.Skip));
-            }
-        }
-
-        private void GrantExp(float amount)
-        {
-            // TODO: EXP付与のロジックをここに繋げる
-            Debug.Log($"[RewardManager] Granted {amount} EXP from Skip.");
         }
     }
 }

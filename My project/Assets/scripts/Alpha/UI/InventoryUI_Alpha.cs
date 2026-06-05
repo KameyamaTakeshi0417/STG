@@ -300,14 +300,8 @@ namespace Alpha.UI
             {
                 if (item.series != null)
                 {
-                    bool isAllEq = false;
-                    if (item.currentEffects != null)
-                    {
-                        foreach(var eff in item.currentEffects)
-                        {
-                            if (eff != null && eff.effectType == Alpha.Data.WeaponEffectType_Alpha.AllEquipable) { isAllEq = true; break; }
-                        }
-                    }
+                    bool isAllEq = HasAllEquipableEffect(item.currentEffects);
+                    if (!isAllEq && item.series != null) isAllEq = HasAllEquipableEffect(item.series.passiveEffects);
                     
                     Sprite targetSprite = null;
                     if (isAllEq && item.series.iconAllEquipable != null) targetSprite = item.series.iconAllEquipable;
@@ -415,14 +409,8 @@ namespace Alpha.UI
                     else if (column == 1) expectedPart = Alpha.Data.WeaponPartType_Alpha.Casing;
                     else if (column == 2) expectedPart = Alpha.Data.WeaponPartType_Alpha.Bullet;
 
-                    if (item.currentEffects != null)
-                    {
-                        foreach (var eff in item.currentEffects)
-                        {
-                            if (eff != null && eff.effectType == Alpha.Data.WeaponEffectType_Alpha.AllEquipable)
-                                return true;
-                        }
-                    }
+                    if (HasAllEquipableEffect(item.currentEffects)) return true;
+                    if (item.series != null && HasAllEquipableEffect(item.series.passiveEffects)) return true;
 
                     return item.partType == expectedPart;
                 }
@@ -493,6 +481,22 @@ namespace Alpha.UI
             selectedIndex = -1;
             Hide(); // UI自身を隠す
             onConfirmCallback?.Invoke();
+        }
+
+        private bool HasAllEquipableEffect(List<Alpha.Data.WeaponEffectSO_Alpha> effects)
+        {
+            if (effects == null) return false;
+            foreach (var eff in effects)
+            {
+                if (eff == null) continue;
+                if (eff.effectType == Alpha.Data.WeaponEffectType_Alpha.AllEquipable) return true;
+                if (eff.effectType == Alpha.Data.WeaponEffectType_Alpha.Composite)
+                {
+                    var comp = eff as Alpha.Data.CompositeWeaponEffectSO_Alpha;
+                    if (comp != null && HasAllEquipableEffect(comp.subEffects)) return true;
+                }
+            }
+            return false;
         }
 
         private void OnSlotRightClicked(int index, UnityEngine.EventSystems.PointerEventData eventData)

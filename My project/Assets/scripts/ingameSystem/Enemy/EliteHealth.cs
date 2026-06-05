@@ -68,20 +68,15 @@ public class EliteHealth : Health
     }
 
     // HPが0になった時の処理
-    void Die()
+    protected override void Die()
     {
-        for (int i = 0; i < Exp; i++)
-        {
-            GameObject ExpObj = Instantiate(
-                Resources.Load<GameObject>("Objects/MoneyAndExp"),
-                CreateExpPos(),
-                Quaternion.identity
-            );
-        }
         Debug.Log(gameObject.name + " died.");
-        // ここに死亡時の処理を書く
+        // base.Die()を呼ぶことで、上限付きのEXPドロップと、RewardManagerのドロップ（最大2個）が実行される
+        base.Die();
+        
         Destroy(CircleHPBar[1].transform.root);
-        Destroy(this.gameObject);
+        // base.Die()側でDestroy(gameObject)されるのでここでのDestroyは不要ですが、念のため残すならコメントアウト
+        // Destroy(this.gameObject);
     }
 
     public override void setSlideHPBar()

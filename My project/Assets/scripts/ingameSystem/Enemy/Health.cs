@@ -90,9 +90,11 @@ public class Health : _Health_Base
     }
 
     // HPが0になった時の処理
-    void Die()
+    protected virtual void Die()
     {
-        for (int i = 0; i < Exp; i++)
+        // 処理落ちを防ぐため、物理的なドロップは最大5個までに制限
+        int dropAmount = Mathf.Min(Exp, 5);
+        for (int i = 0; i < dropAmount; i++)
         {
             // まずは自分（エネミー）の中心に生成する
             GameObject ExpObj = Instantiate(
@@ -126,7 +128,7 @@ public class Health : _Health_Base
             }
             else
             {
-                Alpha.Flow.RewardManager_Alpha.Instance.CheckMobDrop(transform.position, orbDropChance);
+                Alpha.Flow.RewardManager_Alpha.Instance.AddPoints(rewardPoints);
             }
         }
 
