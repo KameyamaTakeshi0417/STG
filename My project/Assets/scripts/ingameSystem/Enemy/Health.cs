@@ -117,6 +117,10 @@ public class Health : _Health_Base
             if (isBoss)
             {
                 Alpha.Flow.RewardManager_Alpha.Instance.DropBossReward(transform.position, bossId);
+                if (Alpha.Flow.StageManager_Alpha.Instance != null)
+                {
+                    Alpha.Flow.StageManager_Alpha.Instance.OnBossDefeated();
+                }
             }
             else if (isMidBoss)
             {

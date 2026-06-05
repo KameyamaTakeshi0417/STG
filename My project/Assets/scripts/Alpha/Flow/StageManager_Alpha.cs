@@ -186,9 +186,8 @@ namespace Alpha.Flow
 
         private void HandleWaveSkip()
         {
-            // ポーズ時やチュートリアル表示中はスキップを受け付けない
+            // ポーズ時はスキップを受け付けない
             if (Time.timeScale == 0f) return;
-            if (Alpha.UI.TutorialManager_Alpha.Instance != null && Alpha.UI.TutorialManager_Alpha.Instance.IsShowing) return;
 
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.LeftShift))
             {
@@ -318,16 +317,36 @@ namespace Alpha.Flow
                     {
                         Debug.Log("[StageManager] Fade Out Complete. Hook for Equipment Turn.");
                         
-                        fadeController.FadeIn(() => 
+                        // 中ボス撃破報酬のオーブを一斉開封
+                        if (RewardSequenceManager_Alpha.Instance != null)
                         {
-                            activeSequence = currentStageData.secondHalf;
-                            if (activeSequence != null)
+                            RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
+                                // 報酬画面が終わってから後半待機へ
+                                fadeController.FadeIn(() => 
+                                {
+                                    activeSequence = currentStageData.secondHalf;
+                                    if (activeSequence != null)
+                                    {
+                                        sequenceBarUI.Setup(activeSequence);
+                                        spawnManager.SetupSequence(activeSequence);
+                                        StartSecondHalf();
+                                    }
+                                });
+                            });
+                        }
+                        else
+                        {
+                            fadeController.FadeIn(() => 
                             {
-                                sequenceBarUI.Setup(activeSequence);
-                                spawnManager.SetupSequence(activeSequence);
-                                StartSecondHalf();
-                            }
-                        });
+                                activeSequence = currentStageData.secondHalf;
+                                if (activeSequence != null)
+                                {
+                                    sequenceBarUI.Setup(activeSequence);
+                                    spawnManager.SetupSequence(activeSequence);
+                                    StartSecondHalf();
+                                }
+                            });
+                        }
                     });
                 }));
             }
@@ -405,20 +424,51 @@ namespace Alpha.Flow
             StartCoroutine(StageClearTransitionRoutine());
         }
 
+        private System.Collections.IEnumerator FadeTextRoutine(TMPro.TextMeshProUGUI textUI, float displayDuration)
+        {
+            if (textUI == null) yield break;
+            
+            if (!textUI.gameObject.activeSelf) textUI.gameObject.SetActive(true);
+            
+            CanvasGroup cg = textUI.gameObject.GetComponent<CanvasGroup>();
+            if (cg == null) cg = textUI.gameObject.AddComponent<CanvasGroup>();
+            
+            // Fade In
+            float t = 0;
+            while (t < 0.5f)
+            {
+                t += Time.unscaledDeltaTime;
+                cg.alpha = Mathf.Lerp(0f, 1f, t / 0.5f);
+                yield return null;
+            }
+            cg.alpha = 1f;
+            
+            // Wait
+            yield return new WaitForSecondsRealtime(displayDuration);
+            
+            // Fade Out
+            t = 0;
+            while (t < 0.5f)
+            {
+                t += Time.unscaledDeltaTime;
+                cg.alpha = Mathf.Lerp(1f, 0f, t / 0.5f);
+                yield return null;
+            }
+            cg.alpha = 0f;
+            
+            textUI.gameObject.SetActive(false);
+        }
+
         private System.Collections.IEnumerator StageClearTransitionRoutine()
         {
-            // STAGE CLEAR テキスト表示
+            // STAGE CLEAR テキストのフェード表示
             if (stageClearText != null)
             {
-                stageClearText.gameObject.SetActive(true);
+                yield return StartCoroutine(FadeTextRoutine(stageClearText, 2f));
             }
-
-            // 3秒待機（スコア表示などは今回はスキップ）
-            yield return new WaitForSeconds(3f);
-
-            if (stageClearText != null)
+            else
             {
-                stageClearText.gameObject.SetActive(false);
+                yield return new WaitForSecondsRealtime(3f);
             }
 
             // フェードアウト（暗転）
@@ -442,13 +492,6 @@ namespace Alpha.Flow
                 // 敵や弾などを掃除
                 ClearAllEnemyBullets();
                 
-                // タイトルテキストの更新
-                if (stageTitleText != null)
-                {
-                    stageTitleText.text = currentStageData.stageName;
-                    stageTitleText.gameObject.SetActive(true);
-                }
-
                 // 次ステージの初期化
                 SetState(StageState_Alpha.WaitToStartFirstHalf);
                 wasMobCleared = false;
@@ -458,13 +501,19 @@ namespace Alpha.Flow
                     fadeController.FadeIn(() => {
                         if (stageTitleText != null)
                         {
-                            StartCoroutine(HideTitleTextAfterSeconds(3f));
+                            stageTitleText.text = currentStageData.stageName;
+                            StartCoroutine(FadeTextRoutine(stageTitleText, 2f));
                         }
                         StartFirstHalf();
                     });
                 }
                 else
                 {
+                    if (stageTitleText != null)
+                    {
+                        stageTitleText.text = currentStageData.stageName;
+                        StartCoroutine(FadeTextRoutine(stageTitleText, 2f));
+                    }
                     StartFirstHalf();
                 }
             }
