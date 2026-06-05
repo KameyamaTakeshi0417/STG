@@ -3999,6 +3999,9 @@ MonoBehaviour:
   - prefab: {fileID: 1895039100003720943, guid: 7e9679703673383438be626d8a3f2ccf, type: 3}
     initialPoolSize: 200
     parentNode: {fileID: 0}
+  - prefab: {fileID: 8938104242842336465, guid: 624baa59ad4aa0249a8e842f358a5b70, type: 3}
+    initialPoolSize: 200
+    parentNode: {fileID: 0}
 --- !u!4 &617176558
 Transform:
   m_ObjectHideFlags: 0
@@ -4944,8 +4947,6 @@ GameObject:
   - component: {fileID: 789273276}
   - component: {fileID: 789273275}
   - component: {fileID: 789273274}
-  - component: {fileID: 789273273}
-  - component: {fileID: 789273278}
   m_Layer: 5
   m_Name: FadeBoard
   m_TagString: Untagged
@@ -4953,18 +4954,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!225 &789273273
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 789273272}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
 --- !u!114 &789273274
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5026,7 +5015,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 1531714459
-  m_SortingOrder: -100
+  m_SortingOrder: 1208
   m_TargetDisplay: 0
 --- !u!224 &789273277
 RectTransform:
@@ -5048,20 +5037,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &789273278
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 789273272}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a19e3c60604c64f428aece3345b01a79, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fadeGroup: {fileID: 789273273}
-  fadeDuration: 1
 --- !u!1 &830651953
 GameObject:
   m_ObjectHideFlags: 0
@@ -7691,6 +7666,8 @@ GameObject:
   - component: {fileID: 1123701938}
   - component: {fileID: 1123701940}
   - component: {fileID: 1123701939}
+  - component: {fileID: 1123701941}
+  - component: {fileID: 1123701942}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -7730,7 +7707,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.21960786, g: 0.21960786, b: 0.21960786, a: 0.392}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -7755,6 +7732,32 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1123701937}
   m_CullTransparentMesh: 1
+--- !u!114 &1123701941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1123701937}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a19e3c60604c64f428aece3345b01a79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fadeGroup: {fileID: 1123701942}
+  fadeDuration: 1.5
+--- !u!225 &1123701942
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1123701937}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1127519219
 GameObject:
   m_ObjectHideFlags: 0
@@ -11333,14 +11336,14 @@ MonoBehaviour:
   - defId: 
     rarity: 3
     affix: {fileID: 0}
-    series: {fileID: 11400000, guid: 06aeb329cbc989a4da0291df5b74ebf2, type: 2}
+    series: {fileID: 11400000, guid: 053b7e9e1d8ab0b4e8390760f0dc04b3, type: 2}
     partType: 2
     currentEffects:
     - {fileID: 0}
   - defId: 
     rarity: 3
     affix: {fileID: 0}
-    series: {fileID: 11400000, guid: 696f4114c67dbe34597fe54711919fc9, type: 2}
+    series: {fileID: 11400000, guid: 237f171f9deada94ebfb78e4c73b1569, type: 2}
     partType: 1
     currentEffects:
     - {fileID: 0}
@@ -11441,7 +11444,7 @@ MonoBehaviour:
   currentStageData: {fileID: 11400000, guid: b541dc2f661c7e544bd2a98083ec388d, type: 2}
   spawnManager: {fileID: 1634642374}
   sequenceBarUI: {fileID: 571795292}
-  fadeController: {fileID: 789273278}
+  fadeController: {fileID: 1123701941}
   currentState: 2
   currentSequenceTime: 0
 --- !u!114 &1634642374

@@ -53,8 +53,9 @@ MonoBehaviour:
   canHitBoth: 0
   originalAimDirection: {x: 0, y: 0, z: 0}
   reverseTimeRemaining: 0
+  lockedTarget: {fileID: 0}
   Objname: CircularBullet
-  dmg: 0
+  dmg: 10
   Speed: 10
   DestroyTime: 300
   bullettype: 0
@@ -63,6 +64,7 @@ MonoBehaviour:
   bulletName: 
   addDmg: 0
   piercingCount: 0
+  extraShotCount: 0
   preventAutoDestroy: 0
   localPierceDamageReductionRate: -1
   canUseAllEffects: 0

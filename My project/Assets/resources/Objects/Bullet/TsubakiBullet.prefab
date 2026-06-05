@@ -208,7 +208,8 @@ MonoBehaviour:
   canHitBoth: 0
   originalAimDirection: {x: 0, y: 0, z: 0}
   reverseTimeRemaining: 0
-  Objname: 
+  lockedTarget: {fileID: 0}
+  Objname: TsubakiBullet
   dmg: 100
   Speed: 1500
   DestroyTime: 500
@@ -217,7 +218,7 @@ MonoBehaviour:
   rarelity: 3
   bulletName: TsubakiBullet
   addDmg: 0
-  piercingCount: 99
+  piercingCount: 10
   extraShotCount: 0
   preventAutoDestroy: 1
   localPierceDamageReductionRate: -1

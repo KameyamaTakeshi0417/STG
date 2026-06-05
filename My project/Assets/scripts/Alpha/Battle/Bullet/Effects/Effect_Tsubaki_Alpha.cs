@@ -35,12 +35,21 @@ public class Effect_Tsubaki_Alpha : Alpha_Effect_Base
         {
             if (target != null && target.CompareTag("Enemy"))
             {
-                var primerCtrl = bullet.GetComponent<TsubakiPrimerController>();
-                // ターゲットが存在し、ヒットした敵がターゲットそのものである場合
-                // ※ Colliderが子オブジェクトにある可能性があるため、_Health_Base同士で比較する
-                if (primerCtrl != null && primerCtrl.currentTarget != null)
+                // Effect_Homing_Alphaが持っているターゲットを取得する
+                Transform homingTarget = null;
+                foreach (var eff in bullet.activeEffects)
                 {
-                    _Health_Base targetHealth = primerCtrl.currentTarget.GetComponentInParent<_Health_Base>();
+                    if (eff is Effect_Homing_Alpha homingEff)
+                    {
+                        homingTarget = homingEff.currentTarget; // publicプロパティに変更が必要かも？リフレクションは避けたい。
+                        break;
+                    }
+                }
+
+                // ターゲットが存在し、ヒットした敵がターゲットそのものである場合
+                if (homingTarget != null)
+                {
+                    _Health_Base targetHealth = homingTarget.GetComponentInParent<_Health_Base>();
                     _Health_Base hitHealth = target.GetComponentInParent<_Health_Base>();
 
                     if (targetHealth != null && hitHealth != null && targetHealth == hitHealth)
@@ -48,18 +57,18 @@ public class Effect_Tsubaki_Alpha : Alpha_Effect_Base
                         // (0.5 * 品質)秒のスタン
                         hitHealth.ApplyStun(0.5f * rarity);
 
-                        // 相手に貫通最大分ダメージを与える（残りの貫通回数分）
-                        // ※貫通減衰は無効化されている前提なので純粋に威力を掛け算
-                        int remainingPierce = bullet.piercingCount;
-                        if (remainingPierce > 0)
+                        // 相手のピアスボリューム回数分のダメージを与える
+                        int pVol = hitHealth.PierceVolume > 0 ? hitHealth.PierceVolume : 1;
+                        // すでにBullet_Baseで1回ヒット判定が行われているため、残りの回数分(pVol - 1)の追加ダメージを与える
+                        if (pVol - 1 > 0)
                         {
-                            float totalDamage = bullet.dmg * remainingPierce;
+                            float totalDamage = bullet.dmg * (pVol - 1);
                             hitHealth.ApplyDamage(totalDamage);
-                            
-                            // 貫通を使い切って消滅
-                            bullet.piercingCount = 0;
-                            // Update()の最後などで消滅判定が行われるためこれでOK
                         }
+                        
+                        // 弾を確実に消滅させるため
+                        bullet.piercingCount = -1;
+                        bullet.preventAutoDestroy = false;
                     }
                 }
             }

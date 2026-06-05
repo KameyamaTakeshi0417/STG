@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using Alpha.Data;
 using Alpha.UI;
+using Alpha.UI.ADV;
 
 namespace Alpha.Flow
 {
@@ -52,6 +53,12 @@ namespace Alpha.Flow
         void Start()
         {
             SetState(StageState_Alpha.WaitToStartFirstHalf);
+            
+            // ゲーム開始時のフェードイン
+            if (fadeController != null)
+            {
+                fadeController.FadeIn();
+            }
         }
 
         void Update()
@@ -91,12 +98,12 @@ namespace Alpha.Flow
                                 if (RewardSequenceManager_Alpha.Instance != null)
                                 {
                                     RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
-                                        StartBossFight();
+                                        StartPreBossADVAndFight();
                                     });
                                 }
                                 else
                                 {
-                                    StartBossFight();
+                                    StartPreBossADVAndFight();
                                 }
                             }));
                         }
@@ -327,9 +334,55 @@ namespace Alpha.Flow
             }
             else if (currentState == StageState_Alpha.BossFight)
             {
-                SetState(StageState_Alpha.StageClear);
-                Debug.Log("[StageManager] STAGE CLEAR!");
+                StartPostBossADVAndClear();
             }
+        }
+
+        private void StartPreBossADVAndFight()
+        {
+            if (currentStageData.preBossADV != null && ADVManager_Alpha.Instance != null)
+            {
+                // フェードアウトしてからADV開始
+                fadeController.FadeOut(() => {
+                    ADVManager_Alpha.Instance.StartADV(currentStageData.preBossADV, () => {
+                        // ADV終了後、フェードインしてボス戦開始
+                        fadeController.FadeIn(() => {
+                            StartBossFight();
+                        });
+                    });
+                });
+            }
+            else
+            {
+                StartBossFight();
+            }
+        }
+
+        private void StartPostBossADVAndClear()
+        {
+            if (currentStageData.postBossADV != null && ADVManager_Alpha.Instance != null)
+            {
+                // フェードアウトしてからADV開始
+                fadeController.FadeOut(() => {
+                    ADVManager_Alpha.Instance.StartADV(currentStageData.postBossADV, () => {
+                        // ADV終了後、ステージクリア処理
+                        fadeController.FadeIn(() => {
+                            ExecuteStageClear();
+                        });
+                    });
+                });
+            }
+            else
+            {
+                ExecuteStageClear();
+            }
+        }
+
+        private void ExecuteStageClear()
+        {
+            SetState(StageState_Alpha.StageClear);
+            Debug.Log("[StageManager] STAGE CLEAR!");
+            // クリアリザルトなどの処理へ移行
         }
 
         private System.Collections.IEnumerator WaitUntilAllOrbsCollected(System.Action onComplete)

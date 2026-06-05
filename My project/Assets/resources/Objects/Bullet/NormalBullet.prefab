@@ -48,16 +48,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72a890738a7e7ad438cbda44174fd461, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sourcePrefab: {fileID: 0}
+  isEnemyBullet: 0
+  canHitBoth: 0
+  originalAimDirection: {x: 0, y: 0, z: 0}
+  reverseTimeRemaining: 0
+  lockedTarget: {fileID: 0}
   Objname: 
   dmg: 0
   Speed: 500
-  DestroyTime: 300
+  DestroyTime: 500
   bullettype: 0
   rotate: {x: 0, y: 0, z: 0}
   rarelity: 0
   bulletName: 
   addDmg: 0
   piercingCount: 0
+  extraShotCount: 0
+  preventAutoDestroy: 0
+  localPierceDamageReductionRate: -1
+  canUseAllEffects: 0
   AddDamageRatio: 0.3
 --- !u!212 &1074022942457827577
 SpriteRenderer:

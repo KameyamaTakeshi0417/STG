@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Effect_Homing_Alpha : Alpha_Effect_Base
 {
-    private Transform currentTarget;
+    public Transform currentTarget { get; private set; }
     private float homingStrength = 0f; // 0〜100
     private float trackingDamageTimer = 0f;
 

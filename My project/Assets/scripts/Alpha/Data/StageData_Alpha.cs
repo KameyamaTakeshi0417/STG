@@ -10,5 +10,12 @@ namespace Alpha.Data
         
         [Tooltip("ステージ後半のシーケンスデータ")]
         public StageSequenceData_Alpha secondHalf;
+
+        [Header("ADV Data")]
+        [Tooltip("ボス戦前に再生されるADVデータ（任意）")]
+        public ADVData_Alpha preBossADV;
+        
+        [Tooltip("ボス撃破後に再生されるADVデータ（任意）")]
+        public ADVData_Alpha postBossADV;
     }
 }

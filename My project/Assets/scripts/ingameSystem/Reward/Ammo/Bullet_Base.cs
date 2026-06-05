@@ -149,16 +149,17 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
         {
             if (newEffect == null) continue;
             
-            newEffect.canUseAllEffects = canUseAllEffects; // 全効果発動可能フラグを渡す
+            var clonedEffect = newEffect.Clone();
+            clonedEffect.canUseAllEffects = canUseAllEffects; // 全効果発動可能フラグを渡す
 
-            var existingEffect = activeEffects.Find(e => e.GetType() == newEffect.GetType() && e.equipPosition == newEffect.equipPosition);
+            var existingEffect = activeEffects.Find(e => e.GetType() == clonedEffect.GetType() && e.equipPosition == clonedEffect.equipPosition);
             if (existingEffect != null)
             {
                 existingEffect.stackCount++;
             }
             else
             {
-                activeEffects.Add(newEffect);
+                activeEffects.Add(clonedEffect);
             }
         }
     }
@@ -387,7 +388,8 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
             // 残りの貫通回数が0未満（＝もう貫通枠がない）もしくは壁に当たった場合は消滅
             if (piercingCount < 0 || collision.CompareTag("wall"))
             {
-                if (preventAutoDestroy)
+                // ドローンのようなCircularObjectかつpreventAutoDestroyの場合のみ消滅を免れる
+                if (preventAutoDestroy && GetComponent<CircularObject>() != null)
                 {
                     // 保護されている場合は消滅せず、すり抜けさせる
                     StartCoroutine(TemporaryDisableCollider(collision));
