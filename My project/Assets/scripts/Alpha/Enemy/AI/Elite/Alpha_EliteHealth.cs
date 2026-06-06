@@ -3,9 +3,23 @@ using UnityEngine;
 
 public class Alpha_EliteHealth : Health
 {
+    [System.Serializable]
+    public class PhaseCutInInfo
+    {
+        [Tooltip("このフェーズ突入時にカットインを表示するか")]
+        public bool useCutIn = false;
+        [Tooltip("カットイン用のスプライト（立ち絵など）")]
+        public Sprite cutInSprite;
+        [Tooltip("カットインに表示する技名やフェーズ名")]
+        public string skillName = "PHASE CHANGE";
+    }
+
     [Header("Elite Multi-Phase Settings")]
     [Tooltip("各フェーズの最大HP。要素数がフェーズ数になる")]
     public List<float> phaseHPs = new List<float>() { 1000f, 1500f };
+
+    [Tooltip("各フェーズ突入時のカットイン設定（要素数はフェーズ数と合わせるのが理想です）")]
+    public List<PhaseCutInInfo> phaseCutIns = new List<PhaseCutInInfo>();
 
     // ---------- Elite HP Canvas ----------
     [Header("UI Settings")]
@@ -72,6 +86,22 @@ public class Alpha_EliteHealth : Health
 
         // 頭上のスライダーは使用しないので非表示
         if (hpSlider != null) hpSlider.gameObject.SetActive(false);
+
+        // 初期フェーズのカットインを再生
+        TryPlayCutIn(CurrentPhaseIndex);
+    }
+
+    private void TryPlayCutIn(int phaseIndex)
+    {
+        if (phaseIndex >= 0 && phaseIndex < phaseCutIns.Count)
+        {
+            var info = phaseCutIns[phaseIndex];
+            if (info.useCutIn && Alpha.UI.UltCutInController.Instance != null)
+            {
+                // エリート側としてカットイン再生 (isPlayer = false)
+                Alpha.UI.UltCutInController.Instance.PlayCutIn(false, info.cutInSprite, info.skillName);
+            }
+        }
     }
 
     public override void TakeDamage(float damage)

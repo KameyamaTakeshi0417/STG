@@ -188,6 +188,7 @@ MonoBehaviour:
   currentBarrierRespawnTime: 0
   barrierRespawnTimer: 0
   barrierVisualObject: {fileID: 0}
+  rewardPoints: 10
   orbDropChance: 1
   isMidBoss: 1
   isBoss: 0
@@ -197,6 +198,7 @@ MonoBehaviour:
   phaseHPs:
   - 1000
   - 1500
+  phaseCutIns: []
   eliteCanvasResourcePath: UI/CircleHPBar/EliteEnemyHPCanvas
 --- !u!114 &3508095160209487777
 MonoBehaviour:
@@ -216,10 +218,14 @@ MonoBehaviour:
   PhaseSpawnedObjects: []
   phases:
   - phaseName: "\u8A66\u3057\u306E\u653B\u64831"
+    useCutIn: 1
+    cutInSprite: {fileID: 21300000, guid: 0287fe58e23102f42b6e86ecf8d5fa43, type: 3}
     movementBehavior: {fileID: 11400000, guid: 0d8afc241ca8f36489766383f8468aee, type: 2}
     attackBehavior: {fileID: 11400000, guid: 47d780a3f5c00ce49ab03d3c5f455fec, type: 2}
     summonBehavior: {fileID: 11400000, guid: c7127de5f735ac2478173c9f94041d52, type: 2}
   - phaseName: "\u7DE0\u3081\u306E\u653B\u6483"
+    useCutIn: 1
+    cutInSprite: {fileID: 21300000, guid: 0287fe58e23102f42b6e86ecf8d5fa43, type: 3}
     movementBehavior: {fileID: 11400000, guid: cf2ce169e9c380e4e842c25bb911264d, type: 2}
     attackBehavior: {fileID: 11400000, guid: 64be175568601a648bc4853fc69538fd, type: 2}
     summonBehavior: {fileID: 0}

@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Alpha.Data;
 using TMPro;
+using DG.Tweening; // DOTweenを追加
 
 namespace Alpha.UI.ADV
 {
@@ -32,6 +33,7 @@ namespace Alpha.UI.ADV
 
         [Header("Settings")]
         public float textTypeSpeed = 0.05f; // 1文字あたりの表示時間（秒）
+        public float animDuration = 0.5f; // アニメーション時間
 
         private Canvas advCanvas;
         private Image backgroundImage;
@@ -56,6 +58,13 @@ namespace Alpha.UI.ADV
         private bool isADVActive = false;
         private string currentFullText = "";
         private Coroutine typingCoroutine;
+        
+        // アニメーション用の基準座標
+        private readonly Vector2 leftBasePos = new Vector2(-768, -440);
+        private readonly Vector2 rightBasePos = new Vector2(656, -440);
+        private readonly Vector2 centerBasePos = new Vector2(0, 100);
+        
+        private readonly float slideOffset = 1000f; // 画面外へスライドさせる距離
 
         private void Awake()
         {
@@ -254,7 +263,97 @@ namespace Alpha.UI.ADV
             dialogText.text = ""; // 一旦クリア
             
             if (typingCoroutine != null) StopCoroutine(typingCoroutine);
-            typingCoroutine = StartCoroutine(TypewriterEffect());
+            
+            // アニメーション実行
+            float maxAnimTime = PlayCharacterAnimations(page);
+
+            if (page.waitForAnimationToFinish && maxAnimTime > 0f)
+            {
+                // アニメーション完了を待ってからテキスト表示を開始する
+                typingCoroutine = StartCoroutine(WaitAndTypewriter(maxAnimTime));
+            }
+            else
+            {
+                // 即座にテキスト表示を開始する
+                typingCoroutine = StartCoroutine(TypewriterEffect());
+            }
+        }
+
+        private float PlayCharacterAnimations(ADVPage_Alpha page)
+        {
+            DOTween.Kill("ADVAnim");
+            float longestDuration = 0f;
+
+            if (page.eventCG != null) return 0f; // 一枚絵の場合はキャラアニメスキップ
+
+            if (page.leftCharacter != null)
+                longestDuration = Mathf.Max(longestDuration, ApplyAnim(leftCharacterImage, page.leftCharacterAnim, leftBasePos));
+
+            if (page.centerCharacter != null)
+                longestDuration = Mathf.Max(longestDuration, ApplyAnim(centerCharacterImage, page.centerCharacterAnim, centerBasePos));
+
+            if (page.rightCharacter != null)
+                longestDuration = Mathf.Max(longestDuration, ApplyAnim(rightCharacterImage, page.rightCharacterAnim, rightBasePos));
+
+            return longestDuration;
+        }
+
+        private float ApplyAnim(Image img, ADVCharacterAnim animType, Vector2 basePos)
+        {
+            RectTransform rt = img.rectTransform;
+            if (animType == ADVCharacterAnim.None)
+            {
+                rt.anchoredPosition = basePos;
+                return 0f;
+            }
+
+            // 初期位置と目標位置の設定
+            Vector2 startPos = basePos;
+            Vector2 endPos = basePos;
+
+            switch (animType)
+            {
+                case ADVCharacterAnim.SlideInLeft:
+                    startPos = basePos + new Vector2(-slideOffset, 0);
+                    endPos = basePos;
+                    break;
+                case ADVCharacterAnim.SlideInRight:
+                    startPos = basePos + new Vector2(slideOffset, 0);
+                    endPos = basePos;
+                    break;
+                case ADVCharacterAnim.SlideInBottom:
+                    startPos = basePos + new Vector2(0, -slideOffset);
+                    endPos = basePos;
+                    break;
+                case ADVCharacterAnim.SlideOutLeft:
+                    startPos = basePos;
+                    endPos = basePos + new Vector2(-slideOffset, 0);
+                    break;
+                case ADVCharacterAnim.SlideOutRight:
+                    startPos = basePos;
+                    endPos = basePos + new Vector2(slideOffset, 0);
+                    break;
+                case ADVCharacterAnim.SlideOutBottom:
+                    startPos = basePos;
+                    endPos = basePos + new Vector2(0, -slideOffset);
+                    break;
+            }
+
+            rt.anchoredPosition = startPos;
+            
+            // SlideOut系の場合は移動後に非表示にする
+            bool isOut = (animType == ADVCharacterAnim.SlideOutLeft || animType == ADVCharacterAnim.SlideOutRight || animType == ADVCharacterAnim.SlideOutBottom);
+
+            rt.DOAnchorPos(endPos, animDuration)
+              .SetUpdate(true)
+              .SetEase(Ease.OutCubic)
+              .SetId("ADVAnim")
+              .OnComplete(() =>
+              {
+                  if (isOut) img.gameObject.SetActive(false);
+              });
+
+            return animDuration;
         }
 
         private void SetImageSprite(Image img, Sprite sprite)
@@ -269,6 +368,16 @@ namespace Alpha.UI.ADV
                 img.sprite = null;
                 img.gameObject.SetActive(false);
             }
+        }
+
+        private bool isWaitingAnim = false;
+
+        private IEnumerator WaitAndTypewriter(float delay)
+        {
+            isWaitingAnim = true;
+            yield return new WaitForSecondsRealtime(delay);
+            isWaitingAnim = false;
+            yield return StartCoroutine(TypewriterEffect());
         }
 
         private IEnumerator TypewriterEffect()
@@ -290,11 +399,16 @@ namespace Alpha.UI.ADV
             // Enterキーまたは左クリックによる進行
             if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetMouseButtonDown(0))
             {
-                if (isTyping)
+                if (isTyping || isWaitingAnim)
                 {
-                    // タイプライター中なら全表示
+                    // アニメーション中なら完了させる
+                    DOTween.Complete("ADVAnim");
+                    
+                    // 待機中またはタイプライター中なら全表示
                     if (typingCoroutine != null) StopCoroutine(typingCoroutine);
                     dialogText.text = currentFullText;
+                    
+                    isWaitingAnim = false;
                     isTyping = false;
                 }
                 else
@@ -326,6 +440,7 @@ namespace Alpha.UI.ADV
 
         private void EndADV()
         {
+            DOTween.Kill("ADVAnim"); // 終了時にアニメーションを破棄
             isADVActive = false;
             advCanvas.gameObject.SetActive(false);
             
