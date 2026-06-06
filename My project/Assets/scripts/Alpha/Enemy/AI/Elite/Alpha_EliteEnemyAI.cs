@@ -7,6 +7,12 @@ public class ElitePhaseData
 {
     [Tooltip("このフェーズの名前（識別用）")]
     public string phaseName = "Phase 1";
+
+    [Tooltip("フェーズ切り替え時にカットインを表示するかどうか")]
+    public bool useCutIn = false;
+
+    [Tooltip("カットイン用の立ち絵スプライト")]
+    public Sprite cutInSprite;
     
     [Tooltip("移動パターンの挙動")]
     public EnemyBehaviorData_Base movementBehavior;
@@ -143,6 +149,12 @@ public class Alpha_EliteEnemyAI : Alpha_EnemyAI
 
         // カットイン等への通知（実装時にUIを紐付け可能）
         OnPhaseStartEvent?.Invoke(phaseIndex, currentPhase.phaseName);
+
+        // カットイン演出の再生
+        if (currentPhase.useCutIn && Alpha.UI.UltCutInController.Instance != null && currentPhase.cutInSprite != null)
+        {
+            Alpha.UI.UltCutInController.Instance.PlayCutIn(false, currentPhase.cutInSprite, currentPhase.phaseName);
+        }
 
         // 各挙動を並列で実行
         if (currentPhase.movementBehavior != null)

@@ -7,6 +7,13 @@ namespace Alpha.Bomb
     {
         public static BombManager Instance { get; private set; }
 
+        [Header("Cut-in Settings")]
+        [Tooltip("ボム発動時のカットインに使う立ち絵スプライト")]
+        public Sprite bombCutInSprite;
+        
+        [Tooltip("ボム発動時のカットインに表示するテキスト")]
+        public string bombCutInName = "BOMB!";
+
         private void Awake()
         {
             if (Instance == null)
@@ -42,6 +49,12 @@ namespace Alpha.Bomb
             if (prefab != null)
             {
                 Instantiate(prefab, spawnPos, Quaternion.identity);
+                
+                // ボム発動のカットインを再生
+                if (Alpha.UI.UltCutInController.Instance != null && bombCutInSprite != null)
+                {
+                    Alpha.UI.UltCutInController.Instance.PlayCutIn(true, bombCutInSprite, bombCutInName);
+                }
             }
             else
             {

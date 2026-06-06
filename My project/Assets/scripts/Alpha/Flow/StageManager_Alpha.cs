@@ -136,11 +136,6 @@ namespace Alpha.Flow
                         {
                             SetState(StageState_Alpha.Transition);
                             StartCoroutine(WaitUntilAllOrbsCollected(() => {
-                                if (InventoryManager_Alpha.Instance != null)
-                                {
-                                    InventoryManager_Alpha.Instance.AddFreeSlot();
-                                }
-                                
                                 StartPreBossADVAndFight();
                             }));
                         }
@@ -420,7 +415,13 @@ namespace Alpha.Flow
                 Debug.Log($"[StageManager] Player recovered. Healed {healAmount} HP.");
             }
 
-            // 3. 次ステージへの遷移演出を開始
+            // 3. フリースロットの追加
+            if (InventoryManager_Alpha.Instance != null)
+            {
+                InventoryManager_Alpha.Instance.AddFreeSlot();
+            }
+
+            // 4. 次ステージへの遷移演出を開始
             StartCoroutine(StageClearTransitionRoutine());
         }
 

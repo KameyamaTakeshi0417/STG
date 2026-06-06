@@ -15,6 +15,8 @@ namespace Alpha.UI
     /// </summary>
     public class UltCutInController : MonoBehaviour
     {
+        public static UltCutInController Instance { get; private set; }
+
         [Header("UI References (assign in Inspector)")]
         [SerializeField] private CanvasGroup fadePanelCG; // 背景パネル（透明度制御）
         [SerializeField] private Image fadePanelImg;      // 背景パネルの Image (optional)
@@ -29,6 +31,16 @@ namespace Alpha.UI
 
         private void Awake()
         {
+            if (Instance == null)
+            {
+                Instance = this;
+            }
+            else if (Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
             // 初期は全非表示にしておく
             SetAllActive(false);
         }
