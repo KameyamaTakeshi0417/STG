@@ -72,11 +72,48 @@ public class PlayerHealth : _Health_Base
         {
             HP = statusManager.HP;
             currentHP = statusManager.currentHP;
+            
+            // デバッグ機能: F3キーで現在HP分のダメージを受ける
+            if (Input.GetKeyDown(KeyCode.F3))
+            {
+                TakeDamage(statusManager.currentHP);
+            }
         }
     }
     public void gaugeUpdate() {
         circleHPBarManager.UpdateCircleBar(statusManager.nowHPGauge, (statusManager.currentHP / statusManager.HP));
     }
+
+    // ボム発動時などの一定時間無敵（当たり判定消失）処理
+    public void MakeInvincibleWithColliders(float duration)
+    {
+        StartCoroutine(InvincibleWithCollidersRoutine(duration));
+    }
+
+    private IEnumerator InvincibleWithCollidersRoutine(float duration)
+    {
+        isInvincible = true;
+        Collider2D[] colliders = GetComponentsInChildren<Collider2D>();
+        List<Collider2D> activeColliders = new List<Collider2D>();
+        
+        foreach (var col in colliders)
+        {
+            if (col != null && col.enabled)
+            {
+                activeColliders.Add(col);
+                col.enabled = false;
+            }
+        }
+
+        yield return new WaitForSeconds(duration);
+
+        foreach (var col in activeColliders)
+        {
+            if (col != null) col.enabled = true;
+        }
+        isInvincible = false;
+    }
+
     public override void TakeDamage(float damage)
     {
         if (isInvincible) return; // 無敵中ならダメージを無視する

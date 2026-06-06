@@ -26,6 +26,8 @@ public class EliteHealth : Health
     // ダメージを受け取るメソッド
     public override void TakeDamage(float damage)
     {
+        if (isDead) return;
+
         currentHP -= damage;
         circleGauge[LifeCount - 1].setMaxHP(HP);
         circleGauge[LifeCount - 1].setCurrentHP(currentHP);
@@ -36,6 +38,7 @@ public class EliteHealth : Health
         // Debug.Log(gameObject.name + " took " + damage + " damage. Remaining HP: " + currentHP);
         if (LifeCount <= 0)
         {
+            isDead = true;
             Die();
         }
     }

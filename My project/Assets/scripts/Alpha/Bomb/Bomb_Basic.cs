@@ -23,7 +23,9 @@ namespace Alpha.Bomb
         {
             col = GetComponent<CircleCollider2D>();
             col.isTrigger = true;
-            col.radius = 0f;
+            // 当たり判定の基準半径を1にして、スケールで大きさを制御する
+            col.radius = 1f;
+            transform.localScale = Vector3.zero;
         }
 
         private void Start()
@@ -49,7 +51,8 @@ namespace Alpha.Bomb
             if (timer <= expandDuration)
             {
                 currentRadius = Mathf.Lerp(0, maxRadius, timer / expandDuration);
-                col.radius = currentRadius;
+                // オブジェクトそのものをスケーリングさせる
+                transform.localScale = new Vector3(currentRadius, currentRadius, 1f);
             }
             else if (timer >= expandDuration + persistDuration)
             {

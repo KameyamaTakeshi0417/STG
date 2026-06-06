@@ -76,35 +76,50 @@ public class Alpha_EliteHealth : Health
 
     public override void TakeDamage(float damage)
     {
-        if (VulnerableFlg) return; // 無敵中などの判定が必要ならここで行う
+        if (VulnerableFlg || isDead) return;
 
-        currentHP -= damage;
+        float remainingDamage = damage;
+        ShowDamage(damage); // ダメージテキストは1回だけ表示
 
-        // HPバーは使用しないので SliderUpdate は不要（ただし UI がある場合は呼び出す）
-        if (hpSlider != null) SliderUpdate();
-        ShowDamage(damage);
-
-        // UI に現在フェーズの残HP比率を通知
-        if (eliteHPBar != null)
+        while (remainingDamage > 0 && !isDead)
         {
-            float ratio = Mathf.Clamp01(currentHP / HP);
-            eliteHPBar.SetRingFill(CurrentPhaseIndex, ratio);
-        }
-        
-        // HPが0以下になった際のブレイク（フェーズ移行）判定
-        if (currentHP <= 0)
-        {
-            // 次のフェーズが存在するか？（AI側で設定されたフェーズ数を基準にする）
-            if (CurrentPhaseIndex < expectedTotalPhases - 1)
+            if (currentHP > remainingDamage)
             {
-                BreakToNextPhase();
+                currentHP -= remainingDamage;
+                remainingDamage = 0;
             }
             else
             {
-                // 全てのフェーズが終わったら本来の死亡処理へ委譲する
-                // base.TakeDamageの条件(currentHP <= 0)を満たす形で0ダメージを流し込み、内部のprivate Die()を発火させる
+                remainingDamage -= currentHP;
                 currentHP = 0;
-                base.TakeDamage(0); 
+            }
+
+            // HPバーは使用しないので SliderUpdate は不要。ただしUI がある場合は呼び出す。
+            if (hpSlider != null) SliderUpdate();
+
+            // UI に現在フェーズの残HP比率を通知
+            if (eliteHPBar != null)
+            {
+                float ratio = Mathf.Clamp01(currentHP / HP);
+                eliteHPBar.SetRingFill(CurrentPhaseIndex, ratio);
+            }
+            
+            // HPが0以下になった際のブレイク（フェーズ移行）判定
+            if (currentHP <= 0)
+            {
+                // 次のフェーズが存在するか？（AI側で設定されたフェーズ数を基準にする）
+                if (CurrentPhaseIndex < expectedTotalPhases - 1)
+                {
+                    BreakToNextPhase();
+                    // ループが続き、remainingDamage が次のフェーズの体力から引かれます（貫通ダメージ）
+                }
+                else
+                {
+                    // 全てのフェーズが終わったら本来の死亡処理へ委譲する
+                    currentHP = 0;
+                    base.TakeDamage(0); 
+                    break;
+                }
             }
         }
     }

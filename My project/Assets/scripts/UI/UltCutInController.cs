@@ -75,9 +75,22 @@ namespace Alpha.UI
             txt.gameObject.SetActive(true);
             fadePanelCG.gameObject.SetActive(true);
 
-            // パネルフェードイン（0 → 0.4, 0.3秒）
-            fadePanelCG.alpha = 0f;
-            fadePanelCG.DOFade(0.4f, 0.3f).SetEase(Ease.Linear);
+            // 背景画像のアルファのみを操作して、子供のテキストに影響が出ないようにする
+            Image bgImg = fadePanelImg != null ? fadePanelImg : fadePanelCG.GetComponent<Image>();
+            if (bgImg != null)
+            {
+                fadePanelCG.alpha = 1f; // CanvasGroupは常に1にして子要素（文字など）を透けさせない
+                Color c = bgImg.color;
+                c.a = 0f;
+                bgImg.color = c;
+                bgImg.DOFade(0.4f, 0.3f).SetEase(Ease.Linear);
+            }
+            else
+            {
+                // Imageが無い場合のフォールバック
+                fadePanelCG.alpha = 0f;
+                fadePanelCG.DOFade(0.4f, 0.3f).SetEase(Ease.Linear);
+            }
 
             // シーケンス作成
             Sequence seq = DOTween.Sequence();
@@ -98,14 +111,17 @@ namespace Alpha.UI
             seq.Join(txtRT.DOAnchorPosX(offX, 1f).SetEase(Ease.InSine));
 
             // パネルフェードアウト → 非表示
-            seq.Append(fadePanelCG.DOFade(0f, 0.3f).OnComplete(() =>
+            Tween fadeOutTween = bgImg != null ? bgImg.DOFade(0f, 0.3f) : fadePanelCG.DOFade(0f, 0.3f);
+            seq.Append(fadeOutTween.OnComplete(() =>
             {
                 SetAllActive(false);
             }));
 
-            // 後から呼ばれた方を手前に持ってくる（同時表示時の前後関係）
-            // CanvasGroup が同一 Canvas の子なので、Transform の sibling index を最後にするだけで OK。
+            // 描画順（Sibling Index）の調整
+            // 念のため背景パネルを手前に持ってきた後、画像とテキストをさらに手前に持ってくる
             fadePanelCG.transform.SetAsLastSibling();
+            img.transform.SetAsLastSibling();
+            txt.transform.SetAsLastSibling();
         }
 
         /// <summary>

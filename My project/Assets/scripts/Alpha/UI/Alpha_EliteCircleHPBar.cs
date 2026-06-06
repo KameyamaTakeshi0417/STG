@@ -106,7 +106,7 @@ namespace Alpha.UI
             // ビジュアル上は 0 が内側、activeLayers-1 が外側
             int visualIndex = activeLayers - 1 - ringIndex;
 
-            // 各リングの fillAmount を設定
+            // リングの fillAmount を設定
             //   i > visualIndex : すでに外側が削除済み (0)
             //   i == visualIndex : 現在フェーズ (ratio)
             //   i < visualIndex : まだ未到達 (1)

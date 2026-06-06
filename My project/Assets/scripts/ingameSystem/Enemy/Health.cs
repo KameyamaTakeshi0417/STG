@@ -48,11 +48,15 @@ public class Health : _Health_Base
         }
     }
 
+    protected bool isDead = false;
+
     void Awake() { }
 
     // ダメージを受け取るメソッド
     public override void TakeDamage(float damage)
     {
+        if (isDead) return;
+
         currentHP -= damage;
         if (hpSlider != null)
         {
@@ -62,6 +66,7 @@ public class Health : _Health_Base
         // Debug.Log(gameObject.name + " took " + damage + " damage. Remaining HP: " + currentHP);
         if (gameObject.tag == "Enemy" && currentHP <= 0)
         {
+            isDead = true;
             if (hpSlider != null)
             {
                 Destroy(hpSlider);
