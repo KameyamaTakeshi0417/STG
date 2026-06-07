@@ -32,13 +32,19 @@ namespace Alpha.Environment
         [ContextMenu("Clear Grass")]
         public void ClearGrass()
         {
-            StopAllCoroutines(); // 実行中の生成コルーチンを停止
-
-            // すでに生成されている草があれば削除
-            foreach (Transform child in transform)
+            // すでに生成されている草があれば削除（インデックスのズレを防ぐため逆順でループ）
+            for (int i = transform.childCount - 1; i >= 0; i--)
             {
+                Transform child = transform.GetChild(i);
 #if UNITY_EDITOR
-                DestroyImmediate(child.gameObject);
+                if (!Application.isPlaying)
+                {
+                    DestroyImmediate(child.gameObject);
+                }
+                else
+                {
+                    Destroy(child.gameObject);
+                }
 #else
                 Destroy(child.gameObject);
 #endif
@@ -53,6 +59,7 @@ namespace Alpha.Environment
 
         public void GenerateGrass(float duration = 0.2f)
         {
+            StopAllCoroutines(); // ここで既存のコルーチンを停止
             StartCoroutine(GenerateGrassRoutine(duration));
         }
 

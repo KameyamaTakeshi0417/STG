@@ -446,8 +446,6 @@ namespace Alpha.Flow
             // 4. ボス後ADV
             if (currentStageData.postBossADV != null && ADVManager_Alpha.Instance != null && currentStageData.postBossADV.pages != null && currentStageData.postBossADV.pages.Count > 0)
             {
-                if (grassGenerator != null) grassGenerator.ClearGrass(); // ADV開始時に草を消す
-
                 // 暗転したままADVを開始
                 ADVManager_Alpha.Instance.StartADV(currentStageData.postBossADV, () => {
                     // ADV終了後、次ステージ遷移準備へ
@@ -463,6 +461,19 @@ namespace Alpha.Flow
 
         private void ExecuteStageClearBackEnd()
         {
+            // 次のステージへ遷移する前に草を完全に消去する
+            var grassGenerators = Resources.FindObjectsOfTypeAll<Environment.ProceduralGrassGenerator_Alpha>();
+            Debug.Log($"[StageManager] Found {grassGenerators.Length} grass generators to clear.");
+            foreach (var generator in grassGenerators)
+            {
+                // prefab assets are also returned by Resources.FindObjectsOfTypeAll, so we filter them out
+                if (generator.gameObject.scene.name != null)
+                {
+                    generator.ClearGrass();
+                    generator.gameObject.SetActive(false);
+                }
+            }
+
             SetState(StageState_Alpha.StageClear);
             Debug.Log("[StageManager] STAGE CLEAR (BackEnd)!");
 
@@ -637,19 +648,19 @@ namespace Alpha.Flow
 
         private System.Collections.IEnumerator WaitUntilAllOrbsCollected(System.Action onComplete)
         {
-            Debug.Log("[StageManager] Waiting for orbs to be collected...");
+            Debug.Log("[StageManager] Waiting for orbs, items, exp, and petals to be collected...");
             
-            // 全てのオーブ・アイテムが画面上から消える（取得される）まで待機
+            // 全てのオーブ、アイテム、経験値、花弁が画面上から消える（取得される）まで待機
             while (FindObjectsOfType<OrbControll_Alpha>().Length > 0 || 
                    FindObjectsOfType<Alpha.Battle.OrbItem_Alpha>().Length > 0 ||
-                   FindObjectsOfType<ItemPickUp>().Length > 0)
+                   FindObjectsOfType<ItemPickUp>().Length > 0 ||
+                   FindObjectsOfType<Alpha.Item.ExpItem_Alpha>().Length > 0 ||
+                   FindObjectsOfType<Alpha.Item.PetalItem_Alpha>().Length > 0)
             {
                 yield return new WaitForSeconds(0.25f);
             }
             
-            // 回収後の処理ズレを防ぐため少し待機
-            yield return new WaitForSeconds(0.5f);
-
+            Debug.Log("[StageManager] All items collected!");
             onComplete?.Invoke();
         }
 

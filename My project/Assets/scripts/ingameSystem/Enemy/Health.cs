@@ -97,26 +97,10 @@ public class Health : _Health_Base
     // HPが0になった時の処理
     protected virtual void Die()
     {
-        // 処理落ちを防ぐため、物理的なドロップは最大5個までに制限
-        int dropAmount = Mathf.Min(Exp, 5);
-        for (int i = 0; i < dropAmount; i++)
-        {
-            // まずは自分（エネミー）の中心に生成する
-            GameObject ExpObj = Instantiate(
-                Resources.Load<GameObject>("Objects/MoneyAndExp"),
-                transform.position,
-                Quaternion.identity
-            );
+        // 共通のドロップ処理（経験値、オーブ、花弁）を呼び出す
+        DropEnemyRewards();
 
-            // 生成したExpオブジェクトに散らばる動きをセットアップする
-            Exp expScript = ExpObj.GetComponent<Exp>();
-            if (expScript != null)
-            {
-                expScript.SetupScatter(i, Exp, transform.position);
-            }
-        }
-
-        // ドロップ処理
+        // ボス・中ボスの特別なドロップ処理 (ボス用の特別なアイテムなどがあれば継続)
         if (Alpha.Flow.RewardManager_Alpha.Instance != null)
         {
             if (isBoss)

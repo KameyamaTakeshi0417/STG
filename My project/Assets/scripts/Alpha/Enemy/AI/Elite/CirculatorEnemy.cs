@@ -223,10 +223,13 @@ public class CirculatorEnemy : _Health_Base, IAlphaPoolable
 
     private void Die()
     {
-        // プール対応の場合は破棄せずに返却
+        // 共通のドロップ処理（経験値、オーブ、花弁）を呼び出す
+        DropEnemyRewards();
+
+        // プール対応の場合は破壊せずに返却
         if (Alpha_ObjectPoolManager.Instance != null && gameObject.activeInHierarchy)
         {
-            // TODO: 元のプレハブの参照が必要だが、ここではシンプルに破棄か非アクティブにする
+            // TODO: 本当はプレハブの参照が必要だが、ここではシンプルに破壊か非アクティブにする
             // 厳密にはAlpha_ObjectPoolManager.Returnにはプレハブの参照が必要。
             // 簡単のため、今回はDestroyするか非アクティブ化する。
             gameObject.SetActive(false);

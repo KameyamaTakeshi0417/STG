@@ -43,6 +43,12 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
     public float barrierEndurableDamage = 0f;
     public float barrierRespawnTime = 0f;
 
+    [Header("EXP & Petal")]
+    public int currentExp = 0;
+    public int currentPetals = 0;
+    public static event System.Action<int> OnExpAdded;
+    public static event System.Action<int> OnPetalAdded;
+
     public enum SpawnPattern { Straight, Barrage, Radial, Reverse }
     public SpawnPattern currentSpawnPattern = SpawnPattern.Straight;
 
@@ -397,6 +403,31 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         else
         {
             Debug.LogError("GameManager object not found in the scene!");
+        }
+    }
+
+    // --- EXP & Petal Management API ---
+    public void AddExp(int amount)
+    {
+        currentExp += amount;
+        Debug.Log($"[PlayerStatusManager] Gained {amount} EXP. Total: {currentExp}");
+        OnExpAdded?.Invoke(amount);
+    }
+
+    public void AddPetal(int amount = 1)
+    {
+        currentPetals += amount;
+        Debug.Log($"[PlayerStatusManager] Gained {amount} Petal(s). Total: {currentPetals}");
+        
+        // 10個目以降はEXP 300に変換
+        if (currentPetals >= 10)
+        {
+            Debug.Log("[PlayerStatusManager] 10th Petal collected! Converting to 300 EXP.");
+            AddExp(300);
+        }
+        else
+        {
+            OnPetalAdded?.Invoke(amount);
         }
     }
 }

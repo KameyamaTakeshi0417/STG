@@ -46,12 +46,60 @@ public class _Health_Base : MonoBehaviour
     public int rewardPoints = 10;
     [Tooltip("オーブドロップ確率 (0.0 〜 1.0)")]
     public float orbDropChance = 0.05f;
+    [Tooltip("確定でオーブをドロップするかどうか")]
+    public bool forceDropOrb = false;
     [Tooltip("中ボスかどうか")]
     public bool isMidBoss = false;
     [Tooltip("ボスかどうか")]
     public bool isBoss = false;
     [Tooltip("ボスのID（ボスの場合のみ）")]
     public string bossId = "";
+
+    /// <summary>
+    /// 全エネミー共通のドロップ処理（経験値、オーブ、花弁など）
+    /// </summary>
+    public void DropEnemyRewards()
+    {
+        if (Alpha.Flow.RewardManager_Alpha.Instance == null) return;
+        var manager = Alpha.Flow.RewardManager_Alpha.Instance;
+
+        // 1. 経験値のドロップ
+        if (Exp > 0)
+        {
+            int remainingExp = Exp;
+            
+            int count100 = remainingExp / 100;
+            remainingExp %= 100;
+            
+            int count10 = remainingExp / 10;
+            remainingExp %= 10;
+            
+            int count1 = remainingExp;
+            
+            manager.SpawnExp(transform.position, 100, 1.7f, count100);
+            manager.SpawnExp(transform.position, 10, 1.3f, count10);
+            manager.SpawnExp(transform.position, 1, 1.0f, count1);
+            
+            Debug.Log($"[{gameObject.name}] Dropped EXP: 100x{count100}, 10x{count10}, 1x{count1}");
+        }
+
+        // 2. オーブのドロップ判定
+        if (forceDropOrb || Random.value <= orbDropChance)
+        {
+            int rarity = manager.mobDropTable.GetRandomRarity();
+            manager.SpawnOrb(transform.position, rarity, Alpha.Data.OrbSource_Alpha.Mob);
+            Debug.Log($"[{gameObject.name}] Dropped an Orb via RewardManager! Rarity: {rarity}");
+        }
+
+        // 3. 花弁のドロップ判定 (エリートかボスの場合)
+        bool isElite = GetComponent<Alpha_EliteHealth>() != null || GetComponent<CirculatorEnemy>() != null;
+        if (isMidBoss || isBoss || isElite)
+        {
+            int currentStage = Alpha.Flow.StageManager_Alpha.Instance != null ? Alpha.Flow.StageManager_Alpha.Instance.currentStageIndex : 1;
+            manager.SpawnPetal(transform.position, currentStage);
+            Debug.Log($"[{gameObject.name}] Dropped {currentStage} Petals!");
+        }
+    }
 
     protected virtual void Awake()
     {

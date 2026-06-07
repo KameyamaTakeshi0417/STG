@@ -40,10 +40,10 @@ namespace Alpha.Enemy
         {
             if (isEscaping) return;
             
-            var reward = GetComponent<EnemyReward_Alpha>();
-            if (reward != null)
+            var health = GetComponent<_Health_Base>();
+            if (health != null)
             {
-                reward.DropRewards();
+                health.DropEnemyRewards();
             }
             Destroy(gameObject);
         }

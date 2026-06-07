@@ -48,6 +48,12 @@ namespace Alpha.Flow
         [Header("Prefabs")]
         [Tooltip("レアリティ1〜4に対応するオーブプレハブ（インデックス0がレアリティ1、インデックス3がレアリティ4）")]
         public GameObject[] orbPrefabs = new GameObject[4];
+        
+        [Tooltip("EXPのプレハブ")]
+        public GameObject expPrefab;
+        
+        [Tooltip("花弁のプレハブ")]
+        public GameObject petalPrefab;
 
         [Header("Drop Tables")]
         [Tooltip("雑魚敵のドロップ確率とレアリティテーブル")]
@@ -200,6 +206,41 @@ namespace Alpha.Flow
             if (orbItem != null)
             {
                 orbItem.orbData = new OrbData_Alpha(rarity, source, bossId);
+            }
+        }
+
+        /// <summary>
+        /// 経験値オブジェクトをスポーンさせる
+        /// </summary>
+        public void SpawnExp(Vector3 position, int value, float scale, int count)
+        {
+            if (expPrefab == null) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector3 randomOffset = Random.insideUnitSphere * 0.5f;
+                randomOffset.z = 0; // 2Dの場合はZを0にするなど
+                GameObject expObj = Instantiate(expPrefab, position + randomOffset, Quaternion.identity);
+                expObj.transform.localScale = Vector3.one * scale;
+
+                Alpha.Item.ExpItem_Alpha expScript = expObj.GetComponent<Alpha.Item.ExpItem_Alpha>();
+                if (expScript != null)
+                {
+                    expScript.expValue = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 花弁をスポーンさせる
+        /// </summary>
+        public void SpawnPetal(Vector3 position, int count)
+        {
+            if (petalPrefab == null) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector3 randomOffset = Random.insideUnitSphere * 0.5f;
+                randomOffset.z = 0;
+                Instantiate(petalPrefab, position + randomOffset, Quaternion.identity);
             }
         }
     }
