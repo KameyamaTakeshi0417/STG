@@ -60,7 +60,15 @@ MonoBehaviour:
   StunResistance: 0
   BaseStunResistance: 0.5
   isStunned: 0
+  isBarrierActive: 0
+  barrierEndurableDamage: 0
+  barrierBaseRespawnTime: 0
+  currentBarrierRespawnTime: 0
+  barrierRespawnTimer: 0
+  barrierVisualObject: {fileID: 0}
+  rewardPoints: 10
   orbDropChance: 0.05
+  forceDropOrb: 0
   isMidBoss: 0
   isBoss: 0
   bossId: 
@@ -160,7 +168,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!61 &8862479968679567994
 BoxCollider2D:
   m_ObjectHideFlags: 0

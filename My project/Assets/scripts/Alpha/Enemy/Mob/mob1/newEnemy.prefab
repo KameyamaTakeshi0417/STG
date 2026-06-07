@@ -66,6 +66,7 @@ MonoBehaviour:
   barrierVisualObject: {fileID: 0}
   rewardPoints: 3
   orbDropChance: 0.05
+  forceDropOrb: 0
   isMidBoss: 0
   isBoss: 0
   bossId: 
@@ -165,7 +166,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!61 &6820554471389174543
 BoxCollider2D:
   m_ObjectHideFlags: 0

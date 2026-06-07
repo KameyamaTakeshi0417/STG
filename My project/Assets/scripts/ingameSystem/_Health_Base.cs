@@ -103,6 +103,12 @@ public class _Health_Base : MonoBehaviour
 
     protected virtual void Awake()
     {
+        // 物理演算の衝突による意図しない回転（くるくる回る現象）を防ぐ
+        Rigidbody2D rb2d = GetComponent<Rigidbody2D>();
+        if (rb2d != null) rb2d.freezeRotation = true;
+
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null) rb.freezeRotation = true;
     }
 
     // Start is called before the first frame update

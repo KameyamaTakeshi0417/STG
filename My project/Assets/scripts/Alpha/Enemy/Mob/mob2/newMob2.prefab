@@ -63,7 +63,10 @@ MonoBehaviour:
   barrierBaseRespawnTime: 15
   currentBarrierRespawnTime: 0
   barrierRespawnTimer: 0
+  barrierVisualObject: {fileID: 0}
+  rewardPoints: 10
   orbDropChance: 0.05
+  forceDropOrb: 0
   isMidBoss: 0
   isBoss: 0
   bossId: 
@@ -163,7 +166,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!61 &7263251862987527149
 BoxCollider2D:
   m_ObjectHideFlags: 0
