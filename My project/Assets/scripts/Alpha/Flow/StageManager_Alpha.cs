@@ -136,23 +136,63 @@ namespace Alpha.Flow
                         {
                             SetState(StageState_Alpha.Transition);
                             StartCoroutine(WaitUntilAllOrbsCollected(() => {
-                                // ボス前（後半戦終了時）の体力回復
-                                if (playerStatusManager_Alpha.Instance != null)
+                                // ボス前報酬フェーズ・鍛冶フェーズを展開（フェードアウトさせてから開始）
+                                if (fadeController != null)
                                 {
-                                    playerStatusManager_Alpha.Instance.Heal(playerStatusManager_Alpha.Instance.HP * 0.1f);
-                                    Debug.Log("[StageManager] Healed player by 10% Max HP before Boss.");
-                                }
-
-                                // ボス前報酬フェーズ・鍛冶フェーズを展開
-                                if (RewardSequenceManager_Alpha.Instance != null)
-                                {
-                                    RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
-                                        StartPreBossADVAndFight();
+                                    fadeController.FadeOut(() => {
+                                        if (RewardSequenceManager_Alpha.Instance != null)
+                                        {
+                                            RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
+                                                if (Alpha.UI.BlacksmithManager_Alpha.Instance != null)
+                                                {
+                                                    Alpha.UI.BlacksmithManager_Alpha.Instance.OpenBlacksmith();
+                                                }
+                                                else
+                                                {
+                                                    StartPreBossADVAndFight();
+                                                }
+                                            });
+                                        }
+                                        else
+                                        {
+                                            if (Alpha.UI.BlacksmithManager_Alpha.Instance != null)
+                                            {
+                                                Alpha.UI.BlacksmithManager_Alpha.Instance.OpenBlacksmith();
+                                            }
+                                            else
+                                            {
+                                                StartPreBossADVAndFight();
+                                            }
+                                        }
                                     });
                                 }
                                 else
                                 {
-                                    StartPreBossADVAndFight();
+                                    // フェードコントローラーが無い場合のフォールバック
+                                    if (RewardSequenceManager_Alpha.Instance != null)
+                                    {
+                                        RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
+                                            if (Alpha.UI.BlacksmithManager_Alpha.Instance != null)
+                                            {
+                                                Alpha.UI.BlacksmithManager_Alpha.Instance.OpenBlacksmith();
+                                            }
+                                            else
+                                            {
+                                                StartPreBossADVAndFight();
+                                            }
+                                        });
+                                    }
+                                    else
+                                    {
+                                        if (Alpha.UI.BlacksmithManager_Alpha.Instance != null)
+                                        {
+                                            Alpha.UI.BlacksmithManager_Alpha.Instance.OpenBlacksmith();
+                                        }
+                                        else
+                                        {
+                                            StartPreBossADVAndFight();
+                                        }
+                                    }
                                 }
                             }));
                         }
@@ -172,7 +212,7 @@ namespace Alpha.Flow
 
             // ポーズ時やチュートリアル表示中は時間を進めない
             if (Time.timeScale == 0f) return;
-            if (Alpha.UI.TutorialManager_Alpha.Instance != null && Alpha.UI.TutorialManager_Alpha.Instance.IsShowing) return;
+            if (Alpha.UI.TutorialManager_Alpha.Instance != null && Alpha.UI.TutorialManager_Alpha.Instance.IsPausingTimeline) return;
 
             currentSequenceTime += Time.deltaTime;
             
@@ -250,7 +290,7 @@ namespace Alpha.Flow
                 if (Alpha.UI.TutorialManager_Alpha.Instance != null)
                 {
                     var tEvent = activeSequence.tutorialEvents[currentTutorialIndex];
-                    Alpha.UI.TutorialManager_Alpha.Instance.ShowTutorial(tEvent.tutorialId, tEvent.useFadeMode, tEvent.displayDuration);
+                    Alpha.UI.TutorialManager_Alpha.Instance.ShowTutorial(tEvent.tutorialId, tEvent.useFadeMode, tEvent.displayDuration, tEvent.pauseTimeline);
                 }
                 currentTutorialIndex++;
             }
@@ -372,7 +412,7 @@ namespace Alpha.Flow
             }
         }
 
-        private void StartPreBossADVAndFight()
+        public void StartPreBossADVAndFight()
         {
             if (currentStageData.preBossADV != null && ADVManager_Alpha.Instance != null && currentStageData.preBossADV.pages != null && currentStageData.preBossADV.pages.Count > 0)
             {
@@ -386,7 +426,16 @@ namespace Alpha.Flow
             }
             else
             {
-                StartBossFight();
+                if (fadeController != null)
+                {
+                    fadeController.FadeIn(() => {
+                        StartBossFight();
+                    });
+                }
+                else
+                {
+                    StartBossFight();
+                }
             }
         }
 

@@ -19,12 +19,30 @@ namespace Alpha.UI
 
         public void FadeOut(Action onComplete = null)
         {
-            StartCoroutine(FadeCoroutine(0f, 1f, onComplete));
+            if (fadeGroup.alpha >= 1f)
+            {
+                fadeGroup.alpha = 1f;
+                fadeGroup.blocksRaycasts = true;
+                onComplete?.Invoke();
+            }
+            else
+            {
+                StartCoroutine(FadeCoroutine(fadeGroup.alpha, 1f, onComplete));
+            }
         }
 
         public void FadeIn(Action onComplete = null)
         {
-            StartCoroutine(FadeCoroutine(1f, 0f, onComplete));
+            if (fadeGroup.alpha <= 0f)
+            {
+                fadeGroup.alpha = 0f;
+                fadeGroup.blocksRaycasts = false;
+                onComplete?.Invoke();
+            }
+            else
+            {
+                StartCoroutine(FadeCoroutine(fadeGroup.alpha, 0f, onComplete));
+            }
         }
 
         private IEnumerator FadeCoroutine(float startAlpha, float endAlpha, Action onComplete)

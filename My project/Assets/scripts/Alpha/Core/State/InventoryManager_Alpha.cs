@@ -103,19 +103,58 @@ public class InventoryManager_Alpha : MonoBehaviour
 
     public void AddItem(EquipInstance item)
     {
+        bool hasHPGaugePlus = false;
+        float healPercent = 0f;
+
+        if (item.series != null)
+        {
+            System.Action<Alpha.Data.WeaponEffectSO_Alpha> checkHeal = (effectSO) =>
+            {
+                if (effectSO != null && effectSO.effectType == Alpha.Data.WeaponEffectType_Alpha.HPGaugePlus)
+                {
+                    hasHPGaugePlus = true;
+                    float percent = effectSO.GetValue(item.rarity);
+                    if (percent > healPercent) healPercent = percent;
+                }
+            };
+
+            if (item.series.passiveEffects != null)
+            {
+                foreach (var e in item.series.passiveEffects) checkHeal(e);
+            }
+            if (item.currentEffects != null)
+            {
+                foreach (var e in item.currentEffects) checkHeal(e);
+            }
+        }
+
         // 空き枠（defIdがnullまたは空）があればそこに入れる
+        bool added = false;
         for (int i = 0; i < equipInstance.Count; i++)
         {
             if (equipInstance[i].series == null)
             {
                 equipInstance[i] = item;
+                added = true;
                 playerStatusManager_Alpha.Instance?.UpdateEquipmentBuffs();
-                return;
+                break;
             }
         }
+        
         // 空きがなければ末尾に追加
-        equipInstance.Add(item);
-        playerStatusManager_Alpha.Instance?.UpdateEquipmentBuffs();
+        if (!added)
+        {
+            equipInstance.Add(item);
+            playerStatusManager_Alpha.Instance?.UpdateEquipmentBuffs();
+        }
+
+        // 追加後にHP回復処理
+        if (hasHPGaugePlus && playerStatusManager_Alpha.Instance != null && healPercent > 0)
+        {
+            float healAmount = playerStatusManager_Alpha.Instance.HP * (healPercent / 100f);
+            playerStatusManager_Alpha.Instance.Heal(healAmount);
+            Debug.Log($"[InventoryManager] HPGaugePlus acquired! Healing {healPercent}% of Max HP ({healAmount}).");
+        }
     }
 
     public void AddFreeSlot()

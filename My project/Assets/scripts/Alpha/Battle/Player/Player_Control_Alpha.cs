@@ -14,12 +14,51 @@ public class Player_Control_Alpha : MonoBehaviour
     protected Vector2 specialMoveDirection;
     protected float specialMoveEndTime = 0f;
 
+    [Header("Focus Mode Settings")]
+    [Tooltip("右クリック時の移動速度倍率")]
+    public float focusSpeedMultiplier = 0.5f;
+
+    [Tooltip("通常時のプレイヤー当たり判定のサイズ")]
+    public Vector2 normalColliderSize = new Vector2(0.5f, 0.5f);
+    [Tooltip("右クリック時のプレイヤー当たり判定のサイズ")]
+    public Vector2 focusColliderSize = new Vector2(0.2f, 0.2f);
+
+    [Tooltip("通常時のグレイズ判定のサイズ")]
+    public Vector2 normalGrazeSize = new Vector2(1.0f, 1.0f);
+    [Tooltip("右クリック時のグレイズ判定のサイズ")]
+    public Vector2 focusGrazeSize = new Vector2(0.6f, 0.6f);
+
+    [Tooltip("当たり判定を表示する画像（プレイヤーの子オブジェクト）")]
+    public GameObject hitboxImage;
+
+    [Tooltip("グレイズ判定を持つ子オブジェクトのコライダー")]
+    public CapsuleCollider2D grazeCollider;
+
+    private CapsuleCollider2D playerCollider;
+    private bool isFocusMode = false;
+
     // Start is called before the first frame update
 
     void Start()
     {
         onCoolTime = false;
         myStatus=GameObject.Find("manager").GetComponent<playerStatusManager_Alpha>();
+
+        playerCollider = GetComponent<CapsuleCollider2D>();
+        if (playerCollider != null)
+        {
+            playerCollider.size = normalColliderSize;
+        }
+
+        if (hitboxImage != null)
+        {
+            hitboxImage.SetActive(false);
+        }
+
+        if (grazeCollider != null)
+        {
+            grazeCollider.size = normalGrazeSize;
+        }
     }
     protected virtual void Awake()
     {
@@ -37,12 +76,77 @@ public class Player_Control_Alpha : MonoBehaviour
 
         if (!isSpecialMoving)
         {
-            moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+            // 右クリック監視（フォーカスモード）
+            if (myStatus.currentSpecialMove == playerStatusManager_Alpha.SpecialMoveType.Focus)
+            {
+                if (Input.GetMouseButtonDown(1) && myStatus.currentStamina > 0)
+                {
+                    isFocusMode = true;
+                    if (playerCollider != null) playerCollider.size = focusColliderSize;
+                    if (hitboxImage != null) hitboxImage.SetActive(true);
+                    if (grazeCollider != null) grazeCollider.size = focusGrazeSize;
+                }
+                else if (Input.GetMouseButtonUp(1) || myStatus.currentStamina <= 0)
+                {
+                    if (isFocusMode)
+                    {
+                        isFocusMode = false;
+                        if (playerCollider != null) playerCollider.size = normalColliderSize;
+                        if (hitboxImage != null) hitboxImage.SetActive(false);
+                        if (grazeCollider != null) grazeCollider.size = normalGrazeSize;
+                    }
+                }
+
+                if (isFocusMode)
+                {
+                    myStatus.currentStamina -= myStatus.focusStaminaCostPerSec * Time.deltaTime;
+                    myStatus.lastStaminaConsumeTime = Time.time;
+                    if (myStatus.currentStamina <= 0)
+                    {
+                        myStatus.currentStamina = 0;
+                        isFocusMode = false;
+                        if (playerCollider != null) playerCollider.size = normalColliderSize;
+                        if (hitboxImage != null) hitboxImage.SetActive(false);
+                        if (grazeCollider != null) grazeCollider.size = normalGrazeSize;
+                    }
+                }
+            }
+            else
+            {
+                if (isFocusMode)
+                {
+                    isFocusMode = false;
+                    if (playerCollider != null) playerCollider.size = normalColliderSize;
+                    if (hitboxImage != null) hitboxImage.SetActive(false);
+                    if (grazeCollider != null) grazeCollider.size = normalGrazeSize;
+                }
+            }
+
+            if (isFocusMode)
+            {
+                moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            }
+            else
+            {
+                moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+            }
+            
             if (moveInput.sqrMagnitude > 1) moveInput.Normalize();
 
-            if (Input.GetMouseButtonDown(1) && myStatus.currentSpecialMove != playerStatusManager_Alpha.SpecialMoveType.None)
+            if (Input.GetMouseButtonDown(1) && myStatus.currentSpecialMove != playerStatusManager_Alpha.SpecialMoveType.None && myStatus.currentSpecialMove != playerStatusManager_Alpha.SpecialMoveType.Focus)
             {
                 TrySpecialMove();
+            }
+        }
+        else
+        {
+            // スペシャルムーブ中は強制的にフォーカス解除
+            if (isFocusMode)
+            {
+                isFocusMode = false;
+                if (playerCollider != null) playerCollider.size = normalColliderSize;
+                if (hitboxImage != null) hitboxImage.SetActive(false);
+                if (grazeCollider != null) grazeCollider.size = normalGrazeSize;
             }
         }
 
@@ -198,6 +302,11 @@ public class Player_Control_Alpha : MonoBehaviour
             finalSpeed = 0.79f;
         }
         
+        if (isFocusMode)
+        {
+            finalSpeed *= focusSpeedMultiplier;
+        }
+
         Vector2 targetVelocity = moveInput * finalSpeed;
         rb.MovePosition(rb.position + targetVelocity * Time.fixedDeltaTime);
         rb.velocity = Vector2.zero; // 慣性による滑り対策
@@ -225,6 +334,7 @@ public class Player_Control_Alpha : MonoBehaviour
             float setSpd = (myStatus.moveSpeed * myStatus.moveSpeedMag * 0.0001f);
             float finalSpeed = setSpd * myStatus.moveSpeedMag_CONST;
             if (setSpd <= 0 || Input.GetKey(KeyCode.LeftShift)) finalSpeed = 0.79f;
+            if (isFocusMode) finalSpeed *= focusSpeedMultiplier;
             currentVelocity = moveInput * finalSpeed;
         }
 

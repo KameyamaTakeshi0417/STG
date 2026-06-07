@@ -109,10 +109,14 @@ public class Alpha_VoltArea : MonoBehaviour, IAlphaPoolable
         if (!isActivated) return;
 
         List<GameObject> enemiesToRemove = new List<GameObject>();
+        
+        // HandleTick内でApplyDamageによって敵が死亡し、OnTriggerExit2Dが呼ばれてコレクションが変更されるのを防ぐため
+        // リストのコピーを作成してイテレーションする
+        List<GameObject> currentEnemiesList = new List<GameObject>(currentEnemiesInside);
 
-        foreach (var enemyObj in currentEnemiesInside)
+        foreach (var enemyObj in currentEnemiesList)
         {
-            if (enemyObj == null || !enemyObj.activeInHierarchy)
+            if (enemyObj == null || !enemyObj.activeInHierarchy || !currentEnemiesInside.Contains(enemyObj))
             {
                 enemiesToRemove.Add(enemyObj);
                 continue;

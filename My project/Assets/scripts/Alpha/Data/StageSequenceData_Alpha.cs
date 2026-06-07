@@ -15,6 +15,9 @@ namespace Alpha.Data
         public bool useFadeMode = false;
         [Tooltip("フェードモード時の表示時間（秒）")]
         public float displayDuration = 3f;
+
+        [Tooltip("チュートリアル表示中にタイムラインの進行を一時停止するか")]
+        public bool pauseTimeline = true;
     }
 
     [CreateAssetMenu(fileName = "NewStageSequence", menuName = "Alpha/Stage Sequence Data")]

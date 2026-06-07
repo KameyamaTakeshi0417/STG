@@ -26,6 +26,24 @@ namespace Alpha.UI
         [HideInInspector]
         public int value;
 
+        public void Setup(int val)
+        {
+            value = val;
+            var tmp = GetComponent<TextMeshProUGUI>();
+            if (tmp != null)
+            {
+                if (val < 0)
+                {
+                    prefix = ""; // マイナスの場合はval自身に「-」がつくためプレフィックスを消す
+                    tmp.color = Color.red;
+                }
+                else
+                {
+                    prefix = "+";
+                }
+            }
+        }
+
         void Start()
         {
             TimeCnt = 0.0f;

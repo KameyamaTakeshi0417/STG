@@ -38,7 +38,15 @@ namespace Alpha.Data
         Homing,                    // ホーミング（旋回力0〜100）
         Composite,                 // 複合スキル
         // --- 装備制限解除 ---
-        AllEquipable           // どこにでも装備可能
+        AllEquipable,          // どこにでも装備可能
+
+        // --- スペシャルムーブ切り替え ---
+        SpecialMove_Focus,
+        SpecialMove_Warp,
+        SpecialMove_Dash,
+        
+        // --- HP関連 ---
+        HPGaugePlus
     }
 
     [CreateAssetMenu(fileName = "NewWeaponEffect", menuName = "Alpha/Weapon Effect")]
@@ -53,6 +61,10 @@ namespace Alpha.Data
 
         [Tooltip("trueの場合、同シリーズが3部位揃っており、かつこのパーツが最適部位（BestSlot）に装備されている時のみ発動します。")]
         public bool isBestSlotEffect = false;
+
+        [Header("Shop Settings")]
+        public int price = 100;
+        public int sellPrice = 50;
 
         [Tooltip("品質(1〜4)による効果量。インデックス0=品質1、インデックス3=品質4")]
         public float[] qualityValues = new float[4];

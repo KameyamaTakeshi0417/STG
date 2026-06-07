@@ -22,6 +22,11 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
     private float baseBlockMag;
     private float baseBulletSpeedMag;
 
+    private float baseFocusStaminaCost;
+    private float baseWarpStaminaCost;
+    private float baseDashStaminaCost;
+    private int baseHPGauge;
+
     [Header("New Status Fields")]
     public float bulletLifeMag = 1.0f;
     private float baseBulletLifeMag = 1.0f;
@@ -72,6 +77,11 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         baseBulletLifeMag = bulletLifeMag;
         baseExtraPierceCount = extraPierceCount;
         baseExtraShotCount = extraShotCount;
+
+        baseFocusStaminaCost = focusStaminaCostPerSec;
+        baseWarpStaminaCost = warpStaminaCost;
+        baseDashStaminaCost = dashStaminaCost;
+        baseHPGauge = HPGauge;
     }
 
     private void Start()
@@ -133,6 +143,11 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         extraShotCount = baseExtraShotCount;
         burstCount = baseBurstCount;
         currentSpawnPattern = SpawnPattern.Straight; // デフォルトはStraight
+
+        focusStaminaCostPerSec = baseFocusStaminaCost;
+        warpStaminaCost = baseWarpStaminaCost;
+        dashStaminaCost = baseDashStaminaCost;
+        HPGauge = baseHPGauge;
 
         // --- 2. 各ステータスバフを取得・加算 ---
         
@@ -243,7 +258,123 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
             currentSpawnPattern = SpawnPattern.Straight; // 明示的なStraight付与（なくてもデフォルトがStraight）
         }
 
-        // --- 4. 最大HPが変化した場合の現在HP補正 ---
+        // --- 5. スペシャルムーブの優先度決定 ---
+        int focusScore = 0;
+        int warpScore = 0;
+        int dashScore = 0;
+
+        float bestFocusCost = 9999f;
+        float bestWarpCost = 9999f;
+        float bestDashCost = 9999f;
+
+        for (int i = 0; i < inv.equipInstance.Count; i++)
+        {
+            var item = inv.equipInstance[i];
+            if (item.series == null) continue;
+            int itemGroup = i / 3;
+
+            System.Action<Alpha.Data.WeaponEffectSO_Alpha> checkSpecialMove = (effectSO) =>
+            {
+                if (effectSO != null)
+                {
+                    if (!effectSO.isGlobalEffect && groupToPass != -1 && itemGroup != groupToPass) return;
+                    
+                    if (effectSO.effectType == Alpha.Data.WeaponEffectType_Alpha.SpecialMove_Focus)
+                    {
+                        focusScore += item.rarity;
+                        float cost = effectSO.GetValue(item.rarity);
+                        if (cost > 0 && cost < bestFocusCost) bestFocusCost = cost;
+                    }
+                    else if (effectSO.effectType == Alpha.Data.WeaponEffectType_Alpha.SpecialMove_Warp)
+                    {
+                        warpScore += item.rarity;
+                        float cost = effectSO.GetValue(item.rarity);
+                        if (cost > 0 && cost < bestWarpCost) bestWarpCost = cost;
+                    }
+                    else if (effectSO.effectType == Alpha.Data.WeaponEffectType_Alpha.SpecialMove_Dash)
+                    {
+                        dashScore += item.rarity;
+                        float cost = effectSO.GetValue(item.rarity);
+                        if (cost > 0 && cost < bestDashCost) bestDashCost = cost;
+                    }
+                }
+            };
+
+            if (item.series.passiveEffects != null)
+            {
+                foreach (var e in item.series.passiveEffects) checkSpecialMove(e);
+            }
+            if (item.currentEffects != null)
+            {
+                foreach (var e in item.currentEffects) checkSpecialMove(e);
+            }
+        }
+
+        // 優先度判定 (Focus > Warp > Dash)
+        if (focusScore == 0 && warpScore == 0 && dashScore == 0)
+        {
+            currentSpecialMove = SpecialMoveType.Focus;
+        }
+        else
+        {
+            int maxScore = Mathf.Max(focusScore, warpScore, dashScore);
+            if (focusScore == maxScore)
+            {
+                currentSpecialMove = SpecialMoveType.Focus;
+            }
+            else if (warpScore == maxScore)
+            {
+                currentSpecialMove = SpecialMoveType.Warp;
+            }
+            else if (dashScore == maxScore)
+            {
+                currentSpecialMove = SpecialMoveType.Dash;
+            }
+        }
+
+        // 消費スタミナの上書き適用
+        if (currentSpecialMove == SpecialMoveType.Focus && bestFocusCost != 9999f) focusStaminaCostPerSec = bestFocusCost;
+        if (currentSpecialMove == SpecialMoveType.Warp && bestWarpCost != 9999f) warpStaminaCost = bestWarpCost;
+        if (currentSpecialMove == SpecialMoveType.Dash && bestDashCost != 9999f) dashStaminaCost = bestDashCost;
+
+        // --- 6. HPGaugeの増加処理 ---
+        int hpGaugeBuffCount = 0;
+        for (int i = 0; i < inv.equipInstance.Count; i++)
+        {
+            var item = inv.equipInstance[i];
+            if (item.series == null) continue;
+            int itemGroup = i / 3;
+
+            System.Action<Alpha.Data.WeaponEffectSO_Alpha> checkHPGauge = (effectSO) =>
+            {
+                if (effectSO != null && effectSO.effectType == Alpha.Data.WeaponEffectType_Alpha.HPGaugePlus)
+                {
+                    if (!effectSO.isGlobalEffect && groupToPass != -1 && itemGroup != groupToPass) return;
+                    hpGaugeBuffCount++;
+                }
+            };
+
+            if (item.series.passiveEffects != null)
+            {
+                foreach (var e in item.series.passiveEffects) checkHPGauge(e);
+            }
+            if (item.currentEffects != null)
+            {
+                foreach (var e in item.currentEffects) checkHPGauge(e);
+            }
+        }
+
+        HPGauge = Mathf.Min(4, baseHPGauge + hpGaugeBuffCount);
+
+        // 外した時用に、現在のゲージ数が最大ゲージ数を超えていたら丸める処理
+        if (nowHPGauge > HPGauge)
+        {
+            nowHPGauge = HPGauge;
+            // 現在のHPも調整（必要であれば）
+            if (currentHP > HP) currentHP = HP;
+        }
+
+        // --- 7. 最大HPが変化した場合の現在HP補正 ---
         if (currentHP > HP) 
         {
             currentHP = HP;
@@ -293,8 +424,8 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
     public float BulletSpan; // フレーム
     public float BulletSpanMag = 1.0f;
 
-    public enum SpecialMoveType { None, Dash, Warp }
-    [Header("Special Move (Dash/Warp) Settings")]
+    public enum SpecialMoveType { None, Dash, Warp, Focus }
+    [Header("Special Move (Dash/Warp/Focus) Settings")]
     public SpecialMoveType currentSpecialMove = SpecialMoveType.Dash;
 
     public float maxStamina = 100f;
@@ -310,6 +441,8 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
     public float warpDuration = 0.2f;  // DBZ瞬間移動のタメ時間
     public float warpStaminaCost = 45f;
     public float warpDistance = 8f; // 調整可能
+
+    public float focusStaminaCostPerSec = 20f; // フォーカスモード中の秒間スタミナ消費量
 
     [Header("Weapon Synthesis Settings")]
     [Tooltip("特定条件下で1〜3行目のすべての武器効果を使用可能にするフラグ")]

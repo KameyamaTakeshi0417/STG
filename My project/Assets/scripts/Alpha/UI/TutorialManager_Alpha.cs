@@ -15,6 +15,8 @@ namespace Alpha.UI
         private GameObject currentTutorialObject;
         private bool isShowing = false;
         public bool IsShowing => isShowing;
+        
+        public bool IsPausingTimeline { get; private set; }
 
         private float previousTimeScale = 1f;
         private struct TutorialRequest
@@ -22,6 +24,7 @@ namespace Alpha.UI
             public string tutorialId;
             public bool useFadeMode;
             public float displayDuration;
+            public bool pauseTimeline;
         }
         private Queue<TutorialRequest> tutorialQueue = new Queue<TutorialRequest>();
         private static HashSet<string> seenInSession = new HashSet<string>();
@@ -50,7 +53,7 @@ namespace Alpha.UI
             }
         }
 
-        public void ShowTutorial(string tutorialId, bool useFadeMode = false, float displayDuration = 3f)
+        public void ShowTutorial(string tutorialId, bool useFadeMode = false, float displayDuration = 3f, bool pauseTimeline = true)
         {
             if (Application.isEditor)
             {
@@ -79,7 +82,7 @@ namespace Alpha.UI
                     foreach (var t in tutorialQueue) if (t.tutorialId == tutorialId) contains = true;
                     if (!contains && (currentTutorialObject == null || currentTutorialObject.name != tutorialId))
                     {
-                        tutorialQueue.Enqueue(new TutorialRequest { tutorialId = tutorialId, useFadeMode = useFadeMode, displayDuration = displayDuration });
+                        tutorialQueue.Enqueue(new TutorialRequest { tutorialId = tutorialId, useFadeMode = useFadeMode, displayDuration = displayDuration, pauseTimeline = pauseTimeline });
                     }
                     return;
                 }
@@ -87,6 +90,7 @@ namespace Alpha.UI
 
             isShowing = true;
             isFadingTutorial = useFadeMode;
+            IsPausingTimeline = pauseTimeline;
 
             if (useFadeMode)
             {
@@ -142,6 +146,7 @@ namespace Alpha.UI
             }
             isShowing = false;
             isFadingTutorial = false;
+            IsPausingTimeline = false;
             if (fadeCanvasGroup != null) fadeCanvasGroup.alpha = 1f;
 
             CheckQueue();
@@ -199,10 +204,10 @@ namespace Alpha.UI
 
         private void Update()
         {
-            // 時間停止中の他の入力を防ぎつつ、右クリックだけ受け付ける（フェード中は除く）
-            if (isShowing && !isFadingTutorial)
+            // 時間停止中の他の入力を防ぎつつ、左・右クリックでスキップを受け付ける
+            if (isShowing)
             {
-                if (Input.GetMouseButtonDown(1))
+                if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
                 {
                     CloseTutorial();
                 }
@@ -231,6 +236,7 @@ namespace Alpha.UI
             // TimeScaleを元に戻す
             Time.timeScale = previousTimeScale;
             isShowing = false;
+            IsPausingTimeline = false;
 
             CheckQueue();
         }
@@ -240,7 +246,7 @@ namespace Alpha.UI
             if (tutorialQueue.Count > 0)
             {
                 var req = tutorialQueue.Dequeue();
-                ShowTutorial(req.tutorialId, req.useFadeMode, req.displayDuration);
+                ShowTutorial(req.tutorialId, req.useFadeMode, req.displayDuration, req.pauseTimeline);
             }
         }
 

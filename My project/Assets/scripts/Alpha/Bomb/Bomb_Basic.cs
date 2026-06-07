@@ -95,8 +95,14 @@ namespace Alpha.Bomb
             // 消滅した敵をリストから除外
             enemiesInArea.RemoveWhere(e => e == null);
 
-            foreach (var enemyObj in enemiesInArea)
+            // コレクション変更エラー（InvalidOperationException）を回避するため、
+            // 現在の要素のコピー（List）を作成してから反復処理を行う
+            var enemiesCopy = new List<GameObject>(enemiesInArea);
+
+            foreach (var enemyObj in enemiesCopy)
             {
+                if (enemyObj == null) continue;
+
                 _Health_Base health = enemyObj.GetComponent<_Health_Base>();
                 if (health != null)
                 {

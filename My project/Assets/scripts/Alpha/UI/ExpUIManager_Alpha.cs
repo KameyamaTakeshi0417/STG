@@ -64,7 +64,7 @@ namespace Alpha.UI
             if (popupScript != null)
             {
                 // PopUpUITextがアタッチされていれば、値を渡してアニメーションはスクリプトに任せる
-                popupScript.value = amount;
+                popupScript.Setup(amount);
                 return;
             }
 
@@ -83,7 +83,15 @@ namespace Alpha.UI
             Vector2 randomOffset = Random.insideUnitCircle * 50f;
             rt.anchoredPosition = randomOffset;
 
-            popupText.text = $"+{amount}";
+            if (amount < 0)
+            {
+                popupText.text = amount.ToString();
+                popupText.color = Color.red;
+            }
+            else
+            {
+                popupText.text = $"+{amount}";
+            }
             
             // アニメーション (上に移動しながらフェードアウト)
             rt.DOAnchorPosY(rt.anchoredPosition.y + 100f, 1f).SetEase(Ease.OutCubic);

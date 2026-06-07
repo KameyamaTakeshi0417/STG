@@ -125,8 +125,7 @@ namespace Alpha.Flow
                     break;
 
                 case StagePhase.RewardPhase2:
-                    // 雑魚ウェーブ終了時の報酬フェーズ
-                    HealPlayer(0.10f); // 10%回復
+                    // 雑魚ウェーブ終了時の報酬フェーズ（回復は鍛冶フェーズで行うため削除）
                     StartCoroutine(WaitUntilAllOrbsCollected(() => {
                         if (RewardSequenceManager_Alpha.Instance != null)
                         {
@@ -142,9 +141,16 @@ namespace Alpha.Flow
                     break;
 
                 case StagePhase.EnhancementShop:
-                    // 強化（整理）ショップ画面を開く
-                    // ショップ画面のUI側で、閉じるボタンを押した時に StartPhase(StagePhase.PreBossADV) を呼ぶ想定
                     Debug.Log("[StageFlow] Shop Phase Started.");
+                    if (Alpha.UI.BlacksmithManager_Alpha.Instance != null)
+                    {
+                        Alpha.UI.BlacksmithManager_Alpha.Instance.OpenBlacksmith();
+                    }
+                    else
+                    {
+                        Debug.LogWarning("[StageFlow] BlacksmithManager is missing! Skipping phase.");
+                        StartPhase(StagePhase.PreBossADV);
+                    }
                     break;
 
                 case StagePhase.PreBossADV:

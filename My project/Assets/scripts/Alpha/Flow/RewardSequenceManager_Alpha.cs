@@ -111,7 +111,7 @@ namespace Alpha.Flow
 
                 if (TutorialManager_Alpha.Instance != null)
                 {
-                    TutorialManager_Alpha.Instance.ShowTutorial("Tutorial_Reward");
+                    TutorialManager_Alpha.Instance.ShowTutorial("Tutorial_Reward", true, 3f);
                 }
             }
             else

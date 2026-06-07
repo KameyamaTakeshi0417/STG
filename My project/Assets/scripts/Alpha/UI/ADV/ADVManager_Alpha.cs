@@ -33,6 +33,14 @@ namespace Alpha.UI.ADV
 
         [Header("Settings")]
         public float textTypeSpeed = 0.05f; // 1文字あたりの表示時間（秒）
+
+        [Header("Skip Button Settings")]
+        [Tooltip("スキップボタンの大きさ")]
+        public Vector2 skipButtonSize = new Vector2(150, 60);
+        [Tooltip("スキップボタンのフォントサイズ")]
+        public float skipButtonFontSize = 32;
+
+        [Header("Runtime/Debug")]
         public float animDuration = 0.5f; // アニメーション時間
 
         private Canvas advCanvas;
@@ -188,17 +196,17 @@ namespace Alpha.UI.ADV
             TextMeshProUGUI skipTxt = skipTextObj.AddComponent<TextMeshProUGUI>();
             if (advFontAsset != null) skipTxt.font = advFontAsset;
             skipTxt.text = "Skip";
-            skipTxt.fontSize = 24;
+            skipTxt.fontSize = skipButtonFontSize;
             skipTxt.alignment = TextAlignmentOptions.Center;
             skipTxt.color = Color.white;
-            skipTextObj.GetComponent<RectTransform>().sizeDelta = new Vector2(100, 40);
+            skipTextObj.GetComponent<RectTransform>().sizeDelta = skipButtonSize;
 
             RectTransform skipRect = skipObj.GetComponent<RectTransform>();
             skipRect.anchorMin = new Vector2(1, 1);
             skipRect.anchorMax = new Vector2(1, 1);
             skipRect.pivot = new Vector2(1, 1);
             skipRect.anchoredPosition = new Vector2(-20, -20);
-            skipRect.sizeDelta = new Vector2(100, 40);
+            skipRect.sizeDelta = skipButtonSize;
         }
 
         private Image CreateImage(Transform parent, string name, Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot)

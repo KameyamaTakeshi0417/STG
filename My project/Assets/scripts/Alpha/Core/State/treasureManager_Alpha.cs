@@ -37,7 +37,7 @@ public class treasureManager_Alpha : MonoBehaviour
         // 初めてオーブを拾った時のチュートリアル表示
         if (Alpha.UI.TutorialManager_Alpha.Instance != null)
         {
-            Alpha.UI.TutorialManager_Alpha.Instance.ShowTutorial("Tutorial_Orb");
+            Alpha.UI.TutorialManager_Alpha.Instance.ShowTutorial("Tutorial_Orb", true, 3f);
         }
     }
 

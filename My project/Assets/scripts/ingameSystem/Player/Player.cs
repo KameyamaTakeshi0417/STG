@@ -93,34 +93,7 @@ public class Player : MonoBehaviour
 
     protected virtual void FixedUpdate()
     {
-        var health = GetComponent<_Health_Base>();
-        if (health != null && health.isStunned)
-        {
-            rb.velocity = Vector2.zero;
-            return;
-        }
-
-        // 入力がない場合は何もしない
-        Vector2 input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-        if (input == Vector2.zero)
-        {
-            rb.velocity = Vector2.zero;
-            return;
-        }
-
-        // 入力の正規化
-        if (input.sqrMagnitude > 1)
-        {
-            input.Normalize();
-        }
-
-        // キャラクターを移動させる
-        float setSpd = (moveSpeed * moveSpeedMag);
-        if (setSpd <= 0)
-        {
-            setSpd = 0.1f;
-        }
-        rb.velocity = input * setSpd;
+        // 移動処理は PlayerControllerinShooting.cs 等のサブクラスで実装・オーバーライドします
     }
 
     protected void LockOnEnemy(Vector3 mousePosition)

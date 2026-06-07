@@ -27,6 +27,8 @@ namespace Alpha.UI
         public Button confirmButton;
         [Tooltip("確認モード時のみ表示される戻るボタン")]
         public Button backButtonForCheck;
+        [Tooltip("フォージフェーズから呼ばれた際に表示される戻るボタン")]
+        public Button backToForgeButton;
 
         private System.Action onConfirmCallback;
         private bool openedByEscape = false;
@@ -35,12 +37,19 @@ namespace Alpha.UI
         // 選択中のスロットインデックス（-1は未選択）
         private int selectedIndex = -1;
 
+        public enum InventoryUIMode { Normal, SelectForBlacksmith }
+        [HideInInspector]
+        public InventoryUIMode currentMode = InventoryUIMode.Normal;
+        private System.Action<int> onSlotSelectedCallback;
+        private System.Action onCancelCallbackForBlacksmith;
+
         private void Awake()
         {
             if (detailPopup != null) detailPopup.gameObject.SetActive(false);
             
             if (panel != null) panel.SetActive(false);
             if (backButtonForCheck != null) backButtonForCheck.gameObject.SetActive(false);
+            if (backToForgeButton != null) backToForgeButton.gameObject.SetActive(false);
 
             if (confirmButton != null)
             {
@@ -50,6 +59,10 @@ namespace Alpha.UI
             {
                 // 戻るボタンの挙動はConfirmと同じ（UIを閉じてコールバックを実行）
                 backButtonForCheck.onClick.AddListener(OnConfirmClicked);
+            }
+            if (backToForgeButton != null)
+            {
+                backToForgeButton.onClick.AddListener(OnConfirmClicked);
             }
             
             // スロットクリック時の仮実装
@@ -140,6 +153,7 @@ namespace Alpha.UI
             
             if (confirmButton != null) confirmButton.gameObject.SetActive(false);
             if (backButtonForCheck != null) backButtonForCheck.gameObject.SetActive(true);
+            if (backToForgeButton != null) backToForgeButton.gameObject.SetActive(false);
 
             RefreshUI();
             TryShowEquipTutorial();
@@ -157,16 +171,39 @@ namespace Alpha.UI
 
             if (confirmButton != null) confirmButton.gameObject.SetActive(true);
             if (backButtonForCheck != null) backButtonForCheck.gameObject.SetActive(false);
+            if (backToForgeButton != null) backToForgeButton.gameObject.SetActive(false);
 
             RefreshUI();
             TryShowEquipTutorial();
+        }
+
+        public void ShowForSelection(System.Action<int> onSlotSelected, System.Action onCancel = null)
+        {
+            Debug.Log("[InventoryUI] ShowForSelection called.");
+            openedByEscape = false;
+            isReadOnly = false;
+            currentMode = InventoryUIMode.SelectForBlacksmith;
+            onSlotSelectedCallback = onSlotSelected;
+            onCancelCallbackForBlacksmith = onCancel;
+            selectedIndex = -1;
+
+            if (panel != null) panel.SetActive(true);
+            if (detailPopup != null) detailPopup.gameObject.SetActive(false);
+            
+            // 選択モードではConfirmボタン（画面を閉じるボタン）や通常の戻るボタンは非表示
+            // 新たに追加したフォージ用戻るボタンを表示する
+            if (confirmButton != null) confirmButton.gameObject.SetActive(false);
+            if (backButtonForCheck != null) backButtonForCheck.gameObject.SetActive(false);
+            if (backToForgeButton != null) backToForgeButton.gameObject.SetActive(true);
+
+            RefreshUI();
         }
 
         private void TryShowEquipTutorial()
         {
             if (TutorialManager_Alpha.Instance != null)
             {
-                TutorialManager_Alpha.Instance.ShowTutorial("Tutorial_Equip");
+                TutorialManager_Alpha.Instance.ShowTutorial("Tutorial_Equip", true, 3f);
             }
         }
 
@@ -345,6 +382,13 @@ namespace Alpha.UI
 
         private void OnGridSlotClicked(int index)
         {
+            if (currentMode == InventoryUIMode.SelectForBlacksmith)
+            {
+                // 選択モード時はアイテムの移動を行わず、コールバックを返す
+                onSlotSelectedCallback?.Invoke(index);
+                return;
+            }
+
             if (isReadOnly)
             {
                 Debug.Log("[InventoryUI] Read-only mode. Cannot modify items.");
@@ -380,6 +424,7 @@ namespace Alpha.UI
 
         private void HandleSlotDropped(int fromIndex, int toIndex)
         {
+            if (currentMode == InventoryUIMode.SelectForBlacksmith) return;
             if (isReadOnly) return;
             if (InventoryManager_Alpha.Instance == null) return;
             
@@ -474,6 +519,15 @@ namespace Alpha.UI
             if (openedByEscape)
             {
                 CloseEscapeInventory();
+                return;
+            }
+
+            if (currentMode == InventoryUIMode.SelectForBlacksmith)
+            {
+                // 選択キャンセルとして扱う
+                currentMode = InventoryUIMode.Normal;
+                Hide();
+                onCancelCallbackForBlacksmith?.Invoke();
                 return;
             }
 
