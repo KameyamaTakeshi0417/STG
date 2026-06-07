@@ -21,17 +21,30 @@ public class EquipUIManager_Alpha : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        for(int i = 0; i < equipUIs.Length; i++)
-        {
-            if (equipUIs[i] == null) continue;
+    }
 
-            if (inventoryManager != null && i < inventoryManager.equipInstance.Count)
+    // Update is called once per frame
+    void Update()
+    {
+        // インベントリの変更を毎フレーム反映する
+        if (inventoryManager != null)
+        {
+            for(int i = 0; i < equipUIs.Length; i++)
             {
-                var instance = inventoryManager.equipInstance[i];
-                if (instance.series != null && instance.series.icon != null)
+                if (equipUIs[i] == null) continue;
+
+                if (i < inventoryManager.equipInstance.Count)
                 {
-                    equipUIs[i].sprite = instance.series.icon;
-                    equipUIs[i].enabled = true; // アイコンがあれば表示
+                    var instance = inventoryManager.equipInstance[i];
+                    if (instance.series != null && instance.series.icon != null)
+                    {
+                        equipUIs[i].sprite = instance.series.icon;
+                        equipUIs[i].enabled = true;
+                    }
+                    else
+                    {
+                        equipUIs[i].sprite = emptyImage;
+                    }
                 }
                 else
                 {
@@ -39,11 +52,7 @@ public class EquipUIManager_Alpha : MonoBehaviour
                 }
             }
         }
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
         if (playerShooter == null)
         {
             playerShooter = FindAnyObjectByType<Player_Shooter_Alpha>();

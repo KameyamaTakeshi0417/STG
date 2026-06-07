@@ -29,9 +29,11 @@ namespace Alpha.Environment
         [Tooltip("If true, automatically adjusts sorting order based on Y position for depth.")]
         public bool autoSortByY = true;
 
-        [ContextMenu("Generate Grass")]
-        public void GenerateGrass()
+        [ContextMenu("Clear Grass")]
+        public void ClearGrass()
         {
+            StopAllCoroutines(); // 実行中の生成コルーチンを停止
+
             // すでに生成されている草があれば削除
             foreach (Transform child in transform)
             {
@@ -41,11 +43,27 @@ namespace Alpha.Environment
                 Destroy(child.gameObject);
 #endif
             }
+        }
+
+        [ContextMenu("Generate Grass")]
+        public void GenerateGrassEditor()
+        {
+            GenerateGrass(0f);
+        }
+
+        public void GenerateGrass(float duration = 0.2f)
+        {
+            StartCoroutine(GenerateGrassRoutine(duration));
+        }
+
+        private System.Collections.IEnumerator GenerateGrassRoutine(float duration)
+        {
+            ClearGrass();
 
             if (grassPrefab == null)
             {
                 Debug.LogWarning("Grass Prefab is not set!");
-                return;
+                yield break;
             }
 
             // ランダムなノイズのオフセット（生成ごとに形を変えるため）
@@ -54,6 +72,8 @@ namespace Alpha.Environment
 
             int spawned = 0;
             int maxAttempts = grassCount * 10; // 閾値に引っかからなかった場合のループ上限
+
+            float startTime = Time.unscaledTime; // timeScaleに依存しないように変更
 
             for (int i = 0; i < maxAttempts; i++)
             {
@@ -111,10 +131,23 @@ namespace Alpha.Environment
                     }
 
                     spawned++;
+
+                    // durationが0より大きい場合、時間経過に合わせて待機
+                    if (duration > 0f)
+                    {
+                        float elapsed = Time.unscaledTime - startTime;
+                        float progress = Mathf.Clamp01(elapsed / duration);
+                        int targetSpawned = Mathf.RoundToInt(grassCount * progress);
+
+                        if (spawned > targetSpawned)
+                        {
+                            yield return null;
+                        }
+                    }
                 }
             }
             
-            Debug.Log($"Generated {spawned} grass instances.");
+            Debug.Log($"Generated {spawned} grass instances over {Time.unscaledTime - startTime} seconds.");
         }
 
         // Sceneビューに生成範囲の枠を表示

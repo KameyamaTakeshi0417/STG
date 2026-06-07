@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 namespace Alpha.Flow
 {
@@ -17,7 +18,9 @@ namespace Alpha.Flow
             SecondHalf_MobWave,
             RewardPhase2,
             EnhancementShop,
+            PreBossADV,
             Boss_Battle,
+            Boss_ClearSequence,
             Boss_RewardPhase3,
             StageTransition
         }
@@ -27,7 +30,21 @@ namespace Alpha.Flow
         public int currentStageLevel = 1;
 
         [Header("Phase Settings")]
-        public float midBossEscapeTime = 60f; // 中ボスの逃亡までの時間（秒）
+        public float midBossEscapeTime = 60f; // 中ボスの逃走までの時間（秒）
+        
+        [Header("Pre-Boss Sequence")]
+        [Tooltip("ボス戦前に再生するADVデータ")]
+        public Data.ADVData_Alpha preBossADV;
+
+        [Header("Boss Clear Sequence")]
+        [Tooltip("ボス撃破時に展開する草生成スクリプト")]
+        public Environment.ProceduralGrassGenerator_Alpha grassGenerator;
+        [Tooltip("StageClearの文字を表示するCanvasGroup（初期透明度0）")]
+        public CanvasGroup stageClearBoard;
+        [Tooltip("画面を暗転させる黒背景のCanvasGroup（初期透明度0）")]
+        public CanvasGroup blackFadeBoard;
+        [Tooltip("ボス撃破後に再生するADVデータ")]
+        public Data.ADVData_Alpha postClearADV;
         
         private float phaseTimer = 0f;
         private bool isMidBossDefeated = false;
@@ -50,7 +67,7 @@ namespace Alpha.Flow
 
         private void Update()
         {
-            if (Time.timeScale == 0) return; // 報酬画面などで停止中は進行しない
+            if (currentPhase == StagePhase.None) return;
 
             phaseTimer += Time.deltaTime;
 
@@ -72,7 +89,7 @@ namespace Alpha.Flow
             currentPhase = nextPhase;
             phaseTimer = 0f;
 
-            Debug.Log($"[StageFlow] Starting Phase: {currentPhase}");
+            Debug.Log($"[StageFlow] Transitioning to Phase: {currentPhase}");
 
             switch (currentPhase)
             {
@@ -108,7 +125,7 @@ namespace Alpha.Flow
                     break;
 
                 case StagePhase.RewardPhase2:
-                    // ボス前の報酬フェーズ
+                    // 雑魚ウェーブ終了時の報酬フェーズ
                     HealPlayer(0.10f); // 10%回復
                     StartCoroutine(WaitUntilAllOrbsCollected(() => {
                         if (RewardSequenceManager_Alpha.Instance != null)
@@ -125,15 +142,33 @@ namespace Alpha.Flow
                     break;
 
                 case StagePhase.EnhancementShop:
-                    // TODO: 強化・整理・ショップ画面を開く
-                    // ショップ画面が閉じられたら StartPhase(StagePhase.Boss_Battle) を呼ぶ想定
+                    // 強化（整理）ショップ画面を開く
+                    // ショップ画面のUI側で、閉じるボタンを押した時に StartPhase(StagePhase.PreBossADV) を呼ぶ想定
                     Debug.Log("[StageFlow] Shop Phase Started.");
-                    // 仮実装: すぐに次へ
-                    // StartPhase(StagePhase.Boss_Battle);
+                    break;
+
+                case StagePhase.PreBossADV:
+                    // ボス前ADVを展開
+                    if (preBossADV != null && Alpha.UI.ADV.ADVManager_Alpha.Instance != null)
+                    {
+                        Alpha.UI.ADV.ADVManager_Alpha.Instance.StartADV(preBossADV, () => 
+                        {
+                            StartPhase(StagePhase.Boss_Battle);
+                        });
+                    }
+                    else
+                    {
+                        // データが無ければ即ボス戦へ
+                        StartPhase(StagePhase.Boss_Battle);
+                    }
                     break;
 
                 case StagePhase.Boss_Battle:
                     // TODO: ボスをスポーンさせる
+                    break;
+
+                case StagePhase.Boss_ClearSequence:
+                    StartCoroutine(BossClearSequenceRoutine());
                     break;
 
                 case StagePhase.Boss_RewardPhase3:
@@ -156,8 +191,71 @@ namespace Alpha.Flow
                     break;
 
                 case StagePhase.StageTransition:
+                    // 次のステージへ
+                    Debug.Log("[StageFlow] Stage Transition");
+                    currentStageLevel++;
+                    
+                    // ステージ遷移時に報酬ゲージを初期化する
+                    if (RewardManager_Alpha.Instance != null)
+                    {
+                        RewardManager_Alpha.Instance.ResetRewardCycle();
+                    }
+
+                    // TODO: ステージ遷移処理（演出、レベルアップ、敵の強化など）
                     ProceedToNextStage();
                     break;
+            }
+        }
+
+        private IEnumerator BossClearSequenceRoutine()
+        {
+            // 1. GrassGeneratorを展開して草をはやす
+            if (grassGenerator != null)
+            {
+                grassGenerator.gameObject.SetActive(true); // アクティブ化を保証
+                grassGenerator.GenerateGrass();
+                Debug.Log("[StageFlow] Generated Grass on Boss Clear.");
+            }
+            else
+            {
+                Debug.LogWarning("[StageFlow] GrassGenerator is not assigned in the inspector!");
+            }
+
+            // 少し待機（草が生え揃うのを待つ）
+            yield return new WaitForSeconds(1.5f);
+
+            // 2. StageClearのボードをフェードイン
+            if (stageClearBoard != null)
+            {
+                stageClearBoard.gameObject.SetActive(true);
+                stageClearBoard.alpha = 0f;
+                yield return stageClearBoard.DOFade(1f, 1f).WaitForCompletion();
+                
+                // フェードイン後、少しの間文字を見せる
+                yield return new WaitForSeconds(2f);
+            }
+
+            // 3. 黒ボードでゆっくりフェードアウト (文字も上から覆われて消える想定)
+            if (blackFadeBoard != null)
+            {
+                blackFadeBoard.gameObject.SetActive(true);
+                blackFadeBoard.alpha = 0f;
+                yield return blackFadeBoard.DOFade(1f, 2f).WaitForCompletion();
+            }
+
+            // 4. クリア後のADVを出す
+            if (postClearADV != null && Alpha.UI.ADV.ADVManager_Alpha.Instance != null)
+            {
+                Alpha.UI.ADV.ADVManager_Alpha.Instance.StartADV(postClearADV, () => 
+                {
+                    // ADV終了後の処理（暗転したまま報酬画面へ）
+                    StartPhase(StagePhase.Boss_RewardPhase3);
+                });
+            }
+            else
+            {
+                // ADVデータが無い場合はそのまま報酬へ
+                StartPhase(StagePhase.Boss_RewardPhase3);
             }
         }
 
@@ -177,7 +275,7 @@ namespace Alpha.Flow
             if (currentPhase != StagePhase.MidBoss_Battle) return;
             Debug.Log("[StageFlow] Mid-Boss Escaped!");
             
-            // 逃亡した場合は報酬フェーズ①をスキップして後半戦へ
+            // 逃走した場合は報酬フェーズ①をスキップして後半戦へ
             StartPhase(StagePhase.SecondHalf_MobWave);
         }
 

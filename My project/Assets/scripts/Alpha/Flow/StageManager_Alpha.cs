@@ -136,7 +136,24 @@ namespace Alpha.Flow
                         {
                             SetState(StageState_Alpha.Transition);
                             StartCoroutine(WaitUntilAllOrbsCollected(() => {
-                                StartPreBossADVAndFight();
+                                // ボス前（後半戦終了時）の体力回復
+                                if (playerStatusManager_Alpha.Instance != null)
+                                {
+                                    playerStatusManager_Alpha.Instance.Heal(playerStatusManager_Alpha.Instance.HP * 0.1f);
+                                    Debug.Log("[StageManager] Healed player by 10% Max HP before Boss.");
+                                }
+
+                                // ボス前報酬フェーズ・鍛冶フェーズを展開
+                                if (RewardSequenceManager_Alpha.Instance != null)
+                                {
+                                    RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
+                                        StartPreBossADVAndFight();
+                                    });
+                                }
+                                else
+                                {
+                                    StartPreBossADVAndFight();
+                                }
                             }));
                         }
                         else
@@ -350,7 +367,7 @@ namespace Alpha.Flow
                 SetState(StageState_Alpha.Transition);
                 StartCoroutine(WaitUntilAllOrbsCollected(() => 
                 {
-                    StartPostBossADVAndClear();
+                    StartBossClearSequence();
                 }));
             }
         }
@@ -373,28 +390,81 @@ namespace Alpha.Flow
             }
         }
 
-        private void StartPostBossADVAndClear()
+        private void StartBossClearSequence()
         {
+            StartCoroutine(BossClearSequenceRoutine());
+        }
+
+        private System.Collections.IEnumerator BossClearSequenceRoutine()
+        {
+            // 1. 草生え
+            var grassGenerator = FindObjectOfType<Environment.ProceduralGrassGenerator_Alpha>();
+            if (grassGenerator != null)
+            {
+                grassGenerator.gameObject.SetActive(true);
+                grassGenerator.GenerateGrass(0.2f); // 0.2秒かけて連続生成
+            }
+
+            // 余韻
+            yield return new WaitForSeconds(1.5f);
+
+            // 2. クリア演出 (Stage Clearテキスト表示)
+            if (stageClearText != null)
+            {
+                stageClearText.gameObject.SetActive(true);
+                CanvasGroup cg = stageClearText.gameObject.GetComponent<CanvasGroup>();
+                if (cg == null) cg = stageClearText.gameObject.AddComponent<CanvasGroup>();
+                
+                // フェードイン
+                float t = 0;
+                while (t < 1f)
+                {
+                    t += Time.unscaledDeltaTime;
+                    cg.alpha = Mathf.Lerp(0f, 1f, t / 1f);
+                    yield return null;
+                }
+                cg.alpha = 1f;
+                
+                yield return new WaitForSeconds(2f);
+            }
+
+            // 3. その状態のままフェードアウトしてADVへ
+            bool isFaded = false;
+            if (fadeController != null)
+            {
+                fadeController.FadeOut(() => { isFaded = true; });
+            }
+            else
+            {
+                isFaded = true;
+            }
+            yield return new WaitUntil(() => isFaded);
+
+            // STAGE CLEAR テキストは暗転後に非表示に戻す
+            if (stageClearText != null) stageClearText.gameObject.SetActive(false);
+
+            // 4. ボス後ADV
             if (currentStageData.postBossADV != null && ADVManager_Alpha.Instance != null && currentStageData.postBossADV.pages != null && currentStageData.postBossADV.pages.Count > 0)
             {
-                fadeController.FadeOut(() => {
-                    ADVManager_Alpha.Instance.StartADV(currentStageData.postBossADV, () => {
-                        fadeController.FadeIn(() => {
-                            ExecuteStageClear();
-                        });
-                    });
+                if (grassGenerator != null) grassGenerator.ClearGrass(); // ADV開始時に草を消す
+
+                // 暗転したままADVを開始
+                ADVManager_Alpha.Instance.StartADV(currentStageData.postBossADV, () => {
+                    // ADV終了後、次ステージ遷移準備へ
+                    ExecuteStageClearBackEnd();
                 });
             }
             else
             {
-                ExecuteStageClear();
+                if (grassGenerator != null) grassGenerator.ClearGrass();
+                ExecuteStageClearBackEnd();
             }
         }
 
-        private void ExecuteStageClear()
+        private void ExecuteStageClearBackEnd()
         {
             SetState(StageState_Alpha.StageClear);
-            Debug.Log("[StageManager] STAGE CLEAR!");
+            Debug.Log("[StageManager] STAGE CLEAR (BackEnd)!");
 
             // 1. 報酬ゲージのリセット
             if (RewardManager_Alpha.Instance != null)
@@ -421,8 +491,47 @@ namespace Alpha.Flow
                 InventoryManager_Alpha.Instance.AddFreeSlot();
             }
 
-            // 4. 次ステージへの遷移演出を開始
-            StartCoroutine(StageClearTransitionRoutine());
+            // 4. 次ステージへの遷移準備 (すでに暗転している想定)
+            // StartCoroutine(StageClearTransitionRoutine()) の代わりにそのまま処理
+            currentStageIndex++;
+            if (stageList != null && currentStageIndex < stageList.Length && stageList[currentStageIndex] != null)
+            {
+                currentStageData = stageList[currentStageIndex];
+                
+                // 敵や弾などを掃除
+                ClearAllEnemyBullets();
+                
+                // 次ステージの初期化
+                SetState(StageState_Alpha.WaitToStartFirstHalf);
+                wasMobCleared = false;
+                
+                if (fadeController != null)
+                {
+                    fadeController.FadeIn(() => {
+                        if (stageTitleText != null)
+                        {
+                            stageTitleText.text = currentStageData.stageName;
+                            StartCoroutine(FadeTextRoutine(stageTitleText, 2f));
+                        }
+                        StartFirstHalf();
+                    });
+                }
+                else
+                {
+                    if (stageTitleText != null)
+                    {
+                        stageTitleText.text = currentStageData.stageName;
+                        StartCoroutine(FadeTextRoutine(stageTitleText, 2f));
+                    }
+                    StartFirstHalf();
+                }
+            }
+            else
+            {
+                // 全ステージクリア
+                Debug.Log("[StageManager] ALL STAGES CLEARED!");
+                // 拠点やタイトルに戻る処理を記述
+            }
         }
 
         private System.Collections.IEnumerator FadeTextRoutine(TMPro.TextMeshProUGUI textUI, float displayDuration)
@@ -530,8 +639,10 @@ namespace Alpha.Flow
         {
             Debug.Log("[StageManager] Waiting for orbs to be collected...");
             
-            // 全てのオーブが画面上から消える（取得される）まで待機
-            while (FindObjectsOfType<OrbControll_Alpha>().Length > 0 || FindObjectsOfType<Alpha.Battle.OrbItem_Alpha>().Length > 0)
+            // 全てのオーブ・アイテムが画面上から消える（取得される）まで待機
+            while (FindObjectsOfType<OrbControll_Alpha>().Length > 0 || 
+                   FindObjectsOfType<Alpha.Battle.OrbItem_Alpha>().Length > 0 ||
+                   FindObjectsOfType<ItemPickUp>().Length > 0)
             {
                 yield return new WaitForSeconds(0.25f);
             }
