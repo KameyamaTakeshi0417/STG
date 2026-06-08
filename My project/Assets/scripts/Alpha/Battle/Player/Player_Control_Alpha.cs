@@ -42,7 +42,7 @@ public class Player_Control_Alpha : MonoBehaviour
     void Start()
     {
         onCoolTime = false;
-        myStatus=GameObject.Find("manager").GetComponent<playerStatusManager_Alpha>();
+        myStatus = playerStatusManager_Alpha.Instance;
 
         playerCollider = GetComponent<CapsuleCollider2D>();
         if (playerCollider != null)

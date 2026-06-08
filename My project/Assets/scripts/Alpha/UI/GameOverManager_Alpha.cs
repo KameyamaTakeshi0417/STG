@@ -32,6 +32,14 @@ namespace Alpha.UI
             if (giveUpButton != null) giveUpButton.onClick.AddListener(OnGiveUpClicked);
         }
 
+        private void OnDestroy()
+        {
+            if (Instance == this)
+            {
+                Instance = null;
+            }
+        }
+
         private void Start()
         {
             // Subscribe to Player Death event

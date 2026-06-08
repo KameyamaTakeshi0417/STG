@@ -23,8 +23,8 @@ public class PlayerHPBar : HPBar_Base
     {
         hpSlider = HPBar.GetComponent<Slider>();
         
-        // 初期状態の反映（マネージャーから取得）
-        GameObject managerObj = GameObject.Find("manager");
+        // 初期状態�E反映�E��Eネ�Eジャーから取得！E
+        GameObject managerObj = (playerStatusManager_Alpha.Instance != null ? playerStatusManager_Alpha.Instance.gameObject : null);
         if (managerObj != null)
         {
             var statusManager = managerObj.GetComponent<playerStatusManager_Alpha>();
@@ -56,9 +56,9 @@ public class PlayerHPBar : HPBar_Base
         {
             if (hpSlider != null)
             {
-                // HPバーの初期設定
+                // HPバ�Eの初期設宁E
                 hpSlider.maxValue = HP;
-                hpSlider.value = (float)currentHP; // HPバーの最初の値を現在のHPに設定
+                hpSlider.value = (float)currentHP; // HPバ�Eの最初�E値を現在のHPに設宁E
             }
         }
         else

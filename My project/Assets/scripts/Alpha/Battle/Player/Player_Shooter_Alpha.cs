@@ -5,11 +5,11 @@ using UnityEngine;
 public class Player_Shooter_Alpha : MonoBehaviour
 {
     public bool onCoolTime;
-    public AudioSource shootAudioSource; // 弾の発射音用のAudioSource
-    public float moveRadius = 2f; // プレイヤーを中心とする半径
+    public AudioSource shootAudioSource; // 蠑ｾ縺ｮ逋ｺ蟆・浹逕ｨ縺ｮAudioSource
+    public float moveRadius = 2f; // 繝励Ξ繧､繝､繝ｼ繧剃ｸｭ蠢・→縺吶ｋ蜊雁ｾ・
 
     [Header("Weapon Settings")]
-    public BASE_WeaponData_Alpha equippedWeaponData; // 現在装備している武器データ（Inspectorからアタッチ可能）
+    public BASE_WeaponData_Alpha equippedWeaponData; // 迴ｾ蝨ｨ陬・ｙ縺励※縺・ｋ豁ｦ蝎ｨ繝・・繧ｿ・・nspector縺九ｉ繧｢繧ｿ繝・メ蜿ｯ閭ｽ・・
 
     [Header("Spawn Pattern Settings")]
     public float shotIntervalSec = 0.05f;
@@ -38,7 +38,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
         PlayerObj = playerTransform.gameObject;
         if (playerTransform != null)
         {
-            playerStatusScript = GameObject.Find("manager").GetComponent<playerStatusManager_Alpha>();
+            playerStatusScript = playerStatusManager_Alpha.Instance;
             inventoryManager = GameObject.FindObjectOfType<InventoryManager_Alpha>();
         }
         pointerSystem = Object.FindAnyObjectByType<Alpha.PointerLineSystem>();
@@ -58,27 +58,27 @@ public class Player_Shooter_Alpha : MonoBehaviour
             return;
         }
 
-        // 武器グループ切り替え (1キー: 前の行, 3キー: 次の行)
+        // 豁ｦ蝎ｨ繧ｰ繝ｫ繝ｼ繝怜・繧頑崛縺・(1繧ｭ繝ｼ: 蜑阪・陦・ 3繧ｭ繝ｼ: 谺｡縺ｮ陦・
         if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
         {
             currentWeaponGroup--;
             if (currentWeaponGroup < 0) currentWeaponGroup = 2;
-            Debug.Log($"[Player_Shooter] 武器グループが {currentWeaponGroup + 1}段目 に切り替わりました。");
+            Debug.Log("Switched weapon group.");
             if (playerStatusScript != null) playerStatusScript.UpdateEquipmentBuffs();
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3))
         {
             currentWeaponGroup++;
             if (currentWeaponGroup > 2) currentWeaponGroup = 0;
-            Debug.Log($"[Player_Shooter] 武器グループが {currentWeaponGroup + 1}段目 に切り替わりました。");
+            Debug.Log("Switched weapon group.");
             if (playerStatusScript != null) playerStatusScript.UpdateEquipmentBuffs();
         }
 
-        // マウスの位置を取得
+        // 繝槭え繧ｹ縺ｮ菴咲ｽｮ繧貞叙蠕・
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mousePosition.z = 0; // Z座標は0に固定
+        mousePosition.z = 0; // Z蠎ｧ讓吶・0縺ｫ蝗ｺ螳・
 
-        // ターゲットロックオン時の処理を追加
+        // 繧ｿ繝ｼ繧ｲ繝・ヨ繝ｭ繝・け繧ｪ繝ｳ譎ゅ・蜃ｦ逅・ｒ霑ｽ蜉�
         if (pointerSystem == null) 
         {
             pointerSystem = Object.FindAnyObjectByType<Alpha.PointerLineSystem>();
@@ -86,26 +86,26 @@ public class Player_Shooter_Alpha : MonoBehaviour
         
         Vector3 direction;
         Vector3 pPos = playerTransform.position;
-        pPos.z = 0; // Z座標は0に固定
+        pPos.z = 0; // Z蠎ｧ讓吶・0縺ｫ蝗ｺ螳・
 
         if (pointerSystem != null && pointerSystem.CurrentTarget != null)
         {
-            // ロックオンしている対象がいれば、その対象の方向を向く
+            // 繝ｭ繝・け繧ｪ繝ｳ縺励※縺・ｋ蟇ｾ雎｡縺後＞繧後・縲√◎縺ｮ蟇ｾ雎｡縺ｮ譁ｹ蜷代ｒ蜷代￥
             Vector3 targetPos = pointerSystem.CurrentTarget.position;
             targetPos.z = 0; 
             direction = (targetPos - pPos).normalized;
         }
         else
         {
-            // いなければ今まで通りマウスの方向を向く
+            // 縺・↑縺代ｌ縺ｰ莉翫∪縺ｧ騾壹ｊ繝槭え繧ｹ縺ｮ譁ｹ蜷代ｒ蜷代￥
             direction = (mousePosition - pPos).normalized;
         }
 
-        // オブジェクトの向きをマウスポインタ（またはターゲット）の方向に向ける
+        // 繧ｪ繝悶ず繧ｧ繧ｯ繝医・蜷代″繧偵・繧ｦ繧ｹ繝昴う繝ｳ繧ｿ・医∪縺溘・繧ｿ繝ｼ繧ｲ繝・ヨ・峨・譁ｹ蜷代↓蜷代￠繧・
         watch = direction;
         float angle = Mathf.Atan2(watch.y, watch.x) * Mathf.Rad2Deg;
 
-        // 弾の発射処理
+        // 蠑ｾ縺ｮ逋ｺ蟆・・逅・
         if (Time.timeScale != 0f && (Input.GetMouseButton(0) && !onCoolTime))
         {
             onCoolTime = true;
@@ -116,11 +116,11 @@ public class Player_Shooter_Alpha : MonoBehaviour
     private IEnumerator ShootAndCooldownRoutine()
     {
         int burstCount = playerStatusScript != null ? Mathf.Max(1, playerStatusScript.burstCount) : 1;
-        float burstInterval = 0.05f; // ユーザー要望により0.1秒または2-3フレーム程度の短い間隔
+        float burstInterval = 0.05f; // 繝ｦ繝ｼ繧ｶ繝ｼ隕∵悍縺ｫ繧医ｊ0.1遘偵∪縺溘・2-3繝輔Ξ繝ｼ繝�遞句ｺｦ縺ｮ遏ｭ縺・俣髫・
 
         for (int i = 0; i < burstCount; i++)
         {
-            ShootBullet(); // 単発発射（SpawnBulletRoutineを呼び出す）
+            ShootBullet(); // 蜊倡匱逋ｺ蟆・ｼ・pawnBulletRoutine繧貞他縺ｳ蜃ｺ縺呻ｼ・
             
             if (i < burstCount - 1)
             {
@@ -128,10 +128,10 @@ public class Player_Shooter_Alpha : MonoBehaviour
             }
         }
 
-        // バースト発射終了後にクールタイム（リロード）を開始する
-        // 基準の発射間隔を0.8秒に設定
+        // 繝舌・繧ｹ繝育匱蟆・ｵゆｺ・ｾ後↓繧ｯ繝ｼ繝ｫ繧ｿ繧､繝�・医Μ繝ｭ繝ｼ繝会ｼ峨ｒ髢句ｧ九☆繧・
+        // 蝓ｺ貅悶・逋ｺ蟆・俣髫斐ｒ0.8遘偵↓險ｭ螳・
         float baseInterval = 0.8f;
-        // 関数の倍率を適用 (例: BulletSpanMagが100の場合は1倍、50の場合は0.5倍)
+        // 髢｢謨ｰ縺ｮ蛟咲紫繧帝←逕ｨ (萓・ BulletSpanMag縺・00縺ｮ蝣ｴ蜷医・1蛟阪・0縺ｮ蝣ｴ蜷医・0.5蛟・
         float targetInterval = baseInterval * (playerStatusScript != null ? playerStatusScript.BulletSpanMag * 0.01f : 1f);
         
         yield return new WaitForSecondsRealtime(targetInterval);
@@ -150,7 +150,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
 
     void ShootBullet()
     {
-        // InventoryManagerから現在のグループ(y = currentWeaponGroup)の3つの武器データを取得
+        // InventoryManager縺九ｉ迴ｾ蝨ｨ縺ｮ繧ｰ繝ｫ繝ｼ繝・y = currentWeaponGroup)縺ｮ3縺､縺ｮ豁ｦ蝎ｨ繝・・繧ｿ繧貞叙蠕・
         Alpha.Data.WeaponSeriesData_Alpha series1 = null;
         Alpha.Data.WeaponSeriesData_Alpha series2 = null;
         Alpha.Data.WeaponSeriesData_Alpha series3 = null;
@@ -184,8 +184,8 @@ public class Player_Shooter_Alpha : MonoBehaviour
         }
         else
         {
-            // --- 案1: サーキュラー弾の優先処理 ---
-            // どの部位に装備されていても、プレハブにCircularObjectがアタッチされていれば最優先とする
+            // --- 譯・: 繧ｵ繝ｼ繧ｭ繝･繝ｩ繝ｼ蠑ｾ縺ｮ蜆ｪ蜈亥・逅・---
+            // 縺ｩ縺ｮ驛ｨ菴阪↓陬・ｙ縺輔ｌ縺ｦ縺・※繧ゅ√・繝ｬ繝上ヶ縺ｫCircularObject縺後い繧ｿ繝・メ縺輔ｌ縺ｦ縺・ｌ縺ｰ譛蜆ｪ蜈医→縺吶ｋ
             bool circularFound = false;
             if (series3 != null && series3.bulletPrefab != null && series3.bulletPrefab.GetComponent<CircularObject>() != null)
             {
@@ -203,19 +203,19 @@ public class Player_Shooter_Alpha : MonoBehaviour
                 circularFound = true;
             }
 
-            // サーキュラー弾が見つからなかった場合の通常のフォールバック処理
+            // 繧ｵ繝ｼ繧ｭ繝･繝ｩ繝ｼ蠑ｾ縺瑚ｦ九▽縺九ｉ縺ｪ縺九▲縺溷�ｴ蜷医・騾壼ｸｸ縺ｮ繝輔か繝ｼ繝ｫ繝舌ャ繧ｯ蜃ｦ逅・
             if (!circularFound)
             {
-                // 弾頭（インデックス2、series3）を最優先
+                // 蠑ｾ鬆ｭ・医う繝ｳ繝・ャ繧ｯ繧ｹ2縲《eries3・峨ｒ譛蜆ｪ蜈・
                 if (series3 != null && series3.bulletPrefab != null)
                 {
                     prefabToInstantiate = series3.bulletPrefab;
                 }
-                else if (series2 != null && series2.bulletPrefab != null) // 薬莢(インデックス1)のフォールバックを追加
+                else if (series2 != null && series2.bulletPrefab != null) // 阮ｬ闔｢(繧､繝ｳ繝・ャ繧ｯ繧ｹ1)縺ｮ繝輔か繝ｼ繝ｫ繝舌ャ繧ｯ繧定ｿｽ蜉�
                 {
                     prefabToInstantiate = series2.bulletPrefab;
                 }
-                else if (series1 != null && series1.bulletPrefab != null) // 雷管(インデックス0)のフォールバック
+                else if (series1 != null && series1.bulletPrefab != null) // 髮ｷ邂｡(繧､繝ｳ繝・ャ繧ｯ繧ｹ0)縺ｮ繝輔か繝ｼ繝ｫ繝舌ャ繧ｯ
                 {
                     prefabToInstantiate = series1.bulletPrefab;
                 }
@@ -226,7 +226,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
             }
         }
 
-        // 武器（プレハブ）の基本ダメージを取得
+        // 豁ｦ蝎ｨ・医・繝ｬ繝上ヶ・峨・蝓ｺ譛ｬ繝€繝｡繝ｼ繧ｸ繧貞叙蠕・
         float baseWeaponDamage = 0f;
         if (prefabToInstantiate != null)
         {
@@ -237,7 +237,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
             }
         }
 
-        // --- 発射に必要な共通パラメータの計算 ---
+        // --- 逋ｺ蟆・↓蠢・ｦ√↑蜈ｱ騾壹ヱ繝ｩ繝｡繝ｼ繧ｿ縺ｮ險育ｮ・---
         float finalDamage = playerStatusScript.GetFinalDamage(baseWeaponDamage);
         int totalShotCount = 1 + playerStatusScript.extraShotCount;
         var pattern = playerStatusScript.currentSpawnPattern;
@@ -274,7 +274,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
         if (prefabToInstantiate != null && prefabToInstantiate.GetComponent<CircularObject>() != null)
         {
             bulletExtraShots = localExtraShots + playerStatusScript.extraShotCount;
-            totalShotCount = 1; // サーキュラー自体は1つだけスポーンする
+            totalShotCount = 1; // 繧ｵ繝ｼ繧ｭ繝･繝ｩ繝ｼ閾ｪ菴薙・1縺､縺�縺代せ繝昴・繝ｳ縺吶ｋ
         }
         else
         {
@@ -294,7 +294,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
         }
 
         Vector3 muzzlePos = playerTransform.position + (watch * moveRadius);
-        Vector3 aimDirection = watch; // マウスがプレイヤーに近すぎると (aimPoint - muzzlePos) が逆転するバグを防ぐため、常にwatch方向を使用
+        Vector3 aimDirection = watch; // 繝槭え繧ｹ縺後・繝ｬ繧､繝､繝ｼ縺ｫ霑代☆縺弱ｋ縺ｨ (aimPoint - muzzlePos) 縺碁・ｻ｢縺吶ｋ繝舌げ繧帝亟縺舌◆繧√∝ｸｸ縺ｫwatch譁ｹ蜷代ｒ菴ｿ逕ｨ
 
         StartCoroutine(SpawnBulletRoutine(prefabToInstantiate, muzzlePos, aimDirection, aimPoint, totalShotCount, pattern, finalDamage, isTargetLocked, lockedTarget, isBouquet, bulletExtraShots, localExtraPierce));
     }
@@ -307,7 +307,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
             Vector3 spawnDir = aimDir;
             float currentReverseTime = 0f;
 
-            // 各弾ごとにエフェクトインスタンスを生成する
+            // 蜷・ｼｾ縺斐→縺ｫ繧ｨ繝輔ぉ繧ｯ繝医う繝ｳ繧ｹ繧ｿ繝ｳ繧ｹ繧堤函謌舌☆繧・
             List<Alpha_Effect_Base> effectsToApply = new List<Alpha_Effect_Base>();
 
             float totalHomingStrength = 0f;
@@ -316,8 +316,8 @@ public class Player_Shooter_Alpha : MonoBehaviour
                 totalHomingStrength = inventoryManager.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.Homing, isBouquet ? -1 : currentWeaponGroup);
                 if (totalHomingStrength > 0f)
                 {
-                    totalHomingStrength = Mathf.Min(totalHomingStrength, 100f); // 旋回力は最大100
-                    // 部位は弾頭(2)、レア度はダミー(1)として扱う
+                    totalHomingStrength = Mathf.Min(totalHomingStrength, 100f); // 譌句屓蜉帙・譛螟ｧ100
+                    // 驛ｨ菴阪・蠑ｾ鬆ｭ(2)縲√Ξ繧｢蠎ｦ縺ｯ繝繝溘・(1)縺ｨ縺励※謇ｱ縺・
                     effectsToApply.Add(new Effect_Homing_Alpha(2, 1, totalHomingStrength));
                 }
             }
@@ -366,7 +366,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
             }
             else if (pattern == playerStatusManager_Alpha.SpawnPattern.Reverse)
             {
-                // ターゲットロックの有無に関わらず、狙った方向（マウスまたはターゲット）の逆へ発射し、一定時間後に本来の方向へ向かう
+                // 繧ｿ繝ｼ繧ｲ繝・ヨ繝ｭ繝・け縺ｮ譛臥┌縺ｫ髢｢繧上ｉ縺壹∫漁縺｣縺滓婿蜷托ｼ医・繧ｦ繧ｹ縺ｾ縺溘・繧ｿ繝ｼ繧ｲ繝・ヨ・峨・騾・∈逋ｺ蟆・＠縲∽ｸ螳壽凾髢灘ｾ後↓譛ｬ譚･縺ｮ譁ｹ蜷代∈蜷代°縺・
                 float randomAngle = Random.Range(-spreadRangeDeg / 2f, spreadRangeDeg / 2f);
                 spawnDir = Quaternion.Euler(0, 0, randomAngle) * (-aimDir);
                 currentReverseTime = reverseTravelTimeSec;
@@ -391,7 +391,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
                                 }
                             }
                             
-                            // パッシブ効果の判定
+                            // 繝代ャ繧ｷ繝門柑譫懊・蛻､螳・
                             if (inst.currentEffects != null)
                             {
                                 foreach (var effSO in inst.currentEffects)
@@ -399,8 +399,8 @@ public class Player_Shooter_Alpha : MonoBehaviour
                                     if (effSO != null && effSO.effectType == Alpha.Data.WeaponEffectType_Alpha.AddActiveEffect_Volt)
                                     {
                                         float interval = effSO.GetValue(inst.rarity);
-                                        // 薬莢の部位(1)として扱うか、現在の装備箇所(n % 3)として扱うか
-                                        // 航行中に落としたいので部位に関わらずパッシブとして追加
+                                        // 阮ｬ闔｢縺ｮ驛ｨ菴・1)縺ｨ縺励※謇ｱ縺・°縲∫樟蝨ｨ縺ｮ陬・ｙ邂・園(n % 3)縺ｨ縺励※謇ｱ縺・°
+                                        // 闊ｪ陦御ｸｭ縺ｫ關ｽ縺ｨ縺励◆縺・・縺ｧ驛ｨ菴阪↓髢｢繧上ｉ縺壹ヱ繝・す繝悶→縺励※霑ｽ蜉�
                                         var passiveVolt = new Effect_VoltPassive_Alpha(n % 3, inst.rarity > 0 ? inst.rarity : 1, interval);
                                         passiveVolt.sourceSeries = inst.series;
                                         effectsToApply.Add(passiveVolt);
@@ -427,7 +427,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
                         var inst = inventoryManager.Get(n, currentWeaponGroup);
                         if (inst.series != null)
                         {
-                            Debug.Log($"[Player_Shooter] Slot {n} has series: {inst.series.name}");
+                            Debug.Log("Switched weapon group.");
                             if (!string.IsNullOrEmpty(inst.series.activeEffectClassName))
                             {
                                 var ef = Alpha.Battle.Bullet.EffectFactory_Alpha.CreateEffect(inst.series.activeEffectClassName, n, inst.rarity > 0 ? inst.rarity : 1);
@@ -438,7 +438,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
                                 }
                             }
 
-                            // パッシブ効果の判定
+                            // 繝代ャ繧ｷ繝門柑譫懊・蛻､螳・
                             if (inst.currentEffects != null)
                             {
                                 foreach (var effSO in inst.currentEffects)
@@ -466,7 +466,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
 
             CreateSingleBullet(prefab, spawnPos, spawnDir, aimDir, currentReverseTime, finalDmg, effectsToApply, lockedTarget, extraShotsForBullet, extraPierceForBullet);
 
-            // サウンドエフェクトの再生（必要に応じて）
+            // 繧ｵ繧ｦ繝ｳ繝峨お繝輔ぉ繧ｯ繝医・蜀咲函・亥ｿ・ｦ√↓蠢懊§縺ｦ・・
             // if (shootAudioSource != null) shootAudioSource.Play();
 
             if (pattern == playerStatusManager_Alpha.SpawnPattern.Barrage || pattern == playerStatusManager_Alpha.SpawnPattern.Reverse)
@@ -520,7 +520,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
             bulletScript.SetWeaponEffects(effectsToApply, playerStatusScript.canUseAllEffects);
 
             PlayerBulletManager_Alpha bulletManager = null;
-            GameObject manager = GameObject.Find("manager");
+            GameObject manager = (playerStatusManager_Alpha.Instance != null ? playerStatusManager_Alpha.Instance.gameObject : null);
             if (manager != null) bulletManager = manager.GetComponent<PlayerBulletManager_Alpha>();
             if (bulletManager == null) bulletManager = FindObjectOfType<PlayerBulletManager_Alpha>();
             
@@ -537,3 +537,4 @@ public class Player_Shooter_Alpha : MonoBehaviour
         }
     }
 }
+

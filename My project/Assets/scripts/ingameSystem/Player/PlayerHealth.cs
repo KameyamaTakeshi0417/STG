@@ -6,15 +6,15 @@ public class PlayerHealth : _Health_Base
 {
     public bool isInvincible = false;
     
-    // マネージャーの参照をキャッシュ
+    // マネージャーの参�EをキャチE��ュ
     private playerStatusManager_Alpha statusManager;
     public GameObject gaugeCanvas;
     public CircleHPBarManager circleHPBarManager;
 
     void Start()
     {
-        // Managerオブジェクトからステータスマネージャーを取得する
-        GameObject managerObj = GameObject.Find("manager");
+        // ManagerオブジェクトからスチE�Eタスマネージャーを取得すめE
+        GameObject managerObj = (playerStatusManager_Alpha.Instance != null ? playerStatusManager_Alpha.Instance.gameObject : null);
         if (managerObj != null)
         {
             statusManager = managerObj.GetComponent<playerStatusManager_Alpha>();
@@ -27,13 +27,13 @@ public class PlayerHealth : _Health_Base
         // 初期化時にマネージャー側のHPでローカル変数を同期しておく
         if (statusManager != null)
         {
-            // まず最新の装備バフを確実に計算させる（実行順序のズレ防止）
+            // まず最新の裁E��バフを確実に計算させる�E�実行頁E���Eズレ防止�E�E
             statusManager.UpdateEquipmentBuffs();
 
             HP = statusManager.HP;
             currentHP = statusManager.currentHP;
 
-            // 初期化時にマネージャー側でバリアバフが掛かっていれば適用する
+            // 初期化時にマネージャー側でバリアバフが掛かってぁE��ば適用する
             if (statusManager.hasBarrierBuff)
             {
                 Debug.Log($"[PlayerHealth] Start: statusManager has barrier buff. Setting isBarrierActive to true.");
@@ -64,16 +64,16 @@ public class PlayerHealth : _Health_Base
 
     protected override void Update()
     {
-        base.Update(); // _Health_Base側の無敵時間などのカウントダウン処理を実行
+        base.Update(); // _Health_Base側の無敵時間などのカウントダウン処琁E��実衁E
 
         // マネージャー側の実HPと常に同期させておく
-        // （他スクリプトが_Health_Baseとして現在のHPを参照した場合の齟齬防止）
+        // �E�他スクリプトが_Health_Baseとして現在のHPを参照した場合�E齟齬防止�E�E
         if (statusManager != null)
         {
             HP = statusManager.HP;
             currentHP = statusManager.currentHP;
             
-            // デバッグ機能: F3キーで現在HP分のダメージを受ける
+            // チE��チE��機�E: F3キーで現在HP刁E�Eダメージを受ける
             if (Input.GetKeyDown(KeyCode.F3))
             {
                 TakeDamage(statusManager.currentHP);
@@ -84,7 +84,7 @@ public class PlayerHealth : _Health_Base
         circleHPBarManager.UpdateCircleBar(statusManager.nowHPGauge, (statusManager.currentHP / statusManager.HP));
     }
 
-    // ボム発動時などの一定時間無敵（当たり判定消失）処理
+    // ボム発動時などの一定時間無敵�E�当たり判定消失�E��E琁E
     public void MakeInvincibleWithColliders(float duration)
     {
         StartCoroutine(InvincibleWithCollidersRoutine(duration));
@@ -116,16 +116,16 @@ public class PlayerHealth : _Health_Base
 
     public override void TakeDamage(float damage)
     {
-        if (isInvincible) return; // 無敵中ならダメージを無視する
+        if (isInvincible) return; // 無敵中ならダメージを無視すめE
 
         float setDmg = damage;
-        // 弱点倍率などローカル（自身）の状態に基づく計算
+        // 弱点倍率などローカル�E��E身�E��E状態に基づく計箁E
         if (VulnerableFlg)
         {
             setDmg *= 1.5f;
         }
         
-        // 実際のダメージ適用はすべて一元管理しているマネージャーへ委譲
+        // 実際のダメージ適用はすべて一允E��琁E��てぁE��マネージャーへ委譲
         if (statusManager != null)
         {
             statusManager.ApplyDamage(setDmg);

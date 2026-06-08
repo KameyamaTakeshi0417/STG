@@ -19,7 +19,7 @@ public class OrbControll_Alpha : MonoBehaviour
     }
     void Start()
     {
-        // プレイヤーを変数にキャッシュしておく
+        // プレイヤーを変数にキャチE��ュしておく
         GameObject playerObj = GameObject.Find("Player");
         if (playerObj != null)
         {
@@ -34,20 +34,20 @@ public class OrbControll_Alpha : MonoBehaviour
 
     private IEnumerator Homing()
     {
-        // 3. 散らばるアニメーション
+        // 3. 散ら�Eるアニメーション
         float scatterDuration = 0.5f;
         float timer = 0f;
         Vector3 startPos = transform.position;
-        // ランダムな方向へ散らばる目標位置を計算
+        // ランダムな方向へ散ら�Eる目標位置を計箁E
         Vector2 randomDir = Random.insideUnitCircle.normalized;
         Vector3 targetScatterPos = startPos + new Vector3(randomDir.x, randomDir.y, 0f) * Random.Range(1.0f, 2.0f);
 
         while (timer < scatterDuration)
         {
-            if (isCollected) yield break; // すでに回収されていたら中断
+            if (isCollected) yield break; // すでに回収されてぁE��ら中断
 
             timer += Time.deltaTime;
-            // イーズアウト（徐々に減速するような動き）で移動
+            // イーズアウト（徐、E��減速するよぁE��動き�E�で移勁E
             float t = timer / scatterDuration;
             t = 1f - (1f - t) * (1f - t);
             transform.position = Vector3.Lerp(startPos, targetScatterPos, t);
@@ -55,10 +55,10 @@ public class OrbControll_Alpha : MonoBehaviour
         }
         if (!isCollected) transform.position = targetScatterPos;
 
-        // 4. 1秒間待機する
+        // 4. 1秒間征E��すめE
         yield return new WaitForSeconds(1.0f);
 
-        // 5. プレイヤーに向かって飛んでいく（ホーミング）
+        // 5. プレイヤーに向かって飛んでぁE���E��Eーミング�E�E
         if (playerTransform == null)
         {
             GameObject p = GameObject.Find("Player");
@@ -68,11 +68,11 @@ public class OrbControll_Alpha : MonoBehaviour
         float homingSpeed = 2.0f;
         while (!isCollected && playerTransform != null)
         {
-            // 時間経過で徐々に加速する
+            // 時間経過で徐、E��加速すめE
             homingSpeed += Time.deltaTime * 15f;
             transform.position = Vector3.MoveTowards(transform.position, playerTransform.position, homingSpeed * Time.deltaTime);
 
-            // 念のため、距離が十分に近ければ回収処理を強制的に呼ぶ
+            // 念のため、距離が十刁E��近けれ�E回収処琁E��強制皁E��呼ぶ
             if (Vector3.Distance(transform.position, playerTransform.position) < 0.5f)
             {
                 Collect(playerTransform.gameObject);
@@ -88,12 +88,12 @@ public class OrbControll_Alpha : MonoBehaviour
         if (!isCollected)
         {
             isCollected = true;
-            if (GameObject.Find("manager") != null && GameObject.Find("manager").GetComponent<treasureManager_Alpha>() != null)
+            if ((playerStatusManager_Alpha.Instance != null ? playerStatusManager_Alpha.Instance.gameObject : null) != null && (playerStatusManager_Alpha.Instance != null ? playerStatusManager_Alpha.Instance.gameObject : null).GetComponent<treasureManager_Alpha>() != null)
             {
-                GameObject.Find("manager").GetComponent<treasureManager_Alpha>().GetTreasure(rarelity);
+                (playerStatusManager_Alpha.Instance != null ? playerStatusManager_Alpha.Instance.gameObject : null).GetComponent<treasureManager_Alpha>().GetTreasure(rarelity);
             }
         }
-        // 確実に破壊する
+        // 確実に破壊すめE
         Destroy(gameObject);
     }
 

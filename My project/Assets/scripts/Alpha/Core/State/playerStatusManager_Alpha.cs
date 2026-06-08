@@ -520,22 +520,13 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
     private void Die()
     {
         Debug.Log("[PlayerStatusManager] Player HP reached 0. Triggering GameOver.");
-        GameObject gmObj = GameObject.Find("GameManager");
-        if (gmObj != null)
+        if (Alpha.UI.GameOverManager_Alpha.Instance != null)
         {
-            GameManager manager = gmObj.GetComponent<GameManager>();
-            if (manager != null)
-            {
-                manager.GameOver();
-            }
-            else
-            {
-                Debug.LogError("GameManager component not found on GameManager object!");
-            }
+            Alpha.UI.GameOverManager_Alpha.Instance.ShowGameOver();
         }
         else
         {
-            Debug.LogError("GameManager object not found in the scene!");
+            Debug.LogError("GameOverManager_Alpha instance not found in the scene! Cannot show Game Over screen.");
         }
     }
 

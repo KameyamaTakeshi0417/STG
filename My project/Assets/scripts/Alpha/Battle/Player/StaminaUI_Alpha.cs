@@ -11,7 +11,7 @@ public class StaminaUI_Alpha : MonoBehaviour
     {
         if (statusManager == null)
         {
-            GameObject managerObj = GameObject.Find("manager");
+            GameObject managerObj = (playerStatusManager_Alpha.Instance != null ? playerStatusManager_Alpha.Instance.gameObject : null);
             if (managerObj != null)
             {
                 statusManager = managerObj.GetComponent<playerStatusManager_Alpha>();
