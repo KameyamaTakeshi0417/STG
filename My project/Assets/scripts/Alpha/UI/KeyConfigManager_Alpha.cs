@@ -1,9 +1,10 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using Alpha.Core;
+using TMPro;
 
 namespace Alpha.UI
 {
@@ -16,14 +17,14 @@ namespace Alpha.UI
         public GameObject unassignedWarningPopup;
 
         [Header("Wait Input UI")]
-        public Text waitInputTitleText; // e.g. "Shoot キーを入力してください"
+        public TextMeshProUGUI waitInputTitleText; // e.g. "Shoot キーを入力してください"
 
         [Header("Swap Warning UI")]
-        public Text swapWarningText; // e.g. "SpaceキーをBombからShootに変更しました"
+        public TextMeshProUGUI swapWarningText; // e.g. "SpaceキーをBombからShootに変更しました"
         public Button swapWarningOkButton;
 
         [Header("Unassigned Warning UI")]
-        public Text unassignedWarningText;
+        public TextMeshProUGUI unassignedWarningText;
         public Button unassignedCompleteButton;
         public Button unassignedBackButton;
 
