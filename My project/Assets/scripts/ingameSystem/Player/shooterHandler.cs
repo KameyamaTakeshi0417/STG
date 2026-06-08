@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 
 public class ShooterHandler : MonoBehaviour
@@ -55,7 +55,17 @@ public class ShooterHandler : MonoBehaviour
         targetObj.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
 
         // 弾の発射処理
-        if (Time.timeScale != 0f && (Input.GetMouseButton(0) && !onCoolTime))
+        bool isShootInput = false;
+        if (Alpha.Core.InputManager_Alpha.Instance != null)
+        {
+            isShootInput = Alpha.Core.InputManager_Alpha.Instance.GetAction(Alpha.Core.ActionType_Alpha.Shoot);
+        }
+        else
+        {
+            isShootInput = Input.GetMouseButton(0);
+        }
+
+        if (Time.timeScale != 0f && (isShootInput && !onCoolTime))
         {
             onCoolTime = true;
             ShootBullet();

@@ -26,7 +26,17 @@ public class PlayerControllerinShooting : Player
         }
 
         // 入力がない場合は何もしない
-        Vector2 input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        Vector2 input = Vector2.zero;
+        if (Alpha.Core.InputManager_Alpha.Instance != null)
+        {
+            input = new Vector2(Alpha.Core.InputManager_Alpha.Instance.GetAxisRaw("Horizontal"), Alpha.Core.InputManager_Alpha.Instance.GetAxisRaw("Vertical"));
+        }
+        else
+        {
+            // InputManagerがない場合のフォールバック（テストシーン用など）
+            input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        }
+        
         if (input == Vector2.zero)
         {
             rb.velocity = Vector2.zero;

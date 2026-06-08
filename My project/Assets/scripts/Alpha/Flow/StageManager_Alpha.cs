@@ -206,6 +206,25 @@ namespace Alpha.Flow
             }
         }
 
+        public void RestartStageFromFirstHalf()
+        {
+            // HPなどのプレイヤー状態の回復
+            if (playerStatusManager_Alpha.Instance != null)
+            {
+                playerStatusManager_Alpha.Instance.currentHP = playerStatusManager_Alpha.Instance.HP;
+            }
+
+            // 敵弾・敵のリセット
+            ClearAllEnemyBullets();
+            if (spawnManager != null)
+            {
+                // 必要に応じて敵の全滅や状態リセット処理
+            }
+
+            // ステージを前半戦から再開
+            StartFirstHalf();
+        }
+
         private void UpdateSequence()
         {
             if (activeSequence == null) return;
@@ -241,7 +260,17 @@ namespace Alpha.Flow
             // ポーズ時はスキップを受け付けない
             if (Time.timeScale == 0f) return;
 
-            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.LeftShift))
+            bool isSkipInput = false;
+            if (Alpha.Core.InputManager_Alpha.Instance != null)
+            {
+                isSkipInput = Alpha.Core.InputManager_Alpha.Instance.GetActionDown(Alpha.Core.ActionType_Alpha.WaveSkip);
+            }
+            else
+            {
+                isSkipInput = Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.LeftShift);
+            }
+
+            if (isSkipInput)
             {
                 if (activeSequence == null) return;
 
