@@ -64,7 +64,7 @@ MonoBehaviour:
   currentBarrierRespawnTime: 0
   barrierRespawnTimer: 0
   barrierVisualObject: {fileID: 0}
-  rewardPoints: 3
+  rewardPoints: 9
   orbDropChance: 0.05
   forceDropOrb: 0
   isMidBoss: 0

@@ -32,6 +32,10 @@ namespace Alpha.UI
         [Header("Under Development Popup Elements")]
         public Button underDevCompleteButton;
 
+        [Header("Fade Settings (Title Scene Only)")]
+        [Tooltip("タイトルシーン内にあるフェードコントローラーをアタッチします。使い回しはしません。")]
+        public FadeController_Alpha fadeController;
+
         private void Start()
         {
             // パネル初期化
@@ -79,7 +83,7 @@ namespace Alpha.UI
             // TODO: セーブデータから復元して開始する処理（シーンロードなど）
             // ひとまず保存されているステージを読み込む想定
             Debug.Log("[Title] Load Save Data and Start!");
-            SceneManager.LoadScene("TutorialStage_Alpha"); // 仮
+            TransitionToScene("TutorialStage_Alpha");
         }
 
         private void OnResumeNewGame()
@@ -96,7 +100,26 @@ namespace Alpha.UI
         {
             // 新規ゲーム開始
             Debug.Log("[Title] Start New Game!");
-            SceneManager.LoadScene("TutorialStage_Alpha"); // チュートリアル兼イージーモード
+            TransitionToScene("TutorialStage_Alpha"); // チュートリアル兼イージーモード
+        }
+
+        private void TransitionToScene(string sceneName)
+        {
+            // もしタイトルシーン専用のフェードがアタッチされていれば、フェードアウトしてから遷移する
+            if (fadeController != null)
+            {
+                // ボタンの連続押し防止
+                if (storyModeButton != null) storyModeButton.interactable = false;
+                
+                fadeController.FadeOut(() => {
+                    SceneManager.LoadScene(sceneName);
+                });
+            }
+            else
+            {
+                // フェード画面が無ければ、今まで通り即座に遷移する
+                SceneManager.LoadScene(sceneName);
+            }
         }
 
         private void OnNormalPlayClicked()

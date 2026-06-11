@@ -56,8 +56,8 @@ MonoBehaviour:
   lockedTarget: {fileID: 0}
   Objname: 
   dmg: 0
-  Speed: 500
-  DestroyTime: 500
+  Speed: 800
+  DestroyTime: 55
   bullettype: 0
   rotate: {x: 0, y: 0, z: 0}
   rarelity: 0

@@ -28,6 +28,8 @@ public class Player_Shooter_Alpha : MonoBehaviour
     playerStatusManager_Alpha playerStatusScript;
     InventoryManager_Alpha inventoryManager;
     Alpha.PointerLineSystem pointerSystem;
+    PlayerBulletManager_Alpha cachedBulletManager;
+    bool hasSearchedBulletManager = false;
 
     [Header("Weapon Groups")]
     public int currentWeaponGroup = 0; // 0, 1, 2 (rows in inventory)
@@ -42,6 +44,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
             inventoryManager = GameObject.FindObjectOfType<InventoryManager_Alpha>();
         }
         pointerSystem = Object.FindAnyObjectByType<Alpha.PointerLineSystem>();
+        cachedBulletManager = Object.FindAnyObjectByType<PlayerBulletManager_Alpha>();
     }
 
     void Start()
@@ -238,6 +241,15 @@ public class Player_Shooter_Alpha : MonoBehaviour
         }
 
         // --- 逋ｺ蟆・↓蠢・ｦ√↑蜈ｱ騾壹ヱ繝ｩ繝｡繝ｼ繧ｿ縺ｮ險育ｮ・---
+        if (playerStatusScript == null) 
+        {
+            playerStatusScript = playerStatusManager_Alpha.Instance;
+            if (playerStatusScript == null) 
+            {
+                Debug.LogError("[Player_Shooter] playerStatusManager_Alpha.Instance is null! Cannot shoot.");
+                return;
+            }
+        }
         float finalDamage = playerStatusScript.GetFinalDamage(baseWeaponDamage);
         int totalShotCount = 1 + playerStatusScript.extraShotCount;
         var pattern = playerStatusScript.currentSpawnPattern;
@@ -519,14 +531,19 @@ public class Player_Shooter_Alpha : MonoBehaviour
 
             bulletScript.SetWeaponEffects(effectsToApply, playerStatusScript.canUseAllEffects);
 
-            PlayerBulletManager_Alpha bulletManager = null;
-            GameObject manager = (playerStatusManager_Alpha.Instance != null ? playerStatusManager_Alpha.Instance.gameObject : null);
-            if (manager != null) bulletManager = manager.GetComponent<PlayerBulletManager_Alpha>();
-            if (bulletManager == null) bulletManager = FindObjectOfType<PlayerBulletManager_Alpha>();
-            
-            if (bulletManager != null)
+            if (cachedBulletManager == null && !hasSearchedBulletManager) 
             {
-                bulletScript.piercingCount += bulletManager.pierceCount;
+                cachedBulletManager = Object.FindAnyObjectByType<PlayerBulletManager_Alpha>();
+                hasSearchedBulletManager = true;
+                if (cachedBulletManager == null)
+                {
+                    Debug.LogWarning("[Player_Shooter] PlayerBulletManager_Alpha not found in scene. Pierce count from manager will be 0.");
+                }
+            }
+            
+            if (cachedBulletManager != null)
+            {
+                bulletScript.piercingCount += cachedBulletManager.pierceCount;
             }
 
             bulletScript.piercingCount += playerStatusScript.extraPierceCount;

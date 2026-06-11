@@ -6521,6 +6521,7 @@ MonoBehaviour:
   exitYesButton: {fileID: 1861708335}
   exitNoButton: {fileID: 563915850}
   underDevCompleteButton: {fileID: 361732876}
+  fadeController: {fileID: 0}
 --- !u!1 &1632862208
 GameObject:
   m_ObjectHideFlags: 0

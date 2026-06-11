@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,14 +15,23 @@ public class staminaManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-     targetGauge=staminaGauge.GetComponent<Image>();
-        playerStatusManager=playerManagerObj.GetComponent<playerStatusManager_Alpha>();
+        targetGauge=staminaGauge.GetComponent<Image>();
+        playerStatusManager = playerStatusManager_Alpha.Instance;
         targetGauge.fillAmount = 1;
-       UpdateFill();
+        if (playerStatusManager != null)
+        {
+            UpdateFill();
+        }
     }
     private void Update()
     {
-        UpdateFill();
+        if (playerStatusManager == null)
+            playerStatusManager = playerStatusManager_Alpha.Instance;
+
+        if (playerStatusManager != null)
+        {
+            UpdateFill();
+        }
     }
     // Update is called once per frame
     void UpdateFill()

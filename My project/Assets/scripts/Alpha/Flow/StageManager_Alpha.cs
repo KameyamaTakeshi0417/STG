@@ -90,8 +90,18 @@ namespace Alpha.Flow
             }
             else
             {
-                // Fallback
-                StartFirstHalf();
+                // フェードコントローラーがない場合はそのまま開始する
+                if (stageTitleText != null && currentStageData != null)
+                {
+                    stageTitleText.text = currentStageData.stageName;
+                    stageTitleText.gameObject.SetActive(true);
+                    StartCoroutine(HideTitleTextAfterSeconds(3f));
+                }
+                
+                if (currentState == StageState_Alpha.WaitToStartFirstHalf)
+                {
+                    StartFirstHalf();
+                }
             }
         }
 
