@@ -16,29 +16,32 @@ namespace Alpha.Core.Utils
         public Vector2 combatHotspot = new Vector2(16, 16); // 画像の中心などを指定
         public Vector2 uiHotspot = Vector2.zero; // 左上なら(0,0)
 
-        private bool isCombatMode = true;
+        public static CursorManager_Alpha Instance { get; private set; }
+        private bool isCombatMode = false;
+
+        private void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
 
         void Start()
         {
-            SetCombatCursor();
+            SetUICursor();
         }
 
-        void Update()
+        public void SetCombatMode(bool isCombat)
         {
-            if (StageManager_Alpha.Instance == null) return;
-
-            // 戦闘中かどうかの判定（TimeScaleが0の場合や、特定のStateの場合はUIモードにする）
-            bool shouldBeCombat = Time.timeScale > 0f && 
-                                  StageManager_Alpha.Instance.currentState != StageState_Alpha.Transition &&
-                                  StageManager_Alpha.Instance.currentState != StageState_Alpha.StageClear &&
-                                  StageManager_Alpha.Instance.currentState != StageState_Alpha.WaitToStartFirstHalf &&
-                                  StageManager_Alpha.Instance.currentState != StageState_Alpha.WaitToStartSecondHalf;
-
-            if (shouldBeCombat && !isCombatMode)
+            if (isCombat)
             {
                 SetCombatCursor();
             }
-            else if (!shouldBeCombat && isCombatMode)
+            else
             {
                 SetUICursor();
             }
@@ -66,7 +69,7 @@ namespace Alpha.Core.Utils
             }
             else
             {
-                Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto); // デフォルトカーソルに戻す
+                Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
             }
         }
     }

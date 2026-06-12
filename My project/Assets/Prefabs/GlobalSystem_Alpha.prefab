@@ -1,0 +1,126 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3606707029029106650
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7693707672824858676}
+  - component: {fileID: 5978655733560523728}
+  - component: {fileID: 7488319358115513321}
+  - component: {fileID: 1755459071001557209}
+  m_Layer: 0
+  m_Name: GlobalSystem_Alpha
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7693707672824858676
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3606707029029106650}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5978655733560523728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3606707029029106650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 548898b7702e67b48a032921418c1db4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  initialPools:
+  - prefab: {fileID: 1895039100003720943, guid: f21e58a1636bdaa4b9ef54dadf4f3608, type: 3}
+    initialPoolSize: 20
+    parentNode: {fileID: 0}
+  - prefab: {fileID: 3095739216751408760, guid: 34c4f06ad861dfe418a3868fe7e43462, type: 3}
+    initialPoolSize: 20
+    parentNode: {fileID: 0}
+  - prefab: {fileID: 1895039100003720943, guid: 0c197e8b79ca04d4aad9913758ba11f2, type: 3}
+    initialPoolSize: 20
+    parentNode: {fileID: 0}
+  - prefab: {fileID: 5343932838368336543, guid: 9ec60c9ee67c73e4db863b40f36772a7, type: 3}
+    initialPoolSize: 20
+    parentNode: {fileID: 0}
+  - prefab: {fileID: 1492444365220689217, guid: 6ff0582ee234b67498e62c76bf5856ce, type: 3}
+    initialPoolSize: 20
+    parentNode: {fileID: 0}
+  - prefab: {fileID: 3312735464239202653, guid: ae5bffbd7473eb74ba779a344f9dedfc, type: 3}
+    initialPoolSize: 70
+    parentNode: {fileID: 0}
+  - prefab: {fileID: 3312735464239202653, guid: 8be027fbfe624524e8df4136d66266a9, type: 3}
+    initialPoolSize: 70
+    parentNode: {fileID: 0}
+  - prefab: {fileID: 3312735464239202653, guid: 81f4479554461d140b5a13037f9c5553, type: 3}
+    initialPoolSize: 70
+    parentNode: {fileID: 0}
+  - prefab: {fileID: 3312735464239202653, guid: cdaca6cf0a99233469ca2fa0c1fe73ee, type: 3}
+    initialPoolSize: 70
+    parentNode: {fileID: 0}
+  - prefab: {fileID: 7422822160838769226, guid: 5bb0964b10d77c04bb34a5f0a5ddb711, type: 3}
+    initialPoolSize: 200
+    parentNode: {fileID: 0}
+  - prefab: {fileID: 1895039100003720943, guid: f67a02d4805b72d4ba91e90e55463c6a, type: 3}
+    initialPoolSize: 20
+    parentNode: {fileID: 0}
+  - prefab: {fileID: 1895039100003720943, guid: 7e9679703673383438be626d8a3f2ccf, type: 3}
+    initialPoolSize: 200
+    parentNode: {fileID: 0}
+  - prefab: {fileID: 8938104242842336465, guid: 624baa59ad4aa0249a8e842f358a5b70, type: 3}
+    initialPoolSize: 200
+    parentNode: {fileID: 0}
+--- !u!114 &7488319358115513321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3606707029029106650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e55fccad70d6c94fb5f2a5d0fcbacd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  combatCursor: {fileID: 2800000, guid: c744fb5e8423d1d48b3b55c6c3badb3d, type: 3}
+  uiCursor: {fileID: 2800000, guid: 84517370314c88e4ca86b45e1ef1114f, type: 3}
+  combatHotspot: {x: 128, y: 128}
+  uiHotspot: {x: 128, y: 128}
+--- !u!114 &1755459071001557209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3606707029029106650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46ef28c3498e9e742a03cec9d6b471f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentSaveData:
+    hasSaveData: 0
+    currentStageIndex: 0
+    currentStateValue: 0
+    currentHP: 100
+    currentExp: 0
+    activeBulletName: 
+    activeCaseName: 
+    activePrimerName: 
+    inventoryItemNames: []

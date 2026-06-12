@@ -174,6 +174,32 @@ namespace Alpha.Flow
                 }
             }
 
+            // パーツごとの固有効果の付与
+            List<WeaponEffectSO_Alpha> partSpecificEffects = null;
+            switch (partType)
+            {
+                case WeaponPartType_Alpha.Bullet:
+                    partSpecificEffects = series.bulletSpecificEffects;
+                    break;
+                case WeaponPartType_Alpha.Casing:
+                    partSpecificEffects = series.casingSpecificEffects;
+                    break;
+                case WeaponPartType_Alpha.Primer:
+                    partSpecificEffects = series.primerSpecificEffects;
+                    break;
+            }
+
+            if (partSpecificEffects != null)
+            {
+                foreach (var effect in partSpecificEffects)
+                {
+                    if (effect != null)
+                    {
+                        instance.currentEffects.Add(effect);
+                    }
+                }
+            }
+
             // グローバルバフのランダム付与（基本1つ）
             if (globalBuffEffects != null && globalBuffEffects.Count > 0)
             {

@@ -66,7 +66,14 @@ namespace Alpha.Data
         public int price = 100;
         public int sellPrice = 50;
 
-        [Tooltip("品質(1〜4)による効果量。インデックス0=品質1、インデックス3=品質4")]
+        [Header("Value Calculation")]
+        [Tooltip("合計品質に基づく段階的乗算を使用するか")]
+        public bool useStepMultiplier = false;
+
+        [Tooltip("段階が変化する合計品質の閾値（例: 3, 10, 20）。配列のサイズは基本的に3にしてください。")]
+        public int[] stepThresholds = new int[] { 3, 10, 20 };
+
+        [Tooltip("品質(1〜4)による効果量、または合計品質時の段階別乗数（インデックス0=第1段階, インデックス3=第4段階）")]
         public float[] qualityValues = new float[4];
 
         public float GetValue(int quality)

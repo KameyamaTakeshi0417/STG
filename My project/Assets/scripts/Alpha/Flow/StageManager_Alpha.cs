@@ -62,6 +62,14 @@ namespace Alpha.Flow
             if (stageTitleText != null) stageTitleText.gameObject.SetActive(false);
         }
 
+        private void OnDestroy()
+        {
+            if (Instance == this)
+            {
+                Instance = null;
+            }
+        }
+
         void Start()
         {
             SetState(StageState_Alpha.WaitToStartFirstHalf);
@@ -339,6 +347,16 @@ namespace Alpha.Flow
         {
             currentState = newState;
             Debug.Log($"[StageManager] Changed State to: {currentState}");
+
+            bool isCombat = (currentState != StageState_Alpha.Transition &&
+                             currentState != StageState_Alpha.StageClear &&
+                             currentState != StageState_Alpha.WaitToStartFirstHalf &&
+                             currentState != StageState_Alpha.WaitToStartSecondHalf);
+            
+            if (Alpha.Core.Utils.CursorManager_Alpha.Instance != null)
+            {
+                Alpha.Core.Utils.CursorManager_Alpha.Instance.SetCombatMode(isCombat);
+            }
         }
 
         public int GetCurrentRewardDropCount()

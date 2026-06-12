@@ -292,7 +292,9 @@ public class InventoryManager_Alpha : MonoBehaviour
 
     public float GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha effectType, int activeGroup = -1)
     {
-        float totalValue = 0f;
+        float totalFlatValue = 0f;
+        int totalQuality = 0;
+        Alpha.Data.WeaponEffectSO_Alpha stepEffectRef = null;
 
         for (int i = 0; i < equipInstance.Count; i++)
         {
@@ -305,22 +307,26 @@ public class InventoryManager_Alpha : MonoBehaviour
             // 1. 武器のベース(series)に紐づくパッシブ効果を加算
             if (item.series.passiveEffects != null)
             {
-                totalValue += GetTotalEffectValueRecursive(item.series.passiveEffects, effectType, item.rarity, itemGroup, activeGroup, isBestSlotMet);
+                AccumulateEffectValue(item.series.passiveEffects, effectType, item.rarity, itemGroup, activeGroup, isBestSlotMet, ref totalFlatValue, ref totalQuality, ref stepEffectRef);
             }
 
             // 2. プレイヤーが直接付与した固有効果(currentEffects)を加算
             if (item.currentEffects != null)
             {
-                totalValue += GetTotalEffectValueRecursive(item.currentEffects, effectType, item.rarity, itemGroup, activeGroup, isBestSlotMet);
+                AccumulateEffectValue(item.currentEffects, effectType, item.rarity, itemGroup, activeGroup, isBestSlotMet, ref totalFlatValue, ref totalQuality, ref stepEffectRef);
             }
         }
 
-        return totalValue;
+        if (stepEffectRef != null && stepEffectRef.useStepMultiplier)
+        {
+            return CalculateStepValue(stepEffectRef, totalQuality);
+        }
+
+        return totalFlatValue;
     }
 
-    private float GetTotalEffectValueRecursive(List<Alpha.Data.WeaponEffectSO_Alpha> effects, Alpha.Data.WeaponEffectType_Alpha targetType, int rarity, int itemGroup, int activeGroup, bool isBestSlotMet)
+    private void AccumulateEffectValue(List<Alpha.Data.WeaponEffectSO_Alpha> effects, Alpha.Data.WeaponEffectType_Alpha targetType, int rarity, int itemGroup, int activeGroup, bool isBestSlotMet, ref float flatValue, ref int totalQuality, ref Alpha.Data.WeaponEffectSO_Alpha stepEffectRef)
     {
-        float value = 0f;
         foreach (var effectSO in effects)
         {
             if (effectSO == null) continue;
@@ -331,7 +337,7 @@ public class InventoryManager_Alpha : MonoBehaviour
                 var comp = effectSO as Alpha.Data.CompositeWeaponEffectSO_Alpha;
                 if (comp != null && comp.subEffects != null)
                 {
-                    value += GetTotalEffectValueRecursive(comp.subEffects, targetType, rarity, itemGroup, activeGroup, isBestSlotMet);
+                    AccumulateEffectValue(comp.subEffects, targetType, rarity, itemGroup, activeGroup, isBestSlotMet, ref flatValue, ref totalQuality, ref stepEffectRef);
                 }
             }
             else if (effectSO.effectType == targetType)
@@ -342,9 +348,55 @@ public class InventoryManager_Alpha : MonoBehaviour
                 // 常時発動ではなく、かつ現在構えている武器グループでない場合はスキップ
                 if (!effectSO.isGlobalEffect && activeGroup != -1 && itemGroup != activeGroup) continue;
 
-                value += effectSO.GetValue(rarity);
+                if (effectSO.useStepMultiplier)
+                {
+                    totalQuality += rarity; // 合計品質を加算
+                    if (stepEffectRef == null) stepEffectRef = effectSO;
+                }
+                else
+                {
+                    flatValue += effectSO.GetValue(rarity);
+                }
             }
         }
-        return value;
+    }
+
+    private float CalculateStepValue(Alpha.Data.WeaponEffectSO_Alpha effectSO, int totalQuality)
+    {
+        if (totalQuality == 0) return 0f;
+
+        float multiplier = 0f;
+        int[] thresholds = effectSO.stepThresholds;
+        
+        if (thresholds == null || thresholds.Length == 0)
+        {
+            multiplier = effectSO.qualityValues != null && effectSO.qualityValues.Length > 0 ? effectSO.qualityValues[0] : 0f;
+        }
+        else
+        {
+            // 段階の判定
+            int stepIndex = 0;
+            for (int i = 0; i < thresholds.Length; i++)
+            {
+                if (totalQuality >= thresholds[i])
+                {
+                    stepIndex = i + 1;
+                }
+                else
+                {
+                    break; // 閾値に満たない場合はそれ以上の段階には進まない
+                }
+            }
+
+            // qualityValues から対応する乗数を取得
+            if (effectSO.qualityValues != null && effectSO.qualityValues.Length > 0)
+            {
+                int valIndex = Mathf.Clamp(stepIndex, 0, effectSO.qualityValues.Length - 1);
+                multiplier = effectSO.qualityValues[valIndex];
+            }
+        }
+
+        // 最終的な計算：合計品質 * 対応する乗数
+        return totalQuality * multiplier;
     }
 }
