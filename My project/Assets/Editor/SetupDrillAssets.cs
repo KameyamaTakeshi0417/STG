@@ -36,18 +36,23 @@ public class SetupDrillAssets
             drillSeries = ScriptableObject.CreateInstance<WeaponSeriesData_Alpha>();
             drillSeries.seriesName = "ドリル弾";
             
-            drillSeries.passiveEffects = new List<WeaponEffectSO_Alpha>();
-            drillSeries.passiveEffects.Add(burstEffect);
+            drillSeries.passiveEffects = new List<SeriesPassiveEffect>();
+            drillSeries.passiveEffects.Add(new SeriesPassiveEffect { effect = burstEffect, fixedQualityOverride = 0 });
             
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(seriesPath));
             AssetDatabase.CreateAsset(drillSeries, seriesPath);
         }
         else
         {
-            if (drillSeries.passiveEffects == null) drillSeries.passiveEffects = new List<WeaponEffectSO_Alpha>();
-            if (!drillSeries.passiveEffects.Contains(burstEffect))
+            if (drillSeries.passiveEffects == null) drillSeries.passiveEffects = new List<SeriesPassiveEffect>();
+            bool contains = false;
+            foreach (var spe in drillSeries.passiveEffects)
             {
-                drillSeries.passiveEffects.Add(burstEffect);
+                if (spe.effect == burstEffect) contains = true;
+            }
+            if (!contains)
+            {
+                drillSeries.passiveEffects.Add(new SeriesPassiveEffect { effect = burstEffect, fixedQualityOverride = 0 });
             }
             EditorUtility.SetDirty(drillSeries);
         }

@@ -120,7 +120,7 @@ public class InventoryManager_Alpha : MonoBehaviour
 
             if (item.series.passiveEffects != null)
             {
-                foreach (var e in item.series.passiveEffects) checkHeal(e);
+                foreach (var e in item.series.passiveEffects) checkHeal(e.effect);
             }
             if (item.currentEffects != null)
             {
@@ -295,6 +295,9 @@ public class InventoryManager_Alpha : MonoBehaviour
         float totalFlatValue = 0f;
         int totalQuality = 0;
         Alpha.Data.WeaponEffectSO_Alpha stepEffectRef = null;
+        
+        // activeGroupが-1（グループ指定なし）の場合は無条件でアクティブとする
+        bool isActive = (activeGroup == -1);
 
         for (int i = 0; i < equipInstance.Count; i++)
         {
@@ -307,15 +310,27 @@ public class InventoryManager_Alpha : MonoBehaviour
             // 1. 武器のベース(series)に紐づくパッシブ効果を加算
             if (item.series.passiveEffects != null)
             {
-                AccumulateEffectValue(item.series.passiveEffects, effectType, item.rarity, itemGroup, activeGroup, isBestSlotMet, ref totalFlatValue, ref totalQuality, ref stepEffectRef);
+                foreach (var spe in item.series.passiveEffects)
+                {
+                    if (spe.effect == null) continue;
+                    int appliedRarity = spe.fixedQualityOverride > 0 ? spe.fixedQualityOverride : item.rarity;
+                    AccumulateSingleEffect(spe.effect, effectType, appliedRarity, itemGroup, activeGroup, isBestSlotMet, ref totalFlatValue, ref totalQuality, ref stepEffectRef, ref isActive);
+                }
             }
 
             // 2. プレイヤーが直接付与した固有効果(currentEffects)を加算
             if (item.currentEffects != null)
             {
-                AccumulateEffectValue(item.currentEffects, effectType, item.rarity, itemGroup, activeGroup, isBestSlotMet, ref totalFlatValue, ref totalQuality, ref stepEffectRef);
+                foreach (var effectSO in item.currentEffects)
+                {
+                    if (effectSO == null) continue;
+                    AccumulateSingleEffect(effectSO, effectType, item.rarity, itemGroup, activeGroup, isBestSlotMet, ref totalFlatValue, ref totalQuality, ref stepEffectRef, ref isActive);
+                }
             }
         }
+
+        // 現在のグループで発動条件を満たしていなければ効果量は0
+        if (!isActive) return 0f;
 
         if (stepEffectRef != null && stepEffectRef.useStepMultiplier)
         {
@@ -325,38 +340,49 @@ public class InventoryManager_Alpha : MonoBehaviour
         return totalFlatValue;
     }
 
-    private void AccumulateEffectValue(List<Alpha.Data.WeaponEffectSO_Alpha> effects, Alpha.Data.WeaponEffectType_Alpha targetType, int rarity, int itemGroup, int activeGroup, bool isBestSlotMet, ref float flatValue, ref int totalQuality, ref Alpha.Data.WeaponEffectSO_Alpha stepEffectRef)
+    private void AccumulateSingleEffect(Alpha.Data.WeaponEffectSO_Alpha effectSO, Alpha.Data.WeaponEffectType_Alpha targetType, int rarity, int itemGroup, int activeGroup, bool isBestSlotMet, ref float flatValue, ref int totalQuality, ref Alpha.Data.WeaponEffectSO_Alpha stepEffectRef, ref bool isActive)
     {
-        foreach (var effectSO in effects)
+        // 複合スキルの場合は再帰的に中身を取り出す
+        if (effectSO.effectType == Alpha.Data.WeaponEffectType_Alpha.Composite)
         {
-            if (effectSO == null) continue;
-
-            // 複合スキルの場合は再帰的に中身を取り出す
-            if (effectSO.effectType == Alpha.Data.WeaponEffectType_Alpha.Composite)
+            var comp = effectSO as Alpha.Data.CompositeWeaponEffectSO_Alpha;
+            if (comp != null && comp.subEffects != null)
             {
-                var comp = effectSO as Alpha.Data.CompositeWeaponEffectSO_Alpha;
-                if (comp != null && comp.subEffects != null)
+                foreach (var sub in comp.subEffects)
                 {
-                    AccumulateEffectValue(comp.subEffects, targetType, rarity, itemGroup, activeGroup, isBestSlotMet, ref flatValue, ref totalQuality, ref stepEffectRef);
+                    if (sub == null) continue;
+                    AccumulateSingleEffect(sub, targetType, rarity, itemGroup, activeGroup, isBestSlotMet, ref flatValue, ref totalQuality, ref stepEffectRef, ref isActive);
                 }
             }
-            else if (effectSO.effectType == targetType)
+        }
+        else if (effectSO.effectType == targetType)
+        {
+            // BestSlot専用効果の場合、条件を満たしていなければスキップ
+            if (effectSO.isBestSlotEffect && !isBestSlotMet) return;
+
+                // 発動条件のチェック（現在のグループが対象か、またはグローバル効果か）
+                if (effectSO.isGlobalEffect || itemGroup == activeGroup)
+                {
+                    isActive = true;
+                }
+
+            // 加算条件のチェック
+            // accumulateGloballyがfalseの場合、現在構えているグループではないなら加算しない
+            // （グローバル効果の場合はisGlobalEffectで無条件に加算される設計ではなく、あくまでこのグループが関係しているかどうかの制御）
+            if (!effectSO.accumulateGlobally && !effectSO.isGlobalEffect && activeGroup != -1 && itemGroup != activeGroup)
             {
-                // BestSlot専用効果の場合、条件を満たしていなければスキップ
-                if (effectSO.isBestSlotEffect && !isBestSlotMet) continue;
+                return;
+            }
 
-                // 常時発動ではなく、かつ現在構えている武器グループでない場合はスキップ
-                if (!effectSO.isGlobalEffect && activeGroup != -1 && itemGroup != activeGroup) continue;
-
-                if (effectSO.useStepMultiplier)
-                {
-                    totalQuality += rarity; // 合計品質を加算
-                    if (stepEffectRef == null) stepEffectRef = effectSO;
-                }
-                else
-                {
-                    flatValue += effectSO.GetValue(rarity);
-                }
+            // 値の加算は「発動条件を満たしているか」に関わらず、(上記条件をパスしていれば)全スロットからパブリックに行う
+            if (effectSO.useStepMultiplier)
+            {
+                totalQuality += rarity; // シリーズ側で指定された固定品質、または通常品質を加算
+                if (stepEffectRef == null) stepEffectRef = effectSO;
+            }
+            else
+            {
+                flatValue += effectSO.GetValue(rarity);
             }
         }
     }

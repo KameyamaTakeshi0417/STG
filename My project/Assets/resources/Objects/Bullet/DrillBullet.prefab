@@ -194,7 +194,7 @@ MonoBehaviour:
   Objname: 
   dmg: 20
   Speed: 900
-  DestroyTime: 15
+  DestroyTime: 10
   bullettype: 0
   rotate: {x: 0, y: 0, z: 0}
   rarelity: 1

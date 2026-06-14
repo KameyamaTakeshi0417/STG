@@ -11,6 +11,14 @@ namespace Alpha.Data
         Primer  // 雷管
     }
 
+    [System.Serializable]
+    public struct SeriesPassiveEffect
+    {
+        public WeaponEffectSO_Alpha effect;
+        [Tooltip("0ならパーツ品質に依存。1以上ならその値を固定品質として扱う（パーツの品質を無視します）")]
+        public int fixedQualityOverride;
+    }
+
     [CreateAssetMenu(fileName = "NewWeaponSeries", menuName = "Alpha/Weapon Series Data")]
     public class WeaponSeriesData_Alpha : ScriptableObject
     {
@@ -41,7 +49,7 @@ namespace Alpha.Data
 
         [Header("Effects (Series Common)")]
         [Tooltip("装備枠・フリー枠・テンポラリー枠のどこにあっても発動するパッシブステータス効果（全パーツ共通）")]
-        public List<WeaponEffectSO_Alpha> passiveEffects = new List<WeaponEffectSO_Alpha>();
+        public List<SeriesPassiveEffect> passiveEffects = new List<SeriesPassiveEffect>();
         
         [Header("Effects (Part Specific)")]
         [Tooltip("このシリーズの弾頭(Bullet)パーツが生成された時に付与される固有効果")]

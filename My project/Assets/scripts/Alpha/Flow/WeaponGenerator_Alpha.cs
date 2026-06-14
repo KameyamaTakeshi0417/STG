@@ -162,18 +162,6 @@ namespace Alpha.Flow
             
             WeaponPartInstance_Alpha instance = new WeaponPartInstance_Alpha(series, partType, quality);
 
-            // 固有効果の付与（無制限で全て付与）
-            if (series.passiveEffects != null)
-            {
-                foreach (var effect in series.passiveEffects)
-                {
-                    if (effect != null)
-                    {
-                        instance.currentEffects.Add(effect);
-                    }
-                }
-            }
-
             // パーツごとの固有効果の付与
             List<WeaponEffectSO_Alpha> partSpecificEffects = null;
             switch (partType)

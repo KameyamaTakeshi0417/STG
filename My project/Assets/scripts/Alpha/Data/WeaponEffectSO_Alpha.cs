@@ -1,21 +1,15 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Alpha.Data
 {
     public enum WeaponEffectType_Alpha
     {
-        // 旧仕様互換（必要に応じて削除可能）
-        StatUp,
-        BulletChange,
-        Constraint,
-        Other,
-
         // --- 今回追加する8種類のステータス系 ---
         MaxHP,                 // 最大HP上昇
         StaminaRecoverySpeed,  // スタミナ回復速度上昇
-        AttackFlat,            // 火力上昇（固定値）
-        AttackDebuff,          // 火力デバフ（固定値）
-        AttackMultiplier,      // 火力倍率強化（パーセント）
+        AttackFlatPlus,        // 基礎攻撃力上昇（固定値）
+        AttackFlatMinus,       // 基礎攻撃力デバフ（固定値）
+        AttackMultiplierPlus,  // 基礎攻撃倍率上昇（パーセント）
         BulletLife,            // 弾の生存時間延長
         BulletLifeDebuff,      // 弾の生存時間短縮
         BulletSpeed,           // 弾速強化
@@ -46,7 +40,10 @@ namespace Alpha.Data
         SpecialMove_Dash,
         
         // --- HP関連 ---
-        HPGaugePlus
+        HPGaugePlus,
+        
+        // --- 追加ステータスデバフ ---
+        AttackMultiplierMinus  // 基礎攻撃倍率デバフ（パーセント）
     }
 
     [CreateAssetMenu(fileName = "NewWeaponEffect", menuName = "Alpha/Weapon Effect")]
@@ -61,6 +58,11 @@ namespace Alpha.Data
 
         [Tooltip("trueの場合、同シリーズが3部位揃っており、かつこのパーツが最適部位（BestSlot）に装備されている時のみ発動します。")]
         public bool isBestSlotEffect = false;
+
+        [Header("Accumulation Settings")]
+        [Tooltip("trueの場合、ローカル効果であっても他のウェポンセットに装備されている同効果の値を合算（パブリックカウント）します。デバフなどで他のセットの値を合算させたくない場合はfalseにしてください。")]
+        public bool accumulateGlobally = true;
+
 
         [Header("Shop Settings")]
         public int price = 100;
@@ -78,7 +80,10 @@ namespace Alpha.Data
 
         public float GetValue(int quality)
         {
+          
+
             if (qualityValues == null || qualityValues.Length == 0) return 0f;
+            // 品質(1〜4想定)をインデックス(0〜3)に変換。配列外アクセスを防ぐ
             int index = Mathf.Clamp(quality - 1, 0, qualityValues.Length - 1);
             return qualityValues[index];
         }

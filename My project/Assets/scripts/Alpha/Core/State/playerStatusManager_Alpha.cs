@@ -155,9 +155,10 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         HP += hpBuff;
         
         staminaRecoveryRate += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.StaminaRecoverySpeed, groupToPass);
-        DamageAdd += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.AttackFlat, groupToPass);
-        DamageAdd -= inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.AttackDebuff, groupToPass);
-        DamageMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.AttackMultiplier, groupToPass);
+        DamageAdd += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.AttackFlatPlus, groupToPass);
+        DamageAdd -= inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.AttackFlatMinus, groupToPass);
+        DamageMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.AttackMultiplierPlus, groupToPass);
+        DamageMag -= inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.AttackMultiplierMinus, groupToPass);
         BlockDmg += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.DefenseFlat, groupToPass);
         BlockMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.DefenseMultiplier, groupToPass);
         bulletSpeedMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletSpeed, groupToPass);
@@ -200,7 +201,7 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
 
             if (item.series.passiveEffects != null)
             {
-                foreach (var e in item.series.passiveEffects) checkBarrier(e);
+                foreach (var e in item.series.passiveEffects) checkBarrier(e.effect);
             }
             if (item.currentEffects != null)
             {
@@ -302,7 +303,7 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
 
             if (item.series.passiveEffects != null)
             {
-                foreach (var e in item.series.passiveEffects) checkSpecialMove(e);
+                foreach (var e in item.series.passiveEffects) checkSpecialMove(e.effect);
             }
             if (item.currentEffects != null)
             {
@@ -356,7 +357,7 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
 
             if (item.series.passiveEffects != null)
             {
-                foreach (var e in item.series.passiveEffects) checkHPGauge(e);
+                foreach (var e in item.series.passiveEffects) checkHPGauge(e.effect);
             }
             if (item.currentEffects != null)
             {

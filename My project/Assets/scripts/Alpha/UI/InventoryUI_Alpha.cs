@@ -338,7 +338,7 @@ namespace Alpha.UI
                 if (item.series != null)
                 {
                     bool isAllEq = HasAllEquipableEffect(item.currentEffects);
-                    if (!isAllEq && item.series != null) isAllEq = HasAllEquipableEffect(item.series.passiveEffects);
+                    if (!isAllEq && item.series != null) isAllEq = HasSeriesAllEquipableEffect(item.series.passiveEffects);
                     
                     Sprite targetSprite = null;
                     if (isAllEq && item.series.iconAllEquipable != null) targetSprite = item.series.iconAllEquipable;
@@ -455,7 +455,7 @@ namespace Alpha.UI
                     else if (column == 2) expectedPart = Alpha.Data.WeaponPartType_Alpha.Bullet;
 
                     if (HasAllEquipableEffect(item.currentEffects)) return true;
-                    if (item.series != null && HasAllEquipableEffect(item.series.passiveEffects)) return true;
+                    if (item.series != null && HasSeriesAllEquipableEffect(item.series.passiveEffects)) return true;
 
                     return item.partType == expectedPart;
                 }
@@ -547,6 +547,22 @@ namespace Alpha.UI
                 if (eff.effectType == Alpha.Data.WeaponEffectType_Alpha.Composite)
                 {
                     var comp = eff as Alpha.Data.CompositeWeaponEffectSO_Alpha;
+                    if (comp != null && HasAllEquipableEffect(comp.subEffects)) return true;
+                }
+            }
+            return false;
+        }
+
+        private bool HasSeriesAllEquipableEffect(List<Alpha.Data.SeriesPassiveEffect> effects)
+        {
+            if (effects == null) return false;
+            foreach (var eff in effects)
+            {
+                if (eff.effect == null) continue;
+                if (eff.effect.effectType == Alpha.Data.WeaponEffectType_Alpha.AllEquipable) return true;
+                if (eff.effect.effectType == Alpha.Data.WeaponEffectType_Alpha.Composite)
+                {
+                    var comp = eff.effect as Alpha.Data.CompositeWeaponEffectSO_Alpha;
                     if (comp != null && HasAllEquipableEffect(comp.subEffects)) return true;
                 }
             }
