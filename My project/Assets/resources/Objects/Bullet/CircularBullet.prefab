@@ -61,7 +61,7 @@ MonoBehaviour:
   bullettype: 0
   rotate: {x: 0, y: 0, z: 0}
   rarelity: 0
-  bulletName: 
+  bulletName: CircularBullet
   addDmg: 0
   piercingCount: 0
   extraShotCount: 0

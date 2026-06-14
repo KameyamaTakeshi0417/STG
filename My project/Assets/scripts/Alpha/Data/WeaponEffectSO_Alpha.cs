@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace Alpha.Data
 {
@@ -39,11 +39,25 @@ namespace Alpha.Data
         SpecialMove_Warp,
         SpecialMove_Dash,
         
-        // --- HP関連 ---
+        // --- HPゲージ関連 ---
         HPGaugePlus,
         
         // --- 追加ステータスデバフ ---
-        AttackMultiplierMinus  // 基礎攻撃倍率デバフ（パーセント）
+        AttackMultiplierMinus,  // 基礎攻撃倍率デバフ（パーセント）
+
+        // --- 弾変更 ---
+        BulletChange,
+
+        // --- 防御系デバフ ---
+        DefenseFlatMinus,       // 防御力低下（固定値）
+        DefenseMultiplierMinus, // 防御力低下（パーセント）
+
+        // --- 特殊枠 ---
+        Wildcard,               // 全シリーズ対応（ジョーカー）
+        StaminaExhaustionRecoveryBoost, // スタミナ枯渇時の回復速度倍率
+        CircularSubShotPlus,    // 輝照弾（サーキュラー）のサブバレット数増加
+        VoltTickReduce,         // 毒絡弾（Volt）のダメージTick短縮
+        SecondaryDamageUp       // 派生ダメージ（Secondary Damage）の威力上昇
     }
 
     [CreateAssetMenu(fileName = "NewWeaponEffect", menuName = "Alpha/Weapon Effect")]
@@ -51,6 +65,8 @@ namespace Alpha.Data
     {
         public WeaponEffectType_Alpha effectType;
         public string effectName;
+        
+        [TextArea(3, 10)]
         public string description;
         
         [Tooltip("trueの場合、どの装備枠にセットしていても常に発動します。falseの場合、現在構えている装備セットの時だけ発動します。")]
@@ -58,6 +74,11 @@ namespace Alpha.Data
 
         [Tooltip("trueの場合、同シリーズが3部位揃っており、かつこのパーツが最適部位（BestSlot）に装備されている時のみ発動します。")]
         public bool isBestSlotEffect = false;
+
+        [Header("Drop Settings")]
+        [Tooltip("ドロップ時にこのエフェクトが付与されるためのレアリティ（1: Common, 2: Uncommon, 3: Rare, 4: Divine）。")]
+        [Range(1, 4)]
+        public int minQuality = 1;
 
         [Header("Accumulation Settings")]
         [Tooltip("trueの場合、ローカル効果であっても他のウェポンセットに装備されている同効果の値を合算（パブリックカウント）します。デバフなどで他のセットの値を合算させたくない場合はfalseにしてください。")]

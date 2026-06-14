@@ -79,14 +79,14 @@ public class Player_Control_Alpha : MonoBehaviour
             // 右クリック監視（フォーカスモード）
             if (myStatus.currentSpecialMove == playerStatusManager_Alpha.SpecialMoveType.Focus)
             {
-                if (Input.GetMouseButtonDown(1) && myStatus.currentStamina > 0)
+                if (Input.GetMouseButtonDown(1) && myStatus.currentStamina > 0 && !myStatus.isStaminaExhausted)
                 {
                     isFocusMode = true;
                     if (playerCollider != null) playerCollider.size = focusColliderSize;
                     if (hitboxImage != null) hitboxImage.SetActive(true);
                     if (grazeCollider != null) grazeCollider.size = focusGrazeSize;
                 }
-                else if (Input.GetMouseButtonUp(1) || myStatus.currentStamina <= 0)
+                else if (Input.GetMouseButtonUp(1) || myStatus.currentStamina <= 0 || myStatus.isStaminaExhausted)
                 {
                     if (isFocusMode)
                     {
@@ -104,6 +104,7 @@ public class Player_Control_Alpha : MonoBehaviour
                     if (myStatus.currentStamina <= 0)
                     {
                         myStatus.currentStamina = 0;
+                        myStatus.isStaminaExhausted = true;
                         isFocusMode = false;
                         if (playerCollider != null) playerCollider.size = normalColliderSize;
                         if (hitboxImage != null) hitboxImage.SetActive(false);
@@ -176,10 +177,16 @@ public class Player_Control_Alpha : MonoBehaviour
             duration = myStatus.warpDuration;
         }
 
-        if (myStatus.currentStamina >= cost)
+        if (myStatus.currentStamina >= cost && !myStatus.isStaminaExhausted)
         {
             myStatus.currentStamina -= cost;
             myStatus.lastStaminaConsumeTime = Time.time;
+            
+            if (myStatus.currentStamina <= 0)
+            {
+                myStatus.currentStamina = 0;
+                myStatus.isStaminaExhausted = true;
+            }
             
             if (moveInput == Vector2.zero)
             {

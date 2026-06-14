@@ -28,8 +28,34 @@ namespace Alpha.Flow
         [Tooltip("将来用：ランダム付与されるデバフエフェクトのプール")]
         public List<WeaponEffectSO_Alpha> globalDebuffEffects = new List<WeaponEffectSO_Alpha>();
 
+        [System.Serializable]
+        public struct QualityProbability
+        {
+            [Tooltip("オーブのレアリティ、またはパーツの品質")]
+            public int baseQuality; 
+
+            [Tooltip("Common(1)が選ばれる確率")] public float prob1;
+            [Tooltip("Uncommon(2)が選ばれる確率")] public float prob2;
+            [Tooltip("Rare(3)が選ばれる確率")] public float prob3;
+            [Tooltip("Divine(4)が選ばれる確率")] public float prob4;
+        }
+
+        [Header("Probability Settings")]
+        [Tooltip("ベースの品質ごとの各レアリティの抽選確率（オーブドロップ・エフェクト付与で共有）")]
+        public List<QualityProbability> qualityProbabilities = new List<QualityProbability>();
+
         private void Awake()
         {
+            if (qualityProbabilities == null || qualityProbabilities.Count == 0)
+            {
+                qualityProbabilities = new List<QualityProbability>()
+                {
+                    new QualityProbability { baseQuality = 1, prob1 = 70f, prob2 = 25f, prob3 = 5f, prob4 = 0f },
+                    new QualityProbability { baseQuality = 2, prob1 = 40f, prob2 = 50f, prob3 = 9.5f, prob4 = 0.5f },
+                    new QualityProbability { baseQuality = 3, prob1 = 10f, prob2 = 40f, prob3 = 49f, prob4 = 1f },
+                    new QualityProbability { baseQuality = 4, prob1 = 0f, prob2 = 30f, prob3 = 50f, prob4 = 20f }
+                };
+            }
             if (Instance != null && Instance != this)
             {
                 Destroy(gameObject);
@@ -63,36 +89,20 @@ namespace Alpha.Flow
             return choices;
         }
 
-        private int RollQuality(int orbRarity)
+        private int RollQuality(int baseQuality)
         {
-            float rand = Random.value * 100f;
-            switch (orbRarity)
+            QualityProbability prob = qualityProbabilities.Find(q => q.baseQuality == baseQuality);
+            if (prob.baseQuality == 0) // struct default
             {
-                case 1:
-                    // 70 / 25 / 5 / 0
-                    if (rand <= 70f) return 1;
-                    if (rand <= 95f) return 2;
-                    return 3;
-                case 2:
-                    // 40 / 50 / 9.5 / 0.5
-                    if (rand <= 40f) return 1;
-                    if (rand <= 90f) return 2;
-                    if (rand <= 99.5f) return 3;
-                    return 4;
-                case 3:
-                    // 10 / 40 / 49 / 1
-                    if (rand <= 10f) return 1;
-                    if (rand <= 50f) return 2;
-                    if (rand <= 99f) return 3;
-                    return 4;
-                case 4:
-                    // 0 / 30 / 50 / 20
-                    if (rand <= 30f) return 2;
-                    if (rand <= 80f) return 3;
-                    return 4;
-                default:
-                    return 1;
+                Debug.LogWarning($"[WeaponGenerator] No QualityProbability found for baseQuality {baseQuality}. Using fallback.");
+                return 1;
             }
+
+            float rand = Random.value * 100f;
+            if (rand <= prob.prob1) return 1;
+            if (rand <= prob.prob1 + prob.prob2) return 2;
+            if (rand <= prob.prob1 + prob.prob2 + prob.prob3) return 3;
+            return 4;
         }
 
         private WeaponSeriesData_Alpha GetRandomSeries(int quality, string bossId, bool preferBossSeries = false)
@@ -191,10 +201,35 @@ namespace Alpha.Flow
             // グローバルバフのランダム付与（基本1つ）
             if (globalBuffEffects != null && globalBuffEffects.Count > 0)
             {
-                var randomBuff = globalBuffEffects[Random.Range(0, globalBuffEffects.Count)];
-                if (randomBuff != null)
+                int targetMinQuality = RollQuality(quality);
+                List<WeaponEffectSO_Alpha> availableEffects = new List<WeaponEffectSO_Alpha>();
+
+                // 指定されたレアリティ、またはそれ以下のエフェクトを探す（フォールバック用）
+                for (int q = targetMinQuality; q >= 1; q--)
                 {
-                    instance.currentEffects.Add(randomBuff);
+                    foreach (var effect in globalBuffEffects)
+                    {
+                        if (effect != null && effect.minQuality == q)
+                        {
+                            availableEffects.Add(effect);
+                        }
+                    }
+                    if (availableEffects.Count > 0) break; // 見つかればそのレアリティから抽選
+                }
+
+                if (availableEffects.Count == 0)
+                {
+                    // それでも見つからなければ全ての中からランダム（安全策）
+                    availableEffects = new List<WeaponEffectSO_Alpha>(globalBuffEffects);
+                }
+
+                if (availableEffects.Count > 0)
+                {
+                    var randomBuff = availableEffects[Random.Range(0, availableEffects.Count)];
+                    if (randomBuff != null)
+                    {
+                        instance.currentEffects.Add(randomBuff);
+                    }
                 }
             }
 

@@ -241,7 +241,21 @@ public class InventoryManager_Alpha : MonoBehaviour
     }
 
     /// <summary>
-    /// 特定のグループ（行）の3つのパーツがすべて同じシリーズで統一されているか
+    /// アイテムにWildcardエフェクトが付与されているかチェックする
+    /// </summary>
+    private bool HasWildcardEffect(int itemIndex)
+    {
+        var item = equipInstance[itemIndex];
+        if (item.currentEffects == null) return false;
+        foreach (var eff in item.currentEffects)
+        {
+            if (eff != null && eff.effectType == Alpha.Data.WeaponEffectType_Alpha.Wildcard) return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// 特定のグループ（行）の3つのパーツすべて同じシリーズで統一されているか（Wildcardを考慮）
     /// </summary>
     public bool IsGroupSeriesAligned(int groupIndex)
     {
@@ -250,13 +264,34 @@ public class InventoryManager_Alpha : MonoBehaviour
         // 追加: リストの範囲外アクセスを防ぐ
         if (startIndex + 2 >= equipInstance.Count) return false;
 
-        var seriesA = equipInstance[startIndex].series;
-        var seriesB = equipInstance[startIndex + 1].series;
-        var seriesC = equipInstance[startIndex + 2].series;
+        var instA = equipInstance[startIndex];
+        var instB = equipInstance[startIndex + 1];
+        var instC = equipInstance[startIndex + 2];
+
+        var seriesA = instA.series;
+        var seriesB = instB.series;
+        var seriesC = instC.series;
 
         if (seriesA == null || seriesB == null || seriesC == null) return false;
         if (seriesA.name == "InitialSeries" || seriesB.name == "InitialSeries" || seriesC.name == "InitialSeries") return false;
-        if (seriesA != seriesB || seriesA != seriesC) return false;
+
+        bool jokerA = HasWildcardEffect(startIndex);
+        bool jokerB = HasWildcardEffect(startIndex + 1);
+        bool jokerC = HasWildcardEffect(startIndex + 2);
+
+        // ベースとなるシリーズを探す（Wildcard以外の最初のシリーズ）
+        Alpha.Data.WeaponSeriesData_Alpha baseSeries = null;
+        if (!jokerA) baseSeries = seriesA;
+        else if (!jokerB) baseSeries = seriesB;
+        else if (!jokerC) baseSeries = seriesC;
+
+        // 3つともWildcardの場合は統一されているとみなす
+        if (baseSeries == null) return true; 
+
+        // Wildcard以外のパーツがベースシリーズと一致するかチェック
+        if (!jokerA && seriesA != baseSeries) return false;
+        if (!jokerB && seriesB != baseSeries) return false;
+        if (!jokerC && seriesC != baseSeries) return false;
 
         return true;
     }

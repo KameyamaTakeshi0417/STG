@@ -14901,10 +14901,11 @@ MonoBehaviour:
   pow: 100
   DamageAdd: 0
   DamageMag: 100
-  BlockDmg: 0
+  BlockDmg: 5
   BlockMag: 100
   bulletLifeMag: 1
   ignorePierceDecay: 0
+  staminaExhaustionRecoveryBoost: 0
   extraPierceCount: 0
   extraShotCount: 0
   burstCount: 1
@@ -14929,13 +14930,14 @@ MonoBehaviour:
   staminaRecoveryRate: 10
   staminaRecoveryDelay: 0.5
   lastStaminaConsumeTime: -100
+  isStaminaExhausted: 0
   dashDuration: 0.1
   dashStaminaCost: 30
   dashDistance: 4
   warpDuration: 0.3
   warpStaminaCost: 45
   warpDistance: 8
-  focusStaminaCostPerSec: 12
+  focusStaminaCostPerSec: 0
   canUseAllEffects: 0
   pierceDamageReductionRate: 0.25
 --- !u!4 &1634642367
@@ -15129,19 +15131,54 @@ MonoBehaviour:
     bossSeries:
     - {fileID: 11400000, guid: 696f4114c67dbe34597fe54711919fc9, type: 2}
   globalBuffEffects:
-  - {fileID: 11400000, guid: f9ac1266c0235b94e8543fdea3fcf8d5, type: 2}
-  - {fileID: 11400000, guid: 44a7fc136b98c274296df43445382d39, type: 2}
-  - {fileID: 11400000, guid: 7b9951dd1d7c4ff4dab74f9e376746d5, type: 2}
-  - {fileID: 11400000, guid: db3f9bc21be69da4e9699f13898704b7, type: 2}
-  - {fileID: 11400000, guid: e7642ddad7d82b848a4746e0ce9eae30, type: 2}
-  - {fileID: 11400000, guid: 8e1abeb2dc81e6b4f81aa8d3af7ab7ab, type: 2}
-  - {fileID: 11400000, guid: f450231905d75034f803e00ef51a69eb, type: 2}
-  - {fileID: 11400000, guid: 453794dbb20ac0b4194fc5325c105685, type: 2}
-  - {fileID: 11400000, guid: a9fb576e5585ff8429d94a91b6673ae6, type: 2}
-  - {fileID: 11400000, guid: cd5e7962845fbd24b934d90a1610eed7, type: 2}
-  - {fileID: 11400000, guid: 6ec674352559d394b940f0d44b649d34, type: 2}
-  - {fileID: 11400000, guid: c54a498fc0fe4a04f9ccd2ad6f3be32b, type: 2}
-  globalDebuffEffects: []
+  - {fileID: 11400000, guid: 6d5ad3f6bfd7b9141a08f2134e3a1371, type: 2}
+  - {fileID: 11400000, guid: 1943a7cf7c7090c4f939366d629bb356, type: 2}
+  - {fileID: 11400000, guid: 869635249fcefea49858dd539ce06449, type: 2}
+  - {fileID: 11400000, guid: df58ddc51f8865b4396741f284b727f8, type: 2}
+  - {fileID: 11400000, guid: b4505b9622e981141a1ad274743cc92b, type: 2}
+  - {fileID: 11400000, guid: dd6d8e01df0a1134b8a8750b06c806b9, type: 2}
+  - {fileID: 11400000, guid: 033bf424ce2f8f846939c171ef08ffe6, type: 2}
+  - {fileID: 11400000, guid: 41d5a11a995e8ee4588f55000190a6d8, type: 2}
+  - {fileID: 11400000, guid: 0f1bdda7c602229428eef7f916f267a2, type: 2}
+  - {fileID: 11400000, guid: 471ca2ccb1f977e4080978781d88110f, type: 2}
+  - {fileID: 11400000, guid: 1617baa0540870749a8bf63445930e8f, type: 2}
+  - {fileID: 11400000, guid: ab9b14d07601d5d419da793712a31bd1, type: 2}
+  - {fileID: 11400000, guid: 759516c3e69cb8447afb45407f9623c9, type: 2}
+  - {fileID: 11400000, guid: d7dbb7df4266f634797d01919be85fbc, type: 2}
+  - {fileID: 11400000, guid: 40865f54727dcf349a704bd46117f396, type: 2}
+  - {fileID: 11400000, guid: 809f637cb2eb7eb4db3af6eb5599fa25, type: 2}
+  - {fileID: 11400000, guid: 5e2e308ad5351a54fa566946ed61cb16, type: 2}
+  - {fileID: 11400000, guid: 5c81eff38bb99de4589885f72d7fa9c5, type: 2}
+  - {fileID: 11400000, guid: 4627050792b7eed4b87be771fd03918f, type: 2}
+  - {fileID: 11400000, guid: 4c43f3101e8113c418f1501f1823cafc, type: 2}
+  globalDebuffEffects:
+  - {fileID: 11400000, guid: 91ee8c0e0127a1a4c93d4556cb0acbde, type: 2}
+  - {fileID: 11400000, guid: 103ce1eaf0c183d478c219c6deb9abfb, type: 2}
+  - {fileID: 11400000, guid: c3838b4a9ba2aa04f9f92d9843c04b1e, type: 2}
+  - {fileID: 11400000, guid: 70b1f0fdd6fa9f84bbecd934445e0cd4, type: 2}
+  - {fileID: 11400000, guid: d5c5fde2ef7dcec44bd45a5baa77953d, type: 2}
+  - {fileID: 11400000, guid: b2a1e37b927640342831bc805b4fac01, type: 2}
+  qualityProbabilities:
+  - baseQuality: 1
+    prob1: 70
+    prob2: 25
+    prob3: 5
+    prob4: 0
+  - baseQuality: 2
+    prob1: 40
+    prob2: 50
+    prob3: 9.5
+    prob4: 0.5
+  - baseQuality: 3
+    prob1: 10
+    prob2: 30
+    prob3: 50
+    prob4: 10
+  - baseQuality: 4
+    prob1: 0
+    prob2: 20
+    prob3: 45
+    prob4: 35
 --- !u!114 &1634642376
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15211,7 +15248,7 @@ MonoBehaviour:
   currentStageLevel: 1
   midBossEscapeTime: 60
   preBossADV: {fileID: 0}
-  grassGenerator: {fileID: 0}
+  grassGenerator: {fileID: 1938887936}
   stageClearBoard: {fileID: 0}
   blackFadeBoard: {fileID: 0}
   postClearADV: {fileID: 0}
@@ -19331,6 +19368,7 @@ SceneRoots:
   - {fileID: 1893692724104275930}
   - {fileID: 917161413}
   - {fileID: 571795291}
+  - {fileID: 1276160524}
   - {fileID: 2017090173}
   - {fileID: 1078842459}
   - {fileID: 1075447558}
@@ -19345,4 +19383,3 @@ SceneRoots:
   - {fileID: 1932461495}
   - {fileID: 544289443}
   - {fileID: 2099499601}
-  - {fileID: 1276160524}

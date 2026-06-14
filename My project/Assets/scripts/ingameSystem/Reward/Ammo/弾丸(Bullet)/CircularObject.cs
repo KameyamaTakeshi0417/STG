@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -106,7 +106,7 @@ public class CircularObject : Bullet_Base
 
     private void FireInSixDirections()
     {
-        int numBullets = Mathf.Max(1, 6 + this.extraShotCount);
+        int numBullets = Mathf.Max(1, 4 + (this.extraShotCount * 2));
         float angleStep = 360f / numBullets;
         for (int i = 0; i < numBullets; i++)
         {
@@ -137,7 +137,7 @@ public class CircularObject : Bullet_Base
             bulletScript.sourcePrefab = subBulletPrefab;
             bulletScript.originalAimDirection = dir;
 
-            bulletScript.setStatus(dir, this.initialSpeed > 0 ? this.initialSpeed : 200f, this.dmg);
+            bulletScript.setStatus(dir, this.initialSpeed > 0 ? this.initialSpeed : 200f, this.dmg * this.secondaryDamageMultiplier);
             bulletScript.DestroyTime = this.DestroyTime;
             bulletScript.piercingCount = this.piercingCount;
 

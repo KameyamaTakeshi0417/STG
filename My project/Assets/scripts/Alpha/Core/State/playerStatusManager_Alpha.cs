@@ -32,6 +32,7 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
     private float baseBulletLifeMag = 1.0f;
     
     public bool ignorePierceDecay = false;
+    [HideInInspector] public float staminaExhaustionRecoveryBoost = 0f;
     
     public int extraPierceCount = 0;
     private int baseExtraPierceCount = 0;
@@ -159,8 +160,13 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         DamageAdd -= inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.AttackFlatMinus, groupToPass);
         DamageMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.AttackMultiplierPlus, groupToPass);
         DamageMag -= inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.AttackMultiplierMinus, groupToPass);
+
         BlockDmg += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.DefenseFlat, groupToPass);
-        BlockMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.DefenseMultiplier, groupToPass);
+        BlockDmg -= inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.DefenseFlatMinus, groupToPass);
+        // DefenseMultiplier(防御力上昇)は被ダメージ倍率を下げる、Minusは上げる
+        BlockMag -= inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.DefenseMultiplier, groupToPass);
+        BlockMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.DefenseMultiplierMinus, groupToPass);
+
         bulletSpeedMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletSpeed, groupToPass);
         bulletSpeedMag -= inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletSpeedDebuff, groupToPass);
         bulletSpeedMag = Mathf.Max(bulletSpeedMag, 0.2f); // 下限20%
@@ -178,6 +184,7 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
 
         // 貫通減衰無効化フラグ
         ignorePierceDecay = inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.IgnorePierceDecay, groupToPass) > 0;
+        staminaExhaustionRecoveryBoost = inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.StaminaExhaustionRecoveryBoost, groupToPass);
 
         // バリアの判定（品質とリスポーン時間を取得）
         int maxBarrierQuality = -1; // 0の装備も検知できるように-1からスタート
@@ -434,6 +441,7 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
     public float staminaRecoveryRate = 10f; // 100 units over 10 seconds
     public float staminaRecoveryDelay = 0.5f;
     [HideInInspector] public float lastStaminaConsumeTime = -100f;
+    [HideInInspector] public bool isStaminaExhausted = false;
 
     public float dashDuration = 0.1f;
     public float dashStaminaCost = 30f;
@@ -459,10 +467,24 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         {
             if (currentStamina < maxStamina)
             {
-                currentStamina += staminaRecoveryRate * Time.deltaTime;
-                if (currentStamina > maxStamina)
+                float recoveryMod = 1.0f;
+                if (isStaminaExhausted)
+                {
+                    if (staminaExhaustionRecoveryBoost > 0f)
+                    {
+                        recoveryMod = staminaExhaustionRecoveryBoost; // エフェクトがあればその倍率
+                    }
+                    else
+                    {
+                        recoveryMod = 0.5f; // デフォルトは半減ペナルティ
+                    }
+                }
+                
+                currentStamina += staminaRecoveryRate * recoveryMod * Time.deltaTime;
+                if (currentStamina >= maxStamina)
                 {
                     currentStamina = maxStamina;
+                    isStaminaExhausted = false; // 満タンで枯渇解除
                 }
             }
         }
