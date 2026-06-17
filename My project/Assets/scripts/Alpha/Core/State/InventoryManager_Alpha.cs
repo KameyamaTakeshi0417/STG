@@ -79,6 +79,7 @@ public class InventoryManager_Alpha : MonoBehaviour
         equipInstance[index] = v;
         
         playerStatusManager_Alpha.Instance?.UpdateEquipmentBuffs();
+        UpdateSlotCount(true);
     }
 
     public void BattleStartEffect()
@@ -148,13 +149,15 @@ public class InventoryManager_Alpha : MonoBehaviour
             playerStatusManager_Alpha.Instance?.UpdateEquipmentBuffs();
         }
 
-        // 追加後にHP回復処理
+        // 追加HP回復処理
         if (hasHPGaugePlus && playerStatusManager_Alpha.Instance != null && healPercent > 0)
         {
             float healAmount = playerStatusManager_Alpha.Instance.HP * (healPercent / 100f);
             playerStatusManager_Alpha.Instance.Heal(healAmount);
             Debug.Log($"[InventoryManager] HPGaugePlus acquired! Healing {healPercent}% of Max HP ({healAmount}).");
         }
+        
+        UpdateSlotCount(true);
     }
 
     public void AddFreeSlot()
@@ -197,6 +200,7 @@ public class InventoryManager_Alpha : MonoBehaviour
             // TODO: 実際のプレイヤーステータス等にEXPを加算する処理をここに繋げる
         }
 
+        UpdateSlotCount(false);
         return totalExpGained;
     }
 
@@ -221,6 +225,41 @@ public class InventoryManager_Alpha : MonoBehaviour
                     Debug.Log("[InventoryManager] Cleaned up InitialSeries from EX slot.");
                 }
             }
+        }
+        UpdateSlotCount(false);
+    }
+
+    public void UpdateSlotCount(bool padding = true)
+    {
+        int lastFilled = -1;
+        for (int i = 0; i < equipInstance.Count; i++)
+        {
+            if (equipInstance[i].series != null) lastFilled = i;
+        }
+
+        int keepCount = BASIC_SLOT_COUNT + freeSlotCount;
+        int requiredSlots = Mathf.Max(keepCount, lastFilled + 1);
+
+        if (padding)
+        {
+            if (requiredSlots < lastFilled + 1 + 3)
+            {
+                requiredSlots = lastFilled + 1 + 3;
+            }
+            if (requiredSlots % 3 != 0)
+            {
+                requiredSlots += 3 - (requiredSlots % 3);
+            }
+        }
+
+        while (equipInstance.Count < requiredSlots)
+        {
+            equipInstance.Add(new EquipInstance());
+        }
+        
+        while (equipInstance.Count > requiredSlots)
+        {
+            equipInstance.RemoveAt(equipInstance.Count - 1);
         }
     }
 

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -91,12 +91,27 @@ namespace Alpha.UI
                 CloseEscapeInventory();
             }
             // 非表示状態かつ、現在ゲームが動いている（報酬フェーズ中などではない）場合にEscで開く
-            else if (panel != null && !panel.activeSelf && Time.timeScale > 0f)
+            else if (panel != null && !panel.activeSelf)
             {
-                OpenEscapeInventory();
+                if (TutorialManager_Alpha.Instance != null && TutorialManager_Alpha.Instance.IsShowing)
+                {
+                    TutorialManager_Alpha.Instance.isQueuePaused = true;
+                    TutorialManager_Alpha.Instance.ForceCloseCurrentTutorial();
+                }
+
+                if (Time.timeScale > 0f)
+                {
+                    OpenEscapeInventory();
+                }
+                else
+                {
+                    if (TutorialManager_Alpha.Instance != null)
+                    {
+                        TutorialManager_Alpha.Instance.isQueuePaused = false;
+                    }
+                }
             }
         }
-
         private void OpenEscapeInventory()
         {
             openedByEscape = true;
@@ -117,21 +132,16 @@ namespace Alpha.UI
         {
             openedByEscape = false;
             
-            if (TutorialManager_Alpha.Instance != null && TutorialManager_Alpha.Instance.IsShowing)
-            {
-                // チュートリアルがまだ開いている場合は、ゲームを再開させず
-                // チュートリアルが閉じたタイミングでゲームが再開されるように仕込む
-                TutorialManager_Alpha.Instance.OverridePreviousTimeScale(1f);
-            }
-            else
-            {
-                Time.timeScale = 1f;
-            }
+            Time.timeScale = 1f;
             
             if (panel != null) panel.SetActive(false);
             if (detailPopup != null) detailPopup.gameObject.SetActive(false);
-        }
 
+            if (TutorialManager_Alpha.Instance != null)
+            {
+                TutorialManager_Alpha.Instance.isQueuePaused = false;
+            }
+        }
         public void ShowForCheck(System.Action callback)
         {
             Debug.Log("[InventoryUI] ShowForCheck called.");
@@ -224,7 +234,7 @@ namespace Alpha.UI
             {
                 if (gridSlots[i] != null && i < equipList.Count)
                 {
-                    SetSlotVisual(gridSlots[i], equipList[i], i == selectedIndex);
+                    SetSlotVisual(gridSlots[i], equipList[i], i == selectedIndex, false, i);
                 }
             }
 
@@ -278,19 +288,19 @@ namespace Alpha.UI
                 if (invIndex < equipList.Count)
                 {
                     bool isTempSlot = i >= freeSlotCount;
-                    SetSlotVisual(btn, equipList[invIndex], invIndex == selectedIndex, isTempSlot);
+                    SetSlotVisual(btn, equipList[invIndex], invIndex == selectedIndex, isTempSlot, invIndex);
                 }
             }
         }
 
-        private void SetSlotVisual(Button btn, InventoryManager_Alpha.EquipInstance item, bool isSelected = false, bool isTempSlot = false)
+        private void SetSlotVisual(Button btn, InventoryManager_Alpha.EquipInstance item, bool isSelected = false, bool isTempSlot = false, int slotIndex = -1)
         {
             if (btn == null) return;
 
             // 背景枠の取得と色設定
             Image bg = btn.targetGraphic as Image;
             
-            // 【不具合対策】Unityインスペクタ上のボタン自体の色が茶色に設定されていると、
+            // 【不具合対策】Unityインスペクタ上でボタン自体の色が茶色に設定されていると、
             // スクリプトで何色を指定しても茶色に上塗り（乗算）されてしまうため、強制的にボタン自体を真っ白にリセットします。
             ColorBlock cb = btn.colors;
             cb.normalColor = Color.white;
@@ -302,6 +312,11 @@ namespace Alpha.UI
                 if (isSelected)
                 {
                     bg.color = Color.yellow; // 選択中は最優先
+                }
+                else if (slotIndex >= 9 && !isTempSlot)
+                {
+                    // EX（Free）スロットは常に紫色
+                    bg.color = new Color32(180, 100, 255, 255);
                 }
                 else if (item.series != null)
                 {
@@ -321,7 +336,6 @@ namespace Alpha.UI
                     bg.color = isTempSlot ? new Color(0.8f, 0.9f, 1f, 1f) : Color.white;
                 }
             }
-
             // "Icon" という名前の子オブジェクトを探す
             Image iconImg = null;
             foreach (Transform child in btn.transform)

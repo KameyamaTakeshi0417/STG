@@ -28,13 +28,20 @@ namespace Alpha.UI
 
         [Header("Confirm Text Formats")]
         [TextArea(3, 5)]
-        public string sellConfirmFormat = "装備のスキルを売却します。\n{0}\n合計{1}エーテル\nよろしかったですか？";
+        public string sellConfirmFormat = "このパーツ（と付与スキル）を売却します。\n{0}\n計{1}エーテル\nよろしいですか？";
         [TextArea(3, 5)]
         public string upgradeConfirmFormat = "これをアップグレードします。\n消費エーテル: {0}\nよろしかったですか？";
         [TextArea(3, 5)]
-        public string buyConfirmFormat = "このスキルを付与します。\n{0}\n消費エーテル: {1}\nよろしかったですか？";
+        public string buyConfirmFormat = "これを購入・付与します。\n{0}\n消費エーテル: {1}\nよろしかったですか？";
 
         private System.Action pendingConfirmAction;
+
+        [Header("Part Shop Settings")]
+        public Transform partButtonsContainer;
+        public GameObject partButtonPrefab;
+        public int partShopCount = 3;
+        public int[] partPrices = new int[] { 50, 100, 200, 300 };
+        private List<GameObject> spawnedPartButtons = new List<GameObject>();
 
         [Header("Skill Shop Settings")]
         public Transform skillButtonsContainer;
@@ -77,24 +84,21 @@ namespace Alpha.UI
         {
             Debug.Log("[Blacksmith] Blacksmith Phase started.");
             
-            // 1. 体力の全回復
             if (playerStatusManager_Alpha.Instance != null)
             {
                 playerStatusManager_Alpha.Instance.Heal(playerStatusManager_Alpha.Instance.HP);
             }
 
-            // 2. ショップの展開
             if (panel != null) panel.SetActive(true);
 
-            // 3. スキルの抽選
             GenerateSkillShop();
+            GeneratePartShop();
         }
 
         public void CloseBlacksmith()
         {
             if (panel != null) panel.SetActive(false);
             
-            // 次のフェーズへ進む
             if (StageManager_Alpha.Instance != null)
             {
                 StageManager_Alpha.Instance.StartPreBossADVAndFight();
@@ -103,7 +107,6 @@ namespace Alpha.UI
 
         private void GenerateSkillShop()
         {
-            // 古いボタンを削除
             foreach (var btn in spawnedSkillButtons)
             {
                 if (btn != null) Destroy(btn);
@@ -113,7 +116,6 @@ namespace Alpha.UI
             var generator = WeaponGenerator_Alpha.Instance;
             if (generator == null || generator.globalBuffEffects == null || generator.globalBuffEffects.Count == 0 || skillButtonPrefab == null || skillButtonsContainer == null) return;
 
-            // ランダムに5つ選出
             for (int i = 0; i < 5; i++)
             {
                 var effectSO = generator.globalBuffEffects[Random.Range(0, generator.globalBuffEffects.Count)];
@@ -123,15 +125,90 @@ namespace Alpha.UI
                 obj.SetActive(true);
                 spawnedSkillButtons.Add(obj);
 
-                // テキスト等の設定
                 var texts = obj.GetComponentsInChildren<TextMeshProUGUI>();
                 if (texts.Length > 0) texts[0].text = effectSO.effectName;
-                if (texts.Length > 1) texts[1].text = $"Cost: {effectSO.price} EXP";
+                if (texts.Length > 1) texts[1].text = "Cost: " + effectSO.price + " EXP";
 
                 Button btn = obj.GetComponent<Button>();
                 if (btn != null)
                 {
                     btn.onClick.AddListener(() => OnSkillButtonClicked(effectSO, obj));
+                }
+            }
+        }
+
+        private void GeneratePartShop()
+        {
+            foreach (var btn in spawnedPartButtons)
+            {
+                if (btn != null) Destroy(btn);
+            }
+            spawnedPartButtons.Clear();
+
+            var generator = WeaponGenerator_Alpha.Instance;
+            if (generator == null || generator.allSeriesPool == null || generator.allSeriesPool.Count == 0 || partButtonPrefab == null || partButtonsContainer == null) return;
+
+            for (int i = 0; i < partShopCount; i++)
+            {
+                var randomSeries = generator.allSeriesPool[Random.Range(0, generator.allSeriesPool.Count)];
+                if (randomSeries == null) continue;
+                
+                WeaponPartType_Alpha randomPartType = (WeaponPartType_Alpha)Random.Range(0, 3);
+                int rarity = Random.Range(1, 5); // 1 to 4
+                int price = (rarity >= 1 && rarity <= partPrices.Length) ? partPrices[rarity - 1] : partPrices[0];
+
+                GameObject obj = Instantiate(partButtonPrefab, partButtonsContainer);
+                obj.SetActive(true);
+                spawnedPartButtons.Add(obj);
+
+                var texts = obj.GetComponentsInChildren<TextMeshProUGUI>();
+                if (texts.Length > 0) texts[0].text = randomSeries.seriesName + " (" + randomPartType.ToString() + ")";
+                if (texts.Length > 1) texts[1].text = "Cost: " + price + " EXP";
+
+                Image iconImg = null;
+                foreach (var img in obj.GetComponentsInChildren<Image>(true))
+                {
+                    if (img.gameObject.name.Equals("Icon", System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        iconImg = img;
+                        break;
+                    }
+                }
+
+                if (iconImg != null)
+                {
+                    Sprite targetSprite = null;
+                    if (randomPartType == WeaponPartType_Alpha.Bullet) targetSprite = randomSeries.iconBullet;
+                    else if (randomPartType == WeaponPartType_Alpha.Casing) targetSprite = randomSeries.iconCasing;
+                    else if (randomPartType == WeaponPartType_Alpha.Primer) targetSprite = randomSeries.iconPrimer;
+                    
+                    if (targetSprite == null) targetSprite = randomSeries.icon;
+                    
+                    if (targetSprite != null) {
+                        iconImg.sprite = targetSprite;
+                        iconImg.color = Color.white;
+                    } else {
+                        iconImg.sprite = null;
+                        iconImg.color = Color.clear;
+                    }
+                }
+
+                Image bgImg = obj.GetComponent<Image>();
+                if (bgImg != null)
+                {
+                    switch (rarity)
+                    {
+                        case 1: bgImg.color = new Color32(128, 38, 5, 255); break;
+                        case 2: bgImg.color = new Color32(136, 136, 136, 255); break;
+                        case 3: bgImg.color = new Color32(238, 156, 23, 255); break;
+                        case 4: bgImg.color = new Color32(1, 240, 91, 255); break;
+                    }
+                }
+
+                Button btn = obj.GetComponent<Button>();
+                if (btn != null)
+                {
+                    btn.onClick.AddListener(() => OnPartButtonClicked(randomSeries, randomPartType, rarity, price, obj));
                 }
             }
         }
@@ -171,7 +248,7 @@ namespace Alpha.UI
 
             pendingConfirmAction?.Invoke();
             pendingConfirmAction = null;
-            if (panel != null) panel.SetActive(true); // フォージパネルに戻る
+            if (panel != null) panel.SetActive(true);
         }
 
         private void OnConfirmNo()
@@ -181,7 +258,44 @@ namespace Alpha.UI
             if (confirmNoButton != null) confirmNoButton.gameObject.SetActive(false);
 
             pendingConfirmAction = null;
-            if (panel != null) panel.SetActive(true); // フォージパネルに戻る
+            if (panel != null) panel.SetActive(true);
+        }
+
+        // ==========================
+        // パーツ購入モード
+        // ==========================
+        private void OnPartButtonClicked(WeaponSeriesData_Alpha series, WeaponPartType_Alpha partType, int rarity, int price, GameObject buttonObj)
+        {
+            string details = "購入パーツ：" + series.seriesName + " (" + partType.ToString() + ")";
+            string finalMessage = string.Format(buyConfirmFormat, details, price);
+
+            ShowConfirmUI(finalMessage, () =>
+            {
+                if (playerStatusManager_Alpha.Instance.currentExp < price)
+                {
+                    ShowPopup("エーテルが不足しています！");
+                    return;
+                }
+
+                playerStatusManager_Alpha.Instance.AddExp(-price);
+
+                InventoryManager_Alpha.EquipInstance newPart = new InventoryManager_Alpha.EquipInstance();
+                newPart.series = series;
+                newPart.partType = partType;
+                newPart.rarity = rarity;
+                newPart.currentEffects = new List<WeaponEffectSO_Alpha>();
+                InventoryManager_Alpha.Instance.AddItem(newPart);
+
+                Button btn = buttonObj.GetComponent<Button>();
+                if (btn != null) btn.interactable = false;
+
+                ShowPopup("パーツを購入しました！");
+                
+                if (inventoryUI != null)
+                {
+                    inventoryUI.ShowForCheck(null);
+                }
+            });
         }
 
         // ==========================
@@ -231,16 +345,17 @@ namespace Alpha.UI
 
             if (item.currentEffects == null) item.currentEffects = new List<WeaponEffectSO_Alpha>();
 
-            // 固有でないスキルの上限チェック（品質数まで）
             if (item.currentEffects.Count >= item.rarity)
             {
-                ShowPopup($"購入できません！（付与枠上限：{item.rarity}）");
+                ShowPopup("購入できません！（付与枠上限：" + item.rarity + "");
                 if (panel != null) panel.SetActive(true);
                 return;
             }
 
-            // EXP消費（エーテル）確認
-            string details = $"付与スキル：{effectSO.effectName} - {effectSO.description}";
+            string desc = effectSO.description;
+            try { desc = string.Format(effectSO.description, effectSO.GetValue(1)); } catch {}
+            string details = "付与スキル：" + effectSO.effectName + " - " + desc;
+
             string finalMessage = string.Format(buyConfirmFormat, details, effectSO.price);
 
             ShowConfirmUI(finalMessage, () =>
@@ -251,16 +366,13 @@ namespace Alpha.UI
                     return;
                 }
 
-                // EXP消費
                 playerStatusManager_Alpha.Instance.AddExp(-effectSO.price);
 
-                // スキル付与
                 item.currentEffects.Add(effectSO);
                 inv.equipInstance[slotIndex] = item;
                 
                 playerStatusManager_Alpha.Instance.UpdateEquipmentBuffs();
 
-                // ボタンを無効化（1回のみ購入可能）
                 Button btn = buttonObj.GetComponent<Button>();
                 if (btn != null) btn.interactable = false;
 
@@ -301,29 +413,30 @@ namespace Alpha.UI
             var item = inv.equipInstance[slotIndex];
             if (item.series == null)
             {
-                ShowPopup("装備がありません！");
+                ShowPopup("未装備の枠です！");
                 if (panel != null) panel.SetActive(true);
                 return;
             }
 
-            if (item.currentEffects == null || item.currentEffects.Count == 0)
-            {
-                ShowPopup("売却できるスキルがありません！");
-                if (panel != null) panel.SetActive(true);
-                return;
-            }
-
-            // 売却額の計算とテキストの作成
             int totalSellValue = 0;
-            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            int partSellPrice = (item.rarity >= 1 && item.rarity <= partPrices.Length) ? partPrices[item.rarity - 1] / 2 : partPrices[0] / 2;
+            totalSellValue += partSellPrice;
 
-            foreach (var effect in item.currentEffects)
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            sb.AppendLine("売却パーツ：" + item.series.seriesName + " - " + partSellPrice + "エーテル");
+
+            if (item.currentEffects != null)
             {
-                if (effect != null)
+                foreach (var effect in item.currentEffects)
                 {
-                    totalSellValue += effect.sellPrice;
-                    sb.AppendLine($"売却スキル：{effect.effectName} - {effect.description}");
-                    sb.AppendLine($"売却額:{effect.sellPrice}エーテル");
+                    if (effect != null)
+                    {
+                        totalSellValue += effect.sellPrice;
+                        string desc = effect.description;
+                        try { desc = string.Format(effect.description, effect.GetValue(1)); } catch {}
+                        sb.AppendLine("売却スキル：" + effect.effectName + " - " + desc);
+                        sb.AppendLine("売却額:" + effect.sellPrice + "エーテル");
+                    }
                 }
             }
 
@@ -332,15 +445,15 @@ namespace Alpha.UI
 
             ShowConfirmUI(finalMessage, () =>
             {
-                // 売却確定処理（スキルのみ削除）
-                item.currentEffects.Clear();
+                if (item.currentEffects != null) item.currentEffects.Clear();
+                item.series = null;
+                item.defId = "";
                 inv.equipInstance[slotIndex] = item;
                 playerStatusManager_Alpha.Instance.UpdateEquipmentBuffs();
 
-                // EXP付与
                 playerStatusManager_Alpha.Instance.AddExp(totalSellValue);
 
-                ShowPopup($"スキルを売却し、{totalSellValue}エーテルを獲得しました！");
+                ShowPopup("パーツを売却し、" + totalSellValue + "エーテル獲得しました！");
             });
         }
 
@@ -392,7 +505,7 @@ namespace Alpha.UI
             int cost = item.rarity * upgradeCostMultiplier;
             if (playerStatusManager_Alpha.Instance.currentExp < cost)
             {
-                ShowPopup($"強化できません！（エーテル不足：{cost}必要）");
+                ShowPopup("強化できません！（エーテル不足：" + cost + "必要）");
                 if (panel != null) panel.SetActive(true);
                 return;
             }
@@ -401,22 +514,19 @@ namespace Alpha.UI
 
             ShowConfirmUI(finalMessage, () =>
             {
-                // エーテル再確認
                 if (playerStatusManager_Alpha.Instance.currentExp < cost)
                 {
                     ShowPopup("エーテルが不足しています！");
                     return;
                 }
 
-                // EXP消費と品質アップ
                 playerStatusManager_Alpha.Instance.AddExp(-cost);
                 item.rarity += 1;
                 inv.equipInstance[slotIndex] = item;
                 
-                // 品質アップの際は上限（HPGauge等）のみを再計算
                 playerStatusManager_Alpha.Instance.UpdateEquipmentBuffs();
 
-                ShowPopup($"装備の品質が {item.rarity} に上がりました！");
+                ShowPopup("装備の品質が " + item.rarity + " に上がりました！");
             });
         }
     }

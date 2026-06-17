@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,14 +6,15 @@ public class PlayerHealth : _Health_Base
 {
     public bool isInvincible = false;
     
-    // マネージャーの参�EをキャチE��ュ
+    // マネージャーの参�EをキャチE��ュ
     private playerStatusManager_Alpha statusManager;
+    private int cachedMaxHPGauge = -1;
     public GameObject gaugeCanvas;
     public CircleHPBarManager circleHPBarManager;
 
     void Start()
     {
-        // ManagerオブジェクトからスチE�Eタスマネージャーを取得すめE
+        // ManagerオブジェクトからスチE�Eタスマネージャーを取得すめE
         GameObject managerObj = (playerStatusManager_Alpha.Instance != null ? playerStatusManager_Alpha.Instance.gameObject : null);
         if (managerObj != null)
         {
@@ -27,13 +28,13 @@ public class PlayerHealth : _Health_Base
         // 初期化時にマネージャー側のHPでローカル変数を同期しておく
         if (statusManager != null)
         {
-            // まず最新の裁E��バフを確実に計算させる�E�実行頁E���Eズレ防止�E�E
+            // まず最新の裁E��バフを確実に計算させる�E�実行頁E���Eズレ防止�E�E
             statusManager.UpdateEquipmentBuffs();
 
             HP = statusManager.HP;
             currentHP = statusManager.currentHP;
 
-            // 初期化時にマネージャー側でバリアバフが掛かってぁE��ば適用する
+            // 初期化時にマネージャー側でバリアバフが掛かってぁE��ば適用する
             if (statusManager.hasBarrierBuff)
             {
                 Debug.Log($"[PlayerHealth] Start: statusManager has barrier buff. Setting isBarrierActive to true.");
@@ -62,18 +63,22 @@ public class PlayerHealth : _Health_Base
         circleHPBarManager.SetCircleBar(statusManager.HPGauge);
     }
 
-    protected override void Update()
+        protected override void Update()
     {
-        base.Update(); // _Health_Base側の無敵時間などのカウントダウン処琁E��実衁E
+        base.Update(); 
 
-        // マネージャー側の実HPと常に同期させておく
-        // �E�他スクリプトが_Health_Baseとして現在のHPを参照した場合�E齟齬防止�E�E
         if (statusManager != null)
         {
             HP = statusManager.HP;
             currentHP = statusManager.currentHP;
             
-            // チE��チE��機�E: F3キーで現在HP刁E�Eダメージを受ける
+            if (cachedMaxHPGauge != statusManager.HPGauge)
+            {
+                cachedMaxHPGauge = statusManager.HPGauge;
+                if (circleHPBarManager != null) circleHPBarManager.SetCircleBar(cachedMaxHPGauge);
+                gaugeUpdate();
+            }
+
             if (Input.GetKeyDown(KeyCode.F3))
             {
                 TakeDamage(statusManager.currentHP);
@@ -84,7 +89,7 @@ public class PlayerHealth : _Health_Base
         circleHPBarManager.UpdateCircleBar(statusManager.nowHPGauge, (statusManager.currentHP / statusManager.HP));
     }
 
-    // ボム発動時などの一定時間無敵�E�当たり判定消失�E��E琁E
+    // ボム発動時などの一定時間無敵�E�当たり判定消失�E��E琁E
     public void MakeInvincibleWithColliders(float duration)
     {
         StartCoroutine(InvincibleWithCollidersRoutine(duration));
@@ -119,13 +124,13 @@ public class PlayerHealth : _Health_Base
         if (isInvincible) return; // 無敵中ならダメージを無視すめE
 
         float setDmg = damage;
-        // 弱点倍率などローカル�E��E身�E��E状態に基づく計箁E
+        // 弱点倍率などローカル�E��E身�E��E状態に基づく計箁E
         if (VulnerableFlg)
         {
             setDmg *= 1.5f;
         }
         
-        // 実際のダメージ適用はすべて一允E��琁E��てぁE��マネージャーへ委譲
+        // 実際のダメージ適用はすべて一允E��琁E��てぁE��マネージャーへ委譲
         if (statusManager != null)
         {
             statusManager.ApplyDamage(setDmg);

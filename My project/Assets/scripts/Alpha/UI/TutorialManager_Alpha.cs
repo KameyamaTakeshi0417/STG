@@ -202,9 +202,10 @@ namespace Alpha.UI
             previousTimeScale = newTimeScale;
         }
 
+        public bool isQueuePaused = false;
+
         private void Update()
         {
-            // 時間停止中の他の入力を防ぎつつ、左・右クリックでスキップを受け付ける
             if (isShowing)
             {
                 if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
@@ -212,8 +213,35 @@ namespace Alpha.UI
                     CloseTutorial();
                 }
             }
+            else
+            {
+                if (!isQueuePaused && tutorialQueue.Count > 0 && Time.timeScale > 0f)
+                {
+                    CheckQueue();
+                }
+            }
         }
 
+        public void ForceCloseCurrentTutorial()
+        {
+            if (isFadingTutorial)
+            {
+                if (activeFadeCoroutine != null) StopCoroutine(activeFadeCoroutine);
+            }
+            if (currentTutorialObject != null)
+            {
+                currentTutorialObject.SetActive(false);
+                currentTutorialObject = null;
+            }
+            if (tutorialCanvas != null)
+            {
+                tutorialCanvas.SetActive(false);
+            }
+            Time.timeScale = previousTimeScale;
+            isShowing = false;
+            IsPausingTimeline = false;
+            isFadingTutorial = false;
+        }
         public void CloseTutorial()
         {
             if (isFadingTutorial)
@@ -243,6 +271,7 @@ namespace Alpha.UI
 
         private void CheckQueue()
         {
+            if (isQueuePaused) return;
             if (tutorialQueue.Count > 0)
             {
                 var req = tutorialQueue.Dequeue();
