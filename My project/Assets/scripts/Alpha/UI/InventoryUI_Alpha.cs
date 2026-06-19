@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -221,6 +221,9 @@ namespace Alpha.UI
         {
             if (panel != null) panel.SetActive(false);
             if (detailPopup != null) detailPopup.gameObject.SetActive(false);
+            if (confirmButton != null) confirmButton.gameObject.SetActive(false);
+            if (backButtonForCheck != null) backButtonForCheck.gameObject.SetActive(false);
+            if (backToForgeButton != null) backToForgeButton.gameObject.SetActive(false);
         }
 
         private void RefreshUI()
@@ -600,7 +603,38 @@ namespace Alpha.UI
 
             if (detailPopup != null)
             {
-                detailPopup.Setup(item.series, item.partType, item.rarity, item.currentEffects, eventData.position, isBestSlotMet);
+                List<Alpha.Data.WeaponEffectSO_Alpha> displayEffects = new List<Alpha.Data.WeaponEffectSO_Alpha>();
+                
+                if (item.series != null)
+                {
+                    if (item.series.passiveEffects != null)
+                    {
+                        foreach (var pe in item.series.passiveEffects)
+                        {
+                            if (pe.effect != null) displayEffects.Add(pe.effect);
+                        }
+                    }
+                    
+                    List<Alpha.Data.WeaponEffectSO_Alpha> specific = null;
+                    if (item.partType == Alpha.Data.WeaponPartType_Alpha.Bullet) specific = item.series.bulletSpecificEffects;
+                    else if (item.partType == Alpha.Data.WeaponPartType_Alpha.Casing) specific = item.series.casingSpecificEffects;
+                    else if (item.partType == Alpha.Data.WeaponPartType_Alpha.Primer) specific = item.series.primerSpecificEffects;
+                    
+                    if (specific != null)
+                    {
+                        foreach (var eff in specific)
+                        {
+                            if (eff != null) displayEffects.Add(eff);
+                        }
+                    }
+                }
+                
+                if (item.currentEffects != null)
+                {
+                    displayEffects.AddRange(item.currentEffects);
+                }
+
+                detailPopup.Setup(item.series, item.partType, item.rarity, displayEffects, eventData.position, isBestSlotMet);
             }
         }
     }

@@ -57,7 +57,7 @@ MonoBehaviour:
   Objname: 
   dmg: 0
   Speed: 800
-  DestroyTime: 55
+  DestroyTime: 100
   bullettype: 0
   rotate: {x: 0, y: 0, z: 0}
   rarelity: 0
@@ -65,6 +65,8 @@ MonoBehaviour:
   addDmg: 0
   piercingCount: 0
   extraShotCount: 0
+  voltTickReduceCount: 0
+  secondaryDamageMultiplier: 1
   preventAutoDestroy: 0
   localPierceDamageReductionRate: -1
   canUseAllEffects: 0

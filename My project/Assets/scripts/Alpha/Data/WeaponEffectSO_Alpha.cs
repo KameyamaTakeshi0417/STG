@@ -52,6 +52,10 @@ namespace Alpha.Data
         DefenseFlatMinus,       // 防御力低下（固定値）
         DefenseMultiplierMinus, // 防御力低下（パーセント）
 
+        // --- 装填速度（インターバル） ---
+        ReloadSpeedPlus,        // 装填速度上昇（インターバル短縮）
+        ReloadSpeedMinus,       // 装填速度低下（インターバル延長）
+
         // --- 特殊枠 ---
         Wildcard,               // 全シリーズ対応（ジョーカー）
         StaminaExhaustionRecoveryBoost, // スタミナ枯渇時の回復速度倍率

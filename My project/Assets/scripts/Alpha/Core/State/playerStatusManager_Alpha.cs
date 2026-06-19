@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,6 +21,7 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
     private float baseBlockDmg;
     private float baseBlockMag;
     private float baseBulletSpeedMag;
+    private float baseBulletSpanMag;
 
     private float baseFocusStaminaCost;
     private float baseWarpStaminaCost;
@@ -75,6 +76,7 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         baseBlockDmg = BlockDmg;
         baseBlockMag = BlockMag;
         baseBulletSpeedMag = bulletSpeedMag;
+        baseBulletSpanMag = BulletSpanMag;
         baseBulletLifeMag = bulletLifeMag;
         baseExtraPierceCount = extraPierceCount;
         baseExtraShotCount = extraShotCount;
@@ -139,6 +141,7 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         BlockDmg = baseBlockDmg;
         BlockMag = baseBlockMag;
         bulletSpeedMag = baseBulletSpeedMag;
+        BulletSpanMag = baseBulletSpanMag;
         bulletLifeMag = baseBulletLifeMag;
         extraPierceCount = baseExtraPierceCount;
         extraShotCount = baseExtraShotCount;
@@ -241,7 +244,14 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         extraPierceCount += (int)inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.PierceCountPlus, groupToPass);
 
         // 発射弾数の加算
-        extraShotCount += (int)inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.ShotCountPlus, groupToPass);
+        extraShotCount += Mathf.FloorToInt(inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.ShotCountPlus, groupToPass));
+
+        // 装填速度 (ReloadSpeed): Plusは早くなる（Spanが小さくなる）ので引く。Minusは遅くなるので足す。
+        BulletSpanMag -= inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.ReloadSpeedPlus, groupToPass);
+        BulletSpanMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.ReloadSpeedMinus, groupToPass);
+
+        // バースト発射と発射挙動
+        burstCount += Mathf.FloorToInt(inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BurstFire, groupToPass));
         
         if (isBouquet)
         {

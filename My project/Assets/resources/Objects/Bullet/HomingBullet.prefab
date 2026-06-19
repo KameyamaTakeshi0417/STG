@@ -104,16 +104,20 @@ MonoBehaviour:
   canHitBoth: 0
   originalAimDirection: {x: 0, y: 0, z: 0}
   reverseTimeRemaining: 1
+  lockedTarget: {fileID: 0}
   Objname: 
-  dmg: 10
-  Speed: 200
-  DestroyTime: 1500
+  dmg: 0
+  Speed: 300
+  DestroyTime: 500
   bullettype: 0
   rotate: {x: 0, y: 0, z: 0}
   rarelity: 1
   bulletName: HomingBullet
-  addDmg: 5
+  addDmg: 0
   piercingCount: 0
+  extraShotCount: 0
+  voltTickReduceCount: 0
+  secondaryDamageMultiplier: 1
   preventAutoDestroy: 0
   localPierceDamageReductionRate: -1
   canUseAllEffects: 0
