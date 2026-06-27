@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,6 +15,23 @@ public class EquipUIManager_Alpha : MonoBehaviour
     public Color normalColor = Color.white;
     [Tooltip("アイコン自身ではなく、親オブジェクト（枠やマスク）の色を変更するかどうか")]
     public bool changeParentColor = true;
+
+    [Header("Stack & Slide Settings")]
+    [Tooltip("各セット(0-2, 3-5, 6-8)の親オブジェクト")]
+    public RectTransform[] setTransforms = new RectTransform[3];
+    
+    [Tooltip("アニメーションの速度")]
+    public float lerpSpeed = 10f;
+    
+    [Tooltip("重なっている時に背面のセットをどれくらいズラすか")]
+    public Vector2 offsetPerDepth = new Vector2(10f, -10f);
+    
+    [Tooltip("重なっている時に背面のセットをどれくらい傾けるか")]
+    public float anglePerDepth = 15f;
+
+    [Header("Omni-Bouquet Settings")]
+    [Tooltip("オムニブーケ発動時の各セットの角度 (0, 45, 90など)")]
+    public float[] bouquetAngles = new float[] { 0f, 45f, 90f };
 
     private Player_Shooter_Alpha playerShooter;
 
@@ -60,16 +77,15 @@ public class EquipUIManager_Alpha : MonoBehaviour
         }
 
         int activeGroup = playerShooter.currentWeaponGroup;
+        bool isBouquet = inventoryManager != null && inventoryManager.IsBouquetActive();
 
         for (int i = 0; i < equipUIs.Length; i++)
         {
             if (equipUIs[i] == null) continue;
 
             // スロットのインデックスから所属グループを判定
-            // 9枠ある場合は3枠ごとにグループが切り替わる(0,1,2=Group0 / 3,4,5=Group1)
-            // 3枠しかない場合はそのままのインデックスがグループになる
             int groupIndex = (equipUIs.Length == 3) ? i : (i / 3);
-            bool isActive = (groupIndex == activeGroup);
+            bool isActive = (groupIndex == activeGroup) || isBouquet; // ブーケ中は全アクティブ扱いでも良いが色は変更
 
             // 色を変更する対象のImageを取得
             Image targetImage = equipUIs[i];
@@ -84,8 +100,74 @@ public class EquipUIManager_Alpha : MonoBehaviour
 
             if (targetImage != null)
             {
-                targetImage.color = isActive ? highlightColor : normalColor;
+                targetImage.color = (groupIndex == activeGroup || isBouquet) ? highlightColor : normalColor;
             }
+        }
+
+        // セット全体のスタック・スライド・回転処理
+        UpdateSetTransforms(activeGroup, isBouquet);
+    }
+
+    private void UpdateSetTransforms(int activeGroup, bool isBouquet)
+    {
+        if (setTransforms == null || setTransforms.Length == 0) return;
+
+        // Depth(深さ)の計算用。最前面(0) -> 中央(1) -> 一番後ろ(2)
+        // 例えばactiveGroupが0の時、0->0, 1->1, 2->2
+        // activeGroupが1の時、0->2, 1->0, 2->1
+        
+        for (int i = 0; i < setTransforms.Length; i++)
+        {
+            if (setTransforms[i] == null) continue;
+
+            int depth = (i - activeGroup + setTransforms.Length) % setTransforms.Length;
+            
+            Vector2 targetPos = Vector2.zero;
+            float targetAngle = 0f;
+
+            if (isBouquet)
+            {
+                // オムニブーケ発動中：扇状に展開
+                targetPos = Vector2.zero; // Pivotを中心に開くのでオフセットはゼロ
+                if (i < bouquetAngles.Length)
+                {
+                    targetAngle = bouquetAngles[i];
+                }
+                
+                // ブーケ中はZオーダー(重なり順)は固定か、そのままにする
+                // ここではすべて最前面に近い扱いにしたいが、一旦そのままの順序
+            }
+            else
+            {
+                // 通常状態：スタックとスライド
+                targetPos = offsetPerDepth * depth;
+                targetAngle = anglePerDepth * depth; // Z軸回転
+                
+                // Depthが0（最前面）のものは、Hierarchyで最後に移動させて前に描画する
+                // （※Updateで毎フレーム呼ぶと重い場合はキャッシュ判定を入れる）
+                if (depth == 0)
+                {
+                    setTransforms[i].SetAsLastSibling();
+                }
+                else if (depth == 1)
+                {
+                    // 1つ後ろ
+                    // 最前面より前に出ないように、適宜SiblingIndexを調整
+                    setTransforms[i].SetSiblingIndex(setTransforms[i].parent.childCount - 2);
+                }
+                else if (depth == 2)
+                {
+                    // 2つ後ろ（一番後ろ）
+                    setTransforms[i].SetAsFirstSibling();
+                }
+            }
+
+            // Lerpで滑らかにアニメーション
+            setTransforms[i].anchoredPosition = Vector2.Lerp(setTransforms[i].anchoredPosition, targetPos, Time.deltaTime * lerpSpeed);
+            
+            Quaternion currentRot = setTransforms[i].localRotation;
+            Quaternion targetRot = Quaternion.Euler(0f, 0f, targetAngle);
+            setTransforms[i].localRotation = Quaternion.Lerp(currentRot, targetRot, Time.deltaTime * lerpSpeed);
         }
     }
 }
