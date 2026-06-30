@@ -35,7 +35,21 @@ namespace Alpha.Data
 
         [Header("Backgrounds (Optional)")]
         public Sprite backgroundImage;
-        [Tooltip("一枚絵。これが設定されている場合は立ち絵や背景より優先して全画面表示されます")]
+        [Tooltip("一枚絵。これが設定されている場合は立ち絵・背景を優先して全画面表示されます")]
         public Sprite eventCG;
+
+        [Header("Sounds (Optional)")]
+        [Tooltip("このページで再生を開始するBGM（設定すると曲が切り替わります）")]
+        public AudioClip bgmClip;
+        [Tooltip("このページが表示された瞬間に鳴らすSE")]
+        public AudioClip seClip;
+
+        [Header("Speaking Flags")]
+        [Tooltip("左のキャラクターが話しているか")]
+        public bool leftSpeaking = false;
+        [Tooltip("中央のキャラクターが話しているか")]
+        public bool centerSpeaking = false;
+        [Tooltip("右のキャラクターが話しているか")]
+        public bool rightSpeaking = false;
     }
 }

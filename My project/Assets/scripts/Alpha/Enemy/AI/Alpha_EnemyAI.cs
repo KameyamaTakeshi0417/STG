@@ -27,6 +27,9 @@ public class Alpha_EnemyAI : MonoBehaviour
     public EnemyBehaviorData_Base CurrentAttackBehavior { get; protected set; }
     public EnemyBehaviorData_Base CurrentSummonBehavior { get; protected set; }
 
+    [Tooltip("スポーン直後に2秒間の無敵待機時間を設けるか（エリートやボス用）")]
+    public bool spawnWithDelay = false;
+
     // キャッシュされたコンポーネント
     public Rigidbody2D Rb { get; protected set; }
     public Transform TargetTransform { get; protected set; }
@@ -58,7 +61,36 @@ public class Alpha_EnemyAI : MonoBehaviour
             IgnorePlayerSolidCollisions(playerObj);
         }
 
-        // 初期挙動を開始（必要なスロットだけ）
+        // フラグが立っている場合は2秒間無敵待機してから行動開始
+        if (spawnWithDelay)
+        {
+            Debug.Log("[Alpha_EnemyAI] New code running for " + gameObject.name);
+            StartCoroutine(SpawnDelayRoutine());
+        }
+        else
+        {
+            // 初期挙動を開始（必要なスロットだけ）
+            StartBehaviors(initialMovementBehavior, initialAttackBehavior, initialSummonBehavior);
+        }
+    }
+
+    private IEnumerator SpawnDelayRoutine()
+    {
+        var health = GetComponent<_Health_Base>();
+        if (health != null) health.VulnerableFlg = true; // 無敵オン
+
+        PlayerHealth playerHealth = null;
+        if (TargetTransform != null)
+        {
+            playerHealth = TargetTransform.GetComponent<PlayerHealth>();
+            if (playerHealth != null) playerHealth.isInvincible = true; // プレイヤーも無敵オン
+        }
+
+        yield return new WaitForSeconds(2f);
+
+        if (health != null) health.VulnerableFlg = false; // 無敵オフ
+        if (playerHealth != null) playerHealth.isInvincible = false;
+
         StartBehaviors(initialMovementBehavior, initialAttackBehavior, initialSummonBehavior);
     }
 
@@ -281,3 +313,4 @@ public class Alpha_EnemyAI : MonoBehaviour
         ClearSpawnedObjects();
     }
 }
+

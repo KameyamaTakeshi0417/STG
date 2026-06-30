@@ -26,9 +26,9 @@ namespace Alpha.Flow
         public static StageManager_Alpha Instance { get; private set; }
 
         [Header("Data")]
-        [Tooltip("現在のステージデータ")]
+        [Tooltip("")]
         public StageData_Alpha currentStageData;
-        [Tooltip("連続プレイするステージのリスト")]
+        [Tooltip("")]
         public StageData_Alpha[] stageList;
         public int currentStageIndex = 0;
 
@@ -36,9 +36,9 @@ namespace Alpha.Flow
         public SpawnManager_Alpha spawnManager;
         public SequenceBarUI_Alpha sequenceBarUI;
         public FadeController_Alpha fadeController;
-        [Tooltip("STAGE CLEARを表示するテキスト")]
+        [Tooltip("")]
         public TMPro.TextMeshProUGUI stageClearText;
-        [Tooltip("ステージタイトルを表示するテキスト")]
+        [Tooltip("")]
         public TMPro.TextMeshProUGUI stageTitleText;
 
         [Header("State (Read Only)")]
@@ -79,7 +79,7 @@ namespace Alpha.Flow
                 currentStageData = stageList[currentStageIndex];
             }
 
-            // ゲーム開始時のフェードイン
+            // 繧ｲ繝ｼ繝髢句ｧ区凾縺ｮ繝輔ぉ繝ｼ繝峨う繝ｳ
             if (fadeController != null)
             {
                 if (stageTitleText != null && currentStageData != null)
@@ -98,7 +98,7 @@ namespace Alpha.Flow
             }
             else
             {
-                // フェードコントローラーがない場合はそのまま開始する
+                // 繝輔ぉ繝ｼ繝峨さ繝ｳ繝医Ο繝ｼ繝ｩ繝ｼ縺後↑縺・ｴ蜷医・縺昴・縺ｾ縺ｾ髢句ｧ九☆繧・
                 if (stageTitleText != null && currentStageData != null)
                 {
                     stageTitleText.text = currentStageData.stageName;
@@ -154,7 +154,7 @@ namespace Alpha.Flow
                         {
                             SetState(StageState_Alpha.Transition);
                             StartCoroutine(WaitUntilAllOrbsCollected(() => {
-                                // ボス前報酬フェーズ・鍛冶フェーズを展開（フェードアウトさせてから開始）
+                                // 繝懊せ蜑榊ｱ驟ｬ繝輔ぉ繝ｼ繧ｺ繝ｻ骰帛・繝輔ぉ繝ｼ繧ｺ繧貞ｱ暮幕・医ヵ繧ｧ繝ｼ繝峨い繧ｦ繝医＆縺帙※縺九ｉ髢句ｧ具ｼ・
                                 if (fadeController != null)
                                 {
                                     fadeController.FadeOut(() => {
@@ -186,7 +186,7 @@ namespace Alpha.Flow
                                 }
                                 else
                                 {
-                                    // フェードコントローラーが無い場合のフォールバック
+                                    // 繝輔ぉ繝ｼ繝峨さ繝ｳ繝医Ο繝ｼ繝ｩ繝ｼ縺檎┌縺・ｴ蜷医・繝輔か繝ｼ繝ｫ繝舌ャ繧ｯ
                                     if (RewardSequenceManager_Alpha.Instance != null)
                                     {
                                         RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
@@ -216,6 +216,10 @@ namespace Alpha.Flow
                         }
                         else
                         {
+                            if (Alpha.Audio.SoundManager_Alpha.Instance != null && currentStageData.midBossBGM != null)
+                            {
+                                Alpha.Audio.SoundManager_Alpha.Instance.PlayBGM(currentStageData.midBossBGM, 0.5f);
+                            }
                             SetState(StageState_Alpha.MidBossFight);
                             spawnManager.SpawnBoss(activeSequence.bossPrefab);
                         }
@@ -226,20 +230,20 @@ namespace Alpha.Flow
 
         public void RestartStageFromFirstHalf()
         {
-            // HPなどのプレイヤー状態の回復
+            // HP縺ｪ縺ｩ縺ｮ繝励Ξ繧､繝､繝ｼ迥ｶ諷九・蝗槫ｾｩ
             if (playerStatusManager_Alpha.Instance != null)
             {
                 playerStatusManager_Alpha.Instance.currentHP = playerStatusManager_Alpha.Instance.HP;
             }
 
-            // 敵弾・敵のリセット
+            // 謨ｵ蠑ｾ繝ｻ謨ｵ縺ｮ繝ｪ繧ｻ繝・ヨ
             ClearAllEnemyBullets();
             if (spawnManager != null)
             {
-                // 必要に応じて敵の全滅や状態リセット処理
+                // 蠢・ｦ√↓蠢懊§縺ｦ謨ｵ縺ｮ蜈ｨ貊・ｄ迥ｶ諷九Μ繧ｻ繝・ヨ蜃ｦ逅・
             }
 
-            // ステージを前半戦から再開
+            // 繧ｹ繝・・繧ｸ繧貞燕蜊頑姶縺九ｉ蜀埼幕
             StartFirstHalf();
         }
 
@@ -247,16 +251,16 @@ namespace Alpha.Flow
         {
             if (activeSequence == null) return;
 
-            // ポーズ時やチュートリアル表示中は時間を進めない
+            // 繝昴・繧ｺ譎ゅｄ繝√Η繝ｼ繝医Μ繧｢繝ｫ陦ｨ遉ｺ荳ｭ縺ｯ譎る俣繧帝ｲ繧√↑縺・
             if (Time.timeScale == 0f) return;
             if (Alpha.UI.TutorialManager_Alpha.Instance != null && Alpha.UI.TutorialManager_Alpha.Instance.IsPausingTimeline) return;
 
             currentSequenceTime += Time.deltaTime;
             
-            // チュートリアルのチェック
+            // 繝√Η繝ｼ繝医Μ繧｢繝ｫ縺ｮ繝√ぉ繝・け
             CheckTutorials();
 
-            // ウェーブのチェック
+            // 繧ｦ繧ｧ繝ｼ繝悶・繝√ぉ繝・け
             spawnManager.CheckSpawn(currentSequenceTime);
             sequenceBarUI.UpdateProgress(currentSequenceTime / activeSequence.duration);
 
@@ -275,7 +279,7 @@ namespace Alpha.Flow
 
         private void HandleWaveSkip()
         {
-            // ポーズ時はスキップを受け付けない
+            // 繝昴・繧ｺ譎ゅ・繧ｹ繧ｭ繝・・繧貞女縺台ｻ倥￠縺ｪ縺・
             if (Time.timeScale == 0f) return;
 
             bool isSkipInput = false;
@@ -382,12 +386,22 @@ namespace Alpha.Flow
 
             sequenceBarUI.Setup(activeSequence);
             spawnManager.SetupSequence(activeSequence);
+            
+            if (Alpha.Audio.SoundManager_Alpha.Instance != null && currentStageData.stageBGM != null)
+            {
+                Alpha.Audio.SoundManager_Alpha.Instance.PlayBGM(currentStageData.stageBGM, 0.5f);
+            }
 
             SetState(StageState_Alpha.FirstHalf);
         }
 
         private void StartBossFight()
         {
+            if (Alpha.Audio.SoundManager_Alpha.Instance != null && currentStageData.bossBGM != null)
+            {
+                Alpha.Audio.SoundManager_Alpha.Instance.PlayBGM(currentStageData.bossBGM, 0.5f);
+            }
+
             SetState(StageState_Alpha.BossFight);
             spawnManager.SpawnBoss(activeSequence.bossPrefab);
         }
@@ -414,6 +428,10 @@ namespace Alpha.Flow
 
         public void OnBossDefeated()
         {
+            if (Alpha.Audio.SoundManager_Alpha.Instance != null)
+            {
+                Alpha.Audio.SoundManager_Alpha.Instance.StopBGM(1.0f);
+            }
             ClearAllEnemyBullets();
             
             if (currentState == StageState_Alpha.MidBossFight)
@@ -426,11 +444,11 @@ namespace Alpha.Flow
                     {
                         Debug.Log("[StageManager] Fade Out Complete. Hook for Equipment Turn.");
                         
-                        // 中ボス撃破報酬のオーブを一斉開封
+                        // 荳ｭ繝懊せ謦・ｴ蝣ｱ驟ｬ縺ｮ繧ｪ繝ｼ繝悶ｒ荳譁蛾幕蟆・
                         if (RewardSequenceManager_Alpha.Instance != null)
                         {
                             RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
-                                // 報酬画面が終わってから後半待機へ
+                                // 蝣ｱ驟ｬ逕ｻ髱｢縺檎ｵゅｏ縺｣縺ｦ縺九ｉ蠕悟濠蠕・ｩ溘∈
                                 fadeController.FadeIn(() => 
                                 {
                                     activeSequence = currentStageData.secondHalf;
@@ -503,25 +521,30 @@ namespace Alpha.Flow
 
         private System.Collections.IEnumerator BossClearSequenceRoutine()
         {
-            // 1. 草生え
+            // 1. 闕臥函縺・
             var grassGenerator = FindObjectOfType<Environment.ProceduralGrassGenerator_Alpha>();
             if (grassGenerator != null)
             {
                 grassGenerator.gameObject.SetActive(true);
-                grassGenerator.GenerateGrass(0.2f); // 0.2秒かけて連続生成
+                grassGenerator.GenerateGrass(0.2f); // 0.2遘偵°縺代※騾｣邯夂函謌・
             }
 
-            // 余韻
+            // 菴咎渊
             yield return new WaitForSeconds(1.5f);
 
-            // 2. クリア演出 (Stage Clearテキスト表示)
+            // 2. 繧ｯ繝ｪ繧｢貍泌・ (Stage Clear繝・く繧ｹ繝郁｡ｨ遉ｺ)
             if (stageClearText != null)
             {
+                if (Alpha.Audio.SoundManager_Alpha.Instance != null && currentStageData != null && currentStageData.stageClearSE != null)
+                {
+                    Alpha.Audio.SoundManager_Alpha.Instance.PlaySE(currentStageData.stageClearSE);
+                }
+
                 stageClearText.gameObject.SetActive(true);
                 CanvasGroup cg = stageClearText.gameObject.GetComponent<CanvasGroup>();
                 if (cg == null) cg = stageClearText.gameObject.AddComponent<CanvasGroup>();
                 
-                // フェードイン
+                // 繝輔ぉ繝ｼ繝峨う繝ｳ
                 float t = 0;
                 while (t < 1f)
                 {
@@ -534,7 +557,7 @@ namespace Alpha.Flow
                 yield return new WaitForSeconds(2f);
             }
 
-            // 3. その状態のままフェードアウトしてADVへ
+            // 3. 縺昴・迥ｶ諷九・縺ｾ縺ｾ繝輔ぉ繝ｼ繝峨い繧ｦ繝医＠縺ｦADV縺ｸ
             bool isFaded = false;
             if (fadeController != null)
             {
@@ -546,15 +569,15 @@ namespace Alpha.Flow
             }
             yield return new WaitUntil(() => isFaded);
 
-            // STAGE CLEAR テキストは暗転後に非表示に戻す
+            // STAGE CLEAR 繝・く繧ｹ繝医・證苓ｻ｢蠕後↓髱櫁｡ｨ遉ｺ縺ｫ謌ｻ縺・
             if (stageClearText != null) stageClearText.gameObject.SetActive(false);
 
-            // 4. ボス後ADV
+            // 4. 繝懊せ蠕窟DV
             if (currentStageData.postBossADV != null && ADVManager_Alpha.Instance != null && currentStageData.postBossADV.pages != null && currentStageData.postBossADV.pages.Count > 0)
             {
-                // 暗転したままADVを開始
+                // 證苓ｻ｢縺励◆縺ｾ縺ｾADV繧帝幕蟋・
                 ADVManager_Alpha.Instance.StartADV(currentStageData.postBossADV, () => {
-                    // ADV終了後、次ステージ遷移準備へ
+                    // ADV邨ゆｺ・ｾ後∵ｬ｡繧ｹ繝・・繧ｸ驕ｷ遘ｻ貅門ｙ縺ｸ
                     ExecuteStageClearBackEnd();
                 });
             }
@@ -567,7 +590,7 @@ namespace Alpha.Flow
 
         private void ExecuteStageClearBackEnd()
         {
-            // 次のステージへ遷移する前に草を完全に消去する
+            // 谺｡縺ｮ繧ｹ繝・・繧ｸ縺ｸ驕ｷ遘ｻ縺吶ｋ蜑阪↓闕峨ｒ螳悟・縺ｫ豸亥悉縺吶ｋ
             var grassGenerators = Resources.FindObjectsOfTypeAll<Environment.ProceduralGrassGenerator_Alpha>();
             Debug.Log($"[StageManager] Found {grassGenerators.Length} grass generators to clear.");
             foreach (var generator in grassGenerators)
@@ -583,42 +606,42 @@ namespace Alpha.Flow
             SetState(StageState_Alpha.StageClear);
             Debug.Log("[StageManager] STAGE CLEAR (BackEnd)!");
 
-            // 1. 報酬ゲージのリセット
+            // 1. 蝣ｱ驟ｬ繧ｲ繝ｼ繧ｸ縺ｮ繝ｪ繧ｻ繝・ヨ
             if (RewardManager_Alpha.Instance != null)
             {
                 RewardManager_Alpha.Instance.ResetRewardCycle();
             }
 
-            // 2. プレイヤーの回復処理
+            // 2. 繝励Ξ繧､繝､繝ｼ縺ｮ蝗槫ｾｩ蜃ｦ逅・
             if (playerStatusManager_Alpha.Instance != null)
             {
-                // スタミナ全快
+                // 繧ｹ繧ｿ繝溘リ蜈ｨ蠢ｫ
                 playerStatusManager_Alpha.Instance.currentStamina = playerStatusManager_Alpha.Instance.maxStamina;
                 
-                // HPを最大HPの30%回復 (オーバーフロー処理は Heal 内で対応済み)
+                // HP繧呈怙螟ｧHP縺ｮ30%蝗槫ｾｩ (繧ｪ繝ｼ繝舌・繝輔Ο繝ｼ蜃ｦ逅・・ Heal 蜀・〒蟇ｾ蠢懈ｸ医∩)
                 float healAmount = playerStatusManager_Alpha.Instance.HP * 0.3f;
                 playerStatusManager_Alpha.Instance.Heal(healAmount);
                 
                 Debug.Log($"[StageManager] Player recovered. Healed {healAmount} HP.");
             }
 
-            // 3. フリースロットの追加
+            // 3. 繝輔Μ繝ｼ繧ｹ繝ｭ繝・ヨ縺ｮ霑ｽ蜉
             if (InventoryManager_Alpha.Instance != null)
             {
                 InventoryManager_Alpha.Instance.AddFreeSlot();
             }
 
-            // 4. 次ステージへの遷移準備 (すでに暗転している想定)
-            // StartCoroutine(StageClearTransitionRoutine()) の代わりにそのまま処理
+            // 4. 谺｡繧ｹ繝・・繧ｸ縺ｸ縺ｮ驕ｷ遘ｻ貅門ｙ (縺吶〒縺ｫ證苓ｻ｢縺励※縺・ｋ諠ｳ螳・
+            // StartCoroutine(StageClearTransitionRoutine()) 縺ｮ莉｣繧上ｊ縺ｫ縺昴・縺ｾ縺ｾ蜃ｦ逅・
             currentStageIndex++;
             if (stageList != null && currentStageIndex < stageList.Length && stageList[currentStageIndex] != null)
             {
                 currentStageData = stageList[currentStageIndex];
                 
-                // 敵や弾などを掃除
+                // 謨ｵ繧・ｼｾ縺ｪ縺ｩ繧呈祉髯､
                 ClearAllEnemyBullets();
                 
-                // 次ステージの初期化
+                // 谺｡繧ｹ繝・・繧ｸ縺ｮ蛻晄悄蛹・
                 SetState(StageState_Alpha.WaitToStartFirstHalf);
                 wasMobCleared = false;
                 
@@ -645,9 +668,9 @@ namespace Alpha.Flow
             }
             else
             {
-                // 全ステージクリア
+                // 蜈ｨ繧ｹ繝・・繧ｸ繧ｯ繝ｪ繧｢
                 Debug.Log("[StageManager] ALL STAGES CLEARED!");
-                // 拠点やタイトルに戻る処理を記述
+                // 諡轤ｹ繧・ち繧､繝医Ν縺ｫ謌ｻ繧句・逅・ｒ險倩ｿｰ
             }
         }
 
@@ -688,7 +711,7 @@ namespace Alpha.Flow
 
         private System.Collections.IEnumerator StageClearTransitionRoutine()
         {
-            // STAGE CLEAR テキストのフェード表示
+            // STAGE CLEAR 繝・く繧ｹ繝医・繝輔ぉ繝ｼ繝芽｡ｨ遉ｺ
             if (stageClearText != null)
             {
                 yield return StartCoroutine(FadeTextRoutine(stageClearText, 2f));
@@ -698,7 +721,7 @@ namespace Alpha.Flow
                 yield return new WaitForSecondsRealtime(3f);
             }
 
-            // フェードアウト（暗転）
+            // 繝輔ぉ繝ｼ繝峨い繧ｦ繝茨ｼ域囓霆｢・・
             bool isFaded = false;
             if (fadeController != null)
             {
@@ -710,16 +733,16 @@ namespace Alpha.Flow
             }
             yield return new WaitUntil(() => isFaded);
 
-            // --- ここで裏側のクリーンアップと次ステージ準備 ---
+            // --- 縺薙％縺ｧ陬丞・縺ｮ繧ｯ繝ｪ繝ｼ繝ｳ繧｢繝・・縺ｨ谺｡繧ｹ繝・・繧ｸ貅門ｙ ---
             currentStageIndex++;
             if (stageList != null && currentStageIndex < stageList.Length && stageList[currentStageIndex] != null)
             {
                 currentStageData = stageList[currentStageIndex];
                 
-                // 敵や弾などを掃除
+                // 謨ｵ繧・ｼｾ縺ｪ縺ｩ繧呈祉髯､
                 ClearAllEnemyBullets();
                 
-                // 次ステージの初期化
+                // 谺｡繧ｹ繝・・繧ｸ縺ｮ蛻晄悄蛹・
                 SetState(StageState_Alpha.WaitToStartFirstHalf);
                 wasMobCleared = false;
                 
@@ -746,9 +769,9 @@ namespace Alpha.Flow
             }
             else
             {
-                // 全ステージクリア
+                // 蜈ｨ繧ｹ繝・・繧ｸ繧ｯ繝ｪ繧｢
                 Debug.Log("[StageManager] ALL STAGES CLEARED!");
-                // 拠点やタイトルに戻る処理を記述
+                // 諡轤ｹ繧・ち繧､繝医Ν縺ｫ謌ｻ繧句・逅・ｒ險倩ｿｰ
             }
         }
 
@@ -756,7 +779,7 @@ namespace Alpha.Flow
         {
             Debug.Log("[StageManager] Waiting for orbs, items, exp, and petals to be collected...");
             
-            // 全てのオーブ、アイテム、経験値、花弁が画面上から消える（取得される）まで待機
+            // 蜈ｨ縺ｦ縺ｮ繧ｪ繝ｼ繝悶√い繧､繝・Β縲∫ｵ碁ｨ灘､縲∬干蠑√′逕ｻ髱｢荳翫°繧画ｶ医∴繧具ｼ亥叙蠕励＆繧後ｋ・峨∪縺ｧ蠕・ｩ・
             while (FindObjectsOfType<OrbControll_Alpha>().Length > 0 || 
                    FindObjectsOfType<Alpha.Battle.OrbItem_Alpha>().Length > 0 ||
                    FindObjectsOfType<ItemPickUp>().Length > 0 ||

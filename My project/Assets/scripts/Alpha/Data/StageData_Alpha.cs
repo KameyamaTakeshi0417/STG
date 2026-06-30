@@ -15,10 +15,24 @@ namespace Alpha.Data
         public StageSequenceData_Alpha secondHalf;
 
         [Header("ADV Data")]
-        [Tooltip("ボス戦前に再生されるADVデータ（任意）")]
+        [Tooltip("ボス前に再生するADVデータ（任意）")]
         public ADVData_Alpha preBossADV;
         
-        [Tooltip("ボス撃破後に再生されるADVデータ（任意）")]
+        [Tooltip("ボス後に再生するADVデータ（任意）")]
         public ADVData_Alpha postBossADV;
+
+        [Header("BGM Data")]
+        [Tooltip("道中・ウェーブ進行時のBGM")]
+        public AudioClip stageBGM;
+
+        [Tooltip("中ボス時のBGM（任意）")]
+        public AudioClip midBossBGM;
+
+        [Tooltip("ボス出現時に鳴らすBGM（途切れずシームレスに移行できます）")]
+        public AudioClip bossBGM;
+
+        [Tooltip("ステージクリアのテキスト表示時に鳴らすSE")]
+        public AudioClip stageClearSE;
+
     }
 }

@@ -65,6 +65,11 @@ namespace Alpha.UI
         {
             if (gameOverPanel != null)
             {
+                if (Alpha.Audio.SoundManager_Alpha.Instance != null)
+                {
+                    Alpha.Audio.SoundManager_Alpha.Instance.StopBGM(0.5f);
+                }
+
                 gameOverPanel.SetActive(true);
                 // Pause the game or stop enemies
                 Time.timeScale = 0f;
@@ -74,8 +79,7 @@ namespace Alpha.UI
         private void OnRetryClicked()
         {
             Time.timeScale = 1f;
-            // 敗北したステージの前半戦から開始する（ステータス強化などは維持）
-            // StageManager_Alpha の再起動処理を呼ぶ
+            // 謨怜圏縺励◆繧ｹ繝・・繧ｸ縺ｮ蜑榊濠謌ｦ縺九ｉ髢句ｧ九☆繧具ｼ医せ繝・・繧ｿ繧ｹ蠑ｷ蛹悶↑縺ｩ縺ｯ邯ｭ謖・ｼ・            // StageManager_Alpha 縺ｮ蜀崎ｵｷ蜍募・逅・ｒ蜻ｼ縺ｶ
             if (StageManager_Alpha.Instance != null)
             {
                 StageManager_Alpha.Instance.RestartStageFromFirstHalf();
@@ -83,21 +87,20 @@ namespace Alpha.UI
             }
             else
             {
-                // StageManagerがない場合は現在のシーンをリロード
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                // StageManager縺後↑縺・ｴ蜷医・迴ｾ蝨ｨ縺ｮ繧ｷ繝ｼ繝ｳ繧偵Μ繝ｭ繝ｼ繝・                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
         }
 
         private void OnGiveUpClicked()
         {
             Time.timeScale = 1f;
-            // タイトルに戻る際にセーブデータを削除し、次回のゲームは新規プレイにする
+            // 繧ｿ繧､繝医Ν縺ｫ謌ｻ繧矩圀縺ｫ繧ｻ繝ｼ繝悶ョ繝ｼ繧ｿ繧貞炎髯､縺励∵ｬ｡蝗槭・繧ｲ繝ｼ繝縺ｯ譁ｰ隕上・繝ｬ繧､縺ｫ縺吶ｋ
             if (SaveManager_Alpha.Instance != null)
             {
                 SaveManager_Alpha.Instance.ClearSaveData();
             }
 
-            // タイトルシーンへ遷移
+            // 繧ｿ繧､繝医Ν繧ｷ繝ｼ繝ｳ縺ｸ驕ｷ遘ｻ
             SceneManager.LoadScene("Title_Alpha");
         }
     }
