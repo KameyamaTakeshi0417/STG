@@ -44,79 +44,15 @@ sysinfo.txt
 # Crashlytics generated file
 /firebaseappdelegateproxy-apn-token.txt
 
-.vs/slnx.sqlite
-.vs/VSWorkspaceState.json
-My project/.vs/My project/FileContentIndex/32b893b0-caa9-45ec-b41b-3d620187f6e8.vsidx
-My project/.vs/My project/FileContentIndex/78df9e32-693c-43d3-8de5-2b81c3e67870.vsidx
-My project/.vs/My project/FileContentIndex/f01c0032-4466-4a5c-a87b-2ab88428377f.vsidx
-My project/.vs/My project/v17/DocumentLayout.json
-My project/Assets/TextMesh Pro/Fonts/SoukouMincho SDF.asset
-My project/Assets/TextMesh Pro/Fonts/SoukouMincho SDF.asset.meta
-My project/.vs/My project/CopilotIndices/17.14.939.21063/CodeChunks.db
-My project/.vs/My project/CopilotIndices/17.14.939.21063/SemanticSymbols.db
-My project/.vs/My project/CopilotIndices/17.14.939.21063/CodeChunks.db-shm
-My project/.vs/My project/CopilotIndices/17.14.939.21063/CodeChunks.db-wal
-My project/.vs/My project/CopilotIndices/17.14.939.21063/SemanticSymbols.db-shm
-My project/.vs/My project/CopilotIndices/17.14.939.21063/SemanticSymbols.db-wal
-My project/.vs/My project/FileContentIndex/1bdc5d26-887d-4469-b233-3cc83afb6fb2.vsidx
-My project/.vs/My project/FileContentIndex/25e43a56-cb9d-483e-b8af-d1b33b2251d6.vsidx
-My project/.vs/My project/FileContentIndex/3ea0b307-184a-4cfd-b530-0dbbb8824d8c.vsidx
-My project/.vs/My project/FileContentIndex/41551da9-14ec-44d0-9938-9171487c9c92.vsidx
-My project/Assets/shader/builtin_shaders.meta
-My project/Assets/shader/builtin_shaders/CGIncludes.meta
-My project/Assets/shader/builtin_shaders/DefaultResources.meta
-My project/Assets/shader/builtin_shaders/DefaultResourcesExtra.meta
-My project/Assets/shader/builtin_shaders/Editor.meta
-My project/Assets/shader/builtin_shaders/EditorDefaultResources.meta
-My project/Assets/shader/builtin_shaders/license.txt
-My project/Assets/shader/builtin_shaders/license.txt.meta
-My project/Assets/shader/builtin_shaders/CGIncludes/AutoLight.cginc
-My project/Assets/shader/builtin_shaders/CGIncludes/AutoLight.cginc.meta
-My project/Assets/shader/builtin_shaders/CGIncludes/GLSLSupport.glslinc
-My project/Assets/shader/builtin_shaders/CGIncludes/GLSLSupport.glslinc.meta
-My project/Assets/shader/builtin_shaders/CGIncludes/GraniteShaderLib3.cginc
-My project/Assets/shader/builtin_shaders/CGIncludes/GraniteShaderLib3.cginc.meta
-My project/Assets/shader/builtin_shaders/CGIncludes/HLSLSupport.cginc
-My project/Assets/shader/builtin_shaders/CGIncludes/HLSLSupport.cginc.meta
-My project/Assets/shader/builtin_shaders/CGIncludes/Lighting.cginc
-My project/Assets/shader/builtin_shaders/CGIncludes/Lighting.cginc.meta
-My project/Assets/shader/builtin_shaders/CGIncludes/SpeedTree8Common.cginc
-My project/Assets/shader/builtin_shaders/CGIncludes/SpeedTree8Common.cginc.meta
-My project/Assets/shader/builtin_shaders/CGIncludes/SpeedTreeBillboardCommon.cginc
-My project/Assets/shader/builtin_shaders/CGIncludes/SpeedTreeBillboardCommon.cginc.meta
-My project/Assets/shader/builtin_shaders/CGIncludes/SpeedTreeCommon.cginc
-My project/Assets/shader/builtin_shaders/CGIncludes/SpeedTreeCommon.cginc.meta
-My project/Assets/shader/builtin_shaders/CGIncludes/SpeedTreeVertex.cginc
-My project/Assets/shader/builtin_shaders/CGIncludes/SpeedTreeVertex.cginc.meta
-My project/Assets/shader/builtin_shaders/CGIncludes/SpeedTreeWind.cginc
-My project/Assets/shader/builtin_shaders/CGIncludes/SpeedTreeWind.cginc.meta
-My project/Assets/shader/builtin_shaders/CGIncludes/TerrainEngine.cginc
-My project/Assets/shader/builtin_shaders/CGIncludes/TerrainEngine.cginc.meta
-My project/Assets/shader/builtin_shaders/CGIncludes/TerrainPreview.cginc
-My project/Assets/shader/builtin_shaders/CGIncludes/TerrainPreview.cginc.meta
-My project/Assets/shader/builtin_shaders/CGIncludes/TerrainSplatmapCommon.cginc
-My project/Assets/shader/builtin_shaders/CGIncludes/TerrainSplatmapCommon.cginc.meta
-My project/Assets/shader/builtin_shaders/CGIncludes/TerrainTool.cginc
-My project/Assets/shader/builtin_shaders/CGIncludes/TerrainTool.cginc.meta
+# Visual Studio Cache
+.vs/
+My project/.vs/
+
+# Custom Ignores restored
 My project/Assets/shader/
-My project/.vs/My project/CopilotIndices/
-My project/.vs/My project/FileContentIndex/1235c67d-6a59-4817-9a9b-0dd83c9713f6.vsidx
-My project/.vs/My project/FileContentIndex/4fc6fde8-9fcb-45f4-980b-475264e02bc7.vsidx
-My project/.vs/My project/FileContentIndex/1faf0fd1-3ce7-4ac2-ac33-12842048f252.vsidx
-My project/.vs/My project/FileContentIndex/5f0bdb6e-79a6-4b57-b252-790ae1b6f456.vsidx
-My project/.vs/My project/FileContentIndex/b9d9b4b0-d628-4149-9646-a69e107d57cc.vsidx
-My project/.vs/Assembly-CSharp.csproj.dtbcache.json
-My project/.vs/My project/FileContentIndex/4c4df3f3-be27-4859-b9c6-3d089c1efe38.vsidx
-My project/.vs/My project/FileContentIndex/4ff443b6-1ef2-42a0-8b67-53fdfe912385.vsidx
-My project/.vs/My project/FileContentIndex/86376530-79df-4fa0-a6c9-f32caf4afaa2.vsidx
-My project/.vs/My project/FileContentIndex/ee042b4b-00db-4a85-ac40-357f4aa2bc91.vsidx
-My project/Assets/path.txt
-My project/Assets/path.txt.meta
-My project/Assets/replace.ps1
-My project/Assets/replace.ps1.meta
-My project/Assets/replace.py
-My project/Assets/replace.py.meta
-My project/Assets/Plugins/Demigiant.meta
-My project/Assets/Plugins/Demigiant/DOTween.meta
-My project/Assets/Plugins/Demigiant/DOTween/DOTween.dll
+My project/Assets/shader.meta
 My project/Assets/Plugins/
+My project/Assets/Plugins.meta
+My project/Assets/path.txt*
+My project/Assets/replace.ps1*
+My project/Assets/replace.py*
