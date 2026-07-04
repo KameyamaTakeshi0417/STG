@@ -148,7 +148,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -190,6 +190,7 @@ MonoBehaviour:
   barrierVisualObject: {fileID: 0}
   rewardPoints: 10
   orbDropChance: 1
+  forceDropOrb: 0
   isMidBoss: 1
   isBoss: 0
   bossId: 0
@@ -198,7 +199,6 @@ MonoBehaviour:
   phaseHPs:
   - 1000
   - 1500
-  phaseCutIns: []
   eliteCanvasResourcePath: UI/CircleHPBar/EliteEnemyHPCanvas
 --- !u!114 &3508095160209487777
 MonoBehaviour:
@@ -215,6 +215,7 @@ MonoBehaviour:
   initialMovementBehavior: {fileID: 0}
   initialAttackBehavior: {fileID: 0}
   initialSummonBehavior: {fileID: 0}
+  spawnWithDelay: 0
   PhaseSpawnedObjects: []
   phases:
   - phaseName: "\u8A66\u3057\u306E\u653B\u64831"

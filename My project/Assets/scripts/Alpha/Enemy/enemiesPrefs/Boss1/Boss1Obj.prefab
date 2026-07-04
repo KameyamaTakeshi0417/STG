@@ -75,7 +75,6 @@ MonoBehaviour:
   phaseHPs:
   - 1000
   - 1500
-  phaseCutIns: []
   eliteCanvasResourcePath: UI/CircleHPBar/EliteEnemyHPCanvas
 --- !u!50 &7380120385798461888
 Rigidbody2D:
@@ -92,7 +91,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -123,13 +122,13 @@ MonoBehaviour:
   PhaseSpawnedObjects: []
   phases:
   - phaseName: "\u8A66\u3057\u306E\u653B\u64831"
-    useCutIn: 0
+    useCutIn: 1
     cutInSprite: {fileID: 0}
     movementBehavior: {fileID: 11400000, guid: 0d8afc241ca8f36489766383f8468aee, type: 2}
     attackBehavior: {fileID: 11400000, guid: 47d780a3f5c00ce49ab03d3c5f455fec, type: 2}
     summonBehavior: {fileID: 11400000, guid: c7127de5f735ac2478173c9f94041d52, type: 2}
   - phaseName: "\u7DE0\u3081\u306E\u653B\u6483"
-    useCutIn: 0
+    useCutIn: 1
     cutInSprite: {fileID: 0}
     movementBehavior: {fileID: 11400000, guid: cf2ce169e9c380e4e842c25bb911264d, type: 2}
     attackBehavior: {fileID: 11400000, guid: 64be175568601a648bc4853fc69538fd, type: 2}

@@ -87,6 +87,7 @@ MonoBehaviour:
   initialMovementBehavior: {fileID: 11400000, guid: ca7234bee6f0464459c0d62daf9b7b3f, type: 2}
   initialAttackBehavior: {fileID: 11400000, guid: 03b8e8bc27879364b95d3715f84ee363, type: 2}
   initialSummonBehavior: {fileID: 0}
+  spawnWithDelay: 0
   PhaseSpawnedObjects: []
 --- !u!212 &526694419654769027
 SpriteRenderer:
@@ -155,7 +156,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2

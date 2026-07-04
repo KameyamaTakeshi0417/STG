@@ -798,6 +798,12 @@ namespace Alpha.Flow
             currentSequenceTime = 0f;
             currentTutorialIndex = 0;
             sequenceBarUI.UpdateProgress(0f);
+            
+            if (Alpha.Audio.SoundManager_Alpha.Instance != null && currentStageData != null && currentStageData.stageBGM != null)
+            {
+                Alpha.Audio.SoundManager_Alpha.Instance.PlayBGM(currentStageData.stageBGM, 0.5f);
+            }
+            
             SetState(StageState_Alpha.SecondHalf);
         }
     }

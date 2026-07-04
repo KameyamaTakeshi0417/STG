@@ -31,6 +31,7 @@ public class Alpha_EliteEnemyAI : Alpha_EnemyAI
     [Tooltip("このリストの0番目が最初の攻撃フェーズになります。InitialBehaviorは使用しません。")]
     public List<ElitePhaseData> phases;
 
+    private Coroutine phaseSequenceCoroutine;
     private Coroutine movementCoroutine;
     private Coroutine attackCoroutine;
     private Coroutine summonCoroutine;
@@ -142,21 +143,27 @@ public class Alpha_EliteEnemyAI : Alpha_EnemyAI
     {
         if (phaseIndex < 0 || phaseIndex >= phases.Count) return;
 
-        ElitePhaseData currentPhase = phases[phaseIndex];
-        
         // 既存のコルーチンを全て停止
         StopAllBehaviors();
 
-        // カットイン等への通知（実装時にUIを紐付け可能）
+        phaseSequenceCoroutine = StartCoroutine(PhaseSequenceRoutine(phaseIndex));
+    }
+
+    private System.Collections.IEnumerator PhaseSequenceRoutine(int phaseIndex)
+    {
+        ElitePhaseData currentPhase = phases[phaseIndex];
+
+        // カットイン等への通知
         OnPhaseStartEvent?.Invoke(phaseIndex, currentPhase.phaseName);
 
-        // カットイン演出の再生
+        // カットイン演出の再生と待機
         if (currentPhase.useCutIn && Alpha.UI.UltCutInController.Instance != null && currentPhase.cutInSprite != null)
         {
             Alpha.UI.UltCutInController.Instance.PlayCutIn(false, currentPhase.cutInSprite, currentPhase.phaseName);
+            yield return new WaitForSeconds(2.7f); // カットインの演出時間分待機
         }
 
-        // 各挙動を並列で実行
+        // 行動を並列で実行
         if (currentPhase.movementBehavior != null)
             movementCoroutine = StartCoroutine(currentPhase.movementBehavior.RunBehavior(this));
 
@@ -169,6 +176,7 @@ public class Alpha_EliteEnemyAI : Alpha_EnemyAI
 
     private void StopAllBehaviors()
     {
+        if (phaseSequenceCoroutine != null) StopCoroutine(phaseSequenceCoroutine);
         if (movementCoroutine != null) StopCoroutine(movementCoroutine);
         if (attackCoroutine != null) StopCoroutine(attackCoroutine);
         if (summonCoroutine != null) StopCoroutine(summonCoroutine);
@@ -179,6 +187,7 @@ public class Alpha_EliteEnemyAI : Alpha_EnemyAI
         // このフェーズで召喚したオブジェクトを一掃する
         ClearSpawnedObjects();
 
+        phaseSequenceCoroutine = null;
         movementCoroutine = null;
         attackCoroutine = null;
         summonCoroutine = null;
