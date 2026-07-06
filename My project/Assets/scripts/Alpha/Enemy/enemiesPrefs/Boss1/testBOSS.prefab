@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5896565851570631814}
   - component: {fileID: 6795891212805413249}
   - component: {fileID: 3508095160209487777}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: testBOSS
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -199,7 +199,8 @@ MonoBehaviour:
   phaseHPs:
   - 1000
   - 1500
-  phaseCutIns: []
+  defeatedSprite: {fileID: 0}
+  targetSpriteRenderer: {fileID: 0}
   eliteCanvasResourcePath: UI/CircleHPBar/EliteEnemyHPCanvas
 --- !u!114 &3508095160209487777
 MonoBehaviour:

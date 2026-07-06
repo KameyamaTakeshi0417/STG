@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7380120385798461888}
   - component: {fileID: 6863161312806660121}
   - component: {fileID: 5476046019780148913}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Boss1Obj
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -75,6 +75,8 @@ MonoBehaviour:
   phaseHPs:
   - 1000
   - 1500
+  defeatedSprite: {fileID: 0}
+  targetSpriteRenderer: {fileID: 0}
   eliteCanvasResourcePath: UI/CircleHPBar/EliteEnemyHPCanvas
 --- !u!50 &7380120385798461888
 Rigidbody2D:
@@ -121,15 +123,15 @@ MonoBehaviour:
   spawnWithDelay: 1
   PhaseSpawnedObjects: []
   phases:
-  - phaseName: "\u8A66\u3057\u306E\u653B\u64831"
+  - phaseName: "\u83EF\u70C8\u6483-\u53CC\u5927\u8F2A-"
     useCutIn: 1
-    cutInSprite: {fileID: 0}
+    cutInSprite: {fileID: 21300000, guid: a5a5d28d77fe6a240a14b3eb64eba601, type: 3}
     movementBehavior: {fileID: 11400000, guid: 0d8afc241ca8f36489766383f8468aee, type: 2}
     attackBehavior: {fileID: 11400000, guid: 47d780a3f5c00ce49ab03d3c5f455fec, type: 2}
     summonBehavior: {fileID: 11400000, guid: c7127de5f735ac2478173c9f94041d52, type: 2}
-  - phaseName: "\u7DE0\u3081\u306E\u653B\u6483"
+  - phaseName: "\u83EF\u70C8\u6483-\u707C\u83EF\u7E5A\u4E71-"
     useCutIn: 1
-    cutInSprite: {fileID: 0}
+    cutInSprite: {fileID: 21300000, guid: a5a5d28d77fe6a240a14b3eb64eba601, type: 3}
     movementBehavior: {fileID: 11400000, guid: cf2ce169e9c380e4e842c25bb911264d, type: 2}
     attackBehavior: {fileID: 11400000, guid: 64be175568601a648bc4853fc69538fd, type: 2}
     summonBehavior: {fileID: 0}
@@ -193,6 +195,10 @@ PrefabInstance:
     - target: {fileID: 1805729669060774162, guid: 031c947099812a14486be4cde39b0ee4, type: 3}
       propertyPath: m_Name
       value: testBOSS
+      objectReference: {fileID: 0}
+    - target: {fileID: 1805729669060774162, guid: 031c947099812a14486be4cde39b0ee4, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 3133535108563501229, guid: 031c947099812a14486be4cde39b0ee4, type: 3}
       propertyPath: m_Enabled

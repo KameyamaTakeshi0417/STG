@@ -7,6 +7,12 @@ public class Alpha_EliteHealth : Health
     [Tooltip("各フェーズの最大HP。要素数がフェーズ数になります")]
     public List<float> phaseHPs = new List<float>() { 1000f, 1500f };
 
+    [Header("Defeat Settings")]
+    [Tooltip("ボス撃破時のやられスプライト（大ボス専用）")]
+    public Sprite defeatedSprite;
+    [Tooltip("スプライトを変更する対象のSpriteRenderer（未設定時は自動取得）")]
+    public SpriteRenderer targetSpriteRenderer;
+
     // ---------- Elite HP Canvas ----------
     [Header("UI Settings")]
     [Tooltip("Elite 用円形 HP Canvas（Resources 配下）")]
@@ -144,5 +150,102 @@ public class Alpha_EliteHealth : Health
         
         // AI側へ通知
         OnPhaseBreak?.Invoke(CurrentPhaseIndex);
+    }
+
+    protected override void Die()
+    {
+        // 共通のドロップ処理を呼び出す
+        DropEnemyRewards();
+        
+        // スロー演出をトリガー (StageManager_Alpha 経由)
+        if (Alpha.Flow.StageManager_Alpha.Instance != null)
+        {
+            Alpha.Flow.StageManager_Alpha.Instance.TriggerSlowMotion(0.7f, 3f);
+        }
+
+        if (isBoss)
+        {
+            // ボスの場合は消滅させず、スロー終了後にやられスプライトに変更してクリア処理へ
+            StartCoroutine(BossDeathRoutine());
+        }
+        else
+        {
+            // エリート（中ボス含む）の場合は通常通り消滅させる
+            if (Alpha.Flow.RewardManager_Alpha.Instance != null)
+            {
+                if (isMidBoss)
+                {
+                    Alpha.Flow.RewardManager_Alpha.Instance.DropMidBossReward(transform.position);
+                    if (Alpha.Flow.StageManager_Alpha.Instance != null)
+                    {
+                        Alpha.Flow.StageManager_Alpha.Instance.ClearAllEnemyBullets();
+                        Alpha.Flow.StageManager_Alpha.Instance.OnBossDefeated();
+                    }
+                }
+                else
+                {
+                    Alpha.Flow.RewardManager_Alpha.Instance.AddPoints(rewardPoints);
+                    // 通常エリートの場合も弾を消す場合はここに追加
+                    if (Alpha.Flow.StageManager_Alpha.Instance != null)
+                    {
+                        Alpha.Flow.StageManager_Alpha.Instance.ClearAllEnemyBullets();
+                    }
+                }
+            }
+
+            Debug.Log(gameObject.name + " (Elite/MidBoss) died.");
+            Destroy(gameObject);
+        }
+    }
+
+    private System.Collections.IEnumerator BossDeathRoutine()
+    {
+        // 攻撃・移動の停止
+        var ai = GetComponent<Alpha_EliteEnemyAI>();
+        if (ai != null)
+        {
+            ai.StopAllBehaviors();
+        }
+
+        // 画面上の敵弾をすべて削除
+        if (Alpha.Flow.StageManager_Alpha.Instance != null)
+        {
+            Alpha.Flow.StageManager_Alpha.Instance.ClearAllEnemyBullets();
+        }
+
+        // コリジョンを無効化（死体に当たらないように）
+        var colliders = GetComponentsInChildren<Collider2D>();
+        foreach (var col in colliders)
+        {
+            col.enabled = false;
+        }
+
+        // HPバー等のUIを非表示
+        if (eliteHPBar != null)
+        {
+            eliteHPBar.gameObject.SetActive(false);
+        }
+
+        // スローモーションの間（約3秒）待機
+        yield return new WaitForSecondsRealtime(3f);
+
+        // やられスプライトへ変更
+        if (defeatedSprite != null)
+        {
+            var sr = targetSpriteRenderer != null ? targetSpriteRenderer : GetComponentInChildren<SpriteRenderer>();
+            if (sr != null) sr.sprite = defeatedSprite;
+        }
+
+        // ボス報酬とクリア進行
+        if (Alpha.Flow.RewardManager_Alpha.Instance != null)
+        {
+            Alpha.Flow.RewardManager_Alpha.Instance.DropBossReward(transform.position, bossId);
+        }
+        if (Alpha.Flow.StageManager_Alpha.Instance != null)
+        {
+            Alpha.Flow.StageManager_Alpha.Instance.OnBossDefeated();
+        }
+
+        Debug.Log(gameObject.name + " (Boss) defeated sequence finished.");
     }
 }

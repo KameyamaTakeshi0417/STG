@@ -174,7 +174,7 @@ public class Alpha_EliteEnemyAI : Alpha_EnemyAI
             summonCoroutine = StartCoroutine(currentPhase.summonBehavior.RunBehavior(this));
     }
 
-    private void StopAllBehaviors()
+    public void StopAllBehaviors()
     {
         if (phaseSequenceCoroutine != null) StopCoroutine(phaseSequenceCoroutine);
         if (movementCoroutine != null) StopCoroutine(movementCoroutine);

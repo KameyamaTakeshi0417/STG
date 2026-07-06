@@ -124,7 +124,6 @@ MonoBehaviour:
   phaseHPs:
   - 1000
   - 1500
-  phaseCutIns: []
   eliteCanvasResourcePath: UI/CircleHPBar/EliteEnemyHPCanvas
 --- !u!1 &6065531961290889201
 GameObject:
@@ -155,7 +154,7 @@ Transform:
   m_GameObject: {fileID: 6065531961290889201}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.47, y: 4.08, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -273,7 +272,6 @@ MonoBehaviour:
   phaseHPs:
   - 1000
   - 1500
-  phaseCutIns: []
   eliteCanvasResourcePath: UI/CircleHPBar/EliteEnemyHPCanvas
 --- !u!114 &2148960574998782843
 MonoBehaviour:
@@ -293,15 +291,15 @@ MonoBehaviour:
   spawnWithDelay: 1
   PhaseSpawnedObjects: []
   phases:
-  - phaseName: "\u7DE0\u3081\u306E\u653B\u6483"
+  - phaseName: "\u5929\u6F0F-\u6885\u96E8\u7C60-"
     useCutIn: 1
-    cutInSprite: {fileID: 0}
-    movementBehavior: {fileID: 11400000, guid: 4c6fdfbe2acfb8443b3d977eef3e744a, type: 2}
-    attackBehavior: {fileID: 0}
-    summonBehavior: {fileID: 11400000, guid: 2ba7c846409bef14dbd2d34a90755fc9, type: 2}
-  - phaseName: "\u653B\u64831"
-    useCutIn: 1
-    cutInSprite: {fileID: 0}
+    cutInSprite: {fileID: 21300000, guid: 12fc85b7a53f71743afbb8b9ba8323a6, type: 3}
     movementBehavior: {fileID: 11400000, guid: 4c6fdfbe2acfb8443b3d977eef3e744a, type: 2}
     attackBehavior: {fileID: 0}
     summonBehavior: {fileID: 11400000, guid: 516c2313f61d5e043babd8ea2108c155, type: 2}
+  - phaseName: "\u5929\u6F0F-\u7D2B\u66AE-"
+    useCutIn: 1
+    cutInSprite: {fileID: 21300000, guid: 12fc85b7a53f71743afbb8b9ba8323a6, type: 3}
+    movementBehavior: {fileID: 11400000, guid: 4c6fdfbe2acfb8443b3d977eef3e744a, type: 2}
+    attackBehavior: {fileID: 0}
+    summonBehavior: {fileID: 11400000, guid: 2ba7c846409bef14dbd2d34a90755fc9, type: 2}

@@ -428,7 +428,7 @@ namespace Alpha.UI.ADV
             dialogText.text = "";
             var page = currentADVData.pages[currentPageIndex];
             Color activeColor = Color.white;
-            Color flashColor = new Color(0.8f, 0.8f, 0.8f, 1f);
+            Color flashColor = new Color(0.9f, 0.9f, 0.9f, 1f); // 0.8から0.9に変更（明滅をマイルドに）
 
             for (int i = 0; i < currentFullText.Length; i++)
             {

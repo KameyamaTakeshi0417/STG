@@ -406,7 +406,7 @@ namespace Alpha.Flow
             spawnManager.SpawnBoss(activeSequence.bossPrefab);
         }
 
-        private void ClearAllEnemyBullets()
+        public void ClearAllEnemyBullets()
         {
             Bullet_Base[] bullets = FindObjectsOfType<Bullet_Base>();
             foreach (var b in bullets)
@@ -805,6 +805,18 @@ namespace Alpha.Flow
             }
             
             SetState(StageState_Alpha.SecondHalf);
+        }
+
+        public void TriggerSlowMotion(float targetTimeScale = 0.7f, float duration = 3f)
+        {
+            StartCoroutine(SlowMotionRoutine(targetTimeScale, duration));
+        }
+
+        private System.Collections.IEnumerator SlowMotionRoutine(float targetTimeScale, float duration)
+        {
+            Time.timeScale = targetTimeScale;
+            yield return new WaitForSecondsRealtime(duration);
+            Time.timeScale = 1f;
         }
     }
 }
