@@ -16771,8 +16771,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HP: 100
   currentHP: 100
-  HPGauge: 1
-  nowHPGauge: 1
+  HPGauge: 2
+  nowHPGauge: 2
   pow: 100
   DamageAdd: 0
   DamageMag: 100
@@ -16909,7 +16909,7 @@ MonoBehaviour:
     series: {fileID: 11400000, guid: bcac33972cb35084696b8559417c8b57, type: 2}
     partType: 0
     currentEffects:
-    - {fileID: 11400000, guid: 453794dbb20ac0b4194fc5325c105685, type: 2}
+    - {fileID: 0}
   freeSlotCount: 0
 --- !u!114 &1634642369
 MonoBehaviour:

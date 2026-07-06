@@ -124,6 +124,9 @@ MonoBehaviour:
   phaseHPs:
   - 1000
   - 1500
+  aetherExplosionPrefab: {fileID: 0}
+  defeatedSprite: {fileID: 0}
+  targetSpriteRenderer: {fileID: 0}
   eliteCanvasResourcePath: UI/CircleHPBar/EliteEnemyHPCanvas
 --- !u!1 &6065531961290889201
 GameObject:
@@ -272,6 +275,9 @@ MonoBehaviour:
   phaseHPs:
   - 1000
   - 1500
+  aetherExplosionPrefab: {fileID: 7143777429072540398, guid: bf3d9a5e4dd24874cad16bf1f360f1a8, type: 3}
+  defeatedSprite: {fileID: 0}
+  targetSpriteRenderer: {fileID: 6612885051336644085}
   eliteCanvasResourcePath: UI/CircleHPBar/EliteEnemyHPCanvas
 --- !u!114 &2148960574998782843
 MonoBehaviour:

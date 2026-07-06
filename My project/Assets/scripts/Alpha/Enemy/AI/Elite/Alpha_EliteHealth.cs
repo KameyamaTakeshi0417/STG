@@ -8,6 +8,8 @@ public class Alpha_EliteHealth : Health
     public List<float> phaseHPs = new List<float>() { 1000f, 1500f };
 
     [Header("Defeat Settings")]
+    [Tooltip("ボス撃破時のAetherExplosionプレハブ")]
+    public GameObject aetherExplosionPrefab;
     [Tooltip("ボス撃破時のやられスプライト（大ボス専用）")]
     public Sprite defeatedSprite;
     [Tooltip("スプライトを変更する対象のSpriteRenderer（未設定時は自動取得）")]
@@ -157,19 +159,46 @@ public class Alpha_EliteHealth : Health
         // 共通のドロップ処理を呼び出す
         DropEnemyRewards();
         
-        // スロー演出をトリガー (StageManager_Alpha 経由)
-        if (Alpha.Flow.StageManager_Alpha.Instance != null)
-        {
-            Alpha.Flow.StageManager_Alpha.Instance.TriggerSlowMotion(0.7f, 3f);
-        }
-
         if (isBoss)
         {
-            // ボスの場合は消滅させず、スロー終了後にやられスプライトに変更してクリア処理へ
-            StartCoroutine(BossDeathRoutine());
+            // ボスの場合は専用の撃破シーケンスを実行
+            var defeatSeq = gameObject.GetComponent<Alpha.Enemy.Effect.BossDefeatSequence_Alpha>();
+            if (defeatSeq == null)
+            {
+                defeatSeq = gameObject.AddComponent<Alpha.Enemy.Effect.BossDefeatSequence_Alpha>();
+            }
+            defeatSeq.StartDefeatSequence(bossId, defeatedSprite, targetSpriteRenderer, aetherExplosionPrefab);
         }
         else
         {
+            // エリート（中ボス含む）単発爆発エフェクト
+            GameObject prefabToUse = aetherExplosionPrefab;
+            if (prefabToUse == null) prefabToUse = Resources.Load<GameObject>("Objects/Effect/Effect_AetherExplosion");
+            if (prefabToUse != null)
+            {
+                GameObject effect = null;
+                if (global::Alpha_ObjectPoolManager.Instance != null)
+                {
+                    effect = global::Alpha_ObjectPoolManager.Instance.Rent(prefabToUse, transform.position, Quaternion.identity);
+                }
+                else
+                {
+                    effect = Instantiate(prefabToUse, transform.position, Quaternion.identity);
+                }
+
+                var explosionScript = effect.GetComponent<Alpha.Enemy.Effect.AetherExplosionEffect_Alpha>();
+                if (explosionScript != null)
+                {
+                    explosionScript.sourcePrefab = prefabToUse;
+                }
+            }
+
+            // スロー演出をトリガー (エリート・中ボス用)
+            if (Alpha.Flow.StageManager_Alpha.Instance != null)
+            {
+                Alpha.Flow.StageManager_Alpha.Instance.TriggerSlowMotion(0.7f, 3f);
+            }
+
             // エリート（中ボス含む）の場合は通常通り消滅させる
             if (Alpha.Flow.RewardManager_Alpha.Instance != null)
             {
@@ -196,56 +225,5 @@ public class Alpha_EliteHealth : Health
             Debug.Log(gameObject.name + " (Elite/MidBoss) died.");
             Destroy(gameObject);
         }
-    }
-
-    private System.Collections.IEnumerator BossDeathRoutine()
-    {
-        // 攻撃・移動の停止
-        var ai = GetComponent<Alpha_EliteEnemyAI>();
-        if (ai != null)
-        {
-            ai.StopAllBehaviors();
-        }
-
-        // 画面上の敵弾をすべて削除
-        if (Alpha.Flow.StageManager_Alpha.Instance != null)
-        {
-            Alpha.Flow.StageManager_Alpha.Instance.ClearAllEnemyBullets();
-        }
-
-        // コリジョンを無効化（死体に当たらないように）
-        var colliders = GetComponentsInChildren<Collider2D>();
-        foreach (var col in colliders)
-        {
-            col.enabled = false;
-        }
-
-        // HPバー等のUIを非表示
-        if (eliteHPBar != null)
-        {
-            eliteHPBar.gameObject.SetActive(false);
-        }
-
-        // スローモーションの間（約3秒）待機
-        yield return new WaitForSecondsRealtime(3f);
-
-        // やられスプライトへ変更
-        if (defeatedSprite != null)
-        {
-            var sr = targetSpriteRenderer != null ? targetSpriteRenderer : GetComponentInChildren<SpriteRenderer>();
-            if (sr != null) sr.sprite = defeatedSprite;
-        }
-
-        // ボス報酬とクリア進行
-        if (Alpha.Flow.RewardManager_Alpha.Instance != null)
-        {
-            Alpha.Flow.RewardManager_Alpha.Instance.DropBossReward(transform.position, bossId);
-        }
-        if (Alpha.Flow.StageManager_Alpha.Instance != null)
-        {
-            Alpha.Flow.StageManager_Alpha.Instance.OnBossDefeated();
-        }
-
-        Debug.Log(gameObject.name + " (Boss) defeated sequence finished.");
     }
 }

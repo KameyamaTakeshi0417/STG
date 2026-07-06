@@ -75,8 +75,9 @@ MonoBehaviour:
   phaseHPs:
   - 1000
   - 1500
+  aetherExplosionPrefab: {fileID: 7143777429072540398, guid: bf3d9a5e4dd24874cad16bf1f360f1a8, type: 3}
   defeatedSprite: {fileID: 0}
-  targetSpriteRenderer: {fileID: 0}
+  targetSpriteRenderer: {fileID: 4072359245072878589}
   eliteCanvasResourcePath: UI/CircleHPBar/EliteEnemyHPCanvas
 --- !u!50 &7380120385798461888
 Rigidbody2D:
@@ -271,6 +272,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 031c947099812a14486be4cde39b0ee4, type: 3}
+--- !u!212 &4072359245072878589 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 35338557638565375, guid: 031c947099812a14486be4cde39b0ee4, type: 3}
+  m_PrefabInstance: {fileID: 4106826645090014722}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5410697084398325778 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8352146819504850448, guid: 031c947099812a14486be4cde39b0ee4, type: 3}

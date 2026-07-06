@@ -83,6 +83,9 @@ MonoBehaviour:
   - prefab: {fileID: 1895039100003720943, guid: 7e9679703673383438be626d8a3f2ccf, type: 3}
     initialPoolSize: 200
     parentNode: {fileID: 0}
+  - prefab: {fileID: 7143777429072540398, guid: bf3d9a5e4dd24874cad16bf1f360f1a8, type: 3}
+    initialPoolSize: 30
+    parentNode: {fileID: 0}
   - prefab: {fileID: 8938104242842336465, guid: 624baa59ad4aa0249a8e842f358a5b70, type: 3}
     initialPoolSize: 200
     parentNode: {fileID: 0}

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 950325409270006178}
   - component: {fileID: 8381244104560251472}
   - component: {fileID: 45789662619768747}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Circle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,9 +72,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -226196017
-  m_SortingLayer: 3
-  m_SortingOrder: -97
+  m_SortingLayerID: 1530105413
+  m_SortingLayer: 4
+  m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 37f6032c5e61f094194542ebd648a950, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -111,7 +111,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4036957752271412418}
   - component: {fileID: 3013024959559970485}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Circle (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -194,7 +194,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1523501397111871431}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: SpawnSign
   m_TagString: Untagged
   m_Icon: {fileID: 0}

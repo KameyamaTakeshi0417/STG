@@ -100,6 +100,27 @@ public class Health : _Health_Base
         // 共通のドロップ処理（経験値、オーブ、花弁）を呼び出す
         DropEnemyRewards();
 
+        // 爆発エフェクトを1回だけ再生する（プール使用）
+        GameObject explosionPrefab = Resources.Load<GameObject>("Objects/Effect/Effect_AetherExplosion");
+        if (explosionPrefab != null)
+        {
+            GameObject effect = null;
+            if (global::Alpha_ObjectPoolManager.Instance != null)
+            {
+                effect = global::Alpha_ObjectPoolManager.Instance.Rent(explosionPrefab, transform.position, Quaternion.identity);
+            }
+            else
+            {
+                effect = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+            }
+
+            var explosionScript = effect.GetComponent<Alpha.Enemy.Effect.AetherExplosionEffect_Alpha>();
+            if (explosionScript != null)
+            {
+                explosionScript.sourcePrefab = explosionPrefab;
+            }
+        }
+
         // ボス・中ボスの特別なドロップ処理 (ボス用の特別なアイテムなどがあれば継続)
         if (Alpha.Flow.RewardManager_Alpha.Instance != null)
         {

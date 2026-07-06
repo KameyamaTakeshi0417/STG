@@ -44,9 +44,30 @@ public class Alpha_EnemyAI : MonoBehaviour
     [HideInInspector]
     public List<GameObject> PhaseSpawnedObjects = new List<GameObject>();
 
+    private static bool _layerCollisionIgnored = false;
+
     protected virtual void Awake()
     {
         Rb = GetComponent<Rigidbody2D>();
+        // エネミー同士の衝突を防ぐため、強制的に enemy レイヤーに設定する
+        int enemyLayer = LayerMask.NameToLayer("enemy");
+        if (enemyLayer >= 0)
+        {
+            gameObject.layer = enemyLayer;
+            // 子オブジェクトにアタッチされているコライダーのレイヤーも全て変更する（これが原因で干渉することが多いです）
+            var colliders = GetComponentsInChildren<Collider2D>(true);
+            foreach (var col in colliders)
+            {
+                col.gameObject.layer = enemyLayer;
+            }
+
+            // エネミーレイヤー同士の衝突を物理エンジンレベルで無効化する
+            if (!_layerCollisionIgnored)
+            {
+                Physics2D.IgnoreLayerCollision(enemyLayer, enemyLayer, true);
+                _layerCollisionIgnored = true;
+            }
+        }
     }
 
     protected virtual void Start()

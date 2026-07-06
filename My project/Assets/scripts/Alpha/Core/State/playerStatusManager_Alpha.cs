@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -357,6 +357,7 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
 
         // --- 6. HPGaugeの増加処理 ---
         int hpGaugeBuffCount = 0;
+        
         for (int i = 0; i < inv.equipInstance.Count; i++)
         {
             var item = inv.equipInstance[i];
