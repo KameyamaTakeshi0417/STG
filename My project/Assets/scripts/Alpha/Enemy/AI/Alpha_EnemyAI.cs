@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,6 +29,9 @@ public class Alpha_EnemyAI : MonoBehaviour
 
     [Tooltip("スポーン直後に2秒間の無敵待機時間を設けるか（エリートやボス用）")]
     public bool spawnWithDelay = false;
+
+    [Tooltip("スポーン直後の行動開始までの待機時間（秒）。0より大きい場合、この時間だけ待機してから行動を開始します。（spawnWithDelayが優先されます）")]
+    public float startDelayTime = 1f;
 
     // キャッシュされたコンポーネント
     public Rigidbody2D Rb { get; protected set; }
@@ -88,11 +91,21 @@ public class Alpha_EnemyAI : MonoBehaviour
             Debug.Log("[Alpha_EnemyAI] New code running for " + gameObject.name);
             StartCoroutine(SpawnDelayRoutine());
         }
+        else if (startDelayTime > 0f)
+        {
+            StartCoroutine(SimpleStartDelayRoutine());
+        }
         else
         {
             // 初期挙動を開始（必要なスロットだけ）
             StartBehaviors(initialMovementBehavior, initialAttackBehavior, initialSummonBehavior);
         }
+    }
+
+    private IEnumerator SimpleStartDelayRoutine()
+    {
+        yield return new WaitForSeconds(startDelayTime);
+        StartBehaviors(initialMovementBehavior, initialAttackBehavior, initialSummonBehavior);
     }
 
     private IEnumerator SpawnDelayRoutine()

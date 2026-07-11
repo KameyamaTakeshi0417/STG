@@ -122,6 +122,7 @@ MonoBehaviour:
   initialAttackBehavior: {fileID: 0}
   initialSummonBehavior: {fileID: 0}
   spawnWithDelay: 1
+  startDelayTime: 1
   PhaseSpawnedObjects: []
   phases:
   - phaseName: "\u83EF\u70C8\u6483-\u53CC\u5927\u8F2A-"

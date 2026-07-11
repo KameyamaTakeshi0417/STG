@@ -49,7 +49,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HP: 300
-  currentHP: 100
+  currentHP: 300
   Exp: 7
   VulnerableTime: 5
   VulnerableFlg: 0
@@ -88,6 +88,7 @@ MonoBehaviour:
   initialAttackBehavior: {fileID: 11400000, guid: 43795ef416598f44d843689b05cfe863, type: 2}
   initialSummonBehavior: {fileID: 0}
   spawnWithDelay: 0
+  startDelayTime: 2
   PhaseSpawnedObjects: []
 --- !u!212 &3709255204336134019
 SpriteRenderer:

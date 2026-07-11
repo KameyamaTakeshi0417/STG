@@ -88,6 +88,7 @@ MonoBehaviour:
   initialAttackBehavior: {fileID: 11400000, guid: 319bb6b24c0ee6f449d32be4a280d1a1, type: 2}
   initialSummonBehavior: {fileID: 0}
   spawnWithDelay: 0
+  startDelayTime: 2
   PhaseSpawnedObjects: []
 --- !u!212 &3709255204336134019
 SpriteRenderer:
