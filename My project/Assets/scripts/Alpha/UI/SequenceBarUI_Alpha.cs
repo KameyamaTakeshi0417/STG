@@ -65,9 +65,9 @@ namespace Alpha.UI
             }
 
             // 新しいマーカーを配置
-            foreach (var markerData in sequence.markers)
+            foreach (var waveData in sequence.waves)
             {
-                GameObject prefabToUse = GetPrefabForType(markerData.markerType);
+                GameObject prefabToUse = GetPrefabForType(waveData.markerType);
                 if (prefabToUse != null)
                 {
                     GameObject markerObj = Instantiate(prefabToUse, markerContainer);
@@ -76,7 +76,7 @@ namespace Alpha.UI
                     RectTransform rt = markerObj.GetComponent<RectTransform>();
                     if (rt != null)
                     {
-                        float progress = markerData.time / sequence.duration;
+                        float progress = waveData.time / sequence.duration;
                         rt.anchorMin = new Vector2(progress, 0.5f);
                         rt.anchorMax = new Vector2(progress, 0.5f);
                         rt.anchoredPosition = Vector2.zero;

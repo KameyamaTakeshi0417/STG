@@ -101,7 +101,7 @@ namespace Alpha.UI
             
             if (StageManager_Alpha.Instance != null)
             {
-                StageManager_Alpha.Instance.StartPreBossADVAndFight();
+                StageManager_Alpha.Instance.StartPostBlacksmithADV();
             }
         }
 

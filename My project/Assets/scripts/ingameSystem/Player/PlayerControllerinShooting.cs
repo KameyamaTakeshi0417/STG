@@ -25,6 +25,13 @@ public class PlayerControllerinShooting : Player
             return;
         }
 
+        if (isKnockback)
+        {
+            // ノックバック中はノックバック用の速度を適用（コルーチンで計算済み）
+            rb.velocity = knockbackVelocity;
+            return;
+        }
+
         // 入力がない場合は何もしない
         Vector2 input = Vector2.zero;
         if (Alpha.Core.InputManager_Alpha.Instance != null)
@@ -56,6 +63,39 @@ public class PlayerControllerinShooting : Player
             setSpd = 0.1f;
         }
         rb.velocity = input * setSpd;
+    }
+
+    private bool isKnockback = false;
+    private Vector2 knockbackVelocity;
+
+    /// <summary>
+    /// ノックバックを適用する
+    /// </summary>
+    /// <param name="direction">吹っ飛ぶ方向（正規化済み）</param>
+    /// <param name="initialForce">初速度</param>
+    /// <param name="duration">ノックバック時間</param>
+    public void ApplyKnockback(Vector2 direction, float initialForce, float duration)
+    {
+        StartCoroutine(KnockbackRoutine(direction, initialForce, duration));
+    }
+
+    private IEnumerator KnockbackRoutine(Vector2 direction, float initialForce, float duration)
+    {
+        isKnockback = true;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            // 時間経過で徐々に速度を0に近づける（線形補間）
+            float currentForce = Mathf.Lerp(initialForce, 0f, elapsed / duration);
+            knockbackVelocity = direction * currentForce;
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        knockbackVelocity = Vector2.zero;
+        isKnockback = false;
     }
 
 }

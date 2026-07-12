@@ -28,9 +28,6 @@ namespace Alpha.Data
         
         [Tooltip("ウェーブのリスト")]
         public List<WaveData_Alpha> waves = new List<WaveData_Alpha>();
-        
-        [Tooltip("シークエンスバーに表示するマーカーのリスト")]
-        public List<MarkerData_Alpha> markers = new List<MarkerData_Alpha>();
 
         [Tooltip("チュートリアルイベントのリスト")]
         public List<TutorialEventData_Alpha> tutorialEvents = new List<TutorialEventData_Alpha>();

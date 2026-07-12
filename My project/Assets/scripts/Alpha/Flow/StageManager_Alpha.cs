@@ -131,6 +131,7 @@ namespace Alpha.Flow
                      currentState == StageState_Alpha.BossWait))
                 {
                     ClearAllEnemyBullets();
+                    ClearAllEnemies();
                 }
                 wasMobCleared = currentMobCleared;
             }
@@ -161,26 +162,12 @@ namespace Alpha.Flow
                                         if (RewardSequenceManager_Alpha.Instance != null)
                                         {
                                             RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
-                                                if (Alpha.UI.BlacksmithManager_Alpha.Instance != null)
-                                                {
-                                                    Alpha.UI.BlacksmithManager_Alpha.Instance.OpenBlacksmith();
-                                                }
-                                                else
-                                                {
-                                                    StartPreBossADVAndFight();
-                                                }
+                                                StartPreBlacksmithADV();
                                             });
                                         }
                                         else
                                         {
-                                            if (Alpha.UI.BlacksmithManager_Alpha.Instance != null)
-                                            {
-                                                Alpha.UI.BlacksmithManager_Alpha.Instance.OpenBlacksmith();
-                                            }
-                                            else
-                                            {
-                                                StartPreBossADVAndFight();
-                                            }
+                                            StartPreBlacksmithADV();
                                         }
                                     });
                                 }
@@ -190,26 +177,12 @@ namespace Alpha.Flow
                                     if (RewardSequenceManager_Alpha.Instance != null)
                                     {
                                         RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
-                                            if (Alpha.UI.BlacksmithManager_Alpha.Instance != null)
-                                            {
-                                                Alpha.UI.BlacksmithManager_Alpha.Instance.OpenBlacksmith();
-                                            }
-                                            else
-                                            {
-                                                StartPreBossADVAndFight();
-                                            }
+                                            StartPreBlacksmithADV();
                                         });
                                     }
                                     else
                                     {
-                                        if (Alpha.UI.BlacksmithManager_Alpha.Instance != null)
-                                        {
-                                            Alpha.UI.BlacksmithManager_Alpha.Instance.OpenBlacksmith();
-                                        }
-                                        else
-                                        {
-                                            StartPreBossADVAndFight();
-                                        }
+                                            StartPreBlacksmithADV();
                                     }
                                 }
                             }));
@@ -426,6 +399,22 @@ namespace Alpha.Flow
             Debug.Log("[StageManager] Cleared all enemy bullets.");
         }
 
+        public void ClearAllEnemies()
+        {
+            _Health_Base[] allEnemies = FindObjectsOfType<_Health_Base>();
+            foreach (var enemy in allEnemies)
+            {
+                if (enemy != null && enemy.gameObject.activeInHierarchy)
+                {
+                    // プレイヤー自身は消さないようにする
+                    if (enemy.gameObject.CompareTag("Player")) continue;
+                    
+                    Destroy(enemy.gameObject);
+                }
+            }
+            Debug.Log("[StageManager] Cleared all remaining enemies/bosses.");
+        }
+
         public void OnBossDefeated()
         {
             if (Alpha.Audio.SoundManager_Alpha.Instance != null)
@@ -484,6 +473,42 @@ namespace Alpha.Flow
                 {
                     StartBossClearSequence();
                 }));
+            }
+        }
+
+        public void StartPreBlacksmithADV()
+        {
+            if (currentStageData.preBlacksmithADV != null && ADVManager_Alpha.Instance != null && currentStageData.preBlacksmithADV.pages != null && currentStageData.preBlacksmithADV.pages.Count > 0)
+            {
+                ADVManager_Alpha.Instance.StartADV(currentStageData.preBlacksmithADV, () =>
+                {
+                    if (Alpha.UI.BlacksmithManager_Alpha.Instance != null)
+                        Alpha.UI.BlacksmithManager_Alpha.Instance.OpenBlacksmith();
+                    else
+                        StartPostBlacksmithADV();
+                });
+            }
+            else
+            {
+                if (Alpha.UI.BlacksmithManager_Alpha.Instance != null)
+                    Alpha.UI.BlacksmithManager_Alpha.Instance.OpenBlacksmith();
+                else
+                    StartPostBlacksmithADV();
+            }
+        }
+
+        public void StartPostBlacksmithADV()
+        {
+            if (currentStageData.postBlacksmithADV != null && ADVManager_Alpha.Instance != null && currentStageData.postBlacksmithADV.pages != null && currentStageData.postBlacksmithADV.pages.Count > 0)
+            {
+                ADVManager_Alpha.Instance.StartADV(currentStageData.postBlacksmithADV, () =>
+                {
+                    StartPreBossADVAndFight();
+                });
+            }
+            else
+            {
+                StartPreBossADVAndFight();
             }
         }
 
@@ -640,6 +665,7 @@ namespace Alpha.Flow
                 
                 // 謨ｵ繧・ｼｾ縺ｪ縺ｩ繧呈祉髯､
                 ClearAllEnemyBullets();
+                ClearAllEnemies();
                 
                 // 谺｡繧ｹ繝・・繧ｸ縺ｮ蛻晄悄蛹・
                 SetState(StageState_Alpha.WaitToStartFirstHalf);
@@ -741,6 +767,7 @@ namespace Alpha.Flow
                 
                 // 謨ｵ繧・ｼｾ縺ｪ縺ｩ繧呈祉髯､
                 ClearAllEnemyBullets();
+                ClearAllEnemies();
                 
                 // 谺｡繧ｹ繝・・繧ｸ縺ｮ蛻晄悄蛹・
                 SetState(StageState_Alpha.WaitToStartFirstHalf);

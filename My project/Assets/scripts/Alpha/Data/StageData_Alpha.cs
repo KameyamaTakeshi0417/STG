@@ -15,6 +15,12 @@ namespace Alpha.Data
         public StageSequenceData_Alpha secondHalf;
 
         [Header("ADV Data")]
+        [Tooltip("鍛冶フェーズ前に再生するADVデータ（任意）")]
+        public ADVData_Alpha preBlacksmithADV;
+
+        [Tooltip("鍛冶フェーズ後に再生するADVデータ（任意）")]
+        public ADVData_Alpha postBlacksmithADV;
+
         [Tooltip("ボス前に再生するADVデータ（任意）")]
         public ADVData_Alpha preBossADV;
         

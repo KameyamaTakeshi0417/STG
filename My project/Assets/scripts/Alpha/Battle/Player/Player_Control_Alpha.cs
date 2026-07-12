@@ -263,8 +263,38 @@ public class Player_Control_Alpha : MonoBehaviour
         isSpecialMoving = false;
     }
 
+    private bool isKnockback = false;
+    private Vector2 knockbackVelocity;
+
+    public void ApplyKnockback(Vector2 direction, float initialForce, float duration)
+    {
+        StartCoroutine(KnockbackRoutine(direction, initialForce, duration));
+    }
+
+    private System.Collections.IEnumerator KnockbackRoutine(Vector2 direction, float initialForce, float duration)
+    {
+        isKnockback = true;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            float currentForce = Mathf.Lerp(initialForce, 0f, elapsed / duration);
+            knockbackVelocity = direction * currentForce;
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        knockbackVelocity = Vector2.zero;
+        isKnockback = false;
+    }
+
     protected virtual void FixedUpdate()
     {
+        if (isKnockback)
+        {
+            rb.velocity = knockbackVelocity;
+            return;
+        }
         if (isSpecialMoving)
         {
             if (myStatus.currentSpecialMove == playerStatusManager_Alpha.SpecialMoveType.Dash)

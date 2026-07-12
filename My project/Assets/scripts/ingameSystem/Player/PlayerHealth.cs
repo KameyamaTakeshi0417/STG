@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -89,7 +89,7 @@ public class PlayerHealth : _Health_Base
         circleHPBarManager.UpdateCircleBar(statusManager.nowHPGauge, (statusManager.currentHP / statusManager.HP));
     }
 
-    // ボム発動時などの一定時間無敵�E�当たり判定消失�E��E琁E
+    // ボム発動時などの一定時間無敵E当たり判定消失EE琁E
     public void MakeInvincibleWithColliders(float duration)
     {
         StartCoroutine(InvincibleWithCollidersRoutine(duration));
@@ -124,13 +124,13 @@ public class PlayerHealth : _Health_Base
         if (isInvincible) return; // 無敵中ならダメージを無視すめE
 
         float setDmg = damage;
-        // 弱点倍率などローカル�E��E身�E��E状態に基づく計箁E
+        // 弱点倍率などローカルEE身EE状態に基づく計箁E
         if (VulnerableFlg)
         {
             setDmg *= 1.5f;
         }
         
-        // 実際のダメージ適用はすべて一允E��琁E��てぁE��マネージャーへ委譲
+        // 実際のダメージ適用はすべて一允E琁EてぁEマネージャーへ委譲
         if (statusManager != null)
         {
             statusManager.ApplyDamage(setDmg);
@@ -140,5 +140,50 @@ public class PlayerHealth : _Health_Base
             Debug.LogWarning("[PlayerHealth] StatusManager is missing. Cannot apply damage.");
         }
         gaugeUpdate();
+    }
+
+    // コライダーを無効にせず、点滅演出付きで無敵時間を付与する
+    public void MakeInvincible(float duration)
+    {
+        StartCoroutine(InvincibleRoutine(duration));
+    }
+
+    private IEnumerator InvincibleRoutine(float duration)
+    {
+        isInvincible = true;
+        
+        // 簡単な点滅演出
+        SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>();
+        float blinkInterval = 0.1f;
+        float elapsed = 0f;
+        bool isVisible = true;
+        
+        while (elapsed < duration)
+        {
+            isVisible = !isVisible;
+            foreach(var sr in renderers)
+            {
+                if (sr != null)
+                {
+                    Color c = sr.color;
+                    c.a = isVisible ? 1f : 0.2f;
+                    sr.color = c;
+                }
+            }
+            elapsed += blinkInterval;
+            yield return new WaitForSeconds(blinkInterval);
+        }
+        
+        foreach(var sr in renderers)
+        {
+            if (sr != null)
+            {
+                Color c = sr.color;
+                c.a = 1f;
+                sr.color = c;
+            }
+        }
+        
+        isInvincible = false;
     }
 }

@@ -19,9 +19,18 @@ public class VineA_SpawnConfig
     public float fixedAngle = 270f;
 }
 
+public enum TurretActivationMode
+{
+    Synchronized, // ツタが伸びきった後、一斉に発射開始（現在の仕様）
+    Sequential    // タレットが生成された順に即座に発射開始
+}
+
 [CreateAssetMenu(fileName = "New WisteriaVine A", menuName = "EnemyAI/Behaviors/WisteriaVine A")]
 public class Behavior_WisteriaVine_A : EnemyBehaviorData_Base
 {
+    [Header("Wisteria Vine Settings")]
+    [Tooltip("タレットの射撃開始タイミング（Synchronized=一斉射撃, Sequential=生成順に順次射撃）")]
+    public TurretActivationMode activationMode = TurretActivationMode.Synchronized;
     [Header("Wisteria Vine Settings")]
     [Tooltip("ツタブロックのプレハブ")]
     public GameObject vineBlockPrefab;
@@ -169,6 +178,12 @@ public class Behavior_WisteriaVine_A : EnemyBehaviorData_Base
                 if (turretCtrl != null)
                 {
                     spawnedTurrets.Add(turretCtrl);
+
+                    // Sequentialモードなら生成直後に起動
+                    if (activationMode == TurretActivationMode.Sequential)
+                    {
+                        turretCtrl.ActivateTurret();
+                    }
                 }
             }
 
@@ -181,11 +196,15 @@ public class Behavior_WisteriaVine_A : EnemyBehaviorData_Base
             }
         }
 
-        foreach (var turret in spawnedTurrets)
+        // Synchronizedモードなら最後に一斉起動
+        if (activationMode == TurretActivationMode.Synchronized)
         {
-            if (turret != null)
+            foreach (var turret in spawnedTurrets)
             {
-                turret.ActivateTurret();
+                if (turret != null)
+                {
+                    turret.ActivateTurret();
+                }
             }
         }
 

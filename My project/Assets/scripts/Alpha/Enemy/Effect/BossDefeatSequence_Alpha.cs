@@ -146,11 +146,20 @@ namespace Alpha.Enemy.Effect
 
         private void StopBossBehavior()
         {
-            // AI・攻撃・移動の停止
-            var ai = GetComponent<global::Alpha_EliteEnemyAI>();
-            if (ai != null)
+            // エリート特有のフェーズ管理AIを停止
+            var eliteAi = GetComponent<global::Alpha_EliteEnemyAI>();
+            if (eliteAi != null)
             {
-                ai.StopAllBehaviors();
+                eliteAi.StopAllBehaviors();
+            }
+
+            // ベースのAIを完全停止（移動・攻撃・召喚スロットすべて）
+            var baseAi = GetComponent<global::Alpha_EnemyAI>();
+            if (baseAi != null)
+            {
+                baseAi.StopAllBehaviors(true);
+                // ツタの生成コルーチンなど、変数に保存されていない独立したコルーチンを強制的に全て止める
+                baseAi.StopAllCoroutines(); 
             }
 
             // 被弾判定の停止（弾に当たらないように）
