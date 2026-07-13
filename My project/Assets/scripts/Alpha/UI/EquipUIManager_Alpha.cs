@@ -17,6 +17,9 @@ public class EquipUIManager_Alpha : MonoBehaviour
     public bool changeParentColor = true;
 
     [Header("Stack & Slide Settings")]
+    [Tooltip("植物パーツ全体の表示倍率（フレームに対して画像が大きすぎる場合は小さくする）")]
+    public float globalPlantScale = 1.0f;
+    
     [Tooltip("各セットの親オブジェクト（鉢）")]
     public RectTransform[] setTransforms = new RectTransform[3];
     
@@ -116,11 +119,12 @@ public class EquipUIManager_Alpha : MonoBehaviour
         
         RectTransform root = setTransforms[groupIndex];
         
-        // 既存の動的生成レイヤー（_Layerで終わるもの）のみをクリア
+        // 【強制リロード用コメント】
+        // 既存の動的生成レイヤーのみをクリア
         // こうすることで、ユーザーが独自に追加した枠やMask等のオブジェクトは削除されません
         foreach (Transform child in root)
         {
-            if (child.name.EndsWith("_Layer"))
+            if (child.name == "Primer_Layer" || child.name == "Casing_Layer" || child.name == "Bullet_Layer")
             {
                 Destroy(child.gameObject);
             }
@@ -138,6 +142,12 @@ public class EquipUIManager_Alpha : MonoBehaviour
         Transform primerLayer = CreateLayer("Primer_Layer", root);
         Transform casingLayer = CreateLayer("Casing_Layer", root);
         Transform bulletLayer = CreateLayer("Bullet_Layer", root);
+
+        // スクリプト生成の植物レイヤーを階層の一番上（描画順では一番奥）に移動させる
+        // こうすることで、ユーザーが独自に追加した枠線（frame_Layerなど）が植物の手前に描画されます
+        primerLayer.SetSiblingIndex(0);
+        casingLayer.SetSiblingIndex(1);
+        bulletLayer.SetSiblingIndex(2);
 
         // 茎根（Primer）の生成
         if (primerSeries != null && primerSeries.iconPrimer != null)
@@ -195,6 +205,10 @@ public class EquipUIManager_Alpha : MonoBehaviour
         rt.anchorMax = Vector2.one;
         rt.offsetMin = Vector2.zero;
         rt.offsetMax = Vector2.zero;
+        
+        // 全体スケールを適用
+        rt.localScale = new Vector3(globalPlantScale, globalPlantScale, 1f);
+        
         return rt;
     }
 
@@ -203,6 +217,10 @@ public class EquipUIManager_Alpha : MonoBehaviour
         GameObject go = new GameObject(name, typeof(RectTransform), typeof(Image));
         RectTransform rt = go.GetComponent<RectTransform>();
         rt.SetParent(parent, false);
+        
+        // アンカーを「下部中央」に設定（フレームの下端から生えるようにする）
+        rt.anchorMin = new Vector2(0.5f, 0f);
+        rt.anchorMax = new Vector2(0.5f, 0f);
         
         rt.pivot = pivot;
         rt.localScale = new Vector3(scale.x, scale.y, 1f);
