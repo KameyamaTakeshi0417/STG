@@ -116,10 +116,14 @@ public class EquipUIManager_Alpha : MonoBehaviour
         
         RectTransform root = setTransforms[groupIndex];
         
-        // 既存の動的生成レイヤーや子オブジェクトをクリア
+        // 既存の動的生成レイヤー（_Layerで終わるもの）のみをクリア
+        // こうすることで、ユーザーが独自に追加した枠やMask等のオブジェクトは削除されません
         foreach (Transform child in root)
         {
-            Destroy(child.gameObject);
+            if (child.name.EndsWith("_Layer"))
+            {
+                Destroy(child.gameObject);
+            }
         }
 
         int startIndex = groupIndex * 3;
