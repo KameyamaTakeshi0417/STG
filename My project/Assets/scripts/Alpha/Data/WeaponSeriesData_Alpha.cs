@@ -32,6 +32,23 @@ namespace Alpha.Data
         public Sprite iconCasing;
         public Sprite iconPrimer;
         public Sprite iconAllEquipable;
+
+        [Header("Chimera UI Settings (Plant Motif)")]
+        [Tooltip("画像の基準点(Pivot)。0～1の値。中央に根元があれば(0.5, 0.5)")]
+        public Vector2 pivotPrimer = new Vector2(0.5f, 0.5f);
+        public Vector2 pivotCasing = new Vector2(0.5f, 0.5f);
+        public Vector2 pivotBullet = new Vector2(0.5f, 0.5f);
+
+        [Tooltip("茎根(Primer)として装備された時、葉(Casing)が生える位置(0～1)")]
+        public List<Vector2> leafAttachmentPoints = new List<Vector2>() { new Vector2(0.5f, 1.0f) };
+
+        [Tooltip("茎根(Primer)として装備された時、花(Bullet)が咲く位置(0～1)")]
+        public List<Vector2> flowerAttachmentPoints = new List<Vector2>() { new Vector2(0.5f, 1.0f) };
+
+        [Tooltip("各パーツの表示スケール調整用")]
+        public Vector2 scalePrimer = Vector2.one;
+        public Vector2 scaleCasing = Vector2.one;
+        public Vector2 scaleBullet = Vector2.one;
         
         [Tooltip("レア枠として扱うか（全30中7シリーズをtrueにする想定）")]
         public bool isRareSeries;

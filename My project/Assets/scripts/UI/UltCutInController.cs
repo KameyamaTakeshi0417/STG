@@ -26,8 +26,34 @@ namespace Alpha.UI
         [SerializeField] private TMP_Text playerTxt;    // プレイヤー技名テキスト
         [SerializeField] private TMP_Text eliteTxt;     // エリート技名テキスト
 
-        // 画面幅（Screen Space - Camera 用）
-        private float ScreenWidth => Screen.width;
+        [Header("Image Stop Positions (0.0 ~ 1.0)")]
+        [SerializeField] private Vector2 playerImgStopPos = new Vector2(0.25f, 0.5f);
+        [SerializeField] private Vector2 eliteImgStopPos = new Vector2(0.75f, 0.5f);
+
+        // 画面幅・高さ（Canvasの論理サイズを使用）
+        private float ScreenWidth
+        {
+            get
+            {
+                if (playerImg != null && playerImg.canvas != null)
+                {
+                    return playerImg.canvas.GetComponent<RectTransform>().rect.width;
+                }
+                return Screen.width;
+            }
+        }
+        
+        private float ScreenHeight
+        {
+            get
+            {
+                if (playerImg != null && playerImg.canvas != null)
+                {
+                    return playerImg.canvas.GetComponent<RectTransform>().rect.height;
+                }
+                return Screen.height;
+            }
+        }
 
         private void Awake()
         {
@@ -59,66 +85,91 @@ namespace Alpha.UI
             // プレイヤーは左 → 右、エリートは右 → 左 にスライド
             float direction = isPlayer ? -1f : 1f;
 
+            // プレイヤーは左詰め、ボス（エリート）は右詰めに設定
+            txt.alignment = isPlayer ? TextAlignmentOptions.Left : TextAlignmentOptions.Right;
+            txt.enableWordWrapping = false;
+            txt.overflowMode = TextOverflowModes.Overflow;
+
             // スプライトとテキストをセット
             img.sprite = charSprite;
             txt.text   = skillName;
 
-            // 初期位置は画面外（左 or 右）
+            // テキストの実際の長さを計算
+            txt.ForceMeshUpdate();
+            float textWidth = txt.preferredWidth;
+
             var imgRT = img.rectTransform;
             var txtRT = txt.rectTransform;
-            float startX = direction * ScreenWidth * 0.5f; // 画面半分外側
-            imgRT.anchoredPosition = new Vector2(startX, imgRT.anchoredPosition.y);
-            txtRT.anchoredPosition = new Vector2(startX, txtRT.anchoredPosition.y);
+
+            // 確実な位置計算のためにアンカーを画面中央に固定
+            imgRT.anchorMin = new Vector2(0.5f, 0.5f);
+            imgRT.anchorMax = new Vector2(0.5f, 0.5f);
+            txtRT.anchorMin = new Vector2(0.5f, 0.5f);
+            txtRT.anchorMax = new Vector2(0.5f, 0.5f);
+
+            // 画像の目標位置（0-1の入力値を画面座標に変換）
+            Vector2 normalizedImgPos = isPlayer ? playerImgStopPos : eliteImgStopPos;
+            float imgTargetX = (normalizedImgPos.x - 0.5f) * ScreenWidth;
+            float imgTargetY = (normalizedImgPos.y - 0.5f) * ScreenHeight;
+
+            // テキストの目標位置を文字の長さから計算
+            // ピボットを端に設定し、枠の幅を文字長と一致させる
+            txtRT.pivot = new Vector2(isPlayer ? 0f : 1f, 0.5f);
+            txtRT.sizeDelta = new Vector2(textWidth, txtRT.sizeDelta.y);
+            
+            // プレイヤーは左端(-ScreenWidth/2)、エリートは右端(ScreenWidth/2)にピタッと合わせる
+            float txtTargetX = isPlayer ? (-ScreenWidth * 0.5f) : (ScreenWidth * 0.5f);
+            float txtTargetY = txtRT.anchoredPosition.y; // Y座標は既存のものを維持
+
+            // 初期位置（進行方向の逆の画面外）
+            float startX = direction * ScreenWidth * 1.5f; 
+            
+            imgRT.anchoredPosition = new Vector2(startX, imgTargetY);
+            txtRT.anchoredPosition = new Vector2(startX, txtTargetY);
 
             // アクティブ化
             img.gameObject.SetActive(true);
             txt.gameObject.SetActive(true);
             fadePanelCG.gameObject.SetActive(true);
 
-            // 背景画像のアルファのみを操作して、子供のテキストに影響が出ないようにする
+            // 背景パネルフェードイン
             Image bgImg = fadePanelImg != null ? fadePanelImg : fadePanelCG.GetComponent<Image>();
             if (bgImg != null)
             {
-                fadePanelCG.alpha = 1f; // CanvasGroupは常に1にして子要素（文字など）を透けさせない
-                Color c = bgImg.color;
-                c.a = 0f;
-                bgImg.color = c;
+                fadePanelCG.alpha = 1f;
+                Color c = bgImg.color; c.a = 0f; bgImg.color = c;
                 bgImg.DOFade(0.4f, 0.3f).SetEase(Ease.Linear);
             }
             else
             {
-                // Imageが無い場合のフォールバック
                 fadePanelCG.alpha = 0f;
                 fadePanelCG.DOFade(0.4f, 0.3f).SetEase(Ease.Linear);
             }
 
-            // シーケンス作成
             Sequence seq = DOTween.Sequence();
 
-            // 画像スライドイン（0.5秒, OutBack）
-            seq.Append(imgRT.DOAnchorPosX(0f, 0.5f).SetEase(Ease.OutBack));
+            // スライドイン（画像）
+            seq.Append(imgRT.DOAnchorPos(new Vector2(imgTargetX, imgTargetY), 0.5f).SetEase(Ease.OutBack));
 
-            // 文字は画像開始から 0.2 秒遅れ
             seq.AppendInterval(0.2f);
-            seq.Append(txtRT.DOAnchorPosX(0f, 0.5f).SetEase(Ease.OutBack));
+            
+            // スライドイン（テキスト）
+            seq.Append(txtRT.DOAnchorPos(new Vector2(txtTargetX, txtTargetY), 0.5f).SetEase(Ease.OutBack));
 
-            // 必要なら短い待機（演出調整用）
             seq.AppendInterval(0.2f);
 
-            // スライドアウト（1秒, InSine）
-            float offX = -direction * ScreenWidth * 0.5f; // 逆方向に外へ
+            // スライドアウト：反対側へ画面幅分移動して完全に見えなくする
+            float offX = -direction * ScreenWidth * 1.5f;
             seq.Append(imgRT.DOAnchorPosX(offX, 1f).SetEase(Ease.InSine));
             seq.Join(txtRT.DOAnchorPosX(offX, 1f).SetEase(Ease.InSine));
 
-            // パネルフェードアウト → 非表示
+            // フェードアウト
             Tween fadeOutTween = bgImg != null ? bgImg.DOFade(0f, 0.3f) : fadePanelCG.DOFade(0f, 0.3f);
             seq.Append(fadeOutTween.OnComplete(() =>
             {
                 SetAllActive(false);
             }));
 
-            // 描画順（Sibling Index）の調整
-            // 念のため背景パネルを手前に持ってきた後、画像とテキストをさらに手前に持ってくる
             fadePanelCG.transform.SetAsLastSibling();
             img.transform.SetAsLastSibling();
             txt.transform.SetAsLastSibling();

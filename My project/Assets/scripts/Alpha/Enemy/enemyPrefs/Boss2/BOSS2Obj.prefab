@@ -248,9 +248,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4b5ecac39bf047409483f5cf786ce99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 1000
-  currentHP: 1000
-  Exp: 100
+  HP: 3000
+  currentHP: 3000
+  Exp: 150
   VulnerableTime: 0
   VulnerableFlg: 0
   PierceVolume: 1
@@ -273,8 +273,8 @@ MonoBehaviour:
   damageTextPrefab: {fileID: 3988437868621658341, guid: 5ccc0cd62017e7542bc9974c88b5c92d, type: 3}
   DamageUIMagnitude: 0.1
   phaseHPs:
-  - 1000
-  - 1500
+  - 3000
+  - 4500
   aetherExplosionPrefab: {fileID: 7143777429072540398, guid: bf3d9a5e4dd24874cad16bf1f360f1a8, type: 3}
   defeatedSprite: {fileID: 0}
   targetSpriteRenderer: {fileID: 6612885051336644085}
