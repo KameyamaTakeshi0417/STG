@@ -38,8 +38,38 @@ public class EquipUIManager_Alpha : MonoBehaviour
 
     private Player_Shooter_Alpha playerShooter;
     
-    // キャッシュ用ハッシュ（セットごとに保持）
     private int[] lastEquipHashes = new int[3] { -1, -1, -1 };
+    
+    private Vector2 basePosition;
+
+    void Start()
+    {
+        if (setTransforms.Length > 0 && setTransforms[0] != null)
+        {
+            // エディタ上で配置した1stFrameの初期位置を、アニメーションの集合基準位置とする
+            basePosition = setTransforms[0].anchoredPosition;
+        }
+
+        // フレーム（カード）のアニメーション中心位置を「下端（0.5, 0）」に強制補正する
+        for (int i = 0; i < setTransforms.Length; i++)
+        {
+            if (setTransforms[i] != null)
+            {
+                SetPivotKeepPosition(setTransforms[i], new Vector2(0.5f, 0f));
+            }
+        }
+    }
+
+    // 見た目の位置をズラさずにPivotだけを変更する便利関数
+    private void SetPivotKeepPosition(RectTransform rt, Vector2 newPivot)
+    {
+        Vector2 size = rt.rect.size;
+        Vector2 deltaPivot = rt.pivot - newPivot;
+        Vector3 deltaPosition = new Vector3(deltaPivot.x * size.x * rt.localScale.x, deltaPivot.y * size.y * rt.localScale.y, 0f);
+        
+        rt.pivot = newPivot;
+        rt.localPosition -= rt.rotation * deltaPosition;
+    }
 
     void Update()
     {
@@ -119,15 +149,19 @@ public class EquipUIManager_Alpha : MonoBehaviour
         
         RectTransform root = setTransforms[groupIndex];
         
-        // 【強制リロード用コメント】
-        // 既存の動的生成レイヤーのみをクリア
-        // こうすることで、ユーザーが独自に追加した枠やMask等のオブジェクトは削除されません
+        // 古いレイヤーを確実に削除（即座に親から外すことで表示バグを防ぐ）
+        List<GameObject> toDestroy = new List<GameObject>();
         foreach (Transform child in root)
         {
             if (child.name == "Primer_Layer" || child.name == "Casing_Layer" || child.name == "Bullet_Layer")
             {
-                Destroy(child.gameObject);
+                toDestroy.Add(child.gameObject);
             }
+        }
+        foreach (var go in toDestroy)
+        {
+            go.transform.SetParent(null);
+            Destroy(go);
         }
 
         int startIndex = groupIndex * 3;
@@ -152,7 +186,7 @@ public class EquipUIManager_Alpha : MonoBehaviour
         // 茎根（Primer）の生成
         if (primerSeries != null && primerSeries.iconPrimer != null)
         {
-            GameObject primerObj = CreateImageObj("Primer", primerLayer, primerSeries.iconPrimer, primerSeries.pivotPrimer, primerSeries.scalePrimer, Vector2.zero);
+            GameObject primerObj = CreateImageObj("Primer", primerLayer, primerSeries.iconPrimer, primerSeries.scalePrimer, Vector2.zero);
             RectTransform primerRT = primerObj.GetComponent<RectTransform>();
 
             // 葉（Casing）の生成
@@ -163,8 +197,8 @@ public class EquipUIManager_Alpha : MonoBehaviour
 
                 foreach (var lp in leafPoints)
                 {
-                    Vector2 casingPos = CalculateAttachmentOffset(primerRT, primerSeries.pivotPrimer, lp, primerSeries.scalePrimer);
-                    CreateImageObj("Casing", casingLayer, casingSeries.iconCasing, casingSeries.pivotCasing, casingSeries.scaleCasing, casingPos);
+                    Vector2 casingPos = CalculateAttachmentOffset(primerRT, lp, primerSeries.scalePrimer);
+                    CreateImageObj("Casing", casingLayer, casingSeries.iconCasing, casingSeries.scaleCasing, casingPos);
                 }
             }
 
@@ -176,8 +210,8 @@ public class EquipUIManager_Alpha : MonoBehaviour
 
                 foreach (var fp in flowerPoints)
                 {
-                    Vector2 bulletPos = CalculateAttachmentOffset(primerRT, primerSeries.pivotPrimer, fp, primerSeries.scalePrimer); // 茎根からのオフセット
-                    CreateImageObj("Bullet", bulletLayer, bulletSeries.iconBullet, bulletSeries.pivotBullet, bulletSeries.scaleBullet, bulletPos);
+                    Vector2 bulletPos = CalculateAttachmentOffset(primerRT, fp, primerSeries.scalePrimer); // 茎根からのオフセット
+                    CreateImageObj("Bullet", bulletLayer, bulletSeries.iconBullet, bulletSeries.scaleBullet, bulletPos);
                 }
             }
         }
@@ -186,11 +220,11 @@ public class EquipUIManager_Alpha : MonoBehaviour
             // Primerが無い場合のフォールバック（単体表示など）
             if (casingSeries != null && casingSeries.iconCasing != null)
             {
-                CreateImageObj("Casing", casingLayer, casingSeries.iconCasing, casingSeries.pivotCasing, casingSeries.scaleCasing, Vector2.zero);
+                CreateImageObj("Casing", casingLayer, casingSeries.iconCasing, casingSeries.scaleCasing, Vector2.zero);
             }
             if (bulletSeries != null && bulletSeries.iconBullet != null)
             {
-                CreateImageObj("Bullet", bulletLayer, bulletSeries.iconBullet, bulletSeries.pivotBullet, bulletSeries.scaleBullet, Vector2.zero);
+                CreateImageObj("Bullet", bulletLayer, bulletSeries.iconBullet, bulletSeries.scaleBullet, Vector2.zero);
             }
         }
     }
@@ -200,11 +234,15 @@ public class EquipUIManager_Alpha : MonoBehaviour
         GameObject go = new GameObject(layerName, typeof(RectTransform));
         RectTransform rt = go.GetComponent<RectTransform>();
         rt.SetParent(parent, false);
-        // 親(鉢)と同じサイズに合わせる
-        rt.anchorMin = Vector2.zero;
-        rt.anchorMax = Vector2.one;
-        rt.offsetMin = Vector2.zero;
-        rt.offsetMax = Vector2.zero;
+        
+        // レイヤー自体も親(鉢)の下部中央 (0.5, 0) を基準点とする
+        rt.anchorMin = new Vector2(0.5f, 0f);
+        rt.anchorMax = new Vector2(0.5f, 0f);
+        rt.pivot = new Vector2(0.5f, 0f);
+        
+        // サイズを0にし、オフセットを持たない純粋な「基準点」として機能させる
+        rt.sizeDelta = Vector2.zero;
+        rt.anchoredPosition = Vector2.zero;
         
         // 全体スケールを適用
         rt.localScale = new Vector3(globalPlantScale, globalPlantScale, 1f);
@@ -212,17 +250,18 @@ public class EquipUIManager_Alpha : MonoBehaviour
         return rt;
     }
 
-    private GameObject CreateImageObj(string name, Transform parent, Sprite sprite, Vector2 pivot, Vector2 scale, Vector2 anchoredPos)
+    // pivot引数を廃止し、強制的に(0.5, 0)で生成するように修正
+    private GameObject CreateImageObj(string name, Transform parent, Sprite sprite, Vector2 scale, Vector2 anchoredPos)
     {
         GameObject go = new GameObject(name, typeof(RectTransform), typeof(Image));
         RectTransform rt = go.GetComponent<RectTransform>();
         rt.SetParent(parent, false);
         
-        // アンカーを「下部中央」に設定（フレームの下端から生えるようにする）
+        // アンカーとピボットを完全に「下部中央 (0.5, 0)」に固定
         rt.anchorMin = new Vector2(0.5f, 0f);
         rt.anchorMax = new Vector2(0.5f, 0f);
+        rt.pivot = new Vector2(0.5f, 0f);
         
-        rt.pivot = pivot;
         rt.localScale = new Vector3(scale.x, scale.y, 1f);
         rt.anchoredPosition = anchoredPos;
         
@@ -233,11 +272,12 @@ public class EquipUIManager_Alpha : MonoBehaviour
         return go;
     }
 
-    private Vector2 CalculateAttachmentOffset(RectTransform parentRT, Vector2 parentPivot, Vector2 attachmentNormalized, Vector2 parentScale)
+    // 親のピボットが必ず(0.5, 0)であることを前提にした計算に変更
+    private Vector2 CalculateAttachmentOffset(RectTransform parentRT, Vector2 attachmentNormalized, Vector2 parentScale)
     {
         Vector2 size = parentRT.rect.size;
-        float offsetX = (attachmentNormalized.x - parentPivot.x) * size.x * parentScale.x;
-        float offsetY = (attachmentNormalized.y - parentPivot.y) * size.y * parentScale.y;
+        float offsetX = (attachmentNormalized.x - 0.5f) * size.x * parentScale.x;
+        float offsetY = (attachmentNormalized.y - 0f) * size.y * parentScale.y;
         return new Vector2(offsetX, offsetY);
     }
 
@@ -257,7 +297,7 @@ public class EquipUIManager_Alpha : MonoBehaviour
             if (isBouquet)
             {
                 // オムニブーケ発動中：扇状に展開
-                targetPos = Vector2.zero; 
+                targetPos = basePosition; 
                 if (i < bouquetAngles.Length)
                 {
                     targetAngle = bouquetAngles[i];
@@ -266,7 +306,7 @@ public class EquipUIManager_Alpha : MonoBehaviour
             else
             {
                 // 通常状態：スタックとスライド
-                targetPos = offsetPerDepth * depth;
+                targetPos = basePosition + (offsetPerDepth * depth);
                 targetAngle = anglePerDepth * depth; // Z軸回転
                 
                 if (depth == 0)
