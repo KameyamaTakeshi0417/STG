@@ -107,6 +107,15 @@ namespace Alpha.Item
                 {
                     playerStatus.AddExp(expValue);
                 }
+
+                if (Alpha.Core.ProceduralJuiceManager_Alpha.Instance != null)
+                {
+                    Alpha.Core.ProceduralJuiceManager_Alpha.Instance.SpawnTextPopup(
+                        transform.position, 
+                        "Orb Acquired!", 
+                        new Color(1f, 1f, 0.5f, 1f)
+                    );
+                }
             }
             // 確実に破壊する
             Destroy(gameObject);

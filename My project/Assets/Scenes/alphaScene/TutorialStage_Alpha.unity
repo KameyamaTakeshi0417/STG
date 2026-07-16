@@ -2811,9 +2811,10 @@ MonoBehaviour:
   followSmoothTime: 1
   minOrthoSize: 5
   maxOrthoSize: 19
-  fieldCenter: {x: 0, y: 0, z: 0}
   zoomSpeed: 10
+  zoomSmoothTime: 0.1
   invertZoomDirection: 0
+  shakeOffset: {x: 0, y: 0, z: 0}
 --- !u!114 &304558282
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3573,6 +3574,7 @@ MonoBehaviour:
   totalExpText: {fileID: 880430920}
   expPopupPrefab: {fileID: 3988437868621658341, guid: 88a969a66061252408618b5267716626, type: 3}
   popupContainer: {fileID: 2079328507}
+  expIcon: {fileID: 595565642}
 --- !u!114 &403377442
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15758,10 +15760,10 @@ MonoBehaviour:
     rarity: 1
     originalRarity: 0
     affix: {fileID: 0}
-    series: {fileID: 11400000, guid: bcac33972cb35084696b8559417c8b57, type: 2}
+    series: {fileID: 11400000, guid: a56397026dbb3184f8c585afa3723391, type: 2}
     partType: 2
     currentEffects:
-    - {fileID: 0}
+    - {fileID: 11400000, guid: 53c8ac5d09f41944ea83c43b341d5f56, type: 2}
   - defId: 
     rarity: 1
     originalRarity: 0
@@ -18198,6 +18200,7 @@ MonoBehaviour:
   totalExpText: {fileID: 551127970}
   expPopupPrefab: {fileID: 3988437868621658341, guid: 88a969a66061252408618b5267716626, type: 3}
   popupContainer: {fileID: 1741770222}
+  expIcon: {fileID: 0}
 --- !u!1 &1938887935
 GameObject:
   m_ObjectHideFlags: 0

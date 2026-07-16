@@ -9,6 +9,7 @@ namespace Alpha.Core
         public static ProceduralJuiceManager_Alpha Instance { get; private set; }
 
         private Material defaultSpriteMaterial;
+        private Sprite cachedCircleSprite;
 
         private void Awake()
         {
@@ -21,6 +22,13 @@ namespace Alpha.Core
 
             // Create a default material for procedural sprites
             defaultSpriteMaterial = new Material(Shader.Find("Sprites/Default"));
+
+            Texture2D tex = new Texture2D(4, 4);
+            Color[] pixels = new Color[16];
+            for (int i = 0; i < pixels.Length; i++) pixels[i] = Color.white;
+            tex.SetPixels(pixels);
+            tex.Apply();
+            cachedCircleSprite = Sprite.Create(tex, new Rect(0, 0, 4, 4), new Vector2(0.5f, 0.5f), 100f);
         }
 
         // 1a. Hit Sparks
@@ -212,6 +220,141 @@ namespace Alpha.Core
             }
 
             Destroy(pObj);
+        }
+
+        // Phase 2: Muzzle Flash
+        public void SpawnMuzzleFlash(Vector3 position, Vector3 direction)
+        {
+            StartCoroutine(MuzzleFlashRoutine(position, direction));
+        }
+
+        private IEnumerator MuzzleFlashRoutine(Vector3 position, Vector3 direction)
+        {
+            GameObject flashObj = new GameObject("ProceduralMuzzleFlash");
+            flashObj.transform.position = position;
+            
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            flashObj.transform.rotation = Quaternion.Euler(0, 0, angle);
+
+            SpriteRenderer sr = flashObj.AddComponent<SpriteRenderer>();
+            sr.sprite = cachedCircleSprite;
+            sr.color = new Color(0.6f, 0.9f, 1f, 1f); // Pale blue
+            sr.sortingOrder = 100;
+
+            Vector3 startScale = new Vector3(0.5f, 0.2f, 1f);
+            flashObj.transform.localScale = startScale;
+
+            float duration = 0.05f;
+            float elapsed = 0f;
+
+            while (elapsed < duration)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                float t = elapsed / duration;
+                
+                flashObj.transform.localScale = Vector3.Lerp(startScale, new Vector3(1.5f, 0.05f, 1f), t);
+                sr.color = new Color(0.6f, 0.9f, 1f, Mathf.Lerp(1f, 0f, t));
+                
+                yield return null;
+            }
+
+            Destroy(flashObj);
+        }
+
+        // Phase 2: Hit Stop & Screen Flash
+        public void TriggerPlayerDamageJuice()
+        {
+            StartCoroutine(HitStopRoutine(0.08f)); // 0.08秒のヒットストップ
+            if (JuiceManager_Alpha.Instance != null)
+            {
+                JuiceManager_Alpha.Instance.ScreenShake(0.3f, 0.4f);
+            }
+            StartCoroutine(ScreenFlashRoutine(new Color(1f, 0f, 0f, 0.4f), 0.2f));
+        }
+
+        private IEnumerator HitStopRoutine(float duration)
+        {
+            float originalTimeScale = Time.timeScale;
+            if (originalTimeScale <= 0f) yield break; // 既に停止中なら何もしない
+            
+            Time.timeScale = 0.02f; // 極低速
+            yield return new WaitForSecondsRealtime(duration);
+            Time.timeScale = originalTimeScale;
+        }
+
+        private IEnumerator ScreenFlashRoutine(Color flashColor, float duration)
+        {
+            GameObject canvasObj = GameObject.Find("Canvas");
+            if (canvasObj == null)
+            {
+                var uiRoot = GameObject.Find("UI_Root");
+                if (uiRoot != null) canvasObj = uiRoot;
+                else yield break;
+            }
+
+            GameObject flashObj = new GameObject("DamageFlashPanel");
+            flashObj.transform.SetParent(canvasObj.transform, false);
+            flashObj.transform.SetAsLastSibling(); // 手前に表示
+            
+            UnityEngine.UI.Image img = flashObj.AddComponent<UnityEngine.UI.Image>();
+            img.color = flashColor;
+            img.raycastTarget = false;
+
+            RectTransform rt = flashObj.GetComponent<RectTransform>();
+            rt.anchorMin = Vector2.zero;
+            rt.anchorMax = Vector2.one;
+            rt.offsetMin = Vector2.zero;
+            rt.offsetMax = Vector2.zero;
+
+            float elapsed = 0f;
+            while(elapsed < duration)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                float t = elapsed / duration;
+                img.color = new Color(flashColor.r, flashColor.g, flashColor.b, Mathf.Lerp(flashColor.a, 0f, t));
+                yield return null;
+            }
+
+            Destroy(flashObj);
+        }
+
+        // Phase 2: Text Popup
+        public void SpawnTextPopup(Vector3 position, string text, Color color)
+        {
+            StartCoroutine(TextPopupRoutine(position, text, color));
+        }
+
+        private IEnumerator TextPopupRoutine(Vector3 position, string text, Color color)
+        {
+            GameObject txtObj = new GameObject("ProceduralTextPopup");
+            txtObj.transform.position = position;
+
+            var tmp = txtObj.AddComponent<TMPro.TextMeshPro>();
+            tmp.text = text;
+            tmp.color = color;
+            tmp.fontSize = 3f;
+            tmp.alignment = TMPro.TextAlignmentOptions.Center;
+            tmp.sortingOrder = 200;
+
+            float duration = 0.8f;
+            float elapsed = 0f;
+            Vector3 startPos = position;
+            Vector3 endPos = position + new Vector3(0, 1.0f, 0);
+
+            while(elapsed < duration)
+            {
+                elapsed += Time.deltaTime;
+                float t = elapsed / duration;
+                
+                // イーズアウト (上に上がりながらゆっくりになる)
+                float easeT = 1f - Mathf.Pow(1f - t, 3f);
+                txtObj.transform.position = Vector3.Lerp(startPos, endPos, easeT);
+                tmp.color = new Color(color.r, color.g, color.b, Mathf.Lerp(1f, 0f, easeT));
+                
+                yield return null;
+            }
+
+            Destroy(txtObj);
         }
     }
 }

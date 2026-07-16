@@ -203,6 +203,11 @@ public class Player_Control_Alpha : MonoBehaviour
             {
                 isSpecialMoving = true;
                 specialMoveEndTime = Time.time + duration;
+                
+                // 追加: ダッシュ時に残像を有効化
+                var trail = GetComponent<Alpha.Core.ProceduralGhostTrail_Alpha>();
+                if (trail == null) trail = gameObject.AddComponent<Alpha.Core.ProceduralGhostTrail_Alpha>();
+                trail.EnableTrail(true);
             }
             else if (myStatus.currentSpecialMove == playerStatusManager_Alpha.SpecialMoveType.Warp)
             {
@@ -309,6 +314,10 @@ public class Player_Control_Alpha : MonoBehaviour
                 if (Time.time >= specialMoveEndTime)
                 {
                     isSpecialMoving = false;
+                    
+                    // 追加: ダッシュ終了時に残像を無効化
+                    var trail = GetComponent<Alpha.Core.ProceduralGhostTrail_Alpha>();
+                    if (trail != null) trail.EnableTrail(false);
                 }
             }
             else if (myStatus.currentSpecialMove == playerStatusManager_Alpha.SpecialMoveType.Warp)

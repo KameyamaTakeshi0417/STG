@@ -62,6 +62,7 @@ namespace Alpha.Data
         CircularSubShotPlus,    // 輝照弾（サーキュラー）のサブバレット数増加
         VoltTickReduce,         // 毒絡弾（Volt）のダメージTick短縮
         SecondaryDamageUp,      // 派生ダメージ（Secondary Damage）の威力上昇
+        Unsellable,             // 販売不能（売却不可）
         
         // --- 固有スキル ---
         DivineExecutioner       // 神裁者（ジャッジメント/エクスキューショナー固有）

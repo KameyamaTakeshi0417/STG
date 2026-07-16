@@ -32,11 +32,7 @@ public class CameraControl : MonoBehaviour
 
     [HideInInspector] public Vector3 shakeOffset = Vector3.zero; // JuiceManager用
 
-    [Header("Tilt (Juice)")]
-    public float maxTiltAngle = 2.0f;
-    public float tiltSmoothTime = 0.1f;
-    private float currentTiltVelocity;
-    private float currentTilt;
+
 
     void Awake()
     {
@@ -153,15 +149,6 @@ public class CameraControl : MonoBehaviour
 
         // ScreenShake用のオフセットを加算して適用
         transform.position = newPos + shakeOffset;
-
-        // 【追加】カメラティルト
-        float targetTilt = 0f;
-        if (player != null && Time.timeScale > 0f)
-        {
-            float h = Input.GetAxisRaw("Horizontal");
-            targetTilt = -h * maxTiltAngle; // 移動方向の逆向きに回転（視覚的には進行方向にカメラが傾く）
-        }
-        currentTilt = Mathf.SmoothDampAngle(currentTilt, targetTilt, ref currentTiltVelocity, tiltSmoothTime);
-        transform.rotation = Quaternion.Euler(0f, 0f, currentTilt);
+        transform.rotation = Quaternion.identity;
     }
 }

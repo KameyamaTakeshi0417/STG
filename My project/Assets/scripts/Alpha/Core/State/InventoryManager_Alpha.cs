@@ -171,6 +171,7 @@ public class InventoryManager_Alpha : MonoBehaviour
     {
         int totalExpGained = 0;
         int keepCount = BASIC_SLOT_COUNT + freeSlotCount;
+        List<EquipInstance> itemsToKeep = new List<EquipInstance>();
 
         if (equipInstance.Count > keepCount)
         {
@@ -180,6 +181,40 @@ public class InventoryManager_Alpha : MonoBehaviour
                 var item = equipInstance[i];
                 if (item.series != null)
                 {
+                    // 販売不能エフェクトのチェック
+                    bool isUnsellable = false;
+                    if (item.currentEffects != null)
+                    {
+                        foreach (var effect in item.currentEffects)
+                        {
+                            if (effect != null && effect.effectType == Alpha.Data.WeaponEffectType_Alpha.Unsellable)
+                            {
+                                isUnsellable = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!isUnsellable && item.series.passiveEffects != null)
+                    {
+                        foreach (var pe in item.series.passiveEffects)
+                        {
+                            if (pe.effect != null && pe.effect.effectType == Alpha.Data.WeaponEffectType_Alpha.Unsellable)
+                            {
+                                isUnsellable = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (isUnsellable)
+                    {
+                        // 売却不可アイテムはリストに退避しておき、後で戻す
+                        itemsToKeep.Add(item);
+                        equipInstance.RemoveAt(i);
+                        Debug.Log($"[InventoryManager] Item '{item.series.name}' is unsellable and was kept.");
+                        continue;
+                    }
+
                     int exp = 0;
                     if (item.series.name != "InitialSeries")
                     {
@@ -192,6 +227,13 @@ public class InventoryManager_Alpha : MonoBehaviour
                     Debug.Log($"[InventoryManager] Sold temporary item for {exp} EXP.");
                 }
                 equipInstance.RemoveAt(i);
+            }
+
+            // 売却不可だったアイテムを元の順序で末尾に戻す
+            itemsToKeep.Reverse();
+            foreach (var item in itemsToKeep)
+            {
+                equipInstance.Add(item);
             }
         }
 

@@ -121,16 +121,22 @@ public class PlayerHealth : _Health_Base
 
     public override void TakeDamage(float damage)
     {
-        if (isInvincible) return; // 無敵中ならダメージを無視すめE
+        if (isInvincible) return; // 無敵中ならダメージを無視する
 
         float setDmg = damage;
-        // 弱点倍率などローカルEE身EE状態に基づく計箁E
+        // 弱点倍率などローカル側の状態に基づく計算
         if (VulnerableFlg)
         {
             setDmg *= 1.5f;
         }
         
-        // 実際のダメージ適用はすべて一允E琁EてぁEマネージャーへ委譲
+        // 被弾時演出（Juice）
+        if (damage > 0 && Alpha.Core.ProceduralJuiceManager_Alpha.Instance != null)
+        {
+            Alpha.Core.ProceduralJuiceManager_Alpha.Instance.TriggerPlayerDamageJuice();
+        }
+
+        // 実際のダメージ適用はすべて一元化してマネージャーへ委譲
         if (statusManager != null)
         {
             statusManager.ApplyDamage(setDmg);

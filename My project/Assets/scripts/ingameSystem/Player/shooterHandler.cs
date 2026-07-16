@@ -128,7 +128,6 @@ public class ShooterHandler : MonoBehaviour
         //弾丸生成処理
         if (activeBullet == null)
         {
-            //   Debug.LogWarning("No active bullet equipped.");
             bulletPrefab = Instantiate(
                 Resources.Load<GameObject>("Objects/Bullet/NormalBullet"),
                 createPos,
@@ -143,6 +142,12 @@ public class ShooterHandler : MonoBehaviour
                 createPos,
                 Quaternion.Euler(new Vector3(0, 0, rotationAngle + 270))
             );
+        }
+
+        // マズルフラッシュエフェクト
+        if (Alpha.Core.ProceduralJuiceManager_Alpha.Instance != null)
+        {
+            Alpha.Core.ProceduralJuiceManager_Alpha.Instance.SpawnMuzzleFlash(createPos, watch);
         }
 
         // 弾丸の基本ステータスを設定
