@@ -59,6 +59,10 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
     public enum SpawnPattern { Straight, Barrage, Radial, Reverse }
     public SpawnPattern currentSpawnPattern = SpawnPattern.Straight;
 
+    [Header("Executioner Status")]
+    public int executionerTier = 0;
+    public bool isOmniBouquetOverride = false;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -90,6 +94,24 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
     private void Start()
     {
         // 起動時に初期装備のバフを適用する
+        UpdateEquipmentBuffs();
+    }
+
+    private void OnEnable()
+    {
+        if (Alpha.Flow.StageManager_Alpha.Instance != null)
+        {
+            Alpha.Flow.StageManager_Alpha.OnBossBattleStateChanged += HandleBossStateChanged;
+        }
+    }
+
+    private void OnDisable()
+    {
+        Alpha.Flow.StageManager_Alpha.OnBossBattleStateChanged -= HandleBossStateChanged;
+    }
+
+    private void HandleBossStateChanged(bool isBoss)
+    {
         UpdateEquipmentBuffs();
     }
 
@@ -130,10 +152,13 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         Player_Shooter_Alpha shooter = Object.FindAnyObjectByType<Player_Shooter_Alpha>();
         if (shooter != null) activeGroup = shooter.currentWeaponGroup;
         
-        bool isBouquet = inv.IsBouquetActive();
+        UpdateExecutionerState(inv, activeGroup);
+
+        bool isBouquet = inv.IsBouquetActive() || isOmniBouquetOverride;
         int groupToPass = isBouquet ? -1 : activeGroup;
 
         // --- 1. 計算前の基礎値リセット ---
+        int oldHPGaugeLimit = HPGauge; // 変更前の最大ゲージ数を保存
         HP = baseMaxHP;
         staminaRecoveryRate = baseStaminaRecovery;
         DamageAdd = baseDamageAdd;
@@ -177,6 +202,14 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         bulletLifeMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletLife, groupToPass);
         bulletLifeMag -= inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletLifeDebuff, groupToPass);
         bulletLifeMag = Mathf.Max(bulletLifeMag, 0.5f); // 下限50%
+
+        bool isBoss = Alpha.Flow.StageManager_Alpha.Instance != null && Alpha.Flow.StageManager_Alpha.Instance.IsBossBattleActive;
+        if (isBoss && executionerTier >= 1)
+        {
+            HP += 150f;
+            DamageMag += 100f; // +1.0倍
+            BlockDmg += 30f;
+        }
 
         // バースト回数
         float burstVal = inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BurstFire, groupToPass);
@@ -383,7 +416,22 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
             }
         }
 
+        if (executionerTier >= 1)
+        {
+            hpGaugeBuffCount += 1;
+        }
+
         HPGauge = Mathf.Min(4, baseHPGauge + hpGaugeBuffCount);
+
+        // ゲージの最大値が増えた場合、増えたゲージ数分だけ現在HPを回復する
+        if (HPGauge > oldHPGaugeLimit)
+        {
+            int gaugeDiff = HPGauge - oldHPGaugeLimit;
+            // Heal関数はオーバーフロー時にゲージを増やす処理を含むため、
+            // そのまま最大HP(1ゲージ分の体力) × 増えたゲージ数をHealに渡す
+            Heal(HP * gaugeDiff);
+            Debug.Log($"[PlayerStatusManager] HPGauge increased by {gaugeDiff}. Healing {HP * gaugeDiff} HP.");
+        }
 
         // 外した時用に、現在のゲージ数が最大ゲージ数を超えていたら丸める処理
         if (nowHPGauge > HPGauge)
@@ -410,6 +458,84 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
 
         OnPlayerHPChanged?.Invoke(currentHP, HP);
         Debug.Log($"[PlayerStatusManager] Equipment Buffs Updated. New MaxHP: {HP}, DmgMag: {DamageMag}");
+    }
+
+    private void UpdateExecutionerState(InventoryManager_Alpha inv, int activeGroup)
+    {
+        executionerTier = 0;
+        isOmniBouquetOverride = false;
+        
+        System.Action<Alpha.Data.WeaponEffectSO_Alpha> checkExecutioner = (effectSO) =>
+        {
+            if (effectSO != null && effectSO.effectType == Alpha.Data.WeaponEffectType_Alpha.DivineExecutioner)
+            {
+                executionerTier++;
+            }
+        };
+
+        for (int i = 0; i < 3; i++)
+        {
+            var item = inv.Get(i, activeGroup);
+            if (item.series == null) continue;
+            
+            bool found = false;
+            if (item.series.passiveEffects != null)
+            {
+                foreach(var eff in item.series.passiveEffects)
+                {
+                    if (eff.effect != null && eff.effect.effectType == Alpha.Data.WeaponEffectType_Alpha.DivineExecutioner)
+                    {
+                        executionerTier++;
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            if (!found && item.currentEffects != null)
+            {
+                foreach(var eff in item.currentEffects)
+                {
+                    if (eff != null && eff.effectType == Alpha.Data.WeaponEffectType_Alpha.DivineExecutioner)
+                    {
+                        executionerTier++;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        bool isBoss = Alpha.Flow.StageManager_Alpha.Instance != null && Alpha.Flow.StageManager_Alpha.Instance.IsBossBattleActive;
+
+        if (isBoss && executionerTier >= 3)
+        {
+            isOmniBouquetOverride = true;
+        }
+
+        for (int group = 0; group < 3; group++)
+        {
+            int bulletIndex = group * 3 + 2;
+            if (bulletIndex < inv.equipInstance.Count)
+            {
+                var bulletItem = inv.equipInstance[bulletIndex];
+                if (group == activeGroup && isBoss && executionerTier >= 2)
+                {
+                    if (bulletItem.originalRarity == 0 && bulletItem.rarity > 0)
+                    {
+                        bulletItem.originalRarity = bulletItem.rarity;
+                    }
+                    bulletItem.rarity = 4;
+                }
+                else
+                {
+                    if (bulletItem.originalRarity != 0)
+                    {
+                        bulletItem.rarity = bulletItem.originalRarity;
+                        bulletItem.originalRarity = 0;
+                    }
+                }
+                inv.equipInstance[bulletIndex] = bulletItem;
+            }
+        }
     }
 
     // --- Damage / Defense Calculation API ---
@@ -509,6 +635,32 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         currentHP -= finalDamage;
         if (currentHP < 0) currentHP = 0;
         
+        // --- Juice Additions ---
+        if (finalDamage > 0)
+        {
+            var playerObj = GameObject.Find("Player");
+            if (playerObj == null) playerObj = this.gameObject;
+            
+            var juice = playerObj.GetComponent<Alpha.Core.EntityJuice_Alpha>();
+            if (juice == null)
+            {
+                juice = playerObj.AddComponent<Alpha.Core.EntityJuice_Alpha>();
+            }
+
+            // HitFlash: Bluish-Red for player
+            juice.FlashColor(new Color(0.8f, 0.2f, 0.4f), 0.1f);
+
+            // ScreenShake if damage >= 30% of max HP
+            if (finalDamage >= HP * 0.3f)
+            {
+                if (Alpha.Core.JuiceManager_Alpha.Instance != null)
+                {
+                    Alpha.Core.JuiceManager_Alpha.Instance.ScreenShake(0.3f, 0.5f);
+                }
+            }
+        }
+        // --- End Juice Additions ---
+
         Debug.Log($"[PlayerStatusManager] ApplyDamage: Original {amount} -> Final {finalDamage} | Current HP: {currentHP}");
 
         // UI更新などのためにイベント発火（受け手が未実装でも安全）

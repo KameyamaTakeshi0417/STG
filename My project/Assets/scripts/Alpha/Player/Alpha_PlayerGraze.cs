@@ -61,6 +61,13 @@ namespace Alpha.Player
             Bullet_Base bullet = collision.GetComponent<Bullet_Base>();
             if (bullet != null && bullet.isEnemyBullet)
             {
+                if (!grazingBullets.Contains(collision))
+                {
+                    if (Alpha.Core.ProceduralJuiceManager_Alpha.Instance != null)
+                    {
+                        Alpha.Core.ProceduralJuiceManager_Alpha.Instance.SpawnHitSparks(bullet.transform.position, new Color(0.4f, 0.8f, 1f), 2);
+                    }
+                }
                 grazingBullets.Add(collision);
             }
         }

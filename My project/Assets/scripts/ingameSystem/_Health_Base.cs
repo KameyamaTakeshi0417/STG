@@ -209,7 +209,43 @@ public class _Health_Base : MonoBehaviour
             }
         }
 
+        // --- Juice Additions ---
+        var juice = GetComponent<Alpha.Core.EntityJuice_Alpha>();
+        if (juice == null) 
+        {
+            juice = gameObject.AddComponent<Alpha.Core.EntityJuice_Alpha>();
+        }
+
+        bool isNormalMob = !isMidBoss && !isBoss && GetComponent<Alpha_EliteHealth>() == null && GetComponent("CirculatorEnemy") == null;
+
+        if (juice != null)
+        {
+            // Flash white for enemies
+            juice.FlashColor(Color.white, 0.05f);
+
+            if (Alpha.Core.ProceduralJuiceManager_Alpha.Instance != null)
+            {
+                Alpha.Core.ProceduralJuiceManager_Alpha.Instance.SpawnHitSparks(transform.position, Color.white, 3);
+            }
+
+            // Squash if normal mob
+            if (isNormalMob)
+            {
+                juice.SquashAndStretch(new Vector3(1.2f, 0.8f, 1f), 0.1f);
+            }
+        }
+        // --- End Juice Additions ---
+
         TakeDamage(damage);
+
+        // HitStop on death for normal mobs
+        if (currentHP <= 0f && isNormalMob)
+        {
+            if (Alpha.Core.JuiceManager_Alpha.Instance != null)
+            {
+                Alpha.Core.JuiceManager_Alpha.Instance.HitStop(0.05f);
+            }
+        }
     }
 
     protected void BreakBarrier()

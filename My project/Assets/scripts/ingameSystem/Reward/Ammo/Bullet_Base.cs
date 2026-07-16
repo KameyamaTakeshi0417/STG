@@ -464,7 +464,10 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
         return rarelity;
     }
     public virtual void DestroyAction() {
-        
+        if (Alpha.Core.ProceduralJuiceManager_Alpha.Instance != null)
+        {
+            Alpha.Core.ProceduralJuiceManager_Alpha.Instance.SpawnRipple(transform.position, isEnemyBullet ? Color.white : new Color(0.8f, 0.4f, 0.4f), 0.2f, 0.8f, 0.15f);
+        }
         Destroy(this.gameObject);
     }
     public void GenerateAnotherChildBullet() { }

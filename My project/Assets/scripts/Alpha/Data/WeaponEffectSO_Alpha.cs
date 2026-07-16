@@ -61,7 +61,10 @@ namespace Alpha.Data
         StaminaExhaustionRecoveryBoost, // スタミナ枯渇時の回復速度倍率
         CircularSubShotPlus,    // 輝照弾（サーキュラー）のサブバレット数増加
         VoltTickReduce,         // 毒絡弾（Volt）のダメージTick短縮
-        SecondaryDamageUp       // 派生ダメージ（Secondary Damage）の威力上昇
+        SecondaryDamageUp,      // 派生ダメージ（Secondary Damage）の威力上昇
+        
+        // --- 固有スキル ---
+        DivineExecutioner       // 神裁者（ジャッジメント/エクスキューショナー固有）
     }
 
     [CreateAssetMenu(fileName = "NewWeaponEffect", menuName = "Alpha/Weapon Effect")]

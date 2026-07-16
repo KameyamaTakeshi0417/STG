@@ -18,6 +18,11 @@ namespace Alpha.UI
         [Tooltip("ポップアップを生成する親オブジェクト（指定がなければこのオブジェクト）")]
         public RectTransform popupContainer;
 
+        [Tooltip("プニっとアニメーションさせるEXPアイコン")]
+        public Transform expIcon;
+        private Vector3 originalIconScale;
+        private Tween iconTween;
+
         private void OnEnable()
         {
             playerStatusManager_Alpha.OnExpAdded += HandleExpAdded;
@@ -35,6 +40,14 @@ namespace Alpha.UI
             {
                 popupContainer = GetComponent<RectTransform>();
             }
+            if (expIcon == null)
+            {
+                expIcon = transform.Find("expIcon");
+            }
+            if (expIcon != null)
+            {
+                originalIconScale = expIcon.localScale;
+            }
             UpdateTotalExpText();
         }
 
@@ -42,6 +55,15 @@ namespace Alpha.UI
         {
             UpdateTotalExpText();
             ShowPopup(amount);
+            
+            // EXPアイコンをプニっとさせる（DOTween使用）
+            if (expIcon != null)
+            {
+                if (iconTween != null && iconTween.IsActive()) iconTween.Kill();
+                expIcon.localScale = originalIconScale;
+                // PunchScaleでプニッとした跳ねを表現
+                iconTween = expIcon.DOPunchScale(new Vector3(0.3f, 0.3f, 0f), 0.3f, 5, 0.5f).SetUpdate(true);
+            }
         }
 
         private void UpdateTotalExpText()

@@ -45,6 +45,10 @@ namespace Alpha.Flow
         public StageState_Alpha currentState = StageState_Alpha.None;
         public float currentSequenceTime = 0f;
 
+        public delegate void BossBattleStateChangedHandler(bool isActive);
+        public static event BossBattleStateChangedHandler OnBossBattleStateChanged;
+        public bool IsBossBattleActive => currentState == StageState_Alpha.MidBossFight || currentState == StageState_Alpha.BossFight;
+
         private StageSequenceData_Alpha activeSequence;
         private int currentTutorialIndex = 0;
         private bool wasMobCleared = false;
@@ -220,13 +224,16 @@ namespace Alpha.Flow
             StartFirstHalf();
         }
 
+        private bool isSequenceAnimating = false;
+
         private void UpdateSequence()
         {
             if (activeSequence == null) return;
 
-            // 繝昴・繧ｺ譎ゅｄ繝√Η繝ｼ繝医Μ繧｢繝ｫ陦ｨ遉ｺ荳ｭ縺ｯ譎る俣繧帝ｲ繧√↑縺・
+            // ポーズ中やチュートリアル表示中は時間を進めない
             if (Time.timeScale == 0f) return;
             if (Alpha.UI.TutorialManager_Alpha.Instance != null && Alpha.UI.TutorialManager_Alpha.Instance.IsPausingTimeline) return;
+            if (isSequenceAnimating) return;
 
             currentSequenceTime += Time.deltaTime;
             
@@ -252,8 +259,9 @@ namespace Alpha.Flow
 
         private void HandleWaveSkip()
         {
-            // 繝昴・繧ｺ譎ゅ・繧ｹ繧ｭ繝・・繧貞女縺台ｻ倥￠縺ｪ縺・
+            // ポーズ中のスキップを受け付けない
             if (Time.timeScale == 0f) return;
+            if (isSequenceAnimating) return;
 
             bool isSkipInput = false;
             if (Alpha.Core.InputManager_Alpha.Instance != null)
@@ -290,18 +298,40 @@ namespace Alpha.Flow
                 {
                     float skipRatio = activeSequence.duration > 0f ? (targetTime - currentSequenceTime) / activeSequence.duration : 0f;
                     
+                    int pointsToGain = 0;
                     if (RewardManager_Alpha.Instance != null)
                     {
-                        int pointsToGain = Mathf.RoundToInt(RewardManager_Alpha.Instance.targetPoints * skipRatio);
-                        RewardManager_Alpha.Instance.AddPoints(pointsToGain);
+                        pointsToGain = Mathf.RoundToInt(RewardManager_Alpha.Instance.targetPoints * skipRatio);
                     }
 
-                    currentSequenceTime = targetTime;
-                    
-                    sequenceBarUI.UpdateProgress(currentSequenceTime / activeSequence.duration);
-                    spawnManager.CheckSpawn(currentSequenceTime);
+                    StartCoroutine(WaveSkipSequenceRoutine(targetTime, pointsToGain));
                 }
             }
+        }
+
+        private System.Collections.IEnumerator WaveSkipSequenceRoutine(float targetTime, int pointsToGain)
+        {
+            isSequenceAnimating = true;
+
+            // 1. 次の移動位置にシークエンスバーのハンドルを移動させる
+            float startProgress = activeSequence.duration > 0f ? currentSequenceTime / activeSequence.duration : 0f;
+            float endProgress = activeSequence.duration > 0f ? targetTime / activeSequence.duration : 1f;
+            
+            yield return StartCoroutine(sequenceBarUI.AnimateProgress(startProgress, endProgress, 0.5f));
+
+            currentSequenceTime = targetTime;
+            sequenceBarUI.UpdateProgress(endProgress);
+
+            // 2. 敵のスポーン
+            spawnManager.CheckSpawn(currentSequenceTime);
+
+            // 3. スコア表示UIにスコアを加算
+            if (RewardManager_Alpha.Instance != null && pointsToGain > 0)
+            {
+                yield return StartCoroutine(RewardManager_Alpha.Instance.AddPointsSequence(pointsToGain));
+            }
+
+            isSequenceAnimating = false;
         }
 
         private void CheckTutorials()
@@ -334,6 +364,9 @@ namespace Alpha.Flow
             {
                 Alpha.Core.Utils.CursorManager_Alpha.Instance.SetCombatMode(isCombat);
             }
+            
+            // ボス戦状態の変更を通知
+            OnBossBattleStateChanged?.Invoke(IsBossBattleActive);
         }
 
         public int GetCurrentRewardDropCount()

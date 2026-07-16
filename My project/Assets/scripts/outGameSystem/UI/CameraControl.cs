@@ -16,20 +16,27 @@ public class CameraControl : MonoBehaviour
     [Tooltip("ズームアウト最大（大きいほど縮小）")]
     public float maxOrthoSize = 12.0f;
 
-    [Tooltip("フィールド中央（ズームアウト最大時に画角中心になる点）")]
-    public Vector3 fieldCenter = Vector3.zero;
-
     [Tooltip("ホイールの感度")]
     public float zoomSpeed = 2.0f;
+
+    [Tooltip("ズームの滑らかさ")]
+    public float zoomSmoothTime = 0.1f;
 
     [Tooltip("ズームのホイール方向を反転させる場合はON")]
     public bool invertZoomDirection = false;
 
     private Camera cam;
     private Vector3 velocity = Vector3.zero;
+    private float targetOrthoSize;
+    private float zoomVelocity;
 
-    // 0=ズームアウト最大（fieldCenter中心）, 1=ズームイン最大（player中心）
-    private float zoomT = 1f;
+    [HideInInspector] public Vector3 shakeOffset = Vector3.zero; // JuiceManager用
+
+    [Header("Tilt (Juice)")]
+    public float maxTiltAngle = 2.0f;
+    public float tiltSmoothTime = 0.1f;
+    private float currentTiltVelocity;
+    private float currentTilt;
 
     void Awake()
     {
@@ -37,19 +44,18 @@ public class CameraControl : MonoBehaviour
 
         if (player == null)
             player = GameObject.Find("Player"); // Tag運用なら FindWithTag 推奨
+            
+        targetOrthoSize = cam.orthographicSize;
     }
 
     void Start()
     {
-        // 初期orthographicSizeからzoomTを推定（設定を変えても自然に追従）
-        float size = cam.orthographicSize;
-        zoomT = Mathf.InverseLerp(maxOrthoSize, minOrthoSize, size); // size=min→1, size=max→0
-        zoomT = Mathf.Clamp01(zoomT);
+        targetOrthoSize = Mathf.Clamp(targetOrthoSize, minOrthoSize, maxOrthoSize);
     }
 
     void Update()
     {
-        HandleZoomInput(Time.deltaTime);
+        HandleZoomInput();
     }
 
     void LateUpdate()
@@ -57,7 +63,7 @@ public class CameraControl : MonoBehaviour
         ObeyPlayer(Time.deltaTime);
     }
 
-    void HandleZoomInput(float dt)
+    void HandleZoomInput()
     {
         if (cam == null) return;
         
@@ -65,18 +71,20 @@ public class CameraControl : MonoBehaviour
         if (Time.timeScale == 0f) return;
 
         float scroll = Input.mouseScrollDelta.y;
-        if (Mathf.Abs(scroll) < 0.0001f) return;
+        if (Mathf.Abs(scroll) > 0.0001f)
+        {
+            float sign = invertZoomDirection ? -1f : 1f; 
+            float delta = scroll * sign;
+            
+            // 目標のズームサイズを変更 (スクロール量 * 感度)
+            // ズームアウト方向(+)はサイズが大きくなる、ズームイン方向(-)はサイズが小さくなる
+            // 直感的には手前に引くとズームアウトなので、deltaを加算する
+            targetOrthoSize -= delta * zoomSpeed;
+            targetOrthoSize = Mathf.Clamp(targetOrthoSize, minOrthoSize, maxOrthoSize);
+        }
 
-        // 変数名を変更したことでインスペクタの古い設定がリセットされ、確実に新しい挙動が適用されます。
-        // デフォルト(invertZoomDirection=false)では、奥スクロール(+)でズームイン(sign=1)になります。
-        float sign = invertZoomDirection ? -1f : 1f; 
-        float delta = scroll * sign;
-
-        // zoomT: 1がズームイン、0がズームアウト
-        zoomT = Mathf.Clamp01(zoomT + delta * zoomSpeed * dt);
-
-        // orthographicSize: ズームインほど小、ズームアウトほど大
-        cam.orthographicSize = Mathf.Lerp(maxOrthoSize, minOrthoSize, zoomT);
+        // 実際のカメラサイズを滑らかに追従させる
+        cam.orthographicSize = Mathf.SmoothDamp(cam.orthographicSize, targetOrthoSize, ref zoomVelocity, zoomSmoothTime);
     }
 
     void ObeyPlayer(float dt)
@@ -94,9 +102,9 @@ public class CameraControl : MonoBehaviour
             0f
         );
 
-        // フォーカス点：ズームアウトほどfieldCenter寄り、ズームインほどplayer寄り
-        // zoomT=0 → fieldCenter、zoomT=1 → player
-        Vector3 focusPoint = Vector3.Lerp(fieldCenter, player.transform.position, zoomT);
+        // 以前の fieldCenter に無理やり引っ張るロジックは削除し、
+        // 常にプレイヤーをフォーカスするように変更しました。（プレイ支障改善のため）
+        Vector3 focusPoint = player.transform.position;
 
         // 目標位置（Zは固定）
         Vector3 targetPosition = focusPoint + cameraPositionOffset + direction;
@@ -143,6 +151,17 @@ public class CameraControl : MonoBehaviour
             }
         }
 
-        transform.position = newPos;
+        // ScreenShake用のオフセットを加算して適用
+        transform.position = newPos + shakeOffset;
+
+        // 【追加】カメラティルト
+        float targetTilt = 0f;
+        if (player != null && Time.timeScale > 0f)
+        {
+            float h = Input.GetAxisRaw("Horizontal");
+            targetTilt = -h * maxTiltAngle; // 移動方向の逆向きに回転（視覚的には進行方向にカメラが傾く）
+        }
+        currentTilt = Mathf.SmoothDampAngle(currentTilt, targetTilt, ref currentTiltVelocity, tiltSmoothTime);
+        transform.rotation = Quaternion.Euler(0f, 0f, currentTilt);
     }
 }

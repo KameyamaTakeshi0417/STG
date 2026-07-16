@@ -198,37 +198,69 @@ namespace Alpha.Flow
                 }
             }
 
-            // グローバルバフのランダム付与（基本1つ）
+            // グローバルバフのランダム付与
             if (globalBuffEffects != null && globalBuffEffects.Count > 0)
             {
-                int targetMinQuality = RollQuality(quality);
-                List<WeaponEffectSO_Alpha> availableEffects = new List<WeaponEffectSO_Alpha>();
+                int maxRandomEffects = quality; // コモン(1)=1, アンコモン(2)=2, レア(3)=3, ディバイン(4)=4
+                int addedCount = 0;
 
-                // 指定されたレアリティ、またはそれ以下のエフェクトを探す（フォールバック用）
-                for (int q = targetMinQuality; q >= 1; q--)
+                while (addedCount < maxRandomEffects)
                 {
-                    foreach (var effect in globalBuffEffects)
+                    int targetMinQuality = RollQuality(quality);
+                    List<WeaponEffectSO_Alpha> availableEffects = new List<WeaponEffectSO_Alpha>();
+
+                    // 指定されたレアリティ、またはそれ以下のエフェクトを探す（フォールバック用）
+                    for (int q = targetMinQuality; q >= 1; q--)
                     {
-                        if (effect != null && effect.minQuality == q)
+                        foreach (var effect in globalBuffEffects)
                         {
-                            availableEffects.Add(effect);
+                            // 既に付与されているエフェクトは除外する
+                            if (effect != null && effect.minQuality == q && !instance.currentEffects.Contains(effect))
+                            {
+                                availableEffects.Add(effect);
+                            }
+                        }
+                        if (availableEffects.Count > 0) break; // 見つかればそのレアリティから抽選
+                    }
+
+                    if (availableEffects.Count == 0)
+                    {
+                        // それでも見つからなければ全ての中からランダム（重複は避ける）
+                        foreach (var effect in globalBuffEffects)
+                        {
+                            if (effect != null && !instance.currentEffects.Contains(effect))
+                            {
+                                availableEffects.Add(effect);
+                            }
                         }
                     }
-                    if (availableEffects.Count > 0) break; // 見つかればそのレアリティから抽選
-                }
 
-                if (availableEffects.Count == 0)
-                {
-                    // それでも見つからなければ全ての中からランダム（安全策）
-                    availableEffects = new List<WeaponEffectSO_Alpha>(globalBuffEffects);
-                }
-
-                if (availableEffects.Count > 0)
-                {
-                    var randomBuff = availableEffects[Random.Range(0, availableEffects.Count)];
-                    if (randomBuff != null)
+                    if (availableEffects.Count > 0)
                     {
-                        instance.currentEffects.Add(randomBuff);
+                        var randomBuff = availableEffects[Random.Range(0, availableEffects.Count)];
+                        if (randomBuff != null)
+                        {
+                            instance.currentEffects.Add(randomBuff);
+                            addedCount++;
+                            
+                            // 次のエンチャントが付与可能なら、30%の確率で追加判定を行う
+                            if (addedCount < maxRandomEffects)
+                            {
+                                if (Random.value > 0.3f)
+                                {
+                                    break; // 30%の抽選に漏れたら終了
+                                }
+                                // 当たりを引いた場合はループを継続し、さらに追加付与を行う
+                            }
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        break; // 付与可能なエフェクトがなくなったら終了
                     }
                 }
             }

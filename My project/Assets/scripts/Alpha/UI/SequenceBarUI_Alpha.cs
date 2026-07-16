@@ -110,6 +110,18 @@ namespace Alpha.UI
             progressSlider.value = Mathf.Clamp01(normalizedProgress);
         }
 
+        public System.Collections.IEnumerator AnimateProgress(float startVal, float endVal, float duration)
+        {
+            float elapsed = 0f;
+            while (elapsed < duration)
+            {
+                elapsed += Time.deltaTime;
+                UpdateProgress(Mathf.Lerp(startVal, endVal, elapsed / duration));
+                yield return null;
+            }
+            UpdateProgress(endVal);
+        }
+
         private GameObject GetPrefabForType(MarkerType_Alpha type)
         {
             switch (type)

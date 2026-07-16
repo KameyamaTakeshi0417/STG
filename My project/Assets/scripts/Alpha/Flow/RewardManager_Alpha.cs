@@ -90,34 +90,120 @@ namespace Alpha.Flow
             }
         }
 
+        private int visualPoints = 0;
+        private int pendingPoints = 0;
+        private bool isAnimatingPoints = false;
+
         /// <summary>
         /// 報酬ポイントを加算する
         /// </summary>
         public void AddPoints(int points)
         {
-            currentPoints += points;
+            pendingPoints += points;
             
-            if (Alpha.UI.SequenceBarUI_Alpha.Instance != null)
+            if (!isAnimatingPoints)
             {
-                Alpha.UI.SequenceBarUI_Alpha.Instance.UpdateRewardGauge(currentPoints, targetPoints, targetQuality);
+                StartCoroutine(ProcessPointsQueue());
             }
+        }
 
-            if (currentPoints >= targetPoints)
+        public System.Collections.IEnumerator AddPointsSequence(int points)
+        {
+            AddPoints(points);
+            while (isAnimatingPoints)
             {
-                // 超過分は切り捨て
-                currentPoints = 0;
-                
-                // 指定位置 (0, 5, 0) にオーブをドロップ
-                SpawnOrb(new Vector3(0, 5f, 0), targetQuality, OrbSource_Alpha.Mob);
-                
-                currentRewardIndex++;
-                DetermineNextReward();
-                
-                if (Alpha.UI.SequenceBarUI_Alpha.Instance != null)
+                yield return null;
+            }
+        }
+
+        private System.Collections.IEnumerator ProcessPointsQueue()
+        {
+            isAnimatingPoints = true;
+            visualPoints = currentPoints;
+
+            while (pendingPoints > 0)
+            {
+                int startVis = visualPoints;
+                int targetVis = visualPoints + pendingPoints;
+                pendingPoints = 0;
+
+                float duration = 0.5f;
+                float elapsed = 0f;
+                float particleTimer = 0f;
+
+                while (elapsed < duration)
                 {
-                    Alpha.UI.SequenceBarUI_Alpha.Instance.UpdateRewardGauge(currentPoints, targetPoints, targetQuality);
+                    elapsed += Time.deltaTime;
+                    visualPoints = Mathf.RoundToInt(Mathf.Lerp(startVis, targetVis, elapsed / duration));
+                    
+                    if (Alpha.UI.SequenceBarUI_Alpha.Instance != null)
+                    {
+                        Alpha.UI.SequenceBarUI_Alpha.Instance.UpdateRewardGauge(Mathf.Min(visualPoints, targetPoints), targetPoints, targetQuality);
+
+                        particleTimer += Time.deltaTime;
+                        if (particleTimer > 0.05f)
+                        {
+                            particleTimer = 0f;
+                            if (Alpha.Core.ProceduralJuiceManager_Alpha.Instance != null && Alpha.UI.SequenceBarUI_Alpha.Instance.rewardGaugeImage != null)
+                            {
+                                Alpha.Core.ProceduralJuiceManager_Alpha.Instance.SpawnUIParticles(Alpha.UI.SequenceBarUI_Alpha.Instance.rewardGaugeImage.rectTransform);
+                            }
+                        }
+                    }
+
+                    if (visualPoints >= targetPoints)
+                    {
+                        break;
+                    }
+                    yield return null;
+                }
+
+                if (visualPoints >= targetPoints)
+                {
+                    if (Alpha.UI.SequenceBarUI_Alpha.Instance != null)
+                        Alpha.UI.SequenceBarUI_Alpha.Instance.UpdateRewardGauge(targetPoints, targetPoints, targetQuality);
+
+                    // 報酬をフィールドに出す
+                    SpawnOrb(new Vector3(0, 5f, 0), targetQuality, OrbSource_Alpha.Mob);
+                    
+                    // UI満たされたまま0.5秒待機
+                    yield return new WaitForSeconds(0.5f);
+
+                    // 一気に0にカウントダウン
+                    float drainTime = 0.25f;
+                    float dElapsed = 0f;
+                    while (dElapsed < drainTime)
+                    {
+                        dElapsed += Time.deltaTime;
+                        int drainVis = Mathf.RoundToInt(Mathf.Lerp(targetPoints, 0, dElapsed / drainTime));
+                        if (Alpha.UI.SequenceBarUI_Alpha.Instance != null)
+                            Alpha.UI.SequenceBarUI_Alpha.Instance.UpdateRewardGauge(drainVis, targetPoints, targetQuality);
+                        yield return null;
+                    }
+
+                    int excess = visualPoints - targetPoints;
+                    
+                    currentRewardIndex++;
+                    DetermineNextReward();
+                    
+                    visualPoints = 0;
+                    currentPoints = excess;
+
+                    if (excess > 0)
+                    {
+                        pendingPoints += excess;
+                    }
+                }
+                else
+                {
+                    visualPoints = targetVis;
+                    currentPoints = visualPoints;
+                    if (Alpha.UI.SequenceBarUI_Alpha.Instance != null)
+                        Alpha.UI.SequenceBarUI_Alpha.Instance.UpdateRewardGauge(visualPoints, targetPoints, targetQuality);
                 }
             }
+
+            isAnimatingPoints = false;
         }
 
         /// <summary>
@@ -126,6 +212,9 @@ namespace Alpha.Flow
         public void ResetRewardCycle()
         {
             currentPoints = 0;
+            visualPoints = 0;
+            pendingPoints = 0;
+            isAnimatingPoints = false;
             currentRewardIndex = 1;
             DetermineNextReward();
             

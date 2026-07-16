@@ -64,6 +64,12 @@ namespace Alpha.Enemy.Effect
             Time.timeScale = slowTimeScale;
             canSpawnExplosion = true;
 
+            if (Alpha.Core.ProceduralJuiceManager_Alpha.Instance != null)
+            {
+                // JuiceManagerの大爆発シーケンス（波紋・フラッシュ・画面揺れ）も並行して再生
+                Alpha.Core.ProceduralJuiceManager_Alpha.Instance.SpawnBossExplosionSequence(transform.position, explosionOffsetRange.x, slowDuration);
+            }
+
             // やられスプライト表示までの待機（リアルタイム）
             yield return new WaitForSecondsRealtime(slowDuration);
 

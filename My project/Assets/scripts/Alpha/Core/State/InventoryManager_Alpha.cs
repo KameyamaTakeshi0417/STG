@@ -16,6 +16,7 @@ public class InventoryManager_Alpha : MonoBehaviour
     {
         public string defId;
         public int rarity; // 1〜4 (qualityとして利用)
+        public int originalRarity; // ボス戦等での一時的な品質書き換え前の保存用
         public BASE_WeaponData_Alpha affix; 
         
         // 旧仕様の効果（既存コードとの互換性のため残す）

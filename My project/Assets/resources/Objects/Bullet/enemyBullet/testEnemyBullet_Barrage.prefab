@@ -94,9 +94,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8706826424131623048}
   - component: {fileID: 7484428815723738645}
-  - component: {fileID: 6127089242709787844}
   - component: {fileID: 999450693679256876}
   - component: {fileID: 2625644330906647157}
+  - component: {fileID: 5984510829786340385}
   m_Layer: 7
   m_Name: testEnemyBullet_Barrage
   m_TagString: Untagged
@@ -172,8 +172,69 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!58 &6127089242709787844
-CircleCollider2D:
+--- !u!50 &999450693679256876
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3312735464239202653}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
+--- !u!114 &2625644330906647157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3312735464239202653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70d6ba0d861724f44af1d7c5356b966b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sourcePrefab: {fileID: 0}
+  isEnemyBullet: 1
+  canHitBoth: 0
+  originalAimDirection: {x: 0, y: 0, z: 0}
+  reverseTimeRemaining: 0
+  lockedTarget: {fileID: 0}
+  Objname: 
+  dmg: 8
+  Speed: 1000
+  DestroyTime: 1000
+  bullettype: 0
+  rotate: {x: 0, y: 0, z: 0}
+  rarelity: 1
+  bulletName: testEnemyBullet_Barrage
+  addDmg: 0
+  piercingCount: 0
+  extraShotCount: 0
+  voltTickReduceCount: 0
+  secondaryDamageMultiplier: 1
+  preventAutoDestroy: 0
+  localPierceDamageReductionRate: -1
+  canUseAllEffects: 0
+--- !u!70 &5984510829786340385
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -205,64 +266,5 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.47
---- !u!50 &999450693679256876
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3312735464239202653}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
---- !u!114 &2625644330906647157
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3312735464239202653}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70d6ba0d861724f44af1d7c5356b966b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sourcePrefab: {fileID: 0}
-  isEnemyBullet: 1
-  canHitBoth: 0
-  originalAimDirection: {x: 0, y: 0, z: 0}
-  reverseTimeRemaining: 0
-  lockedTarget: {fileID: 0}
-  Objname: 
-  dmg: 3
-  Speed: 1000
-  DestroyTime: 1000
-  bullettype: 0
-  rotate: {x: 0, y: 0, z: 0}
-  rarelity: 1
-  bulletName: testEnemyBullet_Barrage
-  addDmg: 0
-  piercingCount: 0
-  extraShotCount: 0
-  preventAutoDestroy: 0
-  localPierceDamageReductionRate: -1
-  canUseAllEffects: 0
+  m_Size: {x: 1.39, y: 1.83}
+  m_Direction: 0
