@@ -122,66 +122,82 @@ namespace Alpha.UI
         private string BuildEffectString(List<WeaponEffectSO_Alpha> effects, ref bool isAllEquipable, string indent, int quality, bool isBestSlotMet)
         {
             string result = "";
-            foreach (var eff in effects)
+            int effectCount = 0;
+
+            if (effects != null)
             {
-                if (eff == null) continue;
-                
-                // BestSlot専用効果なのに条件を満たしていない場合
-                bool isInactive = eff.isBestSlotEffect && !isBestSlotMet;
-                string inactiveTag = isInactive ? " <color=#888888>(未発動)</color>" : "";
-                string colorStart = isInactive ? "<color=#888888>" : "";
-                string colorEnd = isInactive ? "</color>" : "";
-
-                if (eff.effectType == WeaponEffectType_Alpha.Composite)
+                foreach (var eff in effects)
                 {
-                    var comp = eff as CompositeWeaponEffectSO_Alpha;
-                    if (comp != null)
-                    {
-                        // 複合スキル自体の名前を表示
-                        string prefix = string.IsNullOrEmpty(indent) ? "-" : "└";
-                        string nameColor = isInactive ? "#888888" : "#FFDDDD";
-                        result += $"\n{indent}{prefix} <color={nameColor}>{eff.effectName}</color>{inactiveTag}";
-                        
-                        // 中身を再帰的に展開し、インデントを1段下げる
-                        if (comp.subEffects != null && comp.subEffects.Count > 0)
-                        {
-                            string newIndent = string.IsNullOrEmpty(indent) ? "  " : indent + "  ";
-                            result += BuildEffectString(comp.subEffects, ref isAllEquipable, newIndent, quality, isBestSlotMet);
-                        }
-                    }
-                }
-                else
-                {
-                    string prefix = string.IsNullOrEmpty(indent) ? "-" : "└";
+                    if (eff == null) continue;
+                    effectCount++;
                     
-                    string descStr = "";
-                    if (!string.IsNullOrEmpty(eff.description))
-                    {
-                        try 
-                        { 
-                            descStr = string.Format(eff.description, eff.GetValue(quality)); 
-                        }
-                        catch 
-                        { 
-                            descStr = eff.description; 
-                        }
-                    }
+                    // BestSlot専用効果なのに条件を満たしていない場合
+                    bool isInactive = eff.isBestSlotEffect && !isBestSlotMet;
+                    string inactiveTag = isInactive ? " <color=#888888>(未発動)</color>" : "";
+                    string colorStart = isInactive ? "<color=#888888>" : "";
+                    string colorEnd = isInactive ? "</color>" : "";
 
-                    if (!string.IsNullOrEmpty(descStr))
+                    if (eff.effectType == WeaponEffectType_Alpha.Composite)
                     {
-                        result += $"\n{indent}{prefix} {colorStart}{eff.effectName}{inactiveTag}\n{indent}  <size=80%>{descStr}</size>{colorEnd}";
+                        var comp = eff as CompositeWeaponEffectSO_Alpha;
+                        if (comp != null)
+                        {
+                            // 複合スキル自体の名前を表示
+                            string nameColor = isInactive ? "#888888" : "#FFDDDD";
+                            result += $"\n{indent}<color=#44FF44>■</color> <color={nameColor}>{eff.effectName}</color>{inactiveTag}";
+                            
+                            // 中身を再帰的に展開し、インデントを1段下げる
+                            if (comp.subEffects != null && comp.subEffects.Count > 0)
+                            {
+                                string newIndent = string.IsNullOrEmpty(indent) ? "  " : indent + "  ";
+                                result += BuildEffectString(comp.subEffects, ref isAllEquipable, newIndent, quality, isBestSlotMet);
+                            }
+                        }
                     }
                     else
                     {
-                        result += $"\n{indent}{prefix} {colorStart}{eff.effectName}{inactiveTag}{colorEnd}";
-                    }
+                        string prefix = string.IsNullOrEmpty(indent) ? "<color=#44FF44>■</color>" : "└";
+                        
+                        string descStr = "";
+                        if (!string.IsNullOrEmpty(eff.description))
+                        {
+                            try 
+                            { 
+                                descStr = string.Format(eff.description, eff.GetValue(quality)); 
+                            }
+                            catch 
+                            { 
+                                descStr = eff.description; 
+                            }
+                        }
 
-                    if (eff.effectType == WeaponEffectType_Alpha.AllEquipable && !isInactive)
-                    {
-                        isAllEquipable = true;
+                        if (!string.IsNullOrEmpty(descStr))
+                        {
+                            result += $"\n{indent}{prefix} {colorStart}{eff.effectName}{inactiveTag}\n{indent}  <size=80%>{descStr}</size>{colorEnd}";
+                        }
+                        else
+                        {
+                            result += $"\n{indent}{prefix} {colorStart}{eff.effectName}{inactiveTag}{colorEnd}";
+                        }
+
+                        if (eff.effectType == WeaponEffectType_Alpha.AllEquipable && !isInactive)
+                        {
+                            isAllEquipable = true;
+                        }
                     }
                 }
             }
+
+            // ルート階層（インデントなし）の場合のみ、空き枠を表示
+            if (string.IsNullOrEmpty(indent))
+            {
+                int emptySlots = quality - effectCount;
+                for (int i = 0; i < emptySlots; i++)
+                {
+                    result += $"\n{indent}<color=#555555>□</color> <color=#888888>[ 空きスロット ]</color>";
+                }
+            }
+
             return result;
         }
 

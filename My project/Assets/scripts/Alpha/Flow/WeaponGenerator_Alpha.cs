@@ -148,7 +148,7 @@ namespace Alpha.Flow
             return allSeriesPool.Count > 0 ? allSeriesPool[Random.Range(0, allSeriesPool.Count)] : null;
         }
 
-        private WeaponPartInstance_Alpha CreatePartInstance(WeaponSeriesData_Alpha series, int quality)
+        public WeaponPartInstance_Alpha CreatePartInstance(WeaponSeriesData_Alpha series, int quality)
         {
             if (series == null) return null;
 

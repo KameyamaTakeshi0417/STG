@@ -33,7 +33,9 @@ namespace Alpha.UI
         [TextArea(3, 5)]
         public string upgradeConfirmFormat = "これをアップグレードします。\n消費エーテル: {0}\nよろしかったですか？";
         [TextArea(3, 5)]
-        public string buyConfirmFormat = "これを購入・付与します。\n{0}\n消費エーテル: {1}\nよろしかったですか？";
+        public string partBuyConfirmFormat = "このパーツを購入し、空きスロットに装備します。\n{0}\n消費エーテル: {1}\nよろしかったですか？";
+        [TextArea(3, 5)]
+        public string skillBuyConfirmFormat = "選択した装備にこのスキルを付与します。\n{0}\n消費エーテル: {1}\nよろしかったですか？";
 
         private System.Action pendingConfirmAction;
 
@@ -187,16 +189,18 @@ namespace Alpha.UI
                 var randomSeries = generator.allSeriesPool[Random.Range(0, generator.allSeriesPool.Count)];
                 if (randomSeries == null) continue;
                 
-                WeaponPartType_Alpha randomPartType = (WeaponPartType_Alpha)Random.Range(0, 3);
                 int rarity = Random.Range(1, 5); // 1 to 4
                 int price = (rarity >= 1 && rarity <= partPrices.Length) ? partPrices[rarity - 1] : partPrices[0];
+
+                var partInstance = generator.CreatePartInstance(randomSeries, rarity);
+                if (partInstance == null) continue;
 
                 GameObject obj = Instantiate(partButtonPrefab, partButtonsContainer);
                 obj.SetActive(true);
                 spawnedPartButtons.Add(obj);
 
                 var texts = obj.GetComponentsInChildren<TextMeshProUGUI>();
-                if (texts.Length > 0) texts[0].text = randomSeries.seriesName + " (" + randomPartType.ToString() + ")\n<size=80%>Quality: " + rarity + "</size>";
+                if (texts.Length > 0) texts[0].text = partInstance.series.seriesName + " (" + partInstance.partType.ToString() + ")\n<size=80%>Quality: " + partInstance.quality + "</size>";
                 if (texts.Length > 1) texts[1].text = "Cost: " + price + " EXP";
 
                 Image iconImg = null;
@@ -212,11 +216,11 @@ namespace Alpha.UI
                 if (iconImg != null)
                 {
                     Sprite targetSprite = null;
-                    if (randomPartType == WeaponPartType_Alpha.Bullet) targetSprite = randomSeries.iconBullet;
-                    else if (randomPartType == WeaponPartType_Alpha.Casing) targetSprite = randomSeries.iconCasing;
-                    else if (randomPartType == WeaponPartType_Alpha.Primer) targetSprite = randomSeries.iconPrimer;
+                    if (partInstance.partType == WeaponPartType_Alpha.Bullet) targetSprite = partInstance.series.iconBullet;
+                    else if (partInstance.partType == WeaponPartType_Alpha.Casing) targetSprite = partInstance.series.iconCasing;
+                    else if (partInstance.partType == WeaponPartType_Alpha.Primer) targetSprite = partInstance.series.iconPrimer;
                     
-                    if (targetSprite == null) targetSprite = randomSeries.icon;
+                    if (targetSprite == null) targetSprite = partInstance.series.icon;
                     
                     if (targetSprite != null) {
                         iconImg.sprite = targetSprite;
@@ -230,7 +234,7 @@ namespace Alpha.UI
                 Image bgImg = obj.GetComponent<Image>();
                 if (bgImg != null)
                 {
-                    switch (rarity)
+                    switch (partInstance.quality)
                     {
                         case 1: bgImg.color = new Color32(128, 38, 5, 255); break;
                         case 2: bgImg.color = new Color32(136, 136, 136, 255); break;
@@ -242,14 +246,14 @@ namespace Alpha.UI
                 Button btn = obj.GetComponent<Button>();
                 if (btn != null)
                 {
-                    btn.onClick.AddListener(() => OnPartButtonClicked(randomSeries, randomPartType, rarity, price, obj));
+                    btn.onClick.AddListener(() => OnPartButtonClicked(partInstance, price, obj));
                     
                     var rcd = btn.gameObject.AddComponent<RightClickDetector_Alpha>();
                     rcd.onRightClick = (eventData) =>
                     {
                         if (detailPopup != null)
                         {
-                            detailPopup.Setup(randomSeries, randomPartType, rarity, null, eventData.position);
+                            detailPopup.Setup(partInstance.series, partInstance.partType, partInstance.quality, partInstance.currentEffects, eventData.position);
                         }
                     };
                 }
@@ -307,10 +311,10 @@ namespace Alpha.UI
         // ==========================
         // パーツ購入モード
         // ==========================
-        private void OnPartButtonClicked(WeaponSeriesData_Alpha series, WeaponPartType_Alpha partType, int rarity, int price, GameObject buttonObj)
+        private void OnPartButtonClicked(WeaponPartInstance_Alpha partInstance, int price, GameObject buttonObj)
         {
-            string details = "購入パーツ：" + series.seriesName + " (" + partType.ToString() + ")";
-            string finalMessage = string.Format(buyConfirmFormat, details, price);
+            string details = "購入パーツ：" + partInstance.series.seriesName + " (" + partInstance.partType.ToString() + ")";
+            string finalMessage = string.Format(partBuyConfirmFormat, details, price);
 
             ShowConfirmUI(finalMessage, () =>
             {
@@ -323,10 +327,10 @@ namespace Alpha.UI
                 playerStatusManager_Alpha.Instance.AddExp(-price);
 
                 InventoryManager_Alpha.EquipInstance newPart = new InventoryManager_Alpha.EquipInstance();
-                newPart.series = series;
-                newPart.partType = partType;
-                newPart.rarity = rarity;
-                newPart.currentEffects = new List<WeaponEffectSO_Alpha>();
+                newPart.series = partInstance.series;
+                newPart.partType = partInstance.partType;
+                newPart.rarity = partInstance.quality;
+                newPart.currentEffects = partInstance.currentEffects != null ? new List<WeaponEffectSO_Alpha>(partInstance.currentEffects) : new List<WeaponEffectSO_Alpha>();
                 InventoryManager_Alpha.Instance.AddItem(newPart);
 
                 UpdateEmptySlotDisplay();
@@ -401,7 +405,7 @@ namespace Alpha.UI
             try { desc = string.Format(effectSO.description, effectSO.GetValue(1)); } catch {}
             string details = "付与スキル：" + effectSO.effectName + " - " + desc;
 
-            string finalMessage = string.Format(buyConfirmFormat, details, effectSO.price);
+            string finalMessage = string.Format(skillBuyConfirmFormat, details, effectSO.price);
 
             ShowConfirmUI(finalMessage, () =>
             {
