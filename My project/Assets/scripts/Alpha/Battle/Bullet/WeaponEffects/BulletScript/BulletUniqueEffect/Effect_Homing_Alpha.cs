@@ -20,8 +20,16 @@ public class Effect_Homing_Alpha : Alpha_Effect_Base
     public Effect_Homing_Alpha(int pos, int rarity) : base(pos, rarity)
     {
         flightEffectInterval = 0f;
-        // 古い呼び出しの場合はデフォルトで最大値(100)または適当な値を設定
-        this.homingStrength = 100f;
+        
+        // 武器自体の固有エフェクトとして呼ばれる場合、レアリティ(1〜4)に応じて旋回力を決定する
+        switch (rarity)
+        {
+            case 1: this.homingStrength = 0.3f; break; // 大回りで重力的に引かれる
+            case 2: this.homingStrength = 1.0f; break; // ゆったり曲がる
+            case 3: this.homingStrength = 4.0f; break; // 標準的な追尾
+            case 4: this.homingStrength = 20f; break;  // かなり鋭く曲がる
+            default: this.homingStrength = 20f; break;
+        }
     }
 
     public override void Setup(Bullet_Base bullet, playerStatusManager_Alpha playerStatus)
@@ -72,8 +80,10 @@ public class Effect_Homing_Alpha : Alpha_Effect_Base
                     currentHomingStrength *= 0.9f;
                 }
 
-                // Slerpによる旋回
-                Vector2 newDirection = Vector3.Slerp(currentVelocityDir, directionToTarget, currentHomingStrength * deltaTime).normalized;
+                // RotateTowardsによる一定速度の旋回
+                // currentHomingStrength を「1秒間に旋回できるラジアン角」として扱う
+                float maxRadiansDelta = currentHomingStrength * deltaTime;
+                Vector2 newDirection = Vector3.RotateTowards(currentVelocityDir, directionToTarget, maxRadiansDelta, 0f).normalized;
 
                 rb.velocity = newDirection * (bullet.Speed * 0.02f);
 

@@ -14,6 +14,15 @@ namespace Alpha.UI
         [Header("Detail Popup")]
         public EquipDetailPopupUI_Alpha detailPopup;
         
+        [Header("Player Status Display")]
+        public TextMeshProUGUI statusText;
+
+        [Header("Active Effects UI")]
+        public Transform activeEffectsContainer;
+        public GameObject activeEffectPrefab; 
+        public Alpha.UI.EffectDetailPopupUI_Alpha effectDetailPopup;
+        private List<GameObject> spawnedActiveEffects = new List<GameObject>();
+        
         [Header("Grid (3x3)")]
         [Tooltip("装備枠(3x3)のボタンスロット。インデックスは 0〜8 (y*3+x)")]
         public Button[] gridSlots = new Button[9];
@@ -221,6 +230,7 @@ namespace Alpha.UI
         {
             if (panel != null) panel.SetActive(false);
             if (detailPopup != null) detailPopup.gameObject.SetActive(false);
+            if (effectDetailPopup != null) effectDetailPopup.Hide();
             if (confirmButton != null) confirmButton.gameObject.SetActive(false);
             if (backButtonForCheck != null) backButtonForCheck.gameObject.SetActive(false);
             if (backToForgeButton != null) backToForgeButton.gameObject.SetActive(false);
@@ -229,6 +239,9 @@ namespace Alpha.UI
         private void RefreshUI()
         {
             if (InventoryManager_Alpha.Instance == null) return;
+
+            UpdatePlayerStatusDisplay();
+            UpdateActiveEffectsDisplay();
 
             var equipList = InventoryManager_Alpha.Instance.equipInstance;
 
@@ -293,6 +306,124 @@ namespace Alpha.UI
                     bool isTempSlot = i >= freeSlotCount;
                     SetSlotVisual(btn, equipList[invIndex], invIndex == selectedIndex, isTempSlot, invIndex);
                 }
+            }
+        }
+
+        private void UpdatePlayerStatusDisplay()
+        {
+            if (statusText == null || playerStatusManager_Alpha.Instance == null) return;
+
+            var stats = playerStatusManager_Alpha.Instance;
+            
+            // HP
+            string hpStr = $"HP: {Mathf.FloorToInt(stats.currentHP)} / {Mathf.FloorToInt(stats.HP)}";
+            if (stats.HPGauge > 1) hpStr += $" (x{stats.HPGauge} Gauges)";
+
+            // ATK
+            float baseAtk = stats.pow;
+            float totalAtk = stats.pow + stats.DamageAdd;
+            if (totalAtk < 0) totalAtk = 1;
+            if (stats.DamageMag > 0) totalAtk *= (stats.DamageMag / 100f);
+            float atkDiff = totalAtk - baseAtk;
+            string atkStr = $"ATK: {totalAtk:F1}";
+            if (Mathf.Abs(atkDiff) > 0.1f)
+            {
+                string color = atkDiff > 0 ? "#00FF00" : "#FF0000";
+                string sign = atkDiff > 0 ? "+" : "";
+                atkStr += $" <color={color}>({sign}{atkDiff:F1})</color>";
+            }
+
+            // Stamina
+            float baseStamRec = 10f; // Default base stamina recovery
+            float totalStamRec = stats.staminaRecoveryRate;
+            float stamRecDiff = totalStamRec - baseStamRec;
+            string stamStr = $"Stamina: {Mathf.FloorToInt(stats.maxStamina)} (Rec: {totalStamRec:F1}/s)";
+            if (Mathf.Abs(stamRecDiff) > 0.1f)
+            {
+                string color = stamRecDiff > 0 ? "#00FF00" : "#FF0000";
+                string sign = stamRecDiff > 0 ? "+" : "";
+                stamStr += $" <color={color}>({sign}{stamRecDiff:F1}/s)</color>";
+            }
+
+            // Fire Rate (Span Mag)
+            float baseSpan = stats.BaseBulletSpanMag; 
+            float totalSpan = stats.BulletSpanMag;
+            float spanDiff = totalSpan - baseSpan;
+            // Lower span is faster (better), so inverted color logic
+            string spanStr = $"Fire Rate: {totalSpan:F2}x";
+            if (Mathf.Abs(spanDiff) > 0.05f)
+            {
+                string color = spanDiff < 0 ? "#00FF00" : "#FF0000";
+                string sign = spanDiff > 0 ? "+" : "";
+                spanStr += $" <color={color}>({sign}{spanDiff:F2})</color>";
+            }
+
+            // Bullet Speed
+            float baseBulSpd = stats.BaseBulletSpeedMag;
+            float totalBulSpd = stats.bulletSpeedMag;
+            float bulSpdDiff = totalBulSpd - baseBulSpd;
+            string bulSpdStr = $"Bullet Spd: {totalBulSpd:F2}x";
+            if (Mathf.Abs(bulSpdDiff) > 0.05f)
+            {
+                string color = bulSpdDiff > 0 ? "#00FF00" : "#FF0000";
+                string sign = bulSpdDiff > 0 ? "+" : "";
+                bulSpdStr += $" <color={color}>({sign}{bulSpdDiff:F2})</color>";
+            }
+
+            // Move Speed (Not affected by equipment, so diff is always 0 for this UI)
+            float totalMovSpd = stats.moveSpeedMag;
+            string movSpdStr = $"Move Spd: {totalMovSpd:F2}x";
+
+            statusText.text = $"<size=110%><b>Player Status</b></size>\n\n" +
+                              $"{hpStr}\n" +
+                              $"{atkStr}\n" +
+                              $"{stamStr}\n" +
+                              $"{spanStr}\n" +
+                              $"{bulSpdStr}\n" +
+                              $"{movSpdStr}";
+        }
+
+        private void UpdateActiveEffectsDisplay()
+        {
+            if (activeEffectsContainer == null || activeEffectPrefab == null || InventoryManager_Alpha.Instance == null) return;
+
+            foreach (var go in spawnedActiveEffects)
+            {
+                Destroy(go);
+            }
+            spawnedActiveEffects.Clear();
+
+            int activeGroup = -1;
+            Player_Shooter_Alpha shooter = Object.FindAnyObjectByType<Player_Shooter_Alpha>();
+            if (shooter != null) activeGroup = shooter.currentWeaponGroup;
+            int groupToPass = (InventoryManager_Alpha.Instance.IsBouquetActive() || (playerStatusManager_Alpha.Instance != null && playerStatusManager_Alpha.Instance.isOmniBouquetOverride)) ? -1 : activeGroup;
+
+            var activeEffects = InventoryManager_Alpha.Instance.GetAllActiveEffectQualities(groupToPass);
+
+            foreach (var kvp in activeEffects)
+            {
+                var effect = kvp.Key;
+                int count = kvp.Value.count;
+                float flatValue = kvp.Value.flatValue;
+                if (count <= 0 || effect == null) continue;
+
+                GameObject go = Instantiate(activeEffectPrefab, activeEffectsContainer);
+                spawnedActiveEffects.Add(go);
+
+                TextMeshProUGUI text = go.GetComponentInChildren<TextMeshProUGUI>();
+                if (text != null)
+                {
+                    text.text = $"{count} \"{effect.effectName}\"";
+                }
+
+                var rcd = go.AddComponent<RightClickDetector_Alpha>();
+                rcd.onRightClick = (eventData) => 
+                {
+                    if (effectDetailPopup != null)
+                    {
+                        effectDetailPopup.Setup(effect, count, flatValue, eventData.position);
+                    }
+                };
             }
         }
 

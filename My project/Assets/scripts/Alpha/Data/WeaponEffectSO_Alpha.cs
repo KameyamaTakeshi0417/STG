@@ -107,6 +107,10 @@ namespace Alpha.Data
         [Tooltip("品質(1〜4)による効果量、または合計品質時の段階別乗数（インデックス0=第1段階, インデックス3=第4段階）")]
         public float[] qualityValues = new float[4];
 
+        [TextArea(2, 5)]
+        [Tooltip("インスペクタで段階ごと（1～4段階）の強化内容を説明するテキスト")]
+        public string[] stepDescriptions = new string[4];
+
         public float GetValue(int quality)
         {
           

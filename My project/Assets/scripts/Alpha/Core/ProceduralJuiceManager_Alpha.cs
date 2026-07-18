@@ -28,7 +28,8 @@ namespace Alpha.Core
             for (int i = 0; i < pixels.Length; i++) pixels[i] = Color.white;
             tex.SetPixels(pixels);
             tex.Apply();
-            cachedCircleSprite = Sprite.Create(tex, new Rect(0, 0, 4, 4), new Vector2(0.5f, 0.5f), 100f);
+            // Set PPU to 4 so that the 4x4 texture is exactly 1x1 world units
+            cachedCircleSprite = Sprite.Create(tex, new Rect(0, 0, 4, 4), new Vector2(0.5f, 0.5f), 4f);
         }
 
         // 1a. Hit Sparks
@@ -56,7 +57,8 @@ namespace Alpha.Core
             for(int i=0; i<16; i++) pixels[i] = Color.white;
             tex.SetPixels(pixels);
             tex.Apply();
-            sr.sprite = Sprite.Create(tex, new Rect(0, 0, 4, 4), new Vector2(0.5f, 0.5f), 100f);
+            // Set PPU to 4 so that base size is 1x1 world units
+            sr.sprite = Sprite.Create(tex, new Rect(0, 0, 4, 4), new Vector2(0.5f, 0.5f), 4f);
 
             spark.transform.localScale = Vector3.one * Random.Range(0.1f, 0.3f);
 
@@ -237,10 +239,12 @@ namespace Alpha.Core
             flashObj.transform.rotation = Quaternion.Euler(0, 0, angle);
 
             SpriteRenderer sr = flashObj.AddComponent<SpriteRenderer>();
+            sr.material = defaultSpriteMaterial; // Assign default sprite material
             sr.sprite = cachedCircleSprite;
             sr.color = new Color(0.6f, 0.9f, 1f, 1f); // Pale blue
             sr.sortingOrder = 100;
 
+            // startScale is relative to the 1x1 world unit base
             Vector3 startScale = new Vector3(0.5f, 0.2f, 1f);
             flashObj.transform.localScale = startScale;
 

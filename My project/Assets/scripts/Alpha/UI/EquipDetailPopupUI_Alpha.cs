@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -183,6 +183,64 @@ namespace Alpha.UI
                 }
             }
             return result;
+        }
+
+        public void SetupForSkill(WeaponEffectSO_Alpha effect, Vector2 clickPos)
+        {
+            if (effect == null) return;
+            
+            string desc = effect.description;
+            try { desc = string.Format(effect.description, effect.GetValue(1)); } catch { }
+            
+            if (detailText != null)
+            {
+                detailText.text = $"<size=120%><b>{effect.effectName}</b></size>\n" +
+                                  $"Type: Skill\n" +
+                                  $"\n<color=#FFFF00>【効果】</color>\n<color=#CCCCCC>{desc}</color>";
+            }
+
+            if (iconImage != null)
+            {
+                iconImage.sprite = null;
+                iconImage.color = Color.clear;
+            }
+
+            PositionPopup(clickPos);
+            gameObject.SetActive(true);
+            transform.SetAsLastSibling();
+        }
+
+        private void PositionPopup(Vector2 clickPos)
+        {
+            if (transform.parent is RectTransform parentRect)
+            {
+                Canvas canvas = GetComponentInParent<Canvas>();
+                Camera cam = (canvas != null && canvas.renderMode == RenderMode.ScreenSpaceOverlay) ? null : (canvas != null ? canvas.worldCamera : null);
+
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    parentRect, 
+                    clickPos, 
+                    cam,
+                    out Vector2 localPoint);
+                
+                Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    parentRect, 
+                    screenCenter, 
+                    cam, 
+                    out Vector2 localCenter);
+                
+                Vector2 dirToCenter = (localCenter - localPoint).normalized;
+                
+                RectTransform myRect = (RectTransform)transform;
+                myRect.localPosition = localPoint + dirToCenter * offsetDistance;
+            }
+            else
+            {
+                Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
+                Vector2 dirToCenter = (screenCenter - clickPos).normalized;
+                transform.position = clickPos + dirToCenter * offsetDistance;
+            }
         }
     }
 }

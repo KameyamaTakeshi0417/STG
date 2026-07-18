@@ -90,12 +90,41 @@ namespace Alpha.UI
 
         private void UpdateUI(List<WeaponPartInstance_Alpha> choices)
         {
+            // --- Recommendation Engine ---
+            int[] scores = new int[choices.Count];
+            int maxScore = 0;
+            if (InventoryManager_Alpha.Instance != null)
+            {
+                var currentInv = InventoryManager_Alpha.Instance.equipInstance;
+                for (int i = 0; i < choices.Count; i++)
+                {
+                    if (choices[i] != null)
+                    {
+                        var dummyInstance = new InventoryManager_Alpha.EquipInstance
+                        {
+                            series = choices[i].series,
+                            partType = choices[i].partType,
+                            rarity = choices[i].quality,
+                            currentEffects = choices[i].currentEffects
+                        };
+                        scores[i] = Alpha.Core.State.RecommendationEngine_Alpha.EvaluateReward(dummyInstance, currentInv);
+                        if (scores[i] > maxScore) maxScore = scores[i];
+                    }
+                }
+            }
+
             for (int i = 0; i < 3; i++)
             {
                 if (i < choices.Count && choices[i] != null)
                 {
                     choiceButtons[i].gameObject.SetActive(true);
                     var choice = choices[i];
+                    
+                    // おすすめ判定
+                    bool isRecommended = (maxScore > 0 && scores[i] == maxScore);
+                    var glow = choiceButtons[i].gameObject.GetComponent<RecommendationGlow_Alpha>();
+                    if (glow == null) glow = choiceButtons[i].gameObject.AddComponent<RecommendationGlow_Alpha>();
+                    glow.SetRecommended(isRecommended);
                     
                     // レアリティごとの枠色設定
                     Image bg = choiceButtons[i].targetGraphic as Image;

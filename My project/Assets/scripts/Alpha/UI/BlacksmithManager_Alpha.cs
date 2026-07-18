@@ -19,6 +19,7 @@ namespace Alpha.UI
         [Header("Popup Settings")]
         public GameObject popupPanel;
         public TextMeshProUGUI popupText;
+        public EquipDetailPopupUI_Alpha detailPopup;
 
         [Header("Action Confirm UI")]
         public GameObject confirmPanel;
@@ -52,6 +53,7 @@ namespace Alpha.UI
         public Button sellModeButton;
         public Button upgradeModeButton;
         public Button nextPhaseButton;
+        public TextMeshProUGUI emptySlotText;
         
         [Header("Costs")]
         [Tooltip("装備アップグレードのコスト倍率 (現在の品質 * n)")]
@@ -78,6 +80,8 @@ namespace Alpha.UI
             
             if (confirmYesButton != null) confirmYesButton.onClick.AddListener(OnConfirmYes);
             if (confirmNoButton != null) confirmNoButton.onClick.AddListener(OnConfirmNo);
+            
+            if (detailPopup != null) detailPopup.gameObject.SetActive(false);
         }
 
         public void OpenBlacksmith()
@@ -90,9 +94,30 @@ namespace Alpha.UI
             }
 
             if (panel != null) panel.SetActive(true);
+            if (detailPopup != null) detailPopup.gameObject.SetActive(false);
 
             GenerateSkillShop();
             GeneratePartShop();
+            UpdateEmptySlotDisplay();
+        }
+
+        public void UpdateEmptySlotDisplay()
+        {
+            if (emptySlotText != null && InventoryManager_Alpha.Instance != null)
+            {
+                var inv = InventoryManager_Alpha.Instance;
+                int maxSlots = InventoryManager_Alpha.BASIC_SLOT_COUNT + inv.freeSlotCount;
+                int usedSlots = 0;
+                for (int i = 0; i < maxSlots; i++)
+                {
+                    if (i < inv.equipInstance.Count && inv.equipInstance[i].series != null)
+                    {
+                        usedSlots++;
+                    }
+                }
+                int emptySlots = maxSlots - usedSlots;
+                emptySlotText.text = $"空きスロット: {emptySlots} / {maxSlots}";
+            }
         }
 
         public void CloseBlacksmith()
@@ -133,6 +158,15 @@ namespace Alpha.UI
                 if (btn != null)
                 {
                     btn.onClick.AddListener(() => OnSkillButtonClicked(effectSO, obj));
+                    
+                    var rcd = btn.gameObject.AddComponent<RightClickDetector_Alpha>();
+                    rcd.onRightClick = (eventData) =>
+                    {
+                        if (detailPopup != null)
+                        {
+                            detailPopup.SetupForSkill(effectSO, eventData.position);
+                        }
+                    };
                 }
             }
         }
@@ -162,7 +196,7 @@ namespace Alpha.UI
                 spawnedPartButtons.Add(obj);
 
                 var texts = obj.GetComponentsInChildren<TextMeshProUGUI>();
-                if (texts.Length > 0) texts[0].text = randomSeries.seriesName + " (" + randomPartType.ToString() + ")";
+                if (texts.Length > 0) texts[0].text = randomSeries.seriesName + " (" + randomPartType.ToString() + ")\n<size=80%>Quality: " + rarity + "</size>";
                 if (texts.Length > 1) texts[1].text = "Cost: " + price + " EXP";
 
                 Image iconImg = null;
@@ -209,6 +243,15 @@ namespace Alpha.UI
                 if (btn != null)
                 {
                     btn.onClick.AddListener(() => OnPartButtonClicked(randomSeries, randomPartType, rarity, price, obj));
+                    
+                    var rcd = btn.gameObject.AddComponent<RightClickDetector_Alpha>();
+                    rcd.onRightClick = (eventData) =>
+                    {
+                        if (detailPopup != null)
+                        {
+                            detailPopup.Setup(randomSeries, randomPartType, rarity, null, eventData.position);
+                        }
+                    };
                 }
             }
         }
@@ -285,6 +328,8 @@ namespace Alpha.UI
                 newPart.rarity = rarity;
                 newPart.currentEffects = new List<WeaponEffectSO_Alpha>();
                 InventoryManager_Alpha.Instance.AddItem(newPart);
+
+                UpdateEmptySlotDisplay();
 
                 Button btn = buttonObj.GetComponent<Button>();
                 if (btn != null) btn.interactable = false;
@@ -450,6 +495,8 @@ namespace Alpha.UI
                 item.defId = "";
                 inv.equipInstance[slotIndex] = item;
                 playerStatusManager_Alpha.Instance.UpdateEquipmentBuffs();
+
+                UpdateEmptySlotDisplay();
 
                 playerStatusManager_Alpha.Instance.AddExp(totalSellValue);
 

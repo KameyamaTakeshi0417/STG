@@ -406,6 +406,98 @@ public class InventoryManager_Alpha : MonoBehaviour
 
         return item.series.bestSlot == currentPartType;
     }
+    public struct ActiveEffectInfo
+    {
+        public int count;
+        public float flatValue;
+    }
+
+    public Dictionary<Alpha.Data.WeaponEffectSO_Alpha, ActiveEffectInfo> GetAllActiveEffectQualities(int activeGroup = -1)
+    {
+        var result = new Dictionary<Alpha.Data.WeaponEffectSO_Alpha, ActiveEffectInfo>();
+        var activeFlags = new Dictionary<Alpha.Data.WeaponEffectSO_Alpha, bool>();
+        
+        bool isGlobalActive = (activeGroup == -1);
+
+        for (int i = 0; i < equipInstance.Count; i++)
+        {
+            var item = equipInstance[i];
+            if (item.series == null) continue;
+
+            int itemGroup = i / 3;
+            bool isBestSlotMet = IsBestSlotConditionMet(i);
+
+            System.Action<Alpha.Data.WeaponEffectSO_Alpha, int> processEffect = null;
+            processEffect = (effectSO, rarity) =>
+            {
+                if (effectSO == null) return;
+                
+                if (effectSO.effectType == Alpha.Data.WeaponEffectType_Alpha.Composite)
+                {
+                    var comp = effectSO as Alpha.Data.CompositeWeaponEffectSO_Alpha;
+                    if (comp != null && comp.subEffects != null)
+                    {
+                        foreach (var sub in comp.subEffects) processEffect(sub, rarity);
+                    }
+                    return;
+                }
+
+                if (effectSO.isBestSlotEffect && !isBestSlotMet) return;
+
+                if (!activeFlags.ContainsKey(effectSO)) activeFlags[effectSO] = isGlobalActive;
+                if (effectSO.isGlobalEffect || itemGroup == activeGroup)
+                {
+                    activeFlags[effectSO] = true;
+                }
+
+                if (!effectSO.accumulateGlobally && !effectSO.isGlobalEffect && activeGroup != -1 && itemGroup != activeGroup)
+                {
+                    return;
+                }
+
+                if (!result.ContainsKey(effectSO)) result[effectSO] = new ActiveEffectInfo();
+                
+                var info = result[effectSO];
+                info.count += rarity;
+                if (!effectSO.useStepMultiplier)
+                {
+                    info.flatValue += effectSO.GetValue(rarity);
+                }
+                result[effectSO] = info;
+            };
+
+            if (item.series.passiveEffects != null)
+            {
+                foreach (var spe in item.series.passiveEffects)
+                {
+                    if (spe.effect == null) continue;
+                    int appliedRarity = spe.fixedQualityOverride > 0 ? spe.fixedQualityOverride : item.rarity;
+                    processEffect(spe.effect, appliedRarity);
+                }
+            }
+
+            if (item.currentEffects != null)
+            {
+                foreach (var effectSO in item.currentEffects)
+                {
+                    if (effectSO == null) continue;
+                    processEffect(effectSO, item.rarity);
+                }
+            }
+        }
+
+        // Filter out effects that are accumulated but not active in the current group
+        var finalResult = new Dictionary<Alpha.Data.WeaponEffectSO_Alpha, ActiveEffectInfo>();
+        foreach (var kvp in result)
+        {
+            if (activeFlags.ContainsKey(kvp.Key) && activeFlags[kvp.Key])
+            {
+                finalResult[kvp.Key] = kvp.Value;
+            }
+        }
+
+        return finalResult;
+    }
 
     public float GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha effectType, int activeGroup = -1)
     {

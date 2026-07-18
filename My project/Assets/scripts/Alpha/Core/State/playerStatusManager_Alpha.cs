@@ -20,8 +20,11 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
     private float baseDamageMag;
     private float baseBlockDmg;
     private float baseBlockMag;
+    public float BaseBulletSpeedMag => baseBulletSpeedMag;
     private float baseBulletSpeedMag;
+    public float BaseBulletSpanMag => baseBulletSpanMag;
     private float baseBulletSpanMag;
+
 
     private float baseFocusStaminaCost;
     private float baseWarpStaminaCost;
