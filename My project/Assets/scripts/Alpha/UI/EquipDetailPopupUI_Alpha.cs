@@ -25,7 +25,7 @@ namespace Alpha.UI
 
             if (effects != null)
             {
-                effectStr = BuildEffectString(effects, ref isAllEquipable, "", quality, isBestSlotMet);
+                effectStr = BuildEffectString(effects, ref isAllEquipable, "", quality, isBestSlotMet, series, partType);
             }
 
             string partStr = "";
@@ -119,10 +119,11 @@ namespace Alpha.UI
             }
         }
 
-        private string BuildEffectString(List<WeaponEffectSO_Alpha> effects, ref bool isAllEquipable, string indent, int quality, bool isBestSlotMet)
+        private string BuildEffectString(List<WeaponEffectSO_Alpha> effects, ref bool isAllEquipable, string indent, int quality, bool isBestSlotMet, WeaponSeriesData_Alpha series, WeaponPartType_Alpha partType)
         {
             string result = "";
             int effectCount = 0;
+            int randomEffectCount = 0;
 
             if (effects != null)
             {
@@ -131,11 +132,36 @@ namespace Alpha.UI
                     if (eff == null) continue;
                     effectCount++;
                     
+                    bool isBestSlot = eff.isBestSlotEffect;
+                    bool isSpecific = false;
+
+                    if (series != null)
+                    {
+                        if (partType == WeaponPartType_Alpha.Bullet && series.bulletSpecificEffects != null && series.bulletSpecificEffects.Contains(eff)) isSpecific = true;
+                        if (partType == WeaponPartType_Alpha.Casing && series.casingSpecificEffects != null && series.casingSpecificEffects.Contains(eff)) isSpecific = true;
+                        if (partType == WeaponPartType_Alpha.Primer && series.primerSpecificEffects != null && series.primerSpecificEffects.Contains(eff)) isSpecific = true;
+                    }
+
+                    if (!isBestSlot && !isSpecific && string.IsNullOrEmpty(indent))
+                    {
+                        randomEffectCount++;
+                    }
+
                     // BestSlot専用効果なのに条件を満たしていない場合
-                    bool isInactive = eff.isBestSlotEffect && !isBestSlotMet;
+                    bool isInactive = isBestSlot && !isBestSlotMet;
                     string inactiveTag = isInactive ? " <color=#888888>(未発動)</color>" : "";
+                    
+                    if (isBestSlot) 
+                    {
+                        inactiveTag = " <color=#FFD700>(シリーズコンプリート時発動)</color>" + inactiveTag;
+                    }
+
                     string colorStart = isInactive ? "<color=#888888>" : "";
                     string colorEnd = isInactive ? "</color>" : "";
+                    
+                    string prefixIcon = "<color=#44FF44>■</color>"; // Green for random
+                    if (isBestSlot) prefixIcon = "<color=#FFD700>★</color>"; // Gold star for complete
+                    else if (isSpecific) prefixIcon = "<color=#FFA500>■</color>"; // Orange for specific
 
                     if (eff.effectType == WeaponEffectType_Alpha.Composite)
                     {
@@ -144,19 +170,19 @@ namespace Alpha.UI
                         {
                             // 複合スキル自体の名前を表示
                             string nameColor = isInactive ? "#888888" : "#FFDDDD";
-                            result += $"\n{indent}<color=#44FF44>■</color> <color={nameColor}>{eff.effectName}</color>{inactiveTag}";
+                            result += $"\n{indent}{prefixIcon} <color={nameColor}>{eff.effectName}</color>{inactiveTag}";
                             
                             // 中身を再帰的に展開し、インデントを1段下げる
                             if (comp.subEffects != null && comp.subEffects.Count > 0)
                             {
                                 string newIndent = string.IsNullOrEmpty(indent) ? "  " : indent + "  ";
-                                result += BuildEffectString(comp.subEffects, ref isAllEquipable, newIndent, quality, isBestSlotMet);
+                                result += BuildEffectString(comp.subEffects, ref isAllEquipable, newIndent, quality, isBestSlotMet, series, partType);
                             }
                         }
                     }
                     else
                     {
-                        string prefix = string.IsNullOrEmpty(indent) ? "<color=#44FF44>■</color>" : "└";
+                        string prefix = string.IsNullOrEmpty(indent) ? prefixIcon : "└";
                         
                         string descStr = "";
                         if (!string.IsNullOrEmpty(eff.description))
@@ -191,7 +217,7 @@ namespace Alpha.UI
             // ルート階層（インデントなし）の場合のみ、空き枠を表示
             if (string.IsNullOrEmpty(indent))
             {
-                int emptySlots = quality - effectCount;
+                int emptySlots = quality - randomEffectCount;
                 for (int i = 0; i < emptySlots; i++)
                 {
                     result += $"\n{indent}<color=#555555>□</color> <color=#888888>[ 空きスロット ]</color>";

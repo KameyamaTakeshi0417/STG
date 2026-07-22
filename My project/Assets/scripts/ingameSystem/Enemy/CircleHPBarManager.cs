@@ -16,22 +16,15 @@ public class CircleHPBarManager : MonoBehaviour
 
     public void SetCircleBar(int num)
     {
-        for (int i = 0; i < num; i++)
+        for (int i = 0; i < CircleHPBar.Length; i++)
         {
-            CircleHPBar[i].SetActive(false);
-            if (i <num)
-            {
-                CircleHPBar[i].SetActive(true);
-            }
-            Debug.Log($"[CircleHPBarManager] SetCircleBar: {num} | CircleHPBar[{i}] active: {CircleHPBar[i].activeSelf}");
+            CircleHPBar[i].SetActive(i < num);
         }
         currentCircleBarCount = num;
     }
     public void UpdateCircleBar(int targetCircle,float ratio) {
-        if (targetCircle - 1 < 0) return;
+        if (targetCircle - 1 < 0 || targetCircle - 1 >= CircleHPBar.Length) return;
         CircleHPBar[targetCircle-1].transform.Find("fill").GetComponent<Image>().fillAmount = ratio;
-
-
     }
 
 }

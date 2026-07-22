@@ -30,6 +30,7 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
     private float baseWarpStaminaCost;
     private float baseDashStaminaCost;
     private int baseHPGauge;
+    private SpecialMoveType baseSpecialMove;
 
     [Header("New Status Fields")]
     public float bulletLifeMag = 1.0f;
@@ -92,6 +93,7 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         baseWarpStaminaCost = warpStaminaCost;
         baseDashStaminaCost = dashStaminaCost;
         baseHPGauge = HPGauge;
+        baseSpecialMove = currentSpecialMove;
     }
 
     private void Start()
@@ -367,7 +369,7 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         // 優先度判定 (Focus > Warp > Dash)
         if (focusScore == 0 && warpScore == 0 && dashScore == 0)
         {
-            currentSpecialMove = SpecialMoveType.Focus;
+            currentSpecialMove = baseSpecialMove;
         }
         else
         {

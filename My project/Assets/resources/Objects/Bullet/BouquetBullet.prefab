@@ -52,8 +52,9 @@ MonoBehaviour:
   canHitBoth: 0
   originalAimDirection: {x: 0, y: 0, z: 0}
   reverseTimeRemaining: 0
+  lockedTarget: {fileID: 0}
   Objname: 
-  dmg: 100
+  dmg: 50
   Speed: 500
   DestroyTime: 300
   bullettype: 0
@@ -62,6 +63,9 @@ MonoBehaviour:
   bulletName: 
   addDmg: 0
   piercingCount: 1
+  extraShotCount: 0
+  voltTickReduceCount: 0
+  secondaryDamageMultiplier: 1
   preventAutoDestroy: 0
   localPierceDamageReductionRate: -1
   canUseAllEffects: 0

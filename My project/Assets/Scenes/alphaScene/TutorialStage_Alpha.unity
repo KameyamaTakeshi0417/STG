@@ -16379,7 +16379,7 @@ MonoBehaviour:
   bulletSpeedMag: 100
   BulletSpan: 100
   BulletSpanMag: 100
-  currentSpecialMove: 3
+  currentSpecialMove: 1
   maxStamina: 100
   currentStamina: 100
   staminaRecoveryRate: 10
@@ -18849,7 +18849,9 @@ MonoBehaviour:
   sellConfirmFormat: "\u88C5\u5099\u306E\u30B9\u30AD\u30EB\u3092\u58F2\u5374\u3057\u307E\u3059\u3002\n{0}\n\u5408\u8A08{1}\u30A8\u30FC\u30C6\u30EB\n\u3088\u308D\u3057\u304B\u3063\u305F\u3067\u3059\u304B\uFF1F"
   upgradeConfirmFormat: "\u3053\u308C\u3092\u30A2\u30C3\u30D7\u30B0\u30EC\u30FC\u30C9\u3057\u307E\u3059\u3002\n\u6D88\u8CBB\u30A8\u30FC\u30C6\u30EB:
     {0}\n\u3088\u308D\u3057\u304B\u3063\u305F\u3067\u3059\u304B\uFF1F"
-  buyConfirmFormat: "\u3053\u306E\u30B9\u30AD\u30EB\u3092\u4ED8\u4E0E\u3057\u307E\u3059\u3002\n{0}\n\u6D88\u8CBB\u30A8\u30FC\u30C6\u30EB:
+  partBuyConfirmFormat: "\u3053\u306E\u30D1\u30FC\u30C4\u3092\u8CFC\u5165\u3057\u3001\u7A7A\u304D\u30B9\u30ED\u30C3\u30C8\u306B\u88C5\u5099\u3057\u307E\u3059\u3002\n{0}\n\u6D88\u8CBB\u30A8\u30FC\u30C6\u30EB:
+    {1}\n\u3088\u308D\u3057\u304B\u3063\u305F\u3067\u3059\u304B\uFF1F"
+  skillBuyConfirmFormat: "\u9078\u629E\u3057\u305F\u88C5\u5099\u306B\u3053\u306E\u30B9\u30AD\u30EB\u3092\u4ED8\u4E0E\u3057\u307E\u3059\u3002\n{0}\n\u6D88\u8CBB\u30A8\u30FC\u30C6\u30EB:
     {1}\n\u3088\u308D\u3057\u304B\u3063\u305F\u3067\u3059\u304B\uFF1F"
   partButtonsContainer: {fileID: 949776503}
   partButtonPrefab: {fileID: 741183755808392426, guid: fa9304a3ed4429b46acb13c6f25f9d34, type: 3}

@@ -22,6 +22,9 @@ namespace Alpha.UI
         [Header("Detail Popup")]
         public EquipDetailPopupUI_Alpha detailPopup;
         
+        [Header("Effect Icon")]
+        public GameObject effectIconPrefab;
+        
         [Header("Choice Elements")]
         public Button[] choiceButtons = new Button[3];
         public TextMeshProUGUI[] choiceTexts = new TextMeshProUGUI[3];
@@ -224,6 +227,62 @@ namespace Alpha.UI
                         {
                             iconImg.sprite = null;
                             iconImg.color = Color.clear; // アイコンが無い場合は透明にする
+                        }
+                    }
+
+                    // --- EffectIconsContainer へのエフェクトアイコン生成 ---
+                    Transform effectIconsContainer = null;
+                    Transform[] allChildren = choiceButtons[i].GetComponentsInChildren<Transform>(true);
+                    foreach (Transform child in allChildren)
+                    {
+                        if (child.name == "EffectIconsContainer")
+                        {
+                            effectIconsContainer = child;
+                            break;
+                        }
+                    }
+
+                    if (effectIconsContainer == null)
+                    {
+                        Debug.LogWarning($"[RewardSelectionUI] '{choiceButtons[i].name}' の子要素に 'EffectIconsContainer' が見つかりません。");
+                    }
+                    else
+                    {
+                        // 既存のアイコンをクリア
+                        foreach (Transform child in effectIconsContainer)
+                        {
+                            Destroy(child.gameObject);
+                        }
+
+                        // エフェクトアイコンを生成
+                        if (choice.currentEffects != null && effectIconPrefab != null)
+                        {
+                            bool spawnedAny = false;
+                            foreach (var eff in choice.currentEffects)
+                            {
+                                if (eff != null && eff.effectIcon != null)
+                                {
+                                    GameObject iconObj = Instantiate(effectIconPrefab, effectIconsContainer);
+                                    iconObj.SetActive(true); // Ensure it's active
+                                    Image img = iconObj.GetComponent<Image>();
+                                    if (img == null) img = iconObj.GetComponentInChildren<Image>(); // prefabのルートになければ探す
+                                    
+                                    if (img != null)
+                                    {
+                                        img.sprite = eff.effectIcon;
+                                    }
+                                    spawnedAny = true;
+                                }
+                            }
+                            
+                            if (!spawnedAny && choice.currentEffects.Count > 0)
+                            {
+                                Debug.LogWarning($"[RewardSelectionUI] '{choice.series.seriesName}' にエフェクトはありますが、effectIconがセットされていないため生成されませんでした。");
+                            }
+                        }
+                        else if (effectIconPrefab == null)
+                        {
+                            Debug.LogWarning("[RewardSelectionUI] effectIconPrefab がインスペクタでアタッチされていません。");
                         }
                     }
                 }

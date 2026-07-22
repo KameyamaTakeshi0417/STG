@@ -23,6 +23,9 @@ namespace Alpha.UI
         public Alpha.UI.EffectDetailPopupUI_Alpha effectDetailPopup;
         private List<GameObject> spawnedActiveEffects = new List<GameObject>();
         
+        [Header("Effect Icon")]
+        public GameObject effectIconPrefab;
+        
         [Header("Grid (3x3)")]
         [Tooltip("装備枠(3x3)のボタンスロット。インデックスは 0〜8 (y*3+x)")]
         public Button[] gridSlots = new Button[9];
@@ -416,6 +419,32 @@ namespace Alpha.UI
                     text.text = $"{count} \"{effect.effectName}\"";
                 }
 
+                // アイコンを設定（"Icon" という名前の子要素を探すか、ルートの横にあるか）
+                Image iconImg = null;
+                foreach (Transform child in go.transform)
+                {
+                    if (child.name == "Icon")
+                    {
+                        iconImg = child.GetComponent<Image>();
+                        break;
+                    }
+                }
+                if (iconImg == null) iconImg = go.GetComponentInChildren<Image>();
+
+                if (iconImg != null)
+                {
+                    if (effect.effectIcon != null)
+                    {
+                        iconImg.sprite = effect.effectIcon;
+                        iconImg.color = Color.white;
+                    }
+                    else
+                    {
+                        iconImg.sprite = null;
+                        iconImg.color = Color.clear;
+                    }
+                }
+
                 var rcd = go.AddComponent<RightClickDetector_Alpha>();
                 rcd.onRightClick = (eventData) => 
                 {
@@ -524,6 +553,60 @@ namespace Alpha.UI
                 if (item.series != null)
                 {
                     Debug.LogWarning($"[InventoryUI] 装備スロット '{btn.gameObject.name}' に 'Icon' という名前の子要素(Image)がありません。枠画像を維持してアイコンを表示するために、子要素を追加してください。");
+                }
+            }
+
+            // --- EffectIconsContainer へのエフェクトアイコン生成 ---
+            Transform effectIconsContainer = null;
+            Transform[] allChildren = btn.GetComponentsInChildren<Transform>(true);
+            foreach (Transform child in allChildren)
+            {
+                if (child.name == "EffectIconsContainer")
+                {
+                    effectIconsContainer = child;
+                    break;
+                }
+            }
+
+            if (effectIconsContainer == null)
+            {
+                if (item.series != null)
+                {
+                    Debug.LogWarning($"[InventoryUI] '{btn.gameObject.name}' の子要素に 'EffectIconsContainer' が見つかりません。");
+                }
+            }
+            else
+            {
+                // 既存のアイコンをクリア
+                foreach (Transform child in effectIconsContainer)
+                {
+                    Destroy(child.gameObject);
+                }
+
+                // エフェクトアイコンを生成
+                if (item.currentEffects != null && effectIconPrefab != null)
+                {
+                    bool spawnedAny = false;
+                    foreach (var eff in item.currentEffects)
+                    {
+                        if (eff != null && eff.effectIcon != null)
+                        {
+                            GameObject iconObj = Instantiate(effectIconPrefab, effectIconsContainer);
+                            iconObj.SetActive(true);
+                            Image img = iconObj.GetComponent<Image>();
+                            if (img == null) img = iconObj.GetComponentInChildren<Image>(); // prefabのルートになければ探す
+                            
+                            if (img != null)
+                            {
+                                img.sprite = eff.effectIcon;
+                            }
+                            spawnedAny = true;
+                        }
+                    }
+                    if (!spawnedAny && item.currentEffects.Count > 0)
+                    {
+                        // Some effects don't have icons, silently ignore
+                    }
                 }
             }
         }

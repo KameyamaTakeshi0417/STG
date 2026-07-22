@@ -197,8 +197,8 @@ MonoBehaviour:
   damageTextPrefab: {fileID: 3988437868621658341, guid: 5ccc0cd62017e7542bc9974c88b5c92d, type: 3}
   DamageUIMagnitude: 0.1
   phaseHPs:
-  - 1000
-  - 1500
+  - 1800
+  - 2000
   aetherExplosionPrefab: {fileID: 7143777429072540398, guid: bf3d9a5e4dd24874cad16bf1f360f1a8, type: 3}
   defeatedSprite: {fileID: 0}
   targetSpriteRenderer: {fileID: 0}
@@ -219,6 +219,7 @@ MonoBehaviour:
   initialAttackBehavior: {fileID: 0}
   initialSummonBehavior: {fileID: 0}
   spawnWithDelay: 1
+  startDelayTime: 0
   PhaseSpawnedObjects: []
   phases:
   - phaseName: "\u6211\u6D41-\u91CE\u54B2-"

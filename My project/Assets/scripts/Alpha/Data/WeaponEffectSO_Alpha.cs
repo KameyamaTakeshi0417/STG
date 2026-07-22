@@ -73,6 +73,7 @@ namespace Alpha.Data
     {
         public WeaponEffectType_Alpha effectType;
         public string effectName;
+        public Sprite effectIcon;
         
         [TextArea(3, 10)]
         public string description;

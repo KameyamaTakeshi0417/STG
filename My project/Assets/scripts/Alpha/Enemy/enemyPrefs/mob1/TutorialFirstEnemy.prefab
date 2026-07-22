@@ -48,8 +48,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adecb30a3579caf4abf4d199f8542e7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 100
-  currentHP: 100
+  HP: 150
+  currentHP: 150
   Exp: 10
   VulnerableTime: 5
   VulnerableFlg: 0
