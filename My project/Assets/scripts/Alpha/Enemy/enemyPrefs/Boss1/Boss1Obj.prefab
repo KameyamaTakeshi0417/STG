@@ -191,9 +191,21 @@ PrefabInstance:
     m_TransformParent: {fileID: 2322101576747875659}
     m_Modifications:
     - target: {fileID: 35338557638565375, guid: 031c947099812a14486be4cde39b0ee4, type: 3}
+      propertyPath: m_Size.x
+      value: 13.78
+      objectReference: {fileID: 0}
+    - target: {fileID: 35338557638565375, guid: 031c947099812a14486be4cde39b0ee4, type: 3}
+      propertyPath: m_Size.y
+      value: 20.39
+      objectReference: {fileID: 0}
+    - target: {fileID: 35338557638565375, guid: 031c947099812a14486be4cde39b0ee4, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: a5a5d28d77fe6a240a14b3eb64eba601, type: 3}
+      objectReference: {fileID: 21300000, guid: 3439f27bc1a27d240ab012158d678283, type: 3}
+    - target: {fileID: 35338557638565375, guid: 031c947099812a14486be4cde39b0ee4, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1805729669060774162, guid: 031c947099812a14486be4cde39b0ee4, type: 3}
       propertyPath: m_Name
       value: testBOSS
@@ -205,6 +217,14 @@ PrefabInstance:
     - target: {fileID: 3133535108563501229, guid: 031c947099812a14486be4cde39b0ee4, type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3133535108563501229, guid: 031c947099812a14486be4cde39b0ee4, type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.x
+      value: 13.78
+      objectReference: {fileID: 0}
+    - target: {fileID: 3133535108563501229, guid: 031c947099812a14486be4cde39b0ee4, type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.y
+      value: 20.39
       objectReference: {fileID: 0}
     - target: {fileID: 3133535108563501229, guid: 031c947099812a14486be4cde39b0ee4, type: 3}
       propertyPath: m_SpriteTilingProperty.oldSize.x
