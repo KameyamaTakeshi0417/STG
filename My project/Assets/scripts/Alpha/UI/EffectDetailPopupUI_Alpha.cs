@@ -2,103 +2,106 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
 
 namespace Alpha.UI
 {
-    public class EffectDetailPopupUI_Alpha : MonoBehaviour
+    public class EffectDetailPopupUI_Alpha : MonoBehaviour, IPointerExitHandler, IPointerClickHandler
     {
-        [SerializeField] private TextMeshProUGUI effectNameText;
-        [SerializeField] private TextMeshProUGUI descriptionText;
-        [SerializeField] private TextMeshProUGUI stagesText;
+        [SerializeField] private TextMeshProUGUI detailText;
         [SerializeField] private RectTransform popupRect;
 
         // 余白などの設定
         [SerializeField] private Vector2 offset = new Vector2(20, -20);
         
+        private void Awake()
+        {
+            gameObject.SetActive(false);
+        }
+
         public void Setup(Alpha.Data.WeaponEffectSO_Alpha effect, int currentCount, float currentFlatValue, Vector2 pointerPos)
         {
             if (effect == null) return;
 
             gameObject.SetActive(true);
 
-            if (effectNameText != null)
+            string finalStr = $"<size=120%><b>{currentCount} \"{effect.effectName}\"</b></size>\n\n";
+            
+            if (!string.IsNullOrEmpty(effect.description))
             {
-                effectNameText.text = $"{currentCount} \"{effect.effectName}\"";
+                finalStr += $"{effect.description}\n\n";
             }
 
-            if (descriptionText != null)
-            {
-                descriptionText.text = effect.description;
-            }
+            string stagesStr = "";
 
-            if (stagesText != null)
+            if (effect.useStepMultiplier)
             {
-                string stagesStr = "";
-
-                if (effect.useStepMultiplier)
+                // Calculate which stage is currently active
+                int activeStageIndex = 0;
+                
+                // Base stage requires at least 1
+                int[] requiredCounts = new int[4];
+                requiredCounts[0] = 1;
+                for (int i = 0; i < effect.stepThresholds.Length && i < 3; i++)
                 {
-                    // Calculate which stage is currently active
-                    int activeStageIndex = 0;
+                    requiredCounts[i + 1] = effect.stepThresholds[i];
+                }
+
+                // Find highest stage met
+                for (int i = 0; i < requiredCounts.Length; i++)
+                {
+                    if (currentCount >= requiredCounts[i])
+                    {
+                        activeStageIndex = i;
+                    }
+                }
+
+                for (int i = 0; i < 4; i++)
+                {
+                    string stepDesc = "";
+                    if (effect.stepDescriptions != null && i < effect.stepDescriptions.Length)
+                    {
+                        stepDesc = effect.stepDescriptions[i];
+                    }
                     
-                    // Base stage requires at least 1
-                    int[] requiredCounts = new int[4];
-                    requiredCounts[0] = 1;
-                    for (int i = 0; i < effect.stepThresholds.Length && i < 3; i++)
-                    {
-                        requiredCounts[i + 1] = effect.stepThresholds[i];
-                    }
+                    if (string.IsNullOrEmpty(stepDesc)) continue;
 
-                    // Find highest stage met
-                    for (int i = 0; i < requiredCounts.Length; i++)
-                    {
-                        if (currentCount >= requiredCounts[i])
-                        {
-                            activeStageIndex = i;
-                        }
-                    }
+                    string colorHex = (i == activeStageIndex) ? "#FFFFFF" : "#808080"; // White for active, Gray for others
+                    string prefix = (i == activeStageIndex) ? "▶" : "・";
 
-                    for (int i = 0; i < 4; i++)
-                    {
-                        string stepDesc = "";
-                        if (effect.stepDescriptions != null && i < effect.stepDescriptions.Length)
-                        {
-                            stepDesc = effect.stepDescriptions[i];
-                        }
-                        
-                        if (string.IsNullOrEmpty(stepDesc)) continue;
-
-                        string colorHex = (i == activeStageIndex) ? "#FFFFFF" : "#808080"; // White for active, Gray for others
-                        string prefix = (i == activeStageIndex) ? "▶" : "・";
-
-                        stagesStr += $"<color={colorHex}>{prefix} [必要: {requiredCounts[i]}]\n{stepDesc}</color>\n\n";
-                    }
+                    stagesStr += $"<color={colorHex}>{prefix} [必要: {requiredCounts[i]}]\n{stepDesc}</color>\n\n";
                 }
-                else
+            }
+            else
+            {
+                // For effects without step multiplier, we format the first description string with the total flat value
+                string baseDesc = "";
+                if (effect.stepDescriptions != null && effect.stepDescriptions.Length > 0 && !string.IsNullOrEmpty(effect.stepDescriptions[0]))
                 {
-                    // For effects without step multiplier, we format the first description string with the total flat value
-                    string baseDesc = "";
-                    if (effect.stepDescriptions != null && effect.stepDescriptions.Length > 0 && !string.IsNullOrEmpty(effect.stepDescriptions[0]))
-                    {
-                        baseDesc = effect.stepDescriptions[0];
-                    }
-
-                    if (!string.IsNullOrEmpty(baseDesc))
-                    {
-                        // Try formatting it (e.g. "Attack Flat +{0}")
-                        try
-                        {
-                            stagesStr = $"<color=#FFFFFF>▶ {string.Format(baseDesc, currentFlatValue)}</color>";
-                        }
-                        catch (System.FormatException)
-                        {
-                            // Fallback if formatting fails (e.g., the user didn't put {0} or formatting is broken)
-                            stagesStr = $"<color=#FFFFFF>▶ {baseDesc}\n(Total: {currentFlatValue})</color>";
-                        }
-                    }
+                    baseDesc = effect.stepDescriptions[0];
                 }
 
-                stagesText.text = stagesStr.TrimEnd();
+                if (!string.IsNullOrEmpty(baseDesc))
+                {
+                    // Try formatting it (e.g. "Attack Flat +{0}")
+                    try
+                    {
+                        stagesStr = $"<color=#FFFFFF>▶ {string.Format(baseDesc, currentFlatValue)}</color>";
+                    }
+                    catch (System.FormatException)
+                    {
+                        // Fallback if formatting fails (e.g., the user didn't put {0} or formatting is broken)
+                        stagesStr = $"<color=#FFFFFF>▶ {baseDesc}\n(Total: {currentFlatValue})</color>";
+                    }
+                }
+            }
+
+            finalStr += stagesStr.TrimEnd();
+
+            if (detailText != null)
+            {
+                detailText.text = finalStr;
             }
 
             UpdatePosition(pointerPos);
@@ -134,6 +137,19 @@ namespace Alpha.UI
         public void Hide()
         {
             gameObject.SetActive(false);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            Hide();
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (eventData.button == PointerEventData.InputButton.Right)
+            {
+                Hide();
+            }
         }
     }
 }

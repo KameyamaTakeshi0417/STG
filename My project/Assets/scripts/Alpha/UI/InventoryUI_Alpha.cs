@@ -215,8 +215,16 @@ namespace Alpha.UI
             // 選択モードではConfirmボタン（画面を閉じるボタン）や通常の戻るボタンは非表示
             // 新たに追加したフォージ用戻るボタンを表示する
             if (confirmButton != null) confirmButton.gameObject.SetActive(false);
-            if (backButtonForCheck != null) backButtonForCheck.gameObject.SetActive(false);
-            if (backToForgeButton != null) backToForgeButton.gameObject.SetActive(true);
+            
+            if (backToForgeButton != null)
+            {
+                if (backButtonForCheck != null) backButtonForCheck.gameObject.SetActive(false);
+                backToForgeButton.gameObject.SetActive(true);
+            }
+            else if (backButtonForCheck != null)
+            {
+                backButtonForCheck.gameObject.SetActive(true);
+            }
 
             RefreshUI();
         }
@@ -408,6 +416,7 @@ namespace Alpha.UI
                 var effect = kvp.Key;
                 int count = kvp.Value.count;
                 float flatValue = kvp.Value.flatValue;
+                
                 if (count <= 0 || effect == null) continue;
 
                 GameObject go = Instantiate(activeEffectPrefab, activeEffectsContainer);
@@ -416,7 +425,25 @@ namespace Alpha.UI
                 TextMeshProUGUI text = go.GetComponentInChildren<TextMeshProUGUI>();
                 if (text != null)
                 {
-                    text.text = $"{count} \"{effect.effectName}\"";
+                    string colorTag = "";
+                    string colorEnd = "";
+                    
+                    if (effect.effectType == Alpha.Data.WeaponEffectType_Alpha.DivineExecutioner)
+                    {
+                        bool isBoss = Alpha.Flow.StageManager_Alpha.Instance != null && Alpha.Flow.StageManager_Alpha.Instance.IsBossBattleActive;
+                        if (isBoss)
+                        {
+                            colorTag = "<color=#FF4444>"; // Boss battle: Bright Red
+                            colorEnd = "</color>";
+                        }
+                        else
+                        {
+                            colorTag = "<color=#808080>"; // Normal: Gray
+                            colorEnd = "</color>";
+                        }
+                    }
+
+                    text.text = $"{colorTag}{count} \"{effect.effectName}\"{colorEnd}";
                 }
 
                 // アイコンを設定（"Icon" という名前の子要素を探すか、ルートの横にあるか）
