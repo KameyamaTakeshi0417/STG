@@ -104,6 +104,9 @@ namespace Alpha.UI
                 detailText.text = finalStr;
             }
 
+            if (popupRect == null) popupRect = GetComponent<RectTransform>();
+            UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(popupRect);
+
             UpdatePosition(pointerPos);
         }
 
@@ -111,27 +114,49 @@ namespace Alpha.UI
         {
             if (popupRect == null) popupRect = GetComponent<RectTransform>();
             
-            // Convert screen point to local point in parent canvas
-            RectTransform parentCanvasRect = GetComponentInParent<Canvas>().GetComponent<RectTransform>();
-            Vector2 localPoint;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(parentCanvasRect, pointerPos, null, out localPoint);
-
-            // Apply offset
-            localPoint += offset;
-
-            // Optional: Clamp to screen bounds to prevent popup from going off-screen
+            // テキスト変更直後の正しい横幅・高さを取得
+            UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(popupRect);
             Vector2 size = popupRect.rect.size;
-            Vector2 maxPos = parentCanvasRect.rect.max - size;
-            Vector2 minPos = parentCanvasRect.rect.min;
 
-            // Pivot adjustment (assuming pivot is top-left 0,1)
-            float pivotX = popupRect.pivot.x * size.x;
-            float pivotY = (1f - popupRect.pivot.y) * size.y;
+            Canvas canvas = GetComponentInParent<Canvas>();
+            if (canvas == null) return;
+            RectTransform canvasRect = canvas.GetComponent<RectTransform>();
 
-            localPoint.x = Mathf.Clamp(localPoint.x, minPos.x + pivotX, maxPos.x + pivotX);
-            localPoint.y = Mathf.Clamp(localPoint.y, minPos.y - pivotY, maxPos.y - pivotY);
+            // マウスが画面の右半分にあるか左半分にあるか判定
+            bool isMouseOnRight = pointerPos.x > Screen.width / 2f;
 
-            popupRect.localPosition = localPoint;
+            // 大味に配置するためのターゲットスクリーン座標
+            // Yは画面中央。Xは空いている方（マウスの逆側）の「中央やや寄り」にドンと置く
+            float targetScreenX = isMouseOnRight ? (Screen.width * 0.35f) : (Screen.width * 0.65f);
+            float targetScreenY = Screen.height / 2f;
+            Vector2 targetScreenPos = new Vector2(targetScreenX, targetScreenY);
+
+            // スクリーン座標をCanvasのローカル座標に変換
+            Vector2 canvasLocalPoint;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                canvasRect, 
+                targetScreenPos, 
+                canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera, 
+                out canvasLocalPoint);
+
+            // ---- 画面外はみ出し防止 (Clamp) ----
+            Vector2 minPos = canvasRect.rect.min;
+            Vector2 maxPos = canvasRect.rect.max;
+
+            // Pivotを考慮した限界座標を計算
+            float minX = minPos.x + popupRect.pivot.x * size.x;
+            float maxX = maxPos.x - (1f - popupRect.pivot.x) * size.x;
+            
+            float minY = minPos.y + popupRect.pivot.y * size.y;
+            float maxY = maxPos.y - (1f - popupRect.pivot.y) * size.y;
+
+            // Canvas内に完全に収まるようにClamp
+            canvasLocalPoint.x = Mathf.Clamp(canvasLocalPoint.x, minX, maxX);
+            canvasLocalPoint.y = Mathf.Clamp(canvasLocalPoint.y, minY, maxY);
+
+            // ワールド座標に変換して直接代入
+            Vector3 worldPos = canvas.transform.TransformPoint(canvasLocalPoint);
+            popupRect.position = worldPos;
         }
 
         public void Hide()

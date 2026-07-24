@@ -281,7 +281,7 @@ namespace Alpha.UI
             {
                 if (extraSlotPrefab != null && extraSlotsContainer != null)
                 {
-                    GameObject obj = Instantiate(extraSlotPrefab, extraSlotsContainer);
+                    GameObject obj = Instantiate(extraSlotPrefab, extraSlotsContainer, false);
                     Button btn = obj.GetComponent<Button>();
                     if (btn != null)
                     {
@@ -410,17 +410,33 @@ namespace Alpha.UI
             int groupToPass = (InventoryManager_Alpha.Instance.IsBouquetActive() || (playerStatusManager_Alpha.Instance != null && playerStatusManager_Alpha.Instance.isOmniBouquetOverride)) ? -1 : activeGroup;
 
             var activeEffects = InventoryManager_Alpha.Instance.GetAllActiveEffectQualities(groupToPass);
-
+            
+            Debug.Log($"[InventoryUI] UpdateActiveEffectsDisplay called. Found {activeEffects.Count} active effects.");
+            
             foreach (var kvp in activeEffects)
             {
                 var effect = kvp.Key;
                 int count = kvp.Value.count;
                 float flatValue = kvp.Value.flatValue;
                 
+                Debug.Log($"[InventoryUI] Effect: {(effect != null ? effect.effectName : "null")}, Count: {count}, FlatValue: {flatValue}");
+                
                 if (count <= 0 || effect == null) continue;
 
-                GameObject go = Instantiate(activeEffectPrefab, activeEffectsContainer);
+                GameObject go = Instantiate(activeEffectPrefab, activeEffectsContainer, false);
+                go.SetActive(true);
                 spawnedActiveEffects.Add(go);
+                
+                // ScrollView (LayoutGroup) によってWidth/Heightが0に潰されるのを防ぐため、
+                // プレハブ本来のサイズを取得してLayoutElementで強制する
+                RectTransform prefabRt = activeEffectPrefab.transform as RectTransform;
+                if (prefabRt != null)
+                {
+                    LayoutElement le = go.GetComponent<LayoutElement>();
+                    if (le == null) le = go.AddComponent<LayoutElement>();
+                    le.preferredWidth = prefabRt.sizeDelta.x;
+                    le.preferredHeight = prefabRt.sizeDelta.y;
+                }
 
                 TextMeshProUGUI text = go.GetComponentInChildren<TextMeshProUGUI>();
                 if (text != null)
@@ -446,7 +462,7 @@ namespace Alpha.UI
                     text.text = $"{colorTag}{count} \"{effect.effectName}\"{colorEnd}";
                 }
 
-                // アイコンを設定（"Icon" という名前の子要素を探すか、ルートの横にあるか）
+                // アイコンを設定（"Icon" という名前の子要素を探すか、子要素の中の最初のImageを探す）
                 Image iconImg = null;
                 foreach (Transform child in go.transform)
                 {
@@ -456,7 +472,16 @@ namespace Alpha.UI
                         break;
                     }
                 }
-                if (iconImg == null) iconImg = go.GetComponentInChildren<Image>();
+                
+                // "Icon"という名前がなかったら、ルートを避けて「子要素」からImageを探す
+                if (iconImg == null)
+                {
+                    foreach (Transform child in go.transform)
+                    {
+                        iconImg = child.GetComponent<Image>();
+                        if (iconImg != null) break;
+                    }
+                }
 
                 if (iconImg != null)
                 {
@@ -464,11 +489,6 @@ namespace Alpha.UI
                     {
                         iconImg.sprite = effect.effectIcon;
                         iconImg.color = Color.white;
-                    }
-                    else
-                    {
-                        iconImg.sprite = null;
-                        iconImg.color = Color.clear;
                     }
                 }
 
@@ -580,60 +600,6 @@ namespace Alpha.UI
                 if (item.series != null)
                 {
                     Debug.LogWarning($"[InventoryUI] 装備スロット '{btn.gameObject.name}' に 'Icon' という名前の子要素(Image)がありません。枠画像を維持してアイコンを表示するために、子要素を追加してください。");
-                }
-            }
-
-            // --- EffectIconsContainer へのエフェクトアイコン生成 ---
-            Transform effectIconsContainer = null;
-            Transform[] allChildren = btn.GetComponentsInChildren<Transform>(true);
-            foreach (Transform child in allChildren)
-            {
-                if (child.name == "EffectIconsContainer")
-                {
-                    effectIconsContainer = child;
-                    break;
-                }
-            }
-
-            if (effectIconsContainer == null)
-            {
-                if (item.series != null)
-                {
-                    Debug.LogWarning($"[InventoryUI] '{btn.gameObject.name}' の子要素に 'EffectIconsContainer' が見つかりません。");
-                }
-            }
-            else
-            {
-                // 既存のアイコンをクリア
-                foreach (Transform child in effectIconsContainer)
-                {
-                    Destroy(child.gameObject);
-                }
-
-                // エフェクトアイコンを生成
-                if (item.currentEffects != null && effectIconPrefab != null)
-                {
-                    bool spawnedAny = false;
-                    foreach (var eff in item.currentEffects)
-                    {
-                        if (eff != null && eff.effectIcon != null)
-                        {
-                            GameObject iconObj = Instantiate(effectIconPrefab, effectIconsContainer);
-                            iconObj.SetActive(true);
-                            Image img = iconObj.GetComponent<Image>();
-                            if (img == null) img = iconObj.GetComponentInChildren<Image>(); // prefabのルートになければ探す
-                            
-                            if (img != null)
-                            {
-                                img.sprite = eff.effectIcon;
-                            }
-                            spawnedAny = true;
-                        }
-                    }
-                    if (!spawnedAny && item.currentEffects.Count > 0)
-                    {
-                        // Some effects don't have icons, silently ignore
-                    }
                 }
             }
         }

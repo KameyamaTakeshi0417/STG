@@ -48,18 +48,18 @@ namespace Alpha.Core
 
         private IEnumerator HitStopRoutine(float duration, float targetTimeScale)
         {
-            // If there's an ongoing slow-mo, don't mess with originalTimeScale
             float currentScale = Time.timeScale;
-            if (currentScale > 0.01f && currentScale <= 1f)
+            // メニュー等で完全にポーズ中(0f)でなければ処理を行う
+            if (currentScale > 0.01f || hitStopCoroutine != null)
             {
                 Time.timeScale = targetTimeScale;
                 yield return new WaitForSecondsRealtime(duration);
-                Time.timeScale = originalTimeScale;
-            }
-            else
-            {
-                // If we are already paused for menus etc, don't do anything
-                yield break;
+                
+                // 終了時、ポーズ中(0f)に上書きされていなければ強制的に1fに戻す
+                if (Time.timeScale > 0f || targetTimeScale == 0f)
+                {
+                    Time.timeScale = 1f;
+                }
             }
         }
 

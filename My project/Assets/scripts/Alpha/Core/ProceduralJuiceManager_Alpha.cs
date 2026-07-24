@@ -278,12 +278,18 @@ namespace Alpha.Core
 
         private IEnumerator HitStopRoutine(float duration)
         {
-            float originalTimeScale = Time.timeScale;
-            if (originalTimeScale <= 0f) yield break; // 既に停止中なら何もしない
+            // ポーズ中(0f)なら何もしない
+            if (Time.timeScale <= 0f) yield break;
             
             Time.timeScale = 0.02f; // 極低速
             yield return new WaitForSecondsRealtime(duration);
-            Time.timeScale = originalTimeScale;
+
+            // 終了時、もしポーズ中でなければ強制的に1fに戻す
+            // これにより、複数ヒットが重なって0.02fのまま固まるバグを防ぎます
+            if (Time.timeScale > 0f) 
+            {
+                Time.timeScale = 1f;
+            }
         }
 
         private IEnumerator ScreenFlashRoutine(Color flashColor, float duration)
