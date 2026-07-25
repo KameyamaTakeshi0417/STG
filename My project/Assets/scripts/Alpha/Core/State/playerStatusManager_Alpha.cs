@@ -478,9 +478,9 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
             }
         };
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < inv.equipInstance.Count; i++)
         {
-            var item = inv.Get(i, activeGroup);
+            var item = inv.equipInstance[i];
             if (item.series == null) continue;
             
             bool found = false;

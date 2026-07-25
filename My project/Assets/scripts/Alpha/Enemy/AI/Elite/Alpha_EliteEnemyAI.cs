@@ -160,7 +160,7 @@ public class Alpha_EliteEnemyAI : Alpha_EnemyAI
         if (currentPhase.useCutIn && Alpha.UI.UltCutInController.Instance != null && currentPhase.cutInSprite != null)
         {
             Alpha.UI.UltCutInController.Instance.PlayCutIn(false, currentPhase.cutInSprite, currentPhase.phaseName);
-            yield return new WaitForSeconds(2.7f); // カットインの演出時間分待機
+            yield return new WaitForSecondsRealtime(2.7f); // カットインの演出時間分待機（TimeScaleの影響を受けないように変更）
         }
 
         // 行動を並列で実行

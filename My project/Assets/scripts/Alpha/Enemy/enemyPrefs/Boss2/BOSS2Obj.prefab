@@ -300,13 +300,13 @@ MonoBehaviour:
   phases:
   - phaseName: "\u5929\u6F0F-\u6885\u96E8\u7C60-"
     useCutIn: 1
-    cutInSprite: {fileID: 21300000, guid: 12fc85b7a53f71743afbb8b9ba8323a6, type: 3}
+    cutInSprite: {fileID: 21300000, guid: c2b1d0b810386d94893986b8acf073e5, type: 3}
     movementBehavior: {fileID: 11400000, guid: 4c6fdfbe2acfb8443b3d977eef3e744a, type: 2}
     attackBehavior: {fileID: 0}
     summonBehavior: {fileID: 11400000, guid: 516c2313f61d5e043babd8ea2108c155, type: 2}
   - phaseName: "\u5929\u6F0F-\u7D2B\u66AE-"
     useCutIn: 1
-    cutInSprite: {fileID: 21300000, guid: 12fc85b7a53f71743afbb8b9ba8323a6, type: 3}
+    cutInSprite: {fileID: 21300000, guid: c2b1d0b810386d94893986b8acf073e5, type: 3}
     movementBehavior: {fileID: 11400000, guid: 4c6fdfbe2acfb8443b3d977eef3e744a, type: 2}
     attackBehavior: {fileID: 0}
     summonBehavior: {fileID: 11400000, guid: 2ba7c846409bef14dbd2d34a90755fc9, type: 2}

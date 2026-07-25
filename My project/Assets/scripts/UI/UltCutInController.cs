@@ -132,21 +132,27 @@ namespace Alpha.UI
             txt.gameObject.SetActive(true);
             fadePanelCG.gameObject.SetActive(true);
 
-            // 背景パネルフェードイン
+            // 古いTweenが残っていると動かなくなるのを防ぐ
             Image bgImg = fadePanelImg != null ? fadePanelImg : fadePanelCG.GetComponent<Image>();
+            imgRT.DOKill();
+            txtRT.DOKill();
+            if (bgImg != null) bgImg.DOKill();
+            fadePanelCG.DOKill();
+
+            // 背景パネルフェードイン
             if (bgImg != null)
             {
                 fadePanelCG.alpha = 1f;
                 Color c = bgImg.color; c.a = 0f; bgImg.color = c;
-                bgImg.DOFade(0.4f, 0.3f).SetEase(Ease.Linear);
+                bgImg.DOFade(0.4f, 0.3f).SetEase(Ease.Linear).SetUpdate(true);
             }
             else
             {
                 fadePanelCG.alpha = 0f;
-                fadePanelCG.DOFade(0.4f, 0.3f).SetEase(Ease.Linear);
+                fadePanelCG.DOFade(0.4f, 0.3f).SetEase(Ease.Linear).SetUpdate(true);
             }
 
-            Sequence seq = DOTween.Sequence();
+            Sequence seq = DOTween.Sequence().SetUpdate(true);
 
             // スライドイン（画像）
             seq.Append(imgRT.DOAnchorPos(new Vector2(imgTargetX, imgTargetY), 0.5f).SetEase(Ease.OutBack));
@@ -164,7 +170,7 @@ namespace Alpha.UI
             seq.Join(txtRT.DOAnchorPosX(offX, 1f).SetEase(Ease.InSine));
 
             // フェードアウト
-            Tween fadeOutTween = bgImg != null ? bgImg.DOFade(0f, 0.3f) : fadePanelCG.DOFade(0f, 0.3f);
+            Tween fadeOutTween = bgImg != null ? bgImg.DOFade(0f, 0.3f).SetUpdate(true) : fadePanelCG.DOFade(0f, 0.3f).SetUpdate(true);
             seq.Append(fadeOutTween.OnComplete(() =>
             {
                 SetAllActive(false);
