@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3430308644136816122}
   - component: {fileID: 6612885051336644085}
   m_Layer: 8
-  m_Name: BOSS2
+  m_Name: BOSS3
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -256,19 +256,19 @@ MonoBehaviour:
   phases:
   - phaseName: "\u30AB\u30A4\u30AB\u3061\u3083\u3093\u3078\u306E\u30D7\u30EC\u30BC\u30F3\u30C8\uFF01"
     useCutIn: 1
-    cutInSprite: {fileID: 21300000, guid: 12fc85b7a53f71743afbb8b9ba8323a6, type: 3}
+    cutInSprite: {fileID: 21300000, guid: e5283b74399313d45bd90e1bad27340a, type: 3}
     movementBehavior: {fileID: 11400000, guid: 4c6fdfbe2acfb8443b3d977eef3e744a, type: 2}
     attackBehavior: {fileID: 0}
     summonBehavior: {fileID: 11400000, guid: 516c2313f61d5e043babd8ea2108c155, type: 2}
   - phaseName: "\u3082\u3063\u3068\u3042\u305D\u307C\u3046\u3088\uFF01"
     useCutIn: 1
-    cutInSprite: {fileID: 21300000, guid: 12fc85b7a53f71743afbb8b9ba8323a6, type: 3}
+    cutInSprite: {fileID: 21300000, guid: e5283b74399313d45bd90e1bad27340a, type: 3}
     movementBehavior: {fileID: 11400000, guid: 4c6fdfbe2acfb8443b3d977eef3e744a, type: 2}
     attackBehavior: {fileID: 0}
     summonBehavior: {fileID: 11400000, guid: 2ba7c846409bef14dbd2d34a90755fc9, type: 2}
   - phaseName: "\u3061\u3087\u3063\u3068\u672C\u6C17\u51FA\u3059\u3088\uFF01\uFF01"
     useCutIn: 1
-    cutInSprite: {fileID: 21300000, guid: 12fc85b7a53f71743afbb8b9ba8323a6, type: 3}
+    cutInSprite: {fileID: 21300000, guid: e5283b74399313d45bd90e1bad27340a, type: 3}
     movementBehavior: {fileID: 11400000, guid: 4c6fdfbe2acfb8443b3d977eef3e744a, type: 2}
     attackBehavior: {fileID: 0}
     summonBehavior: {fileID: 11400000, guid: 2ba7c846409bef14dbd2d34a90755fc9, type: 2}

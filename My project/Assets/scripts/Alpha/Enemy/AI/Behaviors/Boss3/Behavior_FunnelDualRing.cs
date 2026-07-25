@@ -23,6 +23,10 @@ public class Behavior_FunnelDualRing : EnemyBehaviorData_Base
     public float laserExpandTime = 0.3f;
     public float laserDamage = 1f;
 
+    [Header("Laser Way Setup")]
+    public int wayCount = 2;
+    public float spreadAngle = 15f;
+
     [Header("Smart Missile Burst")]
     public GameObject smartMissilePrefab;
     public int missileCount = 12;
@@ -70,14 +74,13 @@ public class Behavior_FunnelDualRing : EnemyBehaviorData_Base
         float outerAngle = 0f;
 
         // レーザーを発射しっぱなしにする（一度だけ呼ぶ）
-        // プレハブ側に2WAYレーザーのスポーンポイントが設定されている前提
         foreach (var f in inner)
         {
-            if (f != null) f.FireLasers(laserLength, laserThickness, laserExpandTime, laserDamage);
+            if (f != null) f.FireLasers(wayCount, spreadAngle, laserLength, laserThickness, laserExpandTime, laserDamage);
         }
         foreach (var f in outer)
         {
-            if (f != null) f.FireLasers(laserLength, laserThickness, laserExpandTime, laserDamage);
+            if (f != null) f.FireLasers(wayCount, spreadAngle, laserLength, laserThickness, laserExpandTime, laserDamage);
         }
 
         while (true)

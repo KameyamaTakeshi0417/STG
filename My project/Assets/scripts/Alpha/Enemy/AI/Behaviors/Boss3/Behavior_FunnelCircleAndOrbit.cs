@@ -21,6 +21,12 @@ public class Behavior_FunnelCircleAndOrbit : EnemyBehaviorData_Base
     public float laserThickness = 1.5f;
     public float laserExpandTime = 0.3f;
     public float laserDamage = 1f;
+    
+    [Header("Laser Way Setup")]
+    public int circleWayCount = 2;
+    public float circleSpreadAngle = 15f;
+    public int orbitWayCount = 1;
+    public float orbitSpreadAngle = 0f;
 
     [Header("Boss Barrage Setup")]
     public GameObject bulletPrefab;
@@ -98,8 +104,7 @@ public class Behavior_FunnelCircleAndOrbit : EnemyBehaviorData_Base
             // 発射
             foreach (var f in funnels)
             {
-                // ここでは2WAYプレハブをFunnel側にセットしている想定なので、そのまま発射を呼ぶ
-                if (f != null) f.FireLasers(laserLength, laserThickness, laserExpandTime, laserDamage);
+                if (f != null) f.FireLasers(circleWayCount, circleSpreadAngle, laserLength, laserThickness, laserExpandTime, laserDamage);
             }
 
             // 発射持続時間は0.5秒程度と仮定（ビームの生存時間はFunnelController側やプレハブ側で管理、もしくは一定時間後に消す）
@@ -146,7 +151,7 @@ public class Behavior_FunnelCircleAndOrbit : EnemyBehaviorData_Base
                 fireTimer = 0f;
                 foreach (var f in funnels)
                 {
-                    if (f != null) f.FireLasers(laserLength, laserThickness, laserExpandTime, laserDamage);
+                    if (f != null) f.FireLasers(orbitWayCount, orbitSpreadAngle, laserLength, laserThickness, laserExpandTime, laserDamage);
                 }
                 
                 // 0.5秒後に消す処理を非同期で走らせる
