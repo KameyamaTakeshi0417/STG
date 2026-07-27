@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6250805645477690970}
   - component: {fileID: 512029612984387780}
   - component: {fileID: 8137391474229667015}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SmartMissile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -64,7 +64,7 @@ CapsuleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -110,9 +110,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
-  speed: 15
-  homingDuration: 2
-  turnSpeed: 180
+  speed: 10
+  homingDuration: 1
+  turnSpeed: 90
   wobbleFrequency: 5
   wobbleAmplitude: 30
 --- !u!1 &4955496017130109291
@@ -125,7 +125,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6055068788086885600}
   - component: {fileID: 2556258695044853464}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}

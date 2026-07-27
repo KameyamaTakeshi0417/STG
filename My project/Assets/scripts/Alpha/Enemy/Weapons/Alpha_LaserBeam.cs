@@ -33,14 +33,33 @@ namespace Alpha.Enemy.Weapons
             lineRenderer = GetComponent<LineRenderer>();
             
             boxCollider.isTrigger = true;
-            // レーザーの始点はローカル0,0で、上（Y軸方向）に伸びる想定
             lineRenderer.useWorldSpace = false;
             lineRenderer.positionCount = 2;
+        }
+
+        void Start()
+        {
+            ApplyLaserSettings();
+            SetThickness(0f); // 初回は太さ0
+        }
+
+        public void Setup(float newLength, float newThickness, float newExpandTime, float newDamage)
+        {
+            this.length = newLength;
+            this.targetThickness = newThickness;
+            this.expandDuration = newExpandTime;
+            this.damage = newDamage;
+
+            if (lineRenderer != null)
+            {
+                ApplyLaserSettings();
+            }
+        }
+
+        private void ApplyLaserSettings()
+        {
             lineRenderer.SetPosition(0, Vector3.zero);
             lineRenderer.SetPosition(1, new Vector3(0, length, 0));
-            
-            // 初回は太さ0
-            SetThickness(0f);
         }
 
         void OnEnable()

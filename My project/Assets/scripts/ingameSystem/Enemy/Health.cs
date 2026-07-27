@@ -153,8 +153,12 @@ public class Health : _Health_Base
 
     public void ShowDamage(float damage)
     {
+        if (damageTextPrefab == null) return;
+
         // ダメージテキストの生成
         GameObject damageTextInstance = Instantiate(damageTextPrefab, canvasTransform);
+        if (damageTextInstance == null) return;
+
         damageTextInstance.GetComponent<RectTransform>().localPosition = Vector3.zero;
 
         // テキストのスケールを調整
@@ -162,6 +166,10 @@ public class Health : _Health_Base
             Vector3.one * DamageUIMagnitude;
 
         // テキスト内容を設定
-        damageTextInstance.GetComponent<DamageUI3D>().damage = damage;
+        var damageUI = damageTextInstance.GetComponent<DamageUI3D>();
+        if (damageUI != null)
+        {
+            damageUI.damage = damage;
+        }
     }
 }

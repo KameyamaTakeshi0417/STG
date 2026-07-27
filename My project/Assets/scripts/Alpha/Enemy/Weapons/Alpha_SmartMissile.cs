@@ -17,9 +17,9 @@ namespace Alpha.Enemy.Weapons
 
         [Header("Missile Settings")]
         public MissileType type = MissileType.Straight;
-        public float speed = 15f;
-        public float homingDuration = 2f; // For SmallHoming
-        public float turnSpeed = 180f; // degrees per second
+        public float speed = 8f; // 15fから低下
+        public float homingDuration = 2f; 
+        public float turnSpeed = 90f; // 180fから低下
         public float wobbleFrequency = 5f;
         public float wobbleAmplitude = 30f;
 
@@ -35,6 +35,20 @@ namespace Alpha.Enemy.Weapons
         {
             rb = GetComponent<Rigidbody2D>();
             wobbleOffset = Random.Range(0f, 100f);
+
+            // 飛行機雲（残像）の追加
+            TrailRenderer tr = GetComponent<TrailRenderer>();
+            if (tr == null)
+            {
+                tr = gameObject.AddComponent<TrailRenderer>();
+            }
+            tr.time = 0.4f; // 残像の長さ（秒）
+            tr.startWidth = 0.3f;
+            tr.endWidth = 0f;
+            tr.material = new Material(Shader.Find("Sprites/Default"));
+            tr.startColor = new Color(1f, 1f, 1f, 0.7f);
+            tr.endColor = new Color(1f, 1f, 1f, 0f);
+            tr.sortingOrder = -1; // 弾より奥に描画
         }
 
         void Start()
@@ -81,30 +95,44 @@ namespace Alpha.Enemy.Weapons
                     break;
 
                 case MissileType.EliteHoming:
-                    // 予測エイム：相手の移動ベクトルを考慮した未来位置
-                    Vector2 targetPos = playerTarget.position;
-                    if (playerRb != null)
+                    if (aliveTime <= homingDuration)
                     {
-                        // 弾が相手に到達するまでの概算時間を計算し、その分だけ未来位置を予測
-                        float dist = Vector2.Distance(transform.position, targetPos);
-                        float timeToReach = dist / speed;
-                        targetPos += playerRb.velocity * (timeToReach * 0.5f); // 予測しすぎないよう調整
+                        // 予測エイム：相手の移動ベクトルを考慮した未来位置
+                        Vector2 targetPos = playerTarget.position;
+                        if (playerRb != null)
+                        {
+                            // 弾が相手に到達するまでの概算時間を計算し、その分だけ未来位置を予測
+                            float dist = Vector2.Distance(transform.position, targetPos);
+                            float timeToReach = dist / speed;
+                            targetPos += playerRb.velocity * (timeToReach * 0.5f); // 予測しすぎないよう調整
+                        }
+                        Homing(targetPos);
                     }
-                    Homing(targetPos);
+                    else
+                    {
+                        rb.velocity = transform.up * speed;
+                    }
                     break;
 
                 case MissileType.Baka:
-                    // 対象の大まかな方向に向かいつつ、サイン波でブレる
-                    Vector2 baseDir = (playerTarget.position - transform.position).normalized;
-                    float angle = Mathf.Atan2(baseDir.y, baseDir.x) * Mathf.Rad2Deg;
-                    
-                    // ブレを加算
-                    float wobble = Mathf.Sin(aliveTime * wobbleFrequency + wobbleOffset) * wobbleAmplitude;
-                    angle += wobble - 90f; // -90 for transform.up alignment
+                    if (aliveTime <= homingDuration)
+                    {
+                        // 対象の大まかな方向に向かいつつ、サイン波でブレる
+                        Vector2 baseDir = (playerTarget.position - transform.position).normalized;
+                        float angle = Mathf.Atan2(baseDir.y, baseDir.x) * Mathf.Rad2Deg;
+                        
+                        // ブレを加算
+                        float wobble = Mathf.Sin(aliveTime * wobbleFrequency + wobbleOffset) * wobbleAmplitude;
+                        angle += wobble - 90f; // -90 for transform.up alignment
 
-                    Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
-                    transform.rotation = Quaternion.RotateTowards(transform.rotation, q, turnSpeed * Time.fixedDeltaTime);
-                    rb.velocity = transform.up * speed;
+                        Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
+                        transform.rotation = Quaternion.RotateTowards(transform.rotation, q, turnSpeed * Time.fixedDeltaTime);
+                        rb.velocity = transform.up * speed;
+                    }
+                    else
+                    {
+                        rb.velocity = transform.up * speed;
+                    }
                     break;
             }
         }
@@ -121,7 +149,7 @@ namespace Alpha.Enemy.Weapons
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.CompareTag("Player") || collision.CompareTag("PlayerBullet"))
+            if (collision.CompareTag("Player"))
             {
                 // ボムやプレイヤー接触で消える場合
                 // ダメージ処理はAlpha_Bullet_Controllerなどの別のスクリプトに任せるか、ここで実装
