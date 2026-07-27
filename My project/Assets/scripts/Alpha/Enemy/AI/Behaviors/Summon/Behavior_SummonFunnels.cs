@@ -34,6 +34,14 @@ public class Behavior_SummonFunnels : EnemyBehaviorData_Base
 {
     public List<FunnelGroupConfig> funnelGroups;
 
+    [Header("Phase Transition")]
+    [Tooltip("すべてのファンネルが破壊された時に切り替える攻撃行動（発狂モード）。未設定なら何もしません。")]
+    public EnemyBehaviorData_Base enrageAttackBehavior;
+    [Tooltip("発狂モード移行時にボスのスプライト色を変更するか")]
+    public bool changeColorOnEnrage = true;
+    [Tooltip("発狂時のボスの色")]
+    public Color enrageColor = new Color(1f, 0.3f, 0.3f, 1f); // 少し赤くする
+
     public override IEnumerator RunBehavior(Alpha_EnemyAI ai)
     {
         if (funnelGroups == null || funnelGroups.Count == 0) yield break;
@@ -57,7 +65,6 @@ public class Behavior_SummonFunnels : EnemyBehaviorData_Base
                     float offset = (360f / group.count) * i;
                     fc.currentAngle = offset + group.initialAngleOffset;
                     fc.aimMode = group.aimMode;
-
                     fc.wayCount = group.wayCount;
                     fc.spreadAngle = group.spreadAngle;
                     fc.laserLength = group.laserLength;
@@ -69,15 +76,42 @@ public class Behavior_SummonFunnels : EnemyBehaviorData_Base
                     fc.fireDuration = group.fireDuration;
                 }
 
-                // AIの管理下に追加（ボス死亡時に一緒に消えるようにする等）
+                // AIの管理下に追加（全滅チェックや死亡時の破棄用）
                 ai.PhaseSpawnedObjects.Add(obj);
             }
         }
 
-        // 召喚が終わったら、この行動としては「完了（または維持）」
-        // 召喚ビヘイビアが抜け落ちないよう無限待機
+        // 召喚が終わったら、ファンネルの全滅を監視する
         while (true)
         {
+            // Nullまたは非アクティブなもの（破壊されたもの）をリストから除外
+            ai.PhaseSpawnedObjects.RemoveAll(x => x == null || !x.activeInHierarchy);
+
+            // ファンネルが全滅した場合
+            if (ai.PhaseSpawnedObjects.Count == 0)
+            {
+                if (enrageAttackBehavior != null)
+                {
+                    Debug.Log("[Behavior_SummonFunnels] All funnels destroyed! Triggering Enrage Attack Behavior.");
+                    // Attackスロットのビヘイビアを発狂モードに置換する
+                    ai.StartBehavior(Alpha_EnemyAI.BehaviorSlot.Attack, enrageAttackBehavior);
+
+                    // スプライトを赤くする
+                    if (changeColorOnEnrage)
+                    {
+                        // 子オブジェクトも含めて全てのスプライトレンダラーを取得
+                        SpriteRenderer[] renderers = ai.GetComponentsInChildren<SpriteRenderer>();
+                        foreach (var sr in renderers)
+                        {
+                            sr.color = enrageColor;
+                        }
+                    }
+                }
+                
+                // 監視ループを抜けて、この召喚ビヘイビアを完了する
+                break;
+            }
+
             yield return null;
         }
     }

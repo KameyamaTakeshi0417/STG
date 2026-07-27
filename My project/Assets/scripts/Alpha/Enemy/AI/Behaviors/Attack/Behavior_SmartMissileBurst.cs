@@ -6,12 +6,25 @@ using Alpha.Enemy.Weapons;
 [CreateAssetMenu(fileName = "Behavior_SmartMissileBurst", menuName = "Alpha/Enemy AI/Behaviors/Attack/Smart Missile Burst")]
 public class Behavior_SmartMissileBurst : EnemyBehaviorData_Base
 {
+    public enum FirePattern
+    {
+        Random,
+        RadialCW,
+        RadialCCW
+    }
+
     [Header("Smart Missile Burst")]
     public GameObject smartMissilePrefab;
     public int missileCount = 12;
     public float missileBurstInterval = 0.1f; // 発射間隔
     public float missileCooldown = 10f;       // 発射後のクールタイム
     public Vector2 spawnOffset = Vector2.zero;
+
+    [Header("Pattern Settings")]
+    public FirePattern firePattern = FirePattern.RadialCW;
+    public float spreadAngle = 360f;
+    [Tooltip("放射状発射の開始角度オフセット")]
+    public float startAngleOffset = 0f;
 
     public override IEnumerator RunBehavior(Alpha_EnemyAI ai)
     {
@@ -43,22 +56,33 @@ public class Behavior_SmartMissileBurst : EnemyBehaviorData_Base
                 // バースト発射
                 Transform player = GameObject.FindGameObjectWithTag("Player")?.transform;
 
+                float angleStep = spreadAngle / Mathf.Max(1, missileCount);
+
                 for (int i = 0; i < missileCount; i++)
                 {
-                    Vector2 fireDir = Vector2.down;
-                    if (player != null)
+                    float finalAngle = 0f;
+
+                    if (firePattern == FirePattern.Random)
                     {
-                        // プレイヤーの方向に大まかに向けて発射
-                        fireDir = (player.position - ai.transform.position).normalized;
-                        // 少しブレさせる
-                        float angleOffset = Random.Range(-25f, 25f);
-                        fireDir = Quaternion.Euler(0, 0, angleOffset) * fireDir;
+                        Vector2 fireDir = Vector2.down;
+                        if (player != null)
+                        {
+                            fireDir = (player.position - ai.transform.position).normalized;
+                            float randomOffset = Random.Range(-spreadAngle/2f, spreadAngle/2f);
+                            fireDir = Quaternion.Euler(0, 0, randomOffset) * fireDir;
+                        }
+                        finalAngle = Mathf.Atan2(fireDir.y, fireDir.x) * Mathf.Rad2Deg - 90f;
+                    }
+                    else
+                    {
+                        // 放射状発射（360度を等分）
+                        float directionMultiplier = (firePattern == FirePattern.RadialCW) ? -1f : 1f;
+                        finalAngle = startAngleOffset + (angleStep * i * directionMultiplier);
                     }
                     
-                    float angle = Mathf.Atan2(fireDir.y, fireDir.x) * Mathf.Rad2Deg - 90f;
                     Vector3 spawnPos = ai.transform.position + (Vector3)spawnOffset;
                     
-                    GameObject missileObj = Instantiate(smartMissilePrefab, spawnPos, Quaternion.Euler(0, 0, angle));
+                    GameObject missileObj = Instantiate(smartMissilePrefab, spawnPos, Quaternion.Euler(0, 0, finalAngle));
                     Alpha_SmartMissile smartMissile = missileObj.GetComponent<Alpha_SmartMissile>();
                     
                     if (smartMissile != null)

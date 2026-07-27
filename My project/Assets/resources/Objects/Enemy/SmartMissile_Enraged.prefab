@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 512029612984387780}
   - component: {fileID: 8137391474229667015}
   m_Layer: 7
-  m_Name: SmartMissile
+  m_Name: SmartMissile_Enraged
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -110,14 +110,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
-  turnSpeed: 100
+  turnSpeed: 180
   wobbleFrequency: 5
   wobbleAmplitude: 30
-  initialFlightDuration: 2
-  initialSpeed: 8
+  initialFlightDuration: 1
+  initialSpeed: 15
   minSpeed: 0.5
   homingDuration: 1
-  homingSpeed: 15
+  homingSpeed: 25
   damage: 18
 --- !u!1 &4955496017130109291
 GameObject:

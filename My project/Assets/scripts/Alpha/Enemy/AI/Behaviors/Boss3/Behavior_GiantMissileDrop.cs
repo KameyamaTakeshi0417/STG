@@ -72,6 +72,18 @@ public class Behavior_GiantMissileDrop : EnemyBehaviorData_Base
                         Debug.Log($"[GiantMissileDrop] Dealt {selfDamage} damage to Boss itself.");
                     }
                 }
+                // プレイヤーによって破壊された場合の処理
+                else if (resultDestroyed.HasValue && resultDestroyed.Value)
+                {
+                    // ボスのみにダメージを与える（プレイヤーへのダメージは無し）
+                    Alpha_EliteHealth bossHealth = ai.GetComponent<Alpha_EliteHealth>();
+                    if (bossHealth != null)
+                    {
+                        float selfDamage = bossHealth.HP * selfDamageRatio;
+                        bossHealth.TakeDamage(selfDamage);
+                        Debug.Log($"[GiantMissileDrop] Missile destroyed by player! Dealt {selfDamage} damage to Boss itself.");
+                    }
+                }
             }
         }
 

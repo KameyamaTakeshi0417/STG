@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Alpha.Core.Utils;
 
 namespace Alpha.Enemy.Weapons
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class Alpha_SmartMissile : MonoBehaviour
+    public class Alpha_SmartMissile : MonoBehaviour, IBombDestructible
     {
         public enum MissileType
         {
@@ -17,18 +18,24 @@ namespace Alpha.Enemy.Weapons
 
         [Header("Missile Settings")]
         public MissileType type = MissileType.Straight;
-        public float speed = 8f; // 15fから低下
-        public float homingDuration = 2f; 
-        public float turnSpeed = 90f; // 180fから低下
+        public float turnSpeed = 90f;
         public float wobbleFrequency = 5f;
         public float wobbleAmplitude = 30f;
+
+        [Header("Phase 1: Initial Spread")]
+        public float initialFlightDuration = 0.5f;
+        public float initialSpeed = 15f;
+        public float minSpeed = 2f; // 展開終了時の最低速度
+
+        [Header("Phase 2 & 3: Homing & Straight")]
+        public float homingDuration = 2f;
+        public float homingSpeed = 12f;
 
         private Rigidbody2D rb;
         private Transform playerTarget;
         private Rigidbody2D playerRb;
         
         private float aliveTime = 0f;
-        private Vector2 currentVelocity;
         private float wobbleOffset = 0f;
 
         void Awake()
@@ -62,97 +69,117 @@ namespace Alpha.Enemy.Weapons
             }
 
             // 初期速度設定
-            currentVelocity = transform.up * speed;
-            rb.velocity = currentVelocity;
+            rb.velocity = transform.up * initialSpeed;
         }
 
         void FixedUpdate()
         {
             aliveTime += Time.fixedDeltaTime;
             
-            if (playerTarget == null)
+            float currentSpeed = initialSpeed;
+
+            // --- Phase 1: 初動航行（直進・減速） ---
+            if (aliveTime <= initialFlightDuration)
             {
-                rb.velocity = transform.up * speed;
+                // initialSpeed から minSpeed へ徐々に減速する
+                float t = aliveTime / initialFlightDuration;
+                // Ease-out (最初早く減速して最後ゆっくりになる)
+                t = Mathf.Sin(t * Mathf.PI * 0.5f);
+                currentSpeed = Mathf.Lerp(initialSpeed, minSpeed, t);
+                
+                rb.velocity = transform.up * currentSpeed;
                 return;
             }
 
-            switch (type)
+            // --- Phase 2 & 3 以降の速度管理 ---
+            // Phase2に入ったら minSpeed から homingSpeed へ徐々に加速
+            float homingPassedTime = aliveTime - initialFlightDuration;
+            float homingT = Mathf.Clamp01(homingPassedTime / 0.5f); // 0.5秒かけて加速
+            currentSpeed = Mathf.Lerp(minSpeed, homingSpeed, homingT);
+
+            if (playerTarget == null)
             {
-                case MissileType.Straight:
-                    // 直進（初期の向きのまま）
-                    rb.velocity = transform.up * speed;
-                    break;
+                rb.velocity = transform.up * currentSpeed;
+                return;
+            }
 
-                case MissileType.SmallHoming:
-                    if (aliveTime <= homingDuration)
-                    {
-                        Homing(playerTarget.position);
-                    }
-                    else
-                    {
-                        rb.velocity = transform.up * speed;
-                    }
-                    break;
+            // --- Phase 2: 追尾航行 ---
+            if (homingPassedTime <= homingDuration)
+            {
+                switch (type)
+                {
+                    case MissileType.Straight:
+                        // 直進
+                        rb.velocity = transform.up * currentSpeed;
+                        break;
 
-                case MissileType.EliteHoming:
-                    if (aliveTime <= homingDuration)
-                    {
-                        // 予測エイム：相手の移動ベクトルを考慮した未来位置
+                    case MissileType.SmallHoming:
+                        Homing(playerTarget.position, currentSpeed);
+                        break;
+
+                    case MissileType.EliteHoming:
                         Vector2 targetPos = playerTarget.position;
                         if (playerRb != null)
                         {
-                            // 弾が相手に到達するまでの概算時間を計算し、その分だけ未来位置を予測
                             float dist = Vector2.Distance(transform.position, targetPos);
-                            float timeToReach = dist / speed;
-                            targetPos += playerRb.velocity * (timeToReach * 0.5f); // 予測しすぎないよう調整
+                            float timeToReach = dist / currentSpeed;
+                            targetPos += playerRb.velocity * (timeToReach * 0.5f);
                         }
-                        Homing(targetPos);
-                    }
-                    else
-                    {
-                        rb.velocity = transform.up * speed;
-                    }
-                    break;
+                        Homing(targetPos, currentSpeed);
+                        break;
 
-                case MissileType.Baka:
-                    if (aliveTime <= homingDuration)
-                    {
-                        // 対象の大まかな方向に向かいつつ、サイン波でブレる
+                    case MissileType.Baka:
                         Vector2 baseDir = (playerTarget.position - transform.position).normalized;
                         float angle = Mathf.Atan2(baseDir.y, baseDir.x) * Mathf.Rad2Deg;
-                        
-                        // ブレを加算
-                        float wobble = Mathf.Sin(aliveTime * wobbleFrequency + wobbleOffset) * wobbleAmplitude;
-                        angle += wobble - 90f; // -90 for transform.up alignment
+                        float wobble = Mathf.Sin(homingPassedTime * wobbleFrequency + wobbleOffset) * wobbleAmplitude;
+                        angle += wobble - 90f;
 
                         Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
                         transform.rotation = Quaternion.RotateTowards(transform.rotation, q, turnSpeed * Time.fixedDeltaTime);
-                        rb.velocity = transform.up * speed;
-                    }
-                    else
-                    {
-                        rb.velocity = transform.up * speed;
-                    }
-                    break;
+                        rb.velocity = transform.up * currentSpeed;
+                        break;
+                }
+            }
+            // --- Phase 3: 最終航行（直進） ---
+            else
+            {
+                rb.velocity = transform.up * currentSpeed;
             }
         }
 
-        private void Homing(Vector2 targetPos)
+        private void Homing(Vector2 targetPos, float currentSpeed)
         {
             Vector2 direction = (targetPos - (Vector2)transform.position).normalized;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
-            Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
-            
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, turnSpeed * Time.fixedDeltaTime);
-            rb.velocity = transform.up * speed;
+            Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, q, turnSpeed * Time.fixedDeltaTime);
+            rb.velocity = transform.up * currentSpeed;
+        }
+
+        [Header("Damage Settings")]
+        public float damage = 1f;
+
+        // --- IBombDestructible Implementation ---
+        public bool canDestructByBomb { get; set; } = true;
+
+        public void OnBombDestruct()
+        {
+            if (canDestructByBomb)
+            {
+                // ボムで消される時の処理
+                Destroy(gameObject);
+            }
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
             if (collision.CompareTag("Player"))
             {
-                // ボムやプレイヤー接触で消える場合
-                // ダメージ処理はAlpha_Bullet_Controllerなどの別のスクリプトに任せるか、ここで実装
+                PlayerHealth ph = collision.GetComponent<PlayerHealth>();
+                if (ph != null)
+                {
+                    ph.TakeDamage(damage);
+                }
                 Destroy(gameObject);
             }
         }
