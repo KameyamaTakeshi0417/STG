@@ -46,8 +46,9 @@ public class CirculatorEnemy : _Health_Base, IAlphaPoolable
 
     private float attackTimer = 0f;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         // 初期HPを設定
         currentHP = HP;
     }
@@ -122,8 +123,9 @@ public class CirculatorEnemy : _Health_Base, IAlphaPoolable
         // エフェクトのクリアなどがあればここに記述
     }
 
-    private void Update()
+    protected override void Update()
     {
+        base.Update();
         HandleMovement();
         HandleRotation();
         HandleAttack();

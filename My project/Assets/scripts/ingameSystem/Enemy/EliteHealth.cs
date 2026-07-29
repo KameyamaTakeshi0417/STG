@@ -21,7 +21,7 @@ public class EliteHealth : Health
         }
     }
 
-    void Awake() { }
+    protected override void Awake() { base.Awake(); }
 
     // ダメージを受け取るメソッド
     public override void TakeDamage(float damage)

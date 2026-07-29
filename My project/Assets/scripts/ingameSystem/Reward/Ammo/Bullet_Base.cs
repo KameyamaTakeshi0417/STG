@@ -474,6 +474,9 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
 
     public void OnBombDestruct()
     {
+        // プレイヤーの弾（isEnemyBullet == false）はボムで消えない
+        if (!isEnemyBullet) return;
+
         if (canDestructByBomb)
         {
             if (isEnemyBullet)

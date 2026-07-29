@@ -12,7 +12,7 @@ public class Health : _Health_Base
     public GameObject damageTextPrefab; // ダメージ表示用のプレハブ
     public float DamageUIMagnitude = 0.1f;
 
-    void Start()
+    protected virtual void Start()
     {
         currentHP = HP;
         m_handler = gameObject.GetComponent<HPBar_Base>();
@@ -50,7 +50,7 @@ public class Health : _Health_Base
 
     protected bool isDead = false;
 
-    void Awake() { }
+    protected override void Awake() { base.Awake(); }
 
     // ダメージを受け取るメソッド
     public override void TakeDamage(float damage)

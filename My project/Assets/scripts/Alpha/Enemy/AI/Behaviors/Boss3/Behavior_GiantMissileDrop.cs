@@ -13,8 +13,6 @@ public class Behavior_GiantMissileDrop : EnemyBehaviorData_Base
     public Vector2 spawnOffset = new Vector2(0, 15f);
 
     [Header("Damage Setup")]
-    [Tooltip("プレイヤーのゲージに対して喰らわせる倍率 (1.1で1本と少し)")]
-    public float playerGaugeDamageMultiplier = 1.1f;
     [Tooltip("ボス自身が負うダメージ（自身の最大HPの割合、0.5で50%）")]
     public float selfDamageRatio = 0.5f;
 
@@ -53,15 +51,22 @@ public class Behavior_GiantMissileDrop : EnemyBehaviorData_Base
                 // 時間切れで落下した場合の処理
                 if (resultDestroyed.HasValue && !resultDestroyed.Value)
                 {
-                    // プレイヤーへの大ダメージ
+                    // プレイヤーへの大ダメージ (普通のダメージ処理として巨大な爆発判定を生成)
                     PlayerHealth playerHealth = Object.FindAnyObjectByType<PlayerHealth>();
-                    if (playerHealth != null)
-                    {
-                        // 1.1ゲージ分のダメージを計算（HPプロパティは現在の最大HP/ゲージ最大を保持すると想定）
-                        float damage = playerHealth.HP * playerGaugeDamageMultiplier;
-                        playerHealth.TakeDamage(damage);
-                        Debug.Log($"[GiantMissileDrop] Missile impact! Dealt {damage} damage to player.");
-                    }
+                    float damage = (playerHealth != null) ? playerHealth.HP : 100f;
+
+                    GameObject explosionObj = new GameObject("GiantMissileExplosion");
+                    explosionObj.transform.position = Vector3.zero; // 画面全体
+                    
+                    CircleCollider2D col = explosionObj.AddComponent<CircleCollider2D>();
+                    col.isTrigger = true;
+                    col.radius = 50f; // 画面を覆うサイズ
+                    
+                    Alpha_GiantMissileExplosion explosion = explosionObj.AddComponent<Alpha_GiantMissileExplosion>();
+                    explosion.damage = damage;
+                    explosion.duration = 3f; // 3秒間持続して無敵切れを狙う
+                    
+                    Debug.Log($"[GiantMissileDrop] Missile impact! Created giant explosion dealing {damage} damage.");
 
                     // 自身への50%ダメージ
                     Alpha_EliteHealth bossHealth = ai.GetComponent<Alpha_EliteHealth>();

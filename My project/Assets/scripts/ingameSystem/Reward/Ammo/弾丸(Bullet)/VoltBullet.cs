@@ -8,7 +8,7 @@ public class VoltBullet : Bullet_Base
     void Start() { }
 
     // Update is called once per frame
-    void Update() { }
+    protected override void Update() { base.Update(); }
 
     protected override void OnTriggerEnter2D(Collider2D collision)
     {
@@ -26,15 +26,11 @@ public class VoltBullet : Bullet_Base
                 }
             }
 
-            // HP繧呈戟縺､繧ｳ繝ｳ繝昴・繝阪Φ繝医ｒ蜿門ｾ・
             Health health = collision.GetComponent<Health>();
             if (health != null)
             {
-                // 蠑ｾ閾ｪ菴薙・蝓ｺ譛ｬ繝繝｡繝ｼ繧ｸ繧剃ｸ弱∴繧・
                 health.ApplyDamage(dmg);
             }
-
-            // 蠑ｾ繧堤ｴ螢奇ｼ郁ｲｫ騾壹↑縺ｩ縺ｮ繝√ぉ繝・け・・
             DestroyCheck();
         }
         else if (collision.CompareTag("wall"))
@@ -51,4 +47,3 @@ public class VoltBullet : Bullet_Base
         }
     }
 }
-

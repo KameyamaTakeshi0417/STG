@@ -25,6 +25,11 @@ public class CircleHPBarManager : MonoBehaviour
     public void UpdateCircleBar(int targetCircle,float ratio) {
         if (targetCircle - 1 < 0 || targetCircle - 1 >= CircleHPBar.Length) return;
         CircleHPBar[targetCircle-1].transform.Find("fill").GetComponent<Image>().fillAmount = ratio;
+        
+        // 跨いだ上のゲージを空にする
+        for (int i = targetCircle; i < currentCircleBarCount; i++) {
+            CircleHPBar[i].transform.Find("fill").GetComponent<Image>().fillAmount = 0f;
+        }
     }
 
 }

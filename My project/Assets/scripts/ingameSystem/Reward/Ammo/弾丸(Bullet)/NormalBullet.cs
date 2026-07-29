@@ -10,18 +10,18 @@ public class NormalBullet : Bullet_Base
     void Start() { }
 
     // Update is called once per frame
-    void Update() { }
+    protected override void Update() { base.Update(); }
 
     protected override void OnTriggerEnter2D(Collider2D collision)
     {
         if (!gameObject.activeInHierarchy) return;
 
-        // 衝突したオブジェクト�EタグをチェチE��
+        // 衝突したオブジェクトのタグをチェック
         if (collision.CompareTag("Enemy") || collision.CompareTag("Player"))
         {
             base.callHitEffect();
 
-            // 弾の追加効果（アクチE��ブエフェクト）�E着弾処琁E��発火させめE
+            // 弾の追加効果（アクティブエフェクト）の着弾処理を発火させる
             if (activeEffects != null)
             {
                 foreach (var effect in activeEffects)
@@ -30,15 +30,15 @@ public class NormalBullet : Bullet_Base
                 }
             }
 
-            // HPを持つコンポ�Eネントを取征E
+            // HPを持っているコンポーネントを取得
             Health health = collision.GetComponent<Health>();
             if (health != null)
             {
-                // HPを減らぁE
+                // HPを減らす
                 health.ApplyDamage((dmg + (dmg * (rarelity * AddDamageRatio))));
             }
 
-            // 弾を破壁E
+            // 弾を破壊
             DestroyCheck();
         }
         else if (collision.CompareTag("wall"))
@@ -55,4 +55,3 @@ public class NormalBullet : Bullet_Base
         }
     }
 }
-

@@ -15,7 +15,6 @@ namespace Alpha.Enemy.Weapons
         
         [Header("Damage Settings")]
         public float damage = 1f;
-        public float tickRate = 0.2f; // Seconds between ticks
 
         private BoxCollider2D boxCollider;
         private LineRenderer lineRenderer;
@@ -24,8 +23,7 @@ namespace Alpha.Enemy.Weapons
         private float expandTimer = 0f;
         private bool isExpanding = true;
 
-        // プレイヤーごとの最終被弾時間（マルチプレイ対応も考慮してDictionary）
-        private Dictionary<Collider2D, float> lastDamageTimes = new Dictionary<Collider2D, float>();
+        private HashSet<PlayerHealth> damagedThisTick = new HashSet<PlayerHealth>();
 
         void Awake()
         {
@@ -67,7 +65,25 @@ namespace Alpha.Enemy.Weapons
             expandTimer = 0f;
             isExpanding = true;
             SetThickness(0f);
-            lastDamageTimes.Clear();
+            damagedThisTick.Clear();
+
+            if (Alpha.Core.Utils.Alpha_TickManager.Instance != null)
+            {
+                Alpha.Core.Utils.Alpha_TickManager.Instance.OnTick += HandleTick;
+            }
+        }
+
+        void OnDisable()
+        {
+            if (Alpha.Core.Utils.Alpha_TickManager.Instance != null)
+            {
+                Alpha.Core.Utils.Alpha_TickManager.Instance.OnTick -= HandleTick;
+            }
+        }
+
+        private void HandleTick()
+        {
+            damagedThisTick.Clear();
         }
 
         void Update()
@@ -88,19 +104,7 @@ namespace Alpha.Enemy.Weapons
             }
             
             // Cleanup invalid entries
-            List<Collider2D> keysToRemove = null;
-            foreach(var key in lastDamageTimes.Keys)
-            {
-                if (key == null || !key.gameObject.activeInHierarchy)
-                {
-                    if (keysToRemove == null) keysToRemove = new List<Collider2D>();
-                    keysToRemove.Add(key);
-                }
-            }
-            if (keysToRemove != null)
-            {
-                foreach(var key in keysToRemove) lastDamageTimes.Remove(key);
-            }
+            damagedThisTick.RemoveWhere(h => h == null || !h.gameObject.activeInHierarchy);
         }
 
         private void SetThickness(float thickness)
@@ -126,9 +130,11 @@ namespace Alpha.Enemy.Weapons
         {
             if (collision.CompareTag("Player"))
             {
-                if (!lastDamageTimes.ContainsKey(collision) || Time.time >= lastDamageTimes[collision] + tickRate)
+                var health = collision.GetComponentInParent<PlayerHealth>();
+                if (health != null && !damagedThisTick.Contains(health))
                 {
-                    ApplyDamage(collision);
+                    health.TakeDamage(damage);
+                    damagedThisTick.Add(health);
                 }
             }
         }
@@ -136,10 +142,10 @@ namespace Alpha.Enemy.Weapons
         private void ApplyDamage(Collider2D collision)
         {
             var health = collision.GetComponentInParent<PlayerHealth>();
-            if (health != null)
+            if (health != null && !damagedThisTick.Contains(health))
             {
                 health.TakeDamage(damage);
-                lastDamageTimes[collision] = Time.time;
+                damagedThisTick.Add(health);
             }
         }
         

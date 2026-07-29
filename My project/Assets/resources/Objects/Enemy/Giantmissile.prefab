@@ -108,7 +108,7 @@ MonoBehaviour:
   DamageUIMagnitude: 0.1
   fallDuration: 7
   startOffset: {x: 0, y: 27}
-  targetPosition: {x: 0, y: 0}
+  targetPosition: {x: 0, y: -5}
 --- !u!50 &-3210183816440118489
 Rigidbody2D:
   serializedVersion: 4

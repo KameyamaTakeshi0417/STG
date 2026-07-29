@@ -638,7 +638,6 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
     {
         float finalDamage = GetTakenDamage(amount);
         currentHP -= finalDamage;
-        if (currentHP < 0) currentHP = 0;
         
         // --- Juice Additions ---
         if (finalDamage > 0)
@@ -666,24 +665,23 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         }
         // --- End Juice Additions ---
 
-        Debug.Log($"[PlayerStatusManager] ApplyDamage: Original {amount} -> Final {finalDamage} | Current HP: {currentHP}");
-
-        // UI更新などのためにイベント発火（受け手が未実装でも安全）
-        OnPlayerHPChanged?.Invoke(currentHP, HP);
+        Debug.Log($"[PlayerStatusManager] ApplyDamage: Original {amount} -> Final {finalDamage} | Current HP before overflow: {currentHP}");
 
         if (currentHP <= 0)
         {
             nowHPGauge--;
             
             if (nowHPGauge < 1) {
+                currentHP = 0;
                 Die();
             } else {
                 OnGaugeLost?.Invoke();
+                currentHP = HP; 
             }           
-            
-            currentHP = HP;
-            OnPlayerHPChanged?.Invoke(currentHP, HP);
         }
+
+        // UI更新などのためにイベント発火
+        OnPlayerHPChanged?.Invoke(currentHP, HP);
     }
 
     public void Heal(float amount)

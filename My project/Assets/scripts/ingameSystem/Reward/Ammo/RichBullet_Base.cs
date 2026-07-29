@@ -71,9 +71,9 @@ public class RichBullet_Base : Bullet_Base
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
-
+        base.Update();
     }
 
     public override void OnRentFromPool()

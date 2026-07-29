@@ -8,18 +8,18 @@ public class ExplosionBullet : Bullet_Base
     void Start() { }
 
     // Update is called once per frame
-    void Update() { }
+    protected override void Update() { base.Update(); }
 
     protected override void OnTriggerEnter2D(Collider2D collision)
     {
         if (!gameObject.activeInHierarchy) return;
 
-        // 衝突したオブジェクト�EタグをチェチE��
+        // 衝突したオブジェクトのタグをチェック
         if (collision.CompareTag("Enemy") || collision.CompareTag("Player"))
         {
             base.callHitEffect();
 
-            // 弾の追加効果（エフェクト等）�E到達�E琁E��呼び出ぁE
+            // 弾の追加効果（エフェクトなど）の判定・発動
             if (activeEffects != null)
             {
                 foreach (var effect in activeEffects)
@@ -28,11 +28,11 @@ public class ExplosionBullet : Bullet_Base
                 }
             }
 
-            // HPを持つコンポ�Eネントを取征E
+            // HPを持っているコンポーネントを取得
             Health health = collision.GetComponent<Health>();
             if (health != null)
             {
-                // HPを減らぁE
+                // HPを減らす
                 health.ApplyDamage(dmg);
                 GameObject bulletPrefab = Instantiate(
                     Resources.Load<GameObject>("Objects/Effect_Explosion"),
@@ -42,7 +42,7 @@ public class ExplosionBullet : Bullet_Base
                 bulletPrefab.GetComponent<Effect_Explosion>().startExplosion(30, 50);
             }
 
-            // 弾を破壁E
+            // 弾を破壊
             Destroy(this.gameObject);
         }
         else if (collision.CompareTag("wall"))
@@ -59,4 +59,3 @@ public class ExplosionBullet : Bullet_Base
         }
     }
 }
-

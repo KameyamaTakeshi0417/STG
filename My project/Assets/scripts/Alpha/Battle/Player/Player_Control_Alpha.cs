@@ -331,11 +331,6 @@ public class Player_Control_Alpha : MonoBehaviour
         if (moveInput == Vector2.zero)
         {
             rb.velocity = Vector2.zero;
-            if (Input.GetKey(KeyCode.LeftShift)) {
-                //ここに入れたい
-                rb.angularVelocity = 0f;   // 念のため（回転してないなら不要）
-                rb.Sleep();                // 物理的に「寝かせて」微振動/押し出しを止める
-            }
             return;
         }
 
@@ -343,7 +338,7 @@ public class Player_Control_Alpha : MonoBehaviour
         float setSpd = (myStatus.moveSpeed * myStatus.moveSpeedMag * 0.0001f);
         float finalSpeed = setSpd * myStatus.moveSpeedMag_CONST;
 
-        if (setSpd <= 0 || Input.GetKey(KeyCode.LeftShift))
+        if (setSpd <= 0)
         {
             finalSpeed = 0.79f;
         }
@@ -379,7 +374,7 @@ public class Player_Control_Alpha : MonoBehaviour
         {
             float setSpd = (myStatus.moveSpeed * myStatus.moveSpeedMag * 0.0001f);
             float finalSpeed = setSpd * myStatus.moveSpeedMag_CONST;
-            if (setSpd <= 0 || Input.GetKey(KeyCode.LeftShift)) finalSpeed = 0.79f;
+            if (setSpd <= 0) finalSpeed = 0.79f;
             if (isFocusMode) finalSpeed *= focusSpeedMultiplier;
             currentVelocity = moveInput * finalSpeed;
         }

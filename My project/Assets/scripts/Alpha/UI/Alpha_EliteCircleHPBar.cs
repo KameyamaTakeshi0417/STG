@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Linq;
-using System.Linq;
 
 namespace Alpha.UI
 {
