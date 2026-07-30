@@ -81,9 +81,6 @@ namespace Alpha.Data
         [Tooltip("trueの場合、どの装備枠にセットしていても常に発動します。falseの場合、現在構えている装備セットの時だけ発動します。")]
         public bool isGlobalEffect = false;
 
-        [Tooltip("trueの場合、同シリーズが3部位揃っており、かつこのパーツが最適部位（BestSlot）に装備されている時のみ発動します。")]
-        public bool isBestSlotEffect = false;
-
         [Header("Drop Settings")]
         [Tooltip("ドロップ時にこのエフェクトが付与されるためのレアリティ（1: Common, 2: Uncommon, 3: Rare, 4: Divine）。")]
         [Range(1, 4)]
@@ -92,7 +89,6 @@ namespace Alpha.Data
         [Header("Accumulation Settings")]
         [Tooltip("trueの場合、ローカル効果であっても他のウェポンセットに装備されている同効果の値を合算（パブリックカウント）します。デバフなどで他のセットの値を合算させたくない場合はfalseにしてください。")]
         public bool accumulateGlobally = true;
-
 
         [Header("Shop Settings")]
         public int price = 100;

@@ -25,7 +25,6 @@ public class Behavior_GiantMissileDrop : EnemyBehaviorData_Base
         }
 
         Vector3 startPos = ai.transform.position + (Vector3)spawnOffset;
-        Vector3 targetPos = ai.transform.position; // または画面中央
 
         if (giantMissilePrefab != null)
         {
@@ -35,7 +34,9 @@ public class Behavior_GiantMissileDrop : EnemyBehaviorData_Base
             {
                 missile.HP = missileHP;
                 missile.fallDuration = fallDuration;
-                missile.targetPosition = targetPos;
+                
+                PlayerHealth playerHealth = Object.FindAnyObjectByType<PlayerHealth>();
+                missile.explosionDamage = (playerHealth != null) ? playerHealth.HP : 100f;
                 
                 bool? resultDestroyed = null;
                 missile.OnMissileEnd += (isDestroyed) => {
@@ -51,23 +52,6 @@ public class Behavior_GiantMissileDrop : EnemyBehaviorData_Base
                 // 時間切れで落下した場合の処理
                 if (resultDestroyed.HasValue && !resultDestroyed.Value)
                 {
-                    // プレイヤーへの大ダメージ (普通のダメージ処理として巨大な爆発判定を生成)
-                    PlayerHealth playerHealth = Object.FindAnyObjectByType<PlayerHealth>();
-                    float damage = (playerHealth != null) ? playerHealth.HP : 100f;
-
-                    GameObject explosionObj = new GameObject("GiantMissileExplosion");
-                    explosionObj.transform.position = Vector3.zero; // 画面全体
-                    
-                    CircleCollider2D col = explosionObj.AddComponent<CircleCollider2D>();
-                    col.isTrigger = true;
-                    col.radius = 50f; // 画面を覆うサイズ
-                    
-                    Alpha_GiantMissileExplosion explosion = explosionObj.AddComponent<Alpha_GiantMissileExplosion>();
-                    explosion.damage = damage;
-                    explosion.duration = 3f; // 3秒間持続して無敵切れを狙う
-                    
-                    Debug.Log($"[GiantMissileDrop] Missile impact! Created giant explosion dealing {damage} damage.");
-
                     // 自身への50%ダメージ
                     Alpha_EliteHealth bossHealth = ai.GetComponent<Alpha_EliteHealth>();
                     if (bossHealth != null)

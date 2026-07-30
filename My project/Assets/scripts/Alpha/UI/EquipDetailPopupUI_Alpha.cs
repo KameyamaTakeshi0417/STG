@@ -17,7 +17,7 @@ namespace Alpha.UI
         [Tooltip("クリックした位置から画面中央方向へズラすための基準ポイント数")]
         public float offsetDistance = 100f;
 
-        public void Setup(WeaponSeriesData_Alpha series, WeaponPartType_Alpha partType, int quality, List<WeaponEffectSO_Alpha> effects, Vector2 clickPos, bool isBestSlotMet = false)
+        public void Setup(WeaponSeriesData_Alpha series, WeaponPartType_Alpha partType, int quality, List<WeaponEffectSO_Alpha> effects, Vector2 clickPos, WeaponEffectSO_Alpha setBonusEffect = null)
         {
             // 1. バフ一覧と基本情報の生成
             string effectStr = "";
@@ -25,7 +25,17 @@ namespace Alpha.UI
 
             if (effects != null)
             {
-                effectStr = BuildEffectString(effects, ref isAllEquipable, "", quality, isBestSlotMet, series, partType);
+                effectStr = BuildEffectString(effects, ref isAllEquipable, "", quality, series, partType);
+            }
+            
+            if (setBonusEffect != null)
+            {
+                string colorPrefix = "<color=#FFFF00>"; // 黄色等で目立たせる
+                string colorSuffix = "</color>";
+                float val = setBonusEffect.GetValue(quality);
+                string desc = setBonusEffect.description;
+                try { desc = string.Format(desc, val); } catch {}
+                effectStr += $"\n{colorPrefix}<b>[セットボーナス]</b> {setBonusEffect.effectName}: {desc}{colorSuffix}";
             }
 
             string partStr = "";
@@ -119,7 +129,7 @@ namespace Alpha.UI
             }
         }
 
-        private string BuildEffectString(List<WeaponEffectSO_Alpha> effects, ref bool isAllEquipable, string indent, int quality, bool isBestSlotMet, WeaponSeriesData_Alpha series, WeaponPartType_Alpha partType)
+        private string BuildEffectString(List<WeaponEffectSO_Alpha> effects, ref bool isAllEquipable, string indent, int quality, WeaponSeriesData_Alpha series, WeaponPartType_Alpha partType)
         {
             string result = "";
             int effectCount = 0;
@@ -132,7 +142,6 @@ namespace Alpha.UI
                     if (eff == null) continue;
                     effectCount++;
                     
-                    bool isBestSlot = eff.isBestSlotEffect;
                     bool isSpecific = false;
 
                     if (series != null)
@@ -142,26 +151,13 @@ namespace Alpha.UI
                         if (partType == WeaponPartType_Alpha.Primer && series.primerSpecificEffects != null && series.primerSpecificEffects.Contains(eff)) isSpecific = true;
                     }
 
-                    if (!isBestSlot && !isSpecific && string.IsNullOrEmpty(indent))
+                    if (!isSpecific && string.IsNullOrEmpty(indent))
                     {
                         randomEffectCount++;
                     }
 
-                    // BestSlot専用効果なのに条件を満たしていない場合
-                    bool isInactive = isBestSlot && !isBestSlotMet;
-                    string inactiveTag = isInactive ? " <color=#888888>(未発動)</color>" : "";
-                    
-                    if (isBestSlot) 
-                    {
-                        inactiveTag = " <color=#FFD700>(シリーズコンプリート時発動)</color>" + inactiveTag;
-                    }
-
-                    string colorStart = isInactive ? "<color=#888888>" : "";
-                    string colorEnd = isInactive ? "</color>" : "";
-                    
                     string prefixIcon = "<color=#44FF44>■</color>"; // Green for random
-                    if (isBestSlot) prefixIcon = "<color=#FFD700>★</color>"; // Gold star for complete
-                    else if (isSpecific) prefixIcon = "<color=#FFA500>■</color>"; // Orange for specific
+                    if (isSpecific) prefixIcon = "<color=#FFA500>■</color>"; // Orange for specific
 
                     if (eff.effectType == WeaponEffectType_Alpha.Composite)
                     {
@@ -169,14 +165,14 @@ namespace Alpha.UI
                         if (comp != null)
                         {
                             // 複合スキル自体の名前を表示
-                            string nameColor = isInactive ? "#888888" : "#FFDDDD";
-                            result += $"\n{indent}{prefixIcon} <color={nameColor}>{eff.effectName}</color>{inactiveTag}";
+                            string nameColor = "#FFDDDD";
+                            result += $"\n{indent}{prefixIcon} <color={nameColor}>{eff.effectName}</color>";
                             
                             // 中身を再帰的に展開し、インデントを1段下げる
                             if (comp.subEffects != null && comp.subEffects.Count > 0)
                             {
                                 string newIndent = string.IsNullOrEmpty(indent) ? "  " : indent + "  ";
-                                result += BuildEffectString(comp.subEffects, ref isAllEquipable, newIndent, quality, isBestSlotMet, series, partType);
+                                result += BuildEffectString(comp.subEffects, ref isAllEquipable, newIndent, quality, series, partType);
                             }
                         }
                     }
@@ -199,14 +195,14 @@ namespace Alpha.UI
 
                         if (!string.IsNullOrEmpty(descStr))
                         {
-                            result += $"\n{indent}{prefix} {colorStart}{eff.effectName}{inactiveTag}\n{indent}  <size=80%>{descStr}</size>{colorEnd}";
+                            result += $"\n{indent}{prefix} {eff.effectName}\n{indent}  <size=80%>{descStr}</size>";
                         }
                         else
                         {
-                            result += $"\n{indent}{prefix} {colorStart}{eff.effectName}{inactiveTag}{colorEnd}";
+                            result += $"\n{indent}{prefix} {eff.effectName}";
                         }
 
-                        if (eff.effectType == WeaponEffectType_Alpha.AllEquipable && !isInactive)
+                        if (eff.effectType == WeaponEffectType_Alpha.AllEquipable)
                         {
                             isAllEquipable = true;
                         }

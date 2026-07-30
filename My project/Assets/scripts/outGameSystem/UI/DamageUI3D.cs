@@ -32,7 +32,7 @@ public class DamageUI3D : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        NowText.text = damage.ToString();
+        NowText.text = Mathf.CeilToInt(damage).ToString();
 
         // カメラ方向を向くが、反転を防ぐためにY軸の回転のみ調整
         Vector3 direction = Camera.main.transform.position - transform.position;

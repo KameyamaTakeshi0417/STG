@@ -28,6 +28,7 @@ public class InventoryManager_Alpha : MonoBehaviour
         public WeaponSeriesData_Alpha series;
         public WeaponPartType_Alpha partType;
         public List<WeaponEffectSO_Alpha> currentEffects;
+        public WeaponEffectSO_Alpha setBonusEffect; // 生成時にベストスロットなら付与されるセットボーナス（シリーズ統一時のみ発動）
     }
 
     [Header("Inventory Management")]
@@ -378,34 +379,7 @@ public class InventoryManager_Alpha : MonoBehaviour
         return true;
     }
 
-    /// <summary>
-    /// 特定のアイテムがBestSlot条件を満たしているか
-    /// 条件1: そのグループのシリーズが完全に一致している
-    /// 条件2: アイテムの装備部位（0:雷管, 1:薬莢, 2:弾頭）が、シリーズで定義されたBestSlotと一致している
-    /// </summary>
-    public bool IsBestSlotConditionMet(int itemIndex)
-    {
-        var item = equipInstance[itemIndex];
-        if (item.series == null) return false;
 
-        int groupIndex = itemIndex / 3;
-        int equipPosition = itemIndex % 3; // 0=雷管(Primer), 1=薬莢(Casing), 2=弾頭(Bullet)
-
-        // 1. シリーズが揃っているか
-        if (!IsGroupSeriesAligned(groupIndex)) return false;
-
-        // 2. 装備部位が最適部位と一致しているか
-        Alpha.Data.WeaponPartType_Alpha currentPartType;
-        switch (equipPosition)
-        {
-            case 0: currentPartType = Alpha.Data.WeaponPartType_Alpha.Primer; break;
-            case 1: currentPartType = Alpha.Data.WeaponPartType_Alpha.Casing; break;
-            case 2: currentPartType = Alpha.Data.WeaponPartType_Alpha.Bullet; break;
-            default: return false;
-        }
-
-        return item.series.bestSlot == currentPartType;
-    }
     public struct ActiveEffectInfo
     {
         public int count;
@@ -425,7 +399,6 @@ public class InventoryManager_Alpha : MonoBehaviour
             if (item.series == null) continue;
 
             int itemGroup = i / 3;
-            bool isBestSlotMet = IsBestSlotConditionMet(i);
 
             System.Action<Alpha.Data.WeaponEffectSO_Alpha, int> processEffect = null;
             processEffect = (effectSO, rarity) =>
@@ -441,8 +414,6 @@ public class InventoryManager_Alpha : MonoBehaviour
                     }
                     return;
                 }
-
-                if (effectSO.isBestSlotEffect && !isBestSlotMet) return;
 
                 if (!activeFlags.ContainsKey(effectSO)) activeFlags[effectSO] = isGlobalActive;
                 if (effectSO.isGlobalEffect || itemGroup == activeGroup)
@@ -514,7 +485,6 @@ public class InventoryManager_Alpha : MonoBehaviour
             if (item.series == null) continue;
 
             int itemGroup = i / 3;
-            bool isBestSlotMet = IsBestSlotConditionMet(i);
 
             // 1. 武器のベース(series)に紐づくパッシブ効果を加算
             if (item.series.passiveEffects != null)
@@ -523,7 +493,7 @@ public class InventoryManager_Alpha : MonoBehaviour
                 {
                     if (spe.effect == null) continue;
                     int appliedRarity = spe.fixedQualityOverride > 0 ? spe.fixedQualityOverride : item.rarity;
-                    AccumulateSingleEffect(spe.effect, effectType, appliedRarity, itemGroup, activeGroup, isBestSlotMet, ref totalFlatValue, ref totalQuality, ref stepEffectRef, ref isActive);
+                    AccumulateSingleEffect(spe.effect, effectType, appliedRarity, itemGroup, activeGroup, ref totalFlatValue, ref totalQuality, ref stepEffectRef, ref isActive);
                 }
             }
 
@@ -533,8 +503,14 @@ public class InventoryManager_Alpha : MonoBehaviour
                 foreach (var effectSO in item.currentEffects)
                 {
                     if (effectSO == null) continue;
-                    AccumulateSingleEffect(effectSO, effectType, item.rarity, itemGroup, activeGroup, isBestSlotMet, ref totalFlatValue, ref totalQuality, ref stepEffectRef, ref isActive);
+                    AccumulateSingleEffect(effectSO, effectType, item.rarity, itemGroup, activeGroup, ref totalFlatValue, ref totalQuality, ref stepEffectRef, ref isActive);
                 }
+            }
+
+            // 3. セットボーナスエフェクトの加算（シリーズ統一時のみ発動）
+            if (item.setBonusEffect != null && IsGroupSeriesAligned(itemGroup))
+            {
+                AccumulateSingleEffect(item.setBonusEffect, effectType, item.rarity, itemGroup, activeGroup, ref totalFlatValue, ref totalQuality, ref stepEffectRef, ref isActive);
             }
         }
 
@@ -549,7 +525,7 @@ public class InventoryManager_Alpha : MonoBehaviour
         return totalFlatValue;
     }
 
-    private void AccumulateSingleEffect(Alpha.Data.WeaponEffectSO_Alpha effectSO, Alpha.Data.WeaponEffectType_Alpha targetType, int rarity, int itemGroup, int activeGroup, bool isBestSlotMet, ref float flatValue, ref int totalQuality, ref Alpha.Data.WeaponEffectSO_Alpha stepEffectRef, ref bool isActive)
+    private void AccumulateSingleEffect(Alpha.Data.WeaponEffectSO_Alpha effectSO, Alpha.Data.WeaponEffectType_Alpha targetType, int rarity, int itemGroup, int activeGroup, ref float flatValue, ref int totalQuality, ref Alpha.Data.WeaponEffectSO_Alpha stepEffectRef, ref bool isActive)
     {
         // 複合スキルの場合は再帰的に中身を取り出す
         if (effectSO.effectType == Alpha.Data.WeaponEffectType_Alpha.Composite)
@@ -560,14 +536,12 @@ public class InventoryManager_Alpha : MonoBehaviour
                 foreach (var sub in comp.subEffects)
                 {
                     if (sub == null) continue;
-                    AccumulateSingleEffect(sub, targetType, rarity, itemGroup, activeGroup, isBestSlotMet, ref flatValue, ref totalQuality, ref stepEffectRef, ref isActive);
+                    AccumulateSingleEffect(sub, targetType, rarity, itemGroup, activeGroup, ref flatValue, ref totalQuality, ref stepEffectRef, ref isActive);
                 }
             }
         }
         else if (effectSO.effectType == targetType)
         {
-            // BestSlot専用効果の場合、条件を満たしていなければスキップ
-            if (effectSO.isBestSlotEffect && !isBestSlotMet) return;
 
                 // 発動条件のチェック（現在のグループが対象か、またはグローバル効果か）
                 if (effectSO.isGlobalEffect || itemGroup == activeGroup)

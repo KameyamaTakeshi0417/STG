@@ -320,7 +320,7 @@ namespace Alpha.UI
 
             if (detailPopup != null)
             {
-                detailPopup.Setup(choice.series, choice.partType, choice.quality, choice.currentEffects, eventData.position);
+                detailPopup.Setup(choice.series, choice.partType, choice.quality, choice.currentEffects, eventData.position, choice.setBonusEffect);
             }
         }
 

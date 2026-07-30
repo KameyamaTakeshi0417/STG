@@ -135,6 +135,7 @@ namespace Alpha.Flow
                 newEquip.partType = selectedReward.partType;
                 newEquip.rarity = selectedReward.quality;
                 newEquip.currentEffects = selectedReward.currentEffects;
+                newEquip.setBonusEffect = selectedReward.setBonusEffect;
                 newEquip.defId = selectedReward.series.seriesName;
                 
                 if (InventoryManager_Alpha.Instance != null)

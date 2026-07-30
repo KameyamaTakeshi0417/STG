@@ -34,6 +34,11 @@ public class Alpha_EliteHealth : Health
         expectedTotalPhases = Mathf.Max(1, count);
     }
 
+    protected virtual void Awake()
+    {
+        expectedTotalPhases = Mathf.Max(1, phaseHPs.Count);
+    }
+
     protected virtual void Start()
     {
         // 最初のフェーズのHPをセット
@@ -119,7 +124,8 @@ public class Alpha_EliteHealth : Health
                 if (CurrentPhaseIndex < expectedTotalPhases - 1)
                 {
                     BreakToNextPhase();
-                    // ループが続き、remainingDamage が次のフェーズの体力から引かれます（貫通ダメージ）
+                    // フェーズブレイク時は余剰ダメージをカットし、ワンパンを防止する
+                    remainingDamage = 0;
                 }
                 else
                 {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Alpha.Data;
+using Alpha.UI;
 
 public class EquipUIManager_Alpha : MonoBehaviour
 {
@@ -37,6 +38,10 @@ public class EquipUIManager_Alpha : MonoBehaviour
     public float[] bouquetAngles = new float[] { 0f, 45f, 90f };
 
     private Player_Shooter_Alpha playerShooter;
+    
+    // パーティクル管理用
+    private Alpha.UI.UIPetalParticleGenerator_Alpha[] petalGenerators;
+    private bool hasInitializedParticles = false;
     
     private int[] lastEquipHashes = new int[3] { -1, -1, -1 };
     
@@ -119,6 +124,35 @@ public class EquipUIManager_Alpha : MonoBehaviour
 
         // セット全体のスタック・スライド・回転処理
         UpdateSetTransforms(activeGroup, isBouquet);
+
+        // --- ブーケ状態に応じたパーティクル（花びら等）の制御 ---
+        if (!hasInitializedParticles)
+        {
+            petalGenerators = GetComponentsInChildren<Alpha.UI.UIPetalParticleGenerator_Alpha>(true);
+            hasInitializedParticles = true;
+        }
+
+        if (petalGenerators != null)
+        {
+            foreach (var pg in petalGenerators)
+            {
+                if (pg == null) continue;
+                if (isBouquet)
+                {
+                    // ブーケ発動時：現在のエフェクト（強い状態）
+                    pg.isEmitting = true;
+                    pg.maxParticles = 30;
+                    pg.spawnRate = 0.15f;
+                }
+                else
+                {
+                    // ブーケ未発動時：弱いエフェクト
+                    pg.isEmitting = true;
+                    pg.maxParticles = 5;
+                    pg.spawnRate = 0.8f; 
+                }
+            }
+        }
     }
 
     private int GetGroupHash(int groupIndex)

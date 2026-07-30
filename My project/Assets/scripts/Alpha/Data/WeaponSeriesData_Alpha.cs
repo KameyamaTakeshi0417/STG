@@ -60,6 +60,10 @@ namespace Alpha.Data
         [Tooltip("このシリーズの最適部位（個性が出る枠）")]
         public WeaponPartType_Alpha bestSlot;
 
+        [Header("Set Bonus Effect")]
+        [Tooltip("このシリーズが装備グループ内で3部位すべて統一された時に発動するセットボーナス効果。ベストスロットのパーツに固定エフェクトとして付与されます。")]
+        public WeaponEffectSO_Alpha seriesCompleteEffect;
+
         [Header("Bullet Settings")]
         [Tooltip("このシリーズが雷管（インデックス2）に装備された時に発射される弾のプレハブ")]
         public GameObject bulletPrefab;

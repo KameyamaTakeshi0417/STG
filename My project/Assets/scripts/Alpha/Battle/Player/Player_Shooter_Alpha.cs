@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -172,15 +172,32 @@ public class Player_Shooter_Alpha : MonoBehaviour
         bool isBouquet = false;
         if (inventoryManager != null) isBouquet = inventoryManager.IsBouquetActive();
 
-        GameObject prefabToInstantiate = Resources.Load<GameObject>("Objects/Bullet/NormalBullet");
+        List<GameObject> prefabsToInstantiate = new List<GameObject>();
         float bulletChangeMultiplier = 0f;
 
-        if (isBouquet && bouquetBulletPrefab != null)
+        if (isBouquet)
         {
-            prefabToInstantiate = bouquetBulletPrefab;
+            if (inventoryManager != null)
+            {
+                var instA = inventoryManager.Get(0, 0);
+                var instB = inventoryManager.Get(0, 1);
+                var instC = inventoryManager.Get(0, 2);
+                if (instA.series != null && instA.series.bulletPrefab != null) prefabsToInstantiate.Add(instA.series.bulletPrefab);
+                if (instB.series != null && instB.series.bulletPrefab != null) prefabsToInstantiate.Add(instB.series.bulletPrefab);
+                if (instC.series != null && instC.series.bulletPrefab != null) prefabsToInstantiate.Add(instC.series.bulletPrefab);
+            }
+            if (prefabsToInstantiate.Count == 0 && bouquetBulletPrefab != null)
+            {
+                prefabsToInstantiate.Add(bouquetBulletPrefab);
+            }
+            if (prefabsToInstantiate.Count == 0)
+            {
+                prefabsToInstantiate.Add(Resources.Load<GameObject>("Objects/Bullet/NormalBullet"));
+            }
         }
         else
         {
+            GameObject singlePrefab = Resources.Load<GameObject>("Objects/Bullet/NormalBullet");
             // --- 新しい弾優先度ロジック ---
             Alpha.Data.BulletChangeWeaponEffectSO_Alpha bestEffect = null;
             int bestSlotIndex = -1;
@@ -243,21 +260,22 @@ public class Player_Shooter_Alpha : MonoBehaviour
 
             if (bestEffect != null && bestEffect.bulletPrefab != null)
             {
-                prefabToInstantiate = bestEffect.bulletPrefab;
+                singlePrefab = bestEffect.bulletPrefab;
                 bulletChangeMultiplier = bestEffect.GetValue(bestRarity);
             }
             else
             {
-                if (series3 != null && series3.bulletPrefab != null) prefabToInstantiate = series3.bulletPrefab;
-                else if (series2 != null && series2.bulletPrefab != null) prefabToInstantiate = series2.bulletPrefab;
-                else if (series1 != null && series1.bulletPrefab != null) prefabToInstantiate = series1.bulletPrefab;
-                else UnityEngine.Debug.LogWarning("[Player_Shooter] $($currentWeaponGroup + 1)段目の武器に弾プレハブが未設定です。デフォルト弾を使用します。");
+                if (series3 != null && series3.bulletPrefab != null) singlePrefab = series3.bulletPrefab;
+                else if (series2 != null && series2.bulletPrefab != null) singlePrefab = series2.bulletPrefab;
+                else if (series1 != null && series1.bulletPrefab != null) singlePrefab = series1.bulletPrefab;
+                else UnityEngine.Debug.LogWarning("[Player_Shooter] 武器に弾プレハブが未設定です。デフォルト弾を使用します。");
             }
+            prefabsToInstantiate.Add(singlePrefab);
         }
         float baseWeaponDamage = 0f;
-        if (prefabToInstantiate != null)
+        if (prefabsToInstantiate.Count > 0 && prefabsToInstantiate[0] != null)
         {
-            Bullet_Base baseBullet = prefabToInstantiate.GetComponent<Bullet_Base>();
+            Bullet_Base baseBullet = prefabsToInstantiate[0].GetComponent<Bullet_Base>();
             if (baseBullet != null)
             {
                 baseWeaponDamage = baseBullet.dmg;
@@ -315,7 +333,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
         }
 
         int bulletExtraShots = 0;
-        if (prefabToInstantiate != null && prefabToInstantiate.GetComponent<CircularObject>() != null)
+        if (prefabsToInstantiate.Count > 0 && prefabsToInstantiate[0] != null && prefabsToInstantiate[0].GetComponent<CircularObject>() != null)
         {
             totalShotCount += localExtraShots; // 汎用発射数を親に乗せる
             bulletExtraShots = localCircularSubShots; // 専用エフェクトの子弾増加
@@ -345,10 +363,10 @@ public class Player_Shooter_Alpha : MonoBehaviour
         Vector3 muzzlePos = playerTransform.position + (watch * moveRadius);
         Vector3 aimDirection = watch; // 繝槭え繧ｹ縺後・繝ｬ繧､繝､繝ｼ縺ｫ霑代☆縺弱ｋ縺ｨ (aimPoint - muzzlePos) 縺碁・ｻ｢縺吶ｋ繝舌げ繧帝亟縺舌◆繧√∝ｸｸ縺ｫwatch譁ｹ蜷代ｒ菴ｿ逕ｨ
 
-        StartCoroutine(SpawnBulletRoutine(prefabToInstantiate, muzzlePos, aimDirection, aimPoint, totalShotCount, pattern, finalDamage, isTargetLocked, lockedTarget, isBouquet, bulletExtraShots, localExtraPierce, bulletChangeMultiplier, localVoltTickReduce, localSecondaryDamageUp));
+        StartCoroutine(SpawnBulletRoutine(prefabsToInstantiate, muzzlePos, aimDirection, aimPoint, totalShotCount, pattern, finalDamage, isTargetLocked, lockedTarget, isBouquet, bulletExtraShots, localExtraPierce, bulletChangeMultiplier, localVoltTickReduce, localSecondaryDamageUp));
     }
 
-    private IEnumerator SpawnBulletRoutine(GameObject prefab, Vector3 muzzlePos, Vector3 aimDir, Vector3 aimPoint, int shotCount, playerStatusManager_Alpha.SpawnPattern pattern, float finalDmg, bool isTargetLocked, Transform lockedTarget, bool isBouquet, int extraShotsForBullet = 0, int extraPierceForBullet = 0, float bulletChangeMultiplier = 0f, int voltTickReduceForBullet = 0, float secondaryDamageUpForBullet = 0f)
+    private IEnumerator SpawnBulletRoutine(List<GameObject> prefabs, Vector3 muzzlePos, Vector3 aimDir, Vector3 aimPoint, int shotCount, playerStatusManager_Alpha.SpawnPattern pattern, float finalDmg, bool isTargetLocked, Transform lockedTarget, bool isBouquet, int extraShotsForBullet = 0, int extraPierceForBullet = 0, float bulletChangeMultiplier = 0f, int voltTickReduceForBullet = 0, float secondaryDamageUpForBullet = 0f)
     {
         for (int i = 0; i < shotCount; i++)
         {
@@ -513,9 +531,10 @@ public class Player_Shooter_Alpha : MonoBehaviour
                 }
             }
 
-            CreateSingleBullet(prefab, spawnPos, spawnDir, aimDir, currentReverseTime, finalDmg, effectsToApply, lockedTarget, extraShotsForBullet, extraPierceForBullet, bulletChangeMultiplier, voltTickReduceForBullet, secondaryDamageUpForBullet);
+            GameObject prefabToUse = prefabs[i % prefabs.Count];
+            CreateSingleBullet(prefabToUse, spawnPos, spawnDir, aimDir, currentReverseTime, finalDmg, effectsToApply, lockedTarget, isBouquet, extraShotsForBullet, extraPierceForBullet, bulletChangeMultiplier, voltTickReduceForBullet, secondaryDamageUpForBullet);
 
-            // 繧ｵ繧ｦ繝ｳ繝峨お繝輔ぉ繧ｯ繝医・蜀咲函・亥ｿ・ｦ√↓蠢懊§縺ｦ・・
+            // サウンドエフェクトの再生（必要に応じて）
             // if (shootAudioSource != null) shootAudioSource.Play();
 
             if (pattern == playerStatusManager_Alpha.SpawnPattern.Barrage || pattern == playerStatusManager_Alpha.SpawnPattern.Reverse)
@@ -525,7 +544,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
         }
     }
 
-    private void CreateSingleBullet(GameObject prefabToInstantiate, Vector3 spawnPos, Vector3 spawnDir, Vector3 originalAimDir, float reverseTime, float finalDamage, List<Alpha_Effect_Base> effectsToApply, Transform lockedTarget, int extraShotsForBullet = 0, int extraPierceForBullet = 0, float bulletChangeMultiplier = 0f, int voltTickReduceForBullet = 0, float secondaryDamageUpForBullet = 0f)
+    private void CreateSingleBullet(GameObject prefabToInstantiate, Vector3 spawnPos, Vector3 spawnDir, Vector3 originalAimDir, float reverseTime, float finalDamage, List<Alpha_Effect_Base> effectsToApply, Transform lockedTarget, bool isBouquet, int extraShotsForBullet = 0, int extraPierceForBullet = 0, float bulletChangeMultiplier = 0f, int voltTickReduceForBullet = 0, float secondaryDamageUpForBullet = 0f)
     {
         GameObject bulletPrefab;
         if (Alpha_ObjectPoolManager.Instance != null)
@@ -589,6 +608,33 @@ public class Player_Shooter_Alpha : MonoBehaviour
             bulletScript.extraShotCount += extraShotsForBullet;
             bulletScript.voltTickReduceCount += voltTickReduceForBullet;
             bulletScript.secondaryDamageMultiplier += secondaryDamageUpForBullet;
+
+            // 紫のオーラ（TrailRenderer）を動的に付与
+            if (isBouquet)
+            {
+                TrailRenderer tr = bulletPrefab.GetComponent<TrailRenderer>();
+                if (tr == null) tr = bulletPrefab.AddComponent<TrailRenderer>();
+                
+                tr.enabled = true;
+                tr.time = 0.2f;
+                tr.startWidth = bulletPrefab.transform.localScale.x * 0.8f;
+                tr.endWidth = 0f;
+                tr.material = new Material(Shader.Find("Sprites/Default"));
+                Gradient gradient = new Gradient();
+                gradient.SetKeys(
+                    new GradientColorKey[] { new GradientColorKey(new Color(0.6f, 0f, 1f), 0.0f), new GradientColorKey(new Color(0.3f, 0f, 0.5f), 1.0f) },
+                    new GradientAlphaKey[] { new GradientAlphaKey(0.8f, 0.0f), new GradientAlphaKey(0.0f, 1.0f) }
+                );
+                tr.colorGradient = gradient;
+                tr.sortingLayerName = "Effect";
+                tr.sortingOrder = -1;
+                tr.minVertexDistance = 0.1f;
+            }
+            else
+            {
+                TrailRenderer tr = bulletPrefab.GetComponent<TrailRenderer>();
+                if (tr != null) tr.enabled = false;
+            }
 
             bulletScript.shoot();
         }

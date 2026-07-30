@@ -153,8 +153,7 @@ namespace Alpha.UI
                 spawnedSkillButtons.Add(obj);
 
                 var texts = obj.GetComponentsInChildren<TextMeshProUGUI>();
-                if (texts.Length > 0) texts[0].text = effectSO.effectName;
-                if (texts.Length > 1) texts[1].text = "Cost: " + effectSO.price + " EXP";
+                if (texts.Length > 0) texts[0].text = effectSO.effectName + "\n<color=#FFD700>Cost: " + effectSO.price + " エーテル</color>";
 
                 Button btn = obj.GetComponent<Button>();
                 if (btn != null)
@@ -200,8 +199,7 @@ namespace Alpha.UI
                 spawnedPartButtons.Add(obj);
 
                 var texts = obj.GetComponentsInChildren<TextMeshProUGUI>();
-                if (texts.Length > 0) texts[0].text = partInstance.series.seriesName + " (" + partInstance.partType.ToString() + ")\n<size=80%>Quality: " + partInstance.quality + "</size>";
-                if (texts.Length > 1) texts[1].text = "Cost: " + price + " EXP";
+                if (texts.Length > 0) texts[0].text = partInstance.series.seriesName + " (" + partInstance.partType.ToString() + ")\n<size=80%>Quality: " + partInstance.quality + "</size>\n<color=#FFD700>Cost: " + price + " エーテル</color>";
 
                 Image iconImg = null;
                 foreach (var img in obj.GetComponentsInChildren<Image>(true))
@@ -253,7 +251,7 @@ namespace Alpha.UI
                     {
                         if (detailPopup != null)
                         {
-                            detailPopup.Setup(partInstance.series, partInstance.partType, partInstance.quality, partInstance.currentEffects, eventData.position);
+                            detailPopup.Setup(partInstance.series, partInstance.partType, partInstance.quality, partInstance.currentEffects, eventData.position, partInstance.setBonusEffect);
                         }
                     };
                 }
@@ -331,6 +329,7 @@ namespace Alpha.UI
                 newPart.partType = partInstance.partType;
                 newPart.rarity = partInstance.quality;
                 newPart.currentEffects = partInstance.currentEffects != null ? new List<WeaponEffectSO_Alpha>(partInstance.currentEffects) : new List<WeaponEffectSO_Alpha>();
+                newPart.setBonusEffect = partInstance.setBonusEffect;
                 InventoryManager_Alpha.Instance.AddItem(newPart);
 
                 UpdateEmptySlotDisplay();
@@ -495,6 +494,7 @@ namespace Alpha.UI
             ShowConfirmUI(finalMessage, () =>
             {
                 if (item.currentEffects != null) item.currentEffects.Clear();
+                item.setBonusEffect = null;
                 item.series = null;
                 item.defId = "";
                 inv.equipInstance[slotIndex] = item;

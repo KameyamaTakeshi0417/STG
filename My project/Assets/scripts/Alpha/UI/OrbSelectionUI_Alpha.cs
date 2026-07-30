@@ -120,6 +120,7 @@ namespace Alpha.UI
                     newEquip.partType = selectedWeapon.partType;
                     newEquip.rarity = selectedWeapon.quality;
                     newEquip.currentEffects = selectedWeapon.currentEffects;
+                    newEquip.setBonusEffect = selectedWeapon.setBonusEffect;
                     // defId等は必要に応じて設定
                     newEquip.defId = selectedWeapon.series.seriesName;
                     

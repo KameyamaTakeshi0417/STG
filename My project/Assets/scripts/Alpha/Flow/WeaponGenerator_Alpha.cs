@@ -172,6 +172,12 @@ namespace Alpha.Flow
             
             WeaponPartInstance_Alpha instance = new WeaponPartInstance_Alpha(series, partType, quality);
 
+            // ベストスロットの場合、シリーズのセットボーナスを固定枠として付与
+            if (partType == series.bestSlot && series.seriesCompleteEffect != null)
+            {
+                instance.setBonusEffect = series.seriesCompleteEffect;
+            }
+
             // パーツごとの固有効果の付与
             List<WeaponEffectSO_Alpha> partSpecificEffects = null;
             switch (partType)

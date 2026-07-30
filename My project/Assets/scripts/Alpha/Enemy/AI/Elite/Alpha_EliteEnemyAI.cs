@@ -146,6 +146,12 @@ public class Alpha_EliteEnemyAI : Alpha_EnemyAI
         // 既存のコルーチンを全て停止
         StopAllBehaviors();
 
+        // フェーズ遷移時、画面上の敵弾を全て消去して安全地帯を確保する
+        if (Alpha.Flow.StageManager_Alpha.Instance != null)
+        {
+            Alpha.Flow.StageManager_Alpha.Instance.ClearAllEnemyBullets();
+        }
+
         phaseSequenceCoroutine = StartCoroutine(PhaseSequenceRoutine(phaseIndex));
     }
 

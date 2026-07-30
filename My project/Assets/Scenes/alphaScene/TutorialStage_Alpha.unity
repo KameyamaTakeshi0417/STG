@@ -1652,7 +1652,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -381, y: 483.60968}
+  m_AnchoredPosition: {x: -381, y: 483.60992}
   m_SizeDelta: {x: 762, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &127728103
@@ -17783,6 +17783,7 @@ MonoBehaviour:
     partType: 2
     currentEffects:
     - {fileID: 0}
+    setBonusEffect: {fileID: 0}
   - defId: 
     rarity: 1
     originalRarity: 0
@@ -17793,6 +17794,7 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     - {fileID: 0}
+    setBonusEffect: {fileID: 0}
   - defId: 
     rarity: 4
     originalRarity: 0
@@ -17803,6 +17805,7 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 53c8ac5d09f41944ea83c43b341d5f56, type: 2}
     - {fileID: 0}
     - {fileID: 0}
+    setBonusEffect: {fileID: 0}
   - defId: 
     rarity: 1
     originalRarity: 0
@@ -17811,6 +17814,7 @@ MonoBehaviour:
     partType: 2
     currentEffects:
     - {fileID: 0}
+    setBonusEffect: {fileID: 0}
   - defId: 
     rarity: 1
     originalRarity: 0
@@ -17819,6 +17823,7 @@ MonoBehaviour:
     partType: 1
     currentEffects:
     - {fileID: 0}
+    setBonusEffect: {fileID: 0}
   - defId: 
     rarity: 1
     originalRarity: 0
@@ -17827,6 +17832,7 @@ MonoBehaviour:
     partType: 0
     currentEffects:
     - {fileID: 0}
+    setBonusEffect: {fileID: 0}
   - defId: 
     rarity: 1
     originalRarity: 0
@@ -17835,6 +17841,7 @@ MonoBehaviour:
     partType: 2
     currentEffects:
     - {fileID: 0}
+    setBonusEffect: {fileID: 0}
   - defId: 
     rarity: 1
     originalRarity: 0
@@ -17843,6 +17850,7 @@ MonoBehaviour:
     partType: 1
     currentEffects:
     - {fileID: 0}
+    setBonusEffect: {fileID: 0}
   - defId: 
     rarity: 1
     originalRarity: 0
@@ -17851,6 +17859,7 @@ MonoBehaviour:
     partType: 0
     currentEffects:
     - {fileID: 0}
+    setBonusEffect: {fileID: 0}
   freeSlotCount: 0
 --- !u!114 &1634642369
 MonoBehaviour:
@@ -17978,7 +17987,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c3838b4a9ba2aa04f9f92d9843c04b1e, type: 2}
   - {fileID: 11400000, guid: 70b1f0fdd6fa9f84bbecd934445e0cd4, type: 2}
   - {fileID: 11400000, guid: d5c5fde2ef7dcec44bd45a5baa77953d, type: 2}
-  - {fileID: 11400000, guid: b2a1e37b927640342831bc805b4fac01, type: 2}
+  - {fileID: 0}
   qualityProbabilities:
   - baseQuality: 1
     prob1: 70

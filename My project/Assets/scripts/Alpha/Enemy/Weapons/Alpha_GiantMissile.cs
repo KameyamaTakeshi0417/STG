@@ -10,6 +10,7 @@ namespace Alpha.Enemy.Weapons
         public float fallDuration = 5f;
         public Vector2 startOffset = new Vector2(0, 15f);
         public Vector2 targetPosition; // 地面や落下完了座標
+        public float explosionDamage = 100f; // Behaviorから渡されるダメージ量
 
         public delegate void MissileResultHandler(bool isDestroyedByPlayer);
         public event MissileResultHandler OnMissileEnd;
@@ -82,9 +83,29 @@ namespace Alpha.Enemy.Weapons
                 if (countdownText != null) Destroy(countdownText.gameObject);
                 
                 // 落下時間切れ＝失敗、大ダメージ発生
+                SpawnExplosion();
                 OnMissileEnd?.Invoke(false);
                 Destroy(gameObject);
             }
+        }
+
+        private void SpawnExplosion()
+        {
+            GameObject explosionObj = new GameObject("GiantMissileExplosion");
+            explosionObj.transform.position = transform.position; // 着弾地点
+            
+            CircleCollider2D col = explosionObj.AddComponent<CircleCollider2D>();
+            col.isTrigger = true;
+            col.radius = 50f; // 画面を覆うサイズ
+            
+            Alpha_GiantMissileExplosion explosion = explosionObj.AddComponent<Alpha_GiantMissileExplosion>();
+            explosion.damage = explosionDamage;
+            explosion.duration = 7f; // ビジュアル演出に合わせて7秒間（爆縮0.5 + 展開0.5 + 持続5 + 収縮1）
+            
+            // 演出スクリプトをアタッチして自動再生
+            explosionObj.AddComponent<Alpha_GiantMissileVisual>();
+            
+            Debug.Log($"[GiantMissile] Exploded! Created giant explosion dealing {explosionDamage} damage.");
         }
 
         protected override void Die()

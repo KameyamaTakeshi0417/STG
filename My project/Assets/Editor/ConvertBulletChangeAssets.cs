@@ -49,7 +49,6 @@ public class ConvertBulletChangeAssets : EditorWindow
                 newAsset.qualityValues = oldAsset.qualityValues;
                 newAsset.useStepMultiplier = oldAsset.useStepMultiplier;
                 newAsset.isGlobalEffect = oldAsset.isGlobalEffect;
-                newAsset.isBestSlotEffect = oldAsset.isBestSlotEffect;
                 // 他のフィールドがあればここに追加
 
                 // 対応するシリーズデータを探してBulletPrefabを移植する（名前などで推定）

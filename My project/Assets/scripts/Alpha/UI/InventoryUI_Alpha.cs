@@ -27,7 +27,7 @@ namespace Alpha.UI
         public GameObject effectIconPrefab;
         
         [Header("Grid (3x3)")]
-        [Tooltip("装備枠(3x3)のボタンスロット。インデックスは 0〜8 (y*3+x)")]
+        [Tooltip("裁E��枠(3x3)のボタンスロチE��。インチE��クスは 0、E (y*3+x)")]
         public Button[] gridSlots = new Button[9];
         
         [Header("Extra Slots (Dynamic)")]
@@ -37,16 +37,16 @@ namespace Alpha.UI
         
         [Header("Confirm & Check Mode")]
         public Button confirmButton;
-        [Tooltip("確認モード時のみ表示される戻るボタン")]
+        [Tooltip("確認モード時のみ表示される戻る�Eタン")]
         public Button backButtonForCheck;
-        [Tooltip("フォージフェーズから呼ばれた際に表示される戻るボタン")]
+        [Tooltip("フォージフェーズから呼ばれた際に表示される戻る�Eタン")]
         public Button backToForgeButton;
 
         private System.Action onConfirmCallback;
         private bool openedByEscape = false;
         private bool isReadOnly = false;
         
-        // 選択中のスロットインデックス（-1は未選択）
+        // 選択中のスロチE��インチE��クス�E�E1は未選択！E
         private int selectedIndex = -1;
 
         public enum InventoryUIMode { Normal, SelectForBlacksmith }
@@ -69,7 +69,7 @@ namespace Alpha.UI
             }
             if (backButtonForCheck != null)
             {
-                // 戻るボタンの挙動はConfirmと同じ（UIを閉じてコールバックを実行）
+                // 戻る�Eタンの挙動はConfirmと同じ�E�EIを閉じてコールバックを実行！E
                 backButtonForCheck.onClick.AddListener(OnConfirmClicked);
             }
             if (backToForgeButton != null)
@@ -77,7 +77,7 @@ namespace Alpha.UI
                 backToForgeButton.onClick.AddListener(OnConfirmClicked);
             }
             
-            // スロットクリック時の仮実装
+            // スロチE��クリチE��時�E仮実裁E
             for (int i = 0; i < gridSlots.Length; i++)
             {
                 int index = i;
@@ -102,7 +102,7 @@ namespace Alpha.UI
             {
                 CloseEscapeInventory();
             }
-            // 非表示状態かつ、現在ゲームが動いている（報酬フェーズ中などではない）場合にEscで開く
+            // 非表示状態かつ、現在ゲームが動ぁE��ぁE���E�報酬フェーズ中などではなぁE��場合にEscで開く
             else if (panel != null && !panel.activeSelf)
             {
                 if (TutorialManager_Alpha.Instance != null && TutorialManager_Alpha.Instance.IsShowing)
@@ -212,8 +212,8 @@ namespace Alpha.UI
             if (panel != null) panel.SetActive(true);
             if (detailPopup != null) detailPopup.gameObject.SetActive(false);
             
-            // 選択モードではConfirmボタン（画面を閉じるボタン）や通常の戻るボタンは非表示
-            // 新たに追加したフォージ用戻るボタンを表示する
+            // 選択モードではConfirmボタン�E�画面を閉じるボタン�E�や通常の戻る�Eタンは非表示
+            // 新たに追加したフォージ用戻る�Eタンを表示する
             if (confirmButton != null) confirmButton.gameObject.SetActive(false);
             
             if (backToForgeButton != null)
@@ -268,7 +268,7 @@ namespace Alpha.UI
             // 2. Extra Slots (9 onwards)
             int extraCount = Mathf.Max(0, equipList.Count - 9);
 
-            // 余分なスロットがあれば破棄
+            // 余�EなスロチE��があれ�E破棁E
             while (spawnedExtraSlots.Count > extraCount)
             {
                 int lastIdx = spawnedExtraSlots.Count - 1;
@@ -276,7 +276,7 @@ namespace Alpha.UI
                 spawnedExtraSlots.RemoveAt(lastIdx);
             }
 
-            // 足りないスロットがあれば生成
+            // 足りなぁE��ロチE��があれ�E生�E
             while (spawnedExtraSlots.Count < extraCount)
             {
                 if (extraSlotPrefab != null && extraSlotsContainer != null)
@@ -427,7 +427,7 @@ namespace Alpha.UI
                 go.SetActive(true);
                 spawnedActiveEffects.Add(go);
                 
-                // ScrollView (LayoutGroup) によってWidth/Heightが0に潰されるのを防ぐため、
+                // ScrollView (LayoutGroup) によってWidth/HeightぁEに潰される�Eを防ぐため、E
                 // プレハブ本来のサイズを取得してLayoutElementで強制する
                 RectTransform prefabRt = activeEffectPrefab.transform as RectTransform;
                 if (prefabRt != null)
@@ -462,7 +462,7 @@ namespace Alpha.UI
                     text.text = $"{colorTag}{count} \"{effect.effectName}\"{colorEnd}";
                 }
 
-                // アイコンを設定（"Icon" という名前の子要素を探すか、子要素の中の最初のImageを探す）
+                // アイコンを設定！EIcon" とぁE��名前の子要素を探すか、子要素の中の最初�EImageを探す！E
                 Image iconImg = null;
                 foreach (Transform child in go.transform)
                 {
@@ -473,7 +473,7 @@ namespace Alpha.UI
                     }
                 }
                 
-                // "Icon"という名前がなかったら、ルートを避けて「子要素」からImageを探す
+                // "Icon"とぁE��名前がなかったら、ルートを避けて「子要素」からImageを探ぁE
                 if (iconImg == null)
                 {
                     foreach (Transform child in go.transform)
@@ -507,30 +507,30 @@ namespace Alpha.UI
         {
             if (btn == null) return;
 
-            // 背景枠の取得と色設定
+            // 背景枠の取得と色設宁E
             Image bg = btn.targetGraphic as Image;
             
-            // 【不具合対策】Unityインスペクタ上でボタン自体の色が茶色に設定されていると、
-            // スクリプトで何色を指定しても茶色に上塗り（乗算）されてしまうため、強制的にボタン自体を真っ白にリセットします。
+            // 【不�E合対策】Unityインスペクタ上でボタン自体�E色が茶色に設定されてぁE��と、E
+            // スクリプトで何色を指定しても茶色に上塗り�E�乗算）されてしまぁE��め、強制皁E��ボタン自体を真っ白にリセチE��します、E
             ColorBlock cb = btn.colors;
             cb.normalColor = Color.white;
-            cb.selectedColor = Color.yellow; // インベントリの選択色は黄色にする
+            cb.selectedColor = Color.yellow; // インベントリの選択色は黁E��にする
             btn.colors = cb;
 
             if (bg != null)
             {
                 if (isSelected)
                 {
-                    bg.color = Color.yellow; // 選択中は最優先
+                    bg.color = Color.yellow; // 選択中は最優允E
                 }
                 else if (slotIndex >= 9 && !isTempSlot)
                 {
-                    // EX（Free）スロットは常に紫色
+                    // EX�E�Eree�E�スロチE��は常に紫色
                     bg.color = new Color32(180, 100, 255, 255);
                 }
                 else if (item.series != null)
                 {
-                    // 中身がある場合はレアリティに応じた色を設定
+                    // 中身がある場合�EレアリチE��に応じた色を設宁E
                     switch (item.rarity)
                     {
                         case 1: bg.color = new Color32(128, 38, 5, 255); break;
@@ -542,11 +542,11 @@ namespace Alpha.UI
                 }
                 else
                 {
-                    // 空枠の場合
+                    // 空枠の場吁E
                     bg.color = isTempSlot ? new Color(0.8f, 0.9f, 1f, 1f) : Color.white;
                 }
             }
-            // "Icon" という名前の子オブジェクトを探す
+            // "Icon" とぁE��名前の子オブジェクトを探ぁE
             Image iconImg = null;
             foreach (Transform child in btn.transform)
             {
@@ -570,7 +570,7 @@ namespace Alpha.UI
                     else if (item.partType == Alpha.Data.WeaponPartType_Alpha.Casing && item.series.iconCasing != null) targetSprite = item.series.iconCasing;
                     else if (item.partType == Alpha.Data.WeaponPartType_Alpha.Primer && item.series.iconPrimer != null) targetSprite = item.series.iconPrimer;
 
-                    // 堅牢なフォールバック
+                    // 堁E��なフォールバック
                     if (targetSprite == null) targetSprite = item.series.icon;
                     if (targetSprite == null) targetSprite = item.series.iconBullet;
                     if (targetSprite == null) targetSprite = item.series.iconCasing;
@@ -591,15 +591,15 @@ namespace Alpha.UI
                 else
                 {
                     iconImg.sprite = null;
-                    iconImg.color = Color.clear; // 空枠またはアイコンがない場合は透明にする
+                    iconImg.color = Color.clear; // 空枠また�EアイコンがなぁE��合�E透�Eにする
                 }
             }
             else
             {
-                // 開発者への警告：Icon子要素がない場合
+                // 開発老E��の警告：Icon子要素がなぁE��吁E
                 if (item.series != null)
                 {
-                    Debug.LogWarning($"[InventoryUI] 装備スロット '{btn.gameObject.name}' に 'Icon' という名前の子要素(Image)がありません。枠画像を維持してアイコンを表示するために、子要素を追加してください。");
+                    Debug.LogWarning($"[InventoryUI] �����X���b�g�� Icon ������܂���");
                 }
             }
         }
@@ -608,7 +608,7 @@ namespace Alpha.UI
         {
             if (currentMode == InventoryUIMode.SelectForBlacksmith)
             {
-                // 選択モード時はアイテムの移動を行わず、コールバックを返す
+                // 選択モード時はアイチE��の移動を行わず、コールバックを返す
                 onSlotSelectedCallback?.Invoke(index);
                 return;
             }
@@ -623,17 +623,17 @@ namespace Alpha.UI
 
             if (selectedIndex == -1)
             {
-                // まだ何も選択されていない場合、クリックしたスロットを選択状態にする
+                // まだ何も選択されてぁE��ぁE��合、クリチE��したスロチE��を選択状態にする
                 selectedIndex = index;
                 Debug.Log($"[InventoryUI] Selected slot {index}");
                 RefreshUI();
             }
             else
             {
-                // すでに選択されているスロットがある場合
+                // すでに選択されてぁE��スロチE��がある場吁E
                 if (selectedIndex == index)
                 {
-                    // 同じスロットをクリックしたらキャンセル
+                    // 同じスロチE��をクリチE��したらキャンセル
                     selectedIndex = -1;
                     Debug.Log("[InventoryUI] Selection cancelled.");
                 }
@@ -686,16 +686,16 @@ namespace Alpha.UI
 
                 if (!CheckEquipRestriction(index2, item1))
                 {
-                    Debug.LogWarning("[InventoryUI] 装備先のスロットと部位が一致しないため、移動をキャンセルしました。");
+                    Debug.LogWarning("[InventoryUI] ������ƕ��ʂ���v���Ȃ����߃L�����Z��");
                     return;
                 }
                 else if (!CheckEquipRestriction(index1, item2))
                 {
-                    // テンポラリー枠にあるアイテム(item2)と装備枠のアイテム(item1)を入れ替えようとしたが、
-                    // テンポラリー枠のアイテムが装備枠の部位と一致しない場合は、装備を解除するのではなくキャンセルにする
+                    // チE��ポラリー枠にあるアイチE��(item2)と裁E��枠のアイチE��(item1)を�Eれ替えよぁE��したが、E
+                    // チE��ポラリー枠のアイチE��が裁E��枠の部位と一致しなぁE��合�E、裁E��を解除するのではなくキャンセルにする
                     if (index2 >= InventoryManager_Alpha.BASIC_SLOT_COUNT)
                     {
-                        Debug.LogWarning("[InventoryUI] 入れ替え先のアイテムが元のスロットに装備できないため、移動をキャンセルしました。");
+                        Debug.LogWarning("[InventoryUI] ����ւ���̃A�C�e�������̃X���b�g�ɑ����ł��Ȃ����߃L�����Z��");
                         return;
                     }
 
@@ -717,7 +717,7 @@ namespace Alpha.UI
                     InventoryManager_Alpha.Instance.SetByIndex(freeSlotIdx, item2);
                     InventoryManager_Alpha.Instance.SetByIndex(index2, item1);
                     InventoryManager_Alpha.Instance.SetByIndex(index1, new InventoryManager_Alpha.EquipInstance());
-                    Debug.Log($"[InventoryUI] 装備を入れ替え、元の装備は一時枠({freeSlotIdx})に退避しました。");
+                    Debug.Log($"[InventoryUI] ���������ւ��A���̑����͈ꎞ�g({freeSlotIdx})�ɑޔ����܂���");
                 }
                 else
                 {
@@ -748,16 +748,16 @@ namespace Alpha.UI
 
             if (currentMode == InventoryUIMode.SelectForBlacksmith)
             {
-                // 選択キャンセルとして扱う
+                // 選択キャンセルとして扱ぁE
                 currentMode = InventoryUIMode.Normal;
                 Hide();
                 onCancelCallbackForBlacksmith?.Invoke();
                 return;
             }
 
-            // 新規取得アイテムの自動追加はRewardSequenceManager側で行うため、ここでは何もしない
+            // 新規取得アイチE��の自動追加はRewardSequenceManager側で行うため、ここでは何もしなぁE
             selectedIndex = -1;
-            Hide(); // UI自身を隠す
+            Hide(); // UI自身を隠ぁE
             onConfirmCallback?.Invoke();
         }
 
@@ -802,12 +802,6 @@ namespace Alpha.UI
             var item = equipList[index];
             if (item.series == null) return;
 
-            bool isBestSlotMet = false;
-            if (InventoryManager_Alpha.Instance != null)
-            {
-                isBestSlotMet = InventoryManager_Alpha.Instance.IsBestSlotConditionMet(index);
-            }
-
             if (detailPopup != null)
             {
                 List<Alpha.Data.WeaponEffectSO_Alpha> displayEffects = new List<Alpha.Data.WeaponEffectSO_Alpha>();
@@ -841,7 +835,7 @@ namespace Alpha.UI
                     displayEffects.AddRange(item.currentEffects);
                 }
 
-                detailPopup.Setup(item.series, item.partType, item.rarity, displayEffects, eventData.position, isBestSlotMet);
+                detailPopup.Setup(item.series, item.partType, item.rarity, displayEffects, eventData.position, item.setBonusEffect);
             }
         }
     }
