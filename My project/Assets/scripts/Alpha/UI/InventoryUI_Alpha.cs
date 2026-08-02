@@ -27,7 +27,7 @@ namespace Alpha.UI
         public GameObject effectIconPrefab;
         
         [Header("Grid (3x3)")]
-        [Tooltip("裁E��枠(3x3)のボタンスロチE��。インチE��クスは 0、E (y*3+x)")]
+        [Tooltip("陬・ｙ譫�(3x3)縺ｮ繝懊ち繝ｳ繧ｹ繝ｭ繝・ヨ縲ゅう繝ｳ繝・ャ繧ｯ繧ｹ縺ｯ 0縲・ (y*3+x)")]
         public Button[] gridSlots = new Button[9];
         
         [Header("Extra Slots (Dynamic)")]
@@ -37,16 +37,16 @@ namespace Alpha.UI
         
         [Header("Confirm & Check Mode")]
         public Button confirmButton;
-        [Tooltip("確認モード時のみ表示される戻る�Eタン")]
+        [Tooltip("遒ｺ隱阪Δ繝ｼ繝画凾縺ｮ縺ｿ陦ｨ遉ｺ縺輔ｌ繧区綾繧九・繧ｿ繝ｳ")]
         public Button backButtonForCheck;
-        [Tooltip("フォージフェーズから呼ばれた際に表示される戻る�Eタン")]
+        [Tooltip("繝輔か繝ｼ繧ｸ繝輔ぉ繝ｼ繧ｺ縺九ｉ蜻ｼ縺ｰ繧後◆髫帙↓陦ｨ遉ｺ縺輔ｌ繧区綾繧九・繧ｿ繝ｳ")]
         public Button backToForgeButton;
 
         private System.Action onConfirmCallback;
         private bool openedByEscape = false;
         private bool isReadOnly = false;
         
-        // 選択中のスロチE��インチE��クス�E�E1は未選択！E
+        // 驕ｸ謚樔ｸｭ縺ｮ繧ｹ繝ｭ繝・ヨ繧､繝ｳ繝・ャ繧ｯ繧ｹ・・1縺ｯ譛ｪ驕ｸ謚橸ｼ・
         private int selectedIndex = -1;
 
         public enum InventoryUIMode { Normal, SelectForBlacksmith }
@@ -69,7 +69,7 @@ namespace Alpha.UI
             }
             if (backButtonForCheck != null)
             {
-                // 戻る�Eタンの挙動はConfirmと同じ�E�EIを閉じてコールバックを実行！E
+                // 謌ｻ繧九・繧ｿ繝ｳ縺ｮ謖吝虚縺ｯConfirm縺ｨ蜷後§・・I繧帝哩縺倥※繧ｳ繝ｼ繝ｫ繝舌ャ繧ｯ繧貞ｮ溯｡鯉ｼ・
                 backButtonForCheck.onClick.AddListener(OnConfirmClicked);
             }
             if (backToForgeButton != null)
@@ -77,7 +77,7 @@ namespace Alpha.UI
                 backToForgeButton.onClick.AddListener(OnConfirmClicked);
             }
             
-            // スロチE��クリチE��時�E仮実裁E
+            // 繧ｹ繝ｭ繝・ヨ繧ｯ繝ｪ繝・け譎ゅ・莉ｮ螳溯｣・
             for (int i = 0; i < gridSlots.Length; i++)
             {
                 int index = i;
@@ -97,12 +97,12 @@ namespace Alpha.UI
 
         public void ToggleEscapeInventory()
         {
-            // すでにEscで開いた状態なら閉じる
+            // 縺吶〒縺ｫEsc縺ｧ髢九＞縺溽憾諷九↑繧蛾哩縺倥ｋ
             if (panel != null && panel.activeSelf && openedByEscape)
             {
                 CloseEscapeInventory();
             }
-            // 非表示状態かつ、現在ゲームが動ぁE��ぁE���E�報酬フェーズ中などではなぁE��場合にEscで開く
+            // 髱櫁｡ｨ遉ｺ迥ｶ諷九°縺､縲∫樟蝨ｨ繧ｲ繝ｼ繝�縺悟虚縺・※縺・ｋ・亥�ｱ驟ｬ繝輔ぉ繝ｼ繧ｺ荳ｭ縺ｪ縺ｩ縺ｧ縺ｯ縺ｪ縺・ｼ牙�ｴ蜷医↓Esc縺ｧ髢九￥
             else if (panel != null && !panel.activeSelf)
             {
                 if (TutorialManager_Alpha.Instance != null && TutorialManager_Alpha.Instance.IsShowing)
@@ -212,8 +212,8 @@ namespace Alpha.UI
             if (panel != null) panel.SetActive(true);
             if (detailPopup != null) detailPopup.gameObject.SetActive(false);
             
-            // 選択モードではConfirmボタン�E�画面を閉じるボタン�E�や通常の戻る�Eタンは非表示
-            // 新たに追加したフォージ用戻る�Eタンを表示する
+            // 驕ｸ謚槭Δ繝ｼ繝峨〒縺ｯConfirm繝懊ち繝ｳ・育判髱｢繧帝哩縺倥ｋ繝懊ち繝ｳ・峨ｄ騾壼ｸｸ縺ｮ謌ｻ繧九・繧ｿ繝ｳ縺ｯ髱櫁｡ｨ遉ｺ
+            // 譁ｰ縺溘↓霑ｽ蜉�縺励◆繝輔か繝ｼ繧ｸ逕ｨ謌ｻ繧九・繧ｿ繝ｳ繧定｡ｨ遉ｺ縺吶ｋ
             if (confirmButton != null) confirmButton.gameObject.SetActive(false);
             
             if (backToForgeButton != null)
@@ -268,7 +268,7 @@ namespace Alpha.UI
             // 2. Extra Slots (9 onwards)
             int extraCount = Mathf.Max(0, equipList.Count - 9);
 
-            // 余�EなスロチE��があれ�E破棁E
+            // 菴吝・縺ｪ繧ｹ繝ｭ繝・ヨ縺後≠繧後・遐ｴ譽・
             while (spawnedExtraSlots.Count > extraCount)
             {
                 int lastIdx = spawnedExtraSlots.Count - 1;
@@ -276,7 +276,7 @@ namespace Alpha.UI
                 spawnedExtraSlots.RemoveAt(lastIdx);
             }
 
-            // 足りなぁE��ロチE��があれ�E生�E
+            // 雜ｳ繧翫↑縺・せ繝ｭ繝・ヨ縺後≠繧後・逕滓・
             while (spawnedExtraSlots.Count < extraCount)
             {
                 if (extraSlotPrefab != null && extraSlotsContainer != null)
@@ -305,7 +305,7 @@ namespace Alpha.UI
                 }
             }
 
-            // アイコンと色の反映
+            // 繧｢繧､繧ｳ繝ｳ縺ｨ濶ｲ縺ｮ蜿肴丐
             int freeSlotCount = InventoryManager_Alpha.Instance.freeSlotCount;
 
             for (int i = 0; i < spawnedExtraSlots.Count; i++)
@@ -427,8 +427,8 @@ namespace Alpha.UI
                 go.SetActive(true);
                 spawnedActiveEffects.Add(go);
                 
-                // ScrollView (LayoutGroup) によってWidth/HeightぁEに潰される�Eを防ぐため、E
-                // プレハブ本来のサイズを取得してLayoutElementで強制する
+                // ScrollView (LayoutGroup) 縺ｫ繧医▲縺ｦWidth/Height縺・縺ｫ貎ｰ縺輔ｌ繧九・繧帝亟縺舌◆繧√・
+                // 繝励Ξ繝上ヶ譛ｬ譚･縺ｮ繧ｵ繧､繧ｺ繧貞叙蠕励＠縺ｦLayoutElement縺ｧ蠑ｷ蛻ｶ縺吶ｋ
                 RectTransform prefabRt = activeEffectPrefab.transform as RectTransform;
                 if (prefabRt != null)
                 {
@@ -462,7 +462,7 @@ namespace Alpha.UI
                     text.text = $"{colorTag}{count} \"{effect.effectName}\"{colorEnd}";
                 }
 
-                // アイコンを設定！EIcon" とぁE��名前の子要素を探すか、子要素の中の最初�EImageを探す！E
+                // 繧｢繧､繧ｳ繝ｳ繧定ｨｭ螳夲ｼ・Icon" 縺ｨ縺・≧蜷榊燕縺ｮ蟄占ｦ∫ｴ�繧呈爾縺吶°縲∝ｭ占ｦ∫ｴ�縺ｮ荳ｭ縺ｮ譛蛻昴・Image繧呈爾縺呻ｼ・
                 Image iconImg = null;
                 foreach (Transform child in go.transform)
                 {
@@ -473,7 +473,7 @@ namespace Alpha.UI
                     }
                 }
                 
-                // "Icon"とぁE��名前がなかったら、ルートを避けて「子要素」からImageを探ぁE
+                // "Icon"縺ｨ縺・≧蜷榊燕縺後↑縺九▲縺溘ｉ縲√Ν繝ｼ繝医ｒ驕ｿ縺代※縲悟ｭ占ｦ∫ｴ�縲阪°繧迂mage繧呈爾縺・
                 if (iconImg == null)
                 {
                     foreach (Transform child in go.transform)
@@ -507,30 +507,30 @@ namespace Alpha.UI
         {
             if (btn == null) return;
 
-            // 背景枠の取得と色設宁E
+            // 閭梧勹譫�縺ｮ蜿門ｾ励→濶ｲ險ｭ螳・
             Image bg = btn.targetGraphic as Image;
             
-            // 【不�E合対策】Unityインスペクタ上でボタン自体�E色が茶色に設定されてぁE��と、E
-            // スクリプトで何色を指定しても茶色に上塗り�E�乗算）されてしまぁE��め、強制皁E��ボタン自体を真っ白にリセチE��します、E
+            // 縲蝉ｸ榊・蜷亥ｯｾ遲悶繕nity繧､繝ｳ繧ｹ繝壹け繧ｿ荳翫〒繝懊ち繝ｳ閾ｪ菴薙・濶ｲ縺瑚幻濶ｲ縺ｫ險ｭ螳壹＆繧後※縺・ｋ縺ｨ縲・
+            // 繧ｹ繧ｯ繝ｪ繝励ヨ縺ｧ菴戊牡繧呈欠螳壹＠縺ｦ繧り幻濶ｲ縺ｫ荳雁｡励ｊ・井ｹ礼ｮ暦ｼ峨＆繧後※縺励∪縺・◆繧√∝ｼｷ蛻ｶ逧・↓繝懊ち繝ｳ閾ｪ菴薙ｒ逵溘▲逋ｽ縺ｫ繝ｪ繧ｻ繝・ヨ縺励∪縺吶・
             ColorBlock cb = btn.colors;
             cb.normalColor = Color.white;
-            cb.selectedColor = Color.yellow; // インベントリの選択色は黁E��にする
+            cb.selectedColor = Color.yellow; // 繧､繝ｳ繝吶Φ繝医Μ縺ｮ驕ｸ謚櫁牡縺ｯ鮟・牡縺ｫ縺吶ｋ
             btn.colors = cb;
 
             if (bg != null)
             {
                 if (isSelected)
                 {
-                    bg.color = Color.yellow; // 選択中は最優允E
+                    bg.color = Color.yellow; // 驕ｸ謚樔ｸｭ縺ｯ譛蜆ｪ蜈・
                 }
                 else if (slotIndex >= 9 && !isTempSlot)
                 {
-                    // EX�E�Eree�E�スロチE��は常に紫色
+                    // EX・・ree・峨せ繝ｭ繝・ヨ縺ｯ蟶ｸ縺ｫ邏ｫ濶ｲ
                     bg.color = new Color32(180, 100, 255, 255);
                 }
                 else if (item.series != null)
                 {
-                    // 中身がある場合�EレアリチE��に応じた色を設宁E
+                    // 荳ｭ霄ｫ縺後≠繧句�ｴ蜷医・繝ｬ繧｢繝ｪ繝・ぅ縺ｫ蠢懊§縺溯牡繧定ｨｭ螳・
                     switch (item.rarity)
                     {
                         case 1: bg.color = new Color32(128, 38, 5, 255); break;
@@ -542,11 +542,11 @@ namespace Alpha.UI
                 }
                 else
                 {
-                    // 空枠の場吁E
+                    // 遨ｺ譫�縺ｮ蝣ｴ蜷・
                     bg.color = isTempSlot ? new Color(0.8f, 0.9f, 1f, 1f) : Color.white;
                 }
             }
-            // "Icon" とぁE��名前の子オブジェクトを探ぁE
+            // "Icon" 縺ｨ縺・≧蜷榊燕縺ｮ蟄舌が繝悶ず繧ｧ繧ｯ繝医ｒ謗｢縺・
             Image iconImg = null;
             foreach (Transform child in btn.transform)
             {
@@ -570,7 +570,7 @@ namespace Alpha.UI
                     else if (item.partType == Alpha.Data.WeaponPartType_Alpha.Casing && item.series.iconCasing != null) targetSprite = item.series.iconCasing;
                     else if (item.partType == Alpha.Data.WeaponPartType_Alpha.Primer && item.series.iconPrimer != null) targetSprite = item.series.iconPrimer;
 
-                    // 堁E��なフォールバック
+                    // 蝣・欧縺ｪ繝輔か繝ｼ繝ｫ繝舌ャ繧ｯ
                     if (targetSprite == null) targetSprite = item.series.icon;
                     if (targetSprite == null) targetSprite = item.series.iconBullet;
                     if (targetSprite == null) targetSprite = item.series.iconCasing;
@@ -591,15 +591,15 @@ namespace Alpha.UI
                 else
                 {
                     iconImg.sprite = null;
-                    iconImg.color = Color.clear; // 空枠また�EアイコンがなぁE��合�E透�Eにする
+                    iconImg.color = Color.clear; // 遨ｺ譫�縺ｾ縺溘・繧｢繧､繧ｳ繝ｳ縺後↑縺・�ｴ蜷医・騾乗・縺ｫ縺吶ｋ
                 }
             }
             else
             {
-                // 開発老E��の警告：Icon子要素がなぁE��吁E
+                // 髢狗匱閠・∈縺ｮ隴ｦ蜻奇ｼ唔con蟄占ｦ∫ｴ�縺後↑縺・�ｴ蜷・
                 if (item.series != null)
                 {
-                    Debug.LogWarning($"[InventoryUI] �����X���b�g�� Icon ������܂���");
+                    Debug.LogWarning($"[InventoryUI] 装備スロットに Icon がありません");
                 }
             }
         }
@@ -608,7 +608,7 @@ namespace Alpha.UI
         {
             if (currentMode == InventoryUIMode.SelectForBlacksmith)
             {
-                // 選択モード時はアイチE��の移動を行わず、コールバックを返す
+                // 驕ｸ謚槭Δ繝ｼ繝画凾縺ｯ繧｢繧､繝・Β縺ｮ遘ｻ蜍輔ｒ陦後ｏ縺壹√さ繝ｼ繝ｫ繝舌ャ繧ｯ繧定ｿ斐☆
                 onSlotSelectedCallback?.Invoke(index);
                 return;
             }
@@ -623,17 +623,17 @@ namespace Alpha.UI
 
             if (selectedIndex == -1)
             {
-                // まだ何も選択されてぁE��ぁE��合、クリチE��したスロチE��を選択状態にする
+                // 縺ｾ縺�菴輔ｂ驕ｸ謚槭＆繧後※縺・↑縺・�ｴ蜷医√け繝ｪ繝・け縺励◆繧ｹ繝ｭ繝・ヨ繧帝∈謚樒憾諷九↓縺吶ｋ
                 selectedIndex = index;
                 Debug.Log($"[InventoryUI] Selected slot {index}");
                 RefreshUI();
             }
             else
             {
-                // すでに選択されてぁE��スロチE��がある場吁E
+                // 縺吶〒縺ｫ驕ｸ謚槭＆繧後※縺・ｋ繧ｹ繝ｭ繝・ヨ縺後≠繧句�ｴ蜷・
                 if (selectedIndex == index)
                 {
-                    // 同じスロチE��をクリチE��したらキャンセル
+                    // 蜷後§繧ｹ繝ｭ繝・ヨ繧偵け繝ｪ繝・け縺励◆繧峨く繝｣繝ｳ繧ｻ繝ｫ
                     selectedIndex = -1;
                     Debug.Log("[InventoryUI] Selection cancelled.");
                 }
@@ -654,7 +654,7 @@ namespace Alpha.UI
             
             SwapItems(fromIndex, toIndex);
             
-            // もし選択中だったものが移動したら選択解除するなどのケア
+            // 繧ゅ＠驕ｸ謚樔ｸｭ縺�縺｣縺溘ｂ縺ｮ縺檎ｧｻ蜍輔＠縺溘ｉ驕ｸ謚櫁ｧ｣髯､縺吶ｋ縺ｪ縺ｩ縺ｮ繧ｱ繧｢
             selectedIndex = -1;
             RefreshUI();
         }
@@ -686,16 +686,16 @@ namespace Alpha.UI
 
                 if (!CheckEquipRestriction(index2, item1))
                 {
-                    Debug.LogWarning("[InventoryUI] ������ƕ��ʂ���v���Ȃ����߃L�����Z��");
+                    Debug.LogWarning("[InventoryUI] 装備先と部位が一致しないためキャンセル");
                     return;
                 }
                 else if (!CheckEquipRestriction(index1, item2))
                 {
-                    // チE��ポラリー枠にあるアイチE��(item2)と裁E��枠のアイチE��(item1)を�Eれ替えよぁE��したが、E
-                    // チE��ポラリー枠のアイチE��が裁E��枠の部位と一致しなぁE��合�E、裁E��を解除するのではなくキャンセルにする
+                    // 繝・Φ繝昴Λ繝ｪ繝ｼ譫�縺ｫ縺ゅｋ繧｢繧､繝・Β(item2)縺ｨ陬・ｙ譫�縺ｮ繧｢繧､繝・Β(item1)繧貞・繧梧崛縺医ｈ縺・→縺励◆縺後・
+                    // 繝・Φ繝昴Λ繝ｪ繝ｼ譫�縺ｮ繧｢繧､繝・Β縺瑚｣・ｙ譫�縺ｮ驛ｨ菴阪→荳閾ｴ縺励↑縺・�ｴ蜷医・縲∬｣・ｙ繧定ｧ｣髯､縺吶ｋ縺ｮ縺ｧ縺ｯ縺ｪ縺上く繝｣繝ｳ繧ｻ繝ｫ縺ｫ縺吶ｋ
                     if (index2 >= InventoryManager_Alpha.BASIC_SLOT_COUNT)
                     {
-                        Debug.LogWarning("[InventoryUI] ����ւ���̃A�C�e�������̃X���b�g�ɑ����ł��Ȃ����߃L�����Z��");
+                        Debug.LogWarning("[InventoryUI] 入れ替え先のアイテムが元のスロットに装備できないためキャンセル");
                         return;
                     }
 
@@ -717,7 +717,7 @@ namespace Alpha.UI
                     InventoryManager_Alpha.Instance.SetByIndex(freeSlotIdx, item2);
                     InventoryManager_Alpha.Instance.SetByIndex(index2, item1);
                     InventoryManager_Alpha.Instance.SetByIndex(index1, new InventoryManager_Alpha.EquipInstance());
-                    Debug.Log($"[InventoryUI] ���������ւ��A���̑����͈ꎞ�g({freeSlotIdx})�ɑޔ����܂���");
+                    Debug.Log($"[InventoryUI] 装備を入れ替え、元の装備は一時枠({freeSlotIdx})に退避しました");
                 }
                 else
                 {
@@ -748,16 +748,16 @@ namespace Alpha.UI
 
             if (currentMode == InventoryUIMode.SelectForBlacksmith)
             {
-                // 選択キャンセルとして扱ぁE
+                // 驕ｸ謚槭く繝｣繝ｳ繧ｻ繝ｫ縺ｨ縺励※謇ｱ縺・
                 currentMode = InventoryUIMode.Normal;
                 Hide();
                 onCancelCallbackForBlacksmith?.Invoke();
                 return;
             }
 
-            // 新規取得アイチE��の自動追加はRewardSequenceManager側で行うため、ここでは何もしなぁE
+            // 譁ｰ隕丞叙蠕励い繧､繝・Β縺ｮ閾ｪ蜍戊ｿｽ蜉�縺ｯRewardSequenceManager蛛ｴ縺ｧ陦後≧縺溘ａ縲√％縺薙〒縺ｯ菴輔ｂ縺励↑縺・
             selectedIndex = -1;
-            Hide(); // UI自身を隠ぁE
+            Hide(); // UI閾ｪ霄ｫ繧帝國縺・
             onConfirmCallback?.Invoke();
         }
 
@@ -816,18 +816,8 @@ namespace Alpha.UI
                         }
                     }
                     
-                    List<Alpha.Data.WeaponEffectSO_Alpha> specific = null;
-                    if (item.partType == Alpha.Data.WeaponPartType_Alpha.Bullet) specific = item.series.bulletSpecificEffects;
-                    else if (item.partType == Alpha.Data.WeaponPartType_Alpha.Casing) specific = item.series.casingSpecificEffects;
-                    else if (item.partType == Alpha.Data.WeaponPartType_Alpha.Primer) specific = item.series.primerSpecificEffects;
-                    
-                    if (specific != null)
-                    {
-                        foreach (var eff in specific)
-                        {
-                            if (eff != null) displayEffects.Add(eff);
-                        }
-                    }
+                    // specific effects are already added to currentEffects during generation,
+                    // so we don't need to add them here again manually.
                 }
                 
                 if (item.currentEffects != null)

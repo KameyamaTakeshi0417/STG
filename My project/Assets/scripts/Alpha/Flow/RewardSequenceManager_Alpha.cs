@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Alpha.Data;
 using Alpha.UI;
+using DG.Tweening;
 
 namespace Alpha.Flow
 {
@@ -15,6 +16,7 @@ namespace Alpha.Flow
 
         [Header("UI References")]
         public OrbStackUI_Alpha orbStackUI;
+        public OrbOpeningUI_Alpha orbOpeningUI;
         public RewardSelectionUI_Alpha rewardSelectionUI;
         public InventoryUI_Alpha inventoryUI;
 
@@ -96,10 +98,17 @@ namespace Alpha.Flow
                 orbStackUI.UpdateStackDisplay();
             }
 
-            // TODO: 演出用メソッドを挟む
-            // PlayOrbOpenEffect(() => { ShowRewardSelection(currentOrb); });
-            
-            ShowRewardSelection(currentOrb);
+            // オーブの開封アニメーションを挟んでから、報酬選択画面を表示する
+            if (orbOpeningUI != null)
+            {
+                orbOpeningUI.PlayAnimation(currentOrb, () => {
+                    ShowRewardSelection(currentOrb);
+                });
+            }
+            else
+            {
+                ShowRewardSelection(currentOrb);
+            }
         }
 
         private void ShowRewardSelection(OrbData_Alpha orb)

@@ -10,7 +10,10 @@ namespace Alpha.UI
         [Header("UI References")]
         public GameObject panel;
         public Transform stackContainer; // ScrollViewのContentなど
-        public GameObject orbIconPrefab; // オーブのアイコンプレハブ
+        
+        [Header("Prefabs")]
+        [Tooltip("レアリティ毎のオーブUIプレハブ（Index 0: Common, 1: Uncommon, 2: Rare, 3: Divine）")]
+        public GameObject[] orbIconPrefabs = new GameObject[4];
 
         private List<GameObject> activeIcons = new List<GameObject>();
         private Queue<OrbData_Alpha> currentQueue;
@@ -43,20 +46,20 @@ namespace Alpha.UI
         {
             ClearIcons();
 
-            if (currentQueue == null || orbIconPrefab == null || stackContainer == null) return;
+            if (currentQueue == null || orbIconPrefabs == null || stackContainer == null) return;
 
             // キューの中身を配列にして一覧表示
             OrbData_Alpha[] orbs = currentQueue.ToArray();
             for (int i = 0; i < orbs.Length; i++)
             {
-                GameObject icon = Instantiate(orbIconPrefab, stackContainer);
-                activeIcons.Add(icon);
-                
-                // TODO: アイコンの色や画像をレアリティ(orbs[i].orbRarity)に合わせて変更する処理
-                // Image img = icon.GetComponent<Image>();
-                // img.color = GetRarityColor(orbs[i].orbRarity);
-                
-                // 一番上（i==0）のオーブはハイライトさせる等の演出が可能
+                int qualityIndex = Mathf.Clamp(orbs[i].orbRarity - 1, 0, orbIconPrefabs.Length - 1);
+                GameObject prefab = orbIconPrefabs[qualityIndex];
+
+                if (prefab != null)
+                {
+                    GameObject icon = Instantiate(prefab, stackContainer);
+                    activeIcons.Add(icon);
+                }
             }
         }
 

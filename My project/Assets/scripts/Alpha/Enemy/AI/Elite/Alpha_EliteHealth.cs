@@ -23,9 +23,15 @@ public class Alpha_EliteHealth : Health
 
     public int CurrentPhaseIndex { get; private set; } = 0;
 
+    [HideInInspector]
+    public int timedOutCount = 0;
+
     // ブレイク時のイベント（新しいフェーズのインデックスを渡す）
     public delegate void PhaseBreakHandler(int newPhaseIndex);
     public event PhaseBreakHandler OnPhaseBreak;
+
+    // リザルト用のフェーズ終了イベント（フェーズインデックス、タイムアウト終了かどうかのフラグ）
+    public event System.Action<int, bool> OnPhaseEndWithResult;
 
     private int expectedTotalPhases = 1;
 
@@ -123,7 +129,8 @@ public class Alpha_EliteHealth : Health
                 // 次のフェーズが存在するか？（AI側で設定されたフェーズ数を基準にする）
                 if (CurrentPhaseIndex < expectedTotalPhases - 1)
                 {
-                    BreakToNextPhase();
+                    // タイムアウトではなく、HPを削り切ったことによるブレイク
+                    BreakToNextPhase(false);
                     // フェーズブレイク時は余剰ダメージをカットし、ワンパンを防止する
                     remainingDamage = 0;
                 }
@@ -138,8 +145,31 @@ public class Alpha_EliteHealth : Health
         }
     }
 
-    private void BreakToNextPhase()
+    public void ForcePhaseBreak(bool isTimeout)
     {
+        // UIやAI側から強制的にブレイクさせる（タイムアウトなど）
+        if (isTimeout)
+        {
+            timedOutCount++;
+            Debug.Log($"<color=yellow>[Elite Break]</color> Phase timed out! Total timed out phases: {timedOutCount}");
+        }
+
+        if (CurrentPhaseIndex < expectedTotalPhases - 1)
+        {
+            BreakToNextPhase(isTimeout);
+        }
+        else
+        {
+            // 最終フェーズでタイムアウトした場合、ボスを死亡させる
+            currentHP = 0;
+            base.TakeDamage(0);
+        }
+    }
+
+    private void BreakToNextPhase(bool isTimeout)
+    {
+        OnPhaseEndWithResult?.Invoke(CurrentPhaseIndex, isTimeout);
+        
         CurrentPhaseIndex++;
         
         // 新しいフェーズのHPをセットして全回復（設定されていなければ最後のHPを再利用）
@@ -208,9 +238,10 @@ public class Alpha_EliteHealth : Health
             // エリート（中ボス含む）の場合は通常通り消滅させる
             if (Alpha.Flow.RewardManager_Alpha.Instance != null)
             {
+                bool forceQuality1 = (timedOutCount >= 2);
                 if (isMidBoss)
                 {
-                    Alpha.Flow.RewardManager_Alpha.Instance.DropMidBossReward(transform.position);
+                    Alpha.Flow.RewardManager_Alpha.Instance.DropMidBossReward(transform.position, forceQuality1);
                     if (Alpha.Flow.StageManager_Alpha.Instance != null)
                     {
                         Alpha.Flow.StageManager_Alpha.Instance.ClearAllEnemyBullets();

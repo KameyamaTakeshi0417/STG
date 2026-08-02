@@ -107,19 +107,30 @@ namespace Alpha.Audio
 
         public void StopBGM(float fadeDuration = 0.5f)
         {
-            if (bgmSource == null || !bgmSource.isPlaying) return;
-
-            bgmSource.DOKill();
-            if (fadeDuration > 0f)
+            if (bgmSource.isPlaying)
             {
-                bgmSource.DOFade(0f, fadeDuration).SetUpdate(true).OnComplete(() =>
+                if (fadeDuration > 0f)
+                {
+                    bgmSource.DOFade(0f, fadeDuration).SetUpdate(true).OnComplete(() =>
+                    {
+                        bgmSource.Stop();
+                        bgmSource.volume = masterBGMVolume;
+                    });
+                }
+                else
                 {
                     bgmSource.Stop();
-                });
+                }
             }
-            else
+        }
+
+        public void UpdateBGMVolume(float newVolume)
+        {
+            masterBGMVolume = Mathf.Clamp01(newVolume);
+            if (bgmSource.isPlaying)
             {
-                bgmSource.Stop();
+                bgmSource.DOKill();
+                bgmSource.volume = masterBGMVolume;
             }
         }
 

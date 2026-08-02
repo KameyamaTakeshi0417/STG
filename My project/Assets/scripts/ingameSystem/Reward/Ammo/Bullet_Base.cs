@@ -154,12 +154,22 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
             if (newEffect == null) continue;
             
             var clonedEffect = newEffect.Clone();
-            clonedEffect.canUseAllEffects = canUseAllEffects; // 蜈ｨ蜉ｹ譫懃匱蜍募庄閭ｽ繝輔Λ繧ｰ繧呈ｸ｡縺・
+            clonedEffect.canUseAllEffects = canUseAllEffects; // 全効果発動可能フラグを渡す
 
-            var existingEffect = activeEffects.Find(e => e.GetType() == clonedEffect.GetType() && e.equipPosition == clonedEffect.equipPosition);
+            // canUseAllEffectsがtrueの場合は、位置に関わらず各エフェクト1つあれば全効果が発動するので、型のみで重複排除する
+            var existingEffect = activeEffects.Find(e => 
+                e.GetType() == clonedEffect.GetType() && 
+                (canUseAllEffects || e.equipPosition == clonedEffect.equipPosition)
+            );
+            
             if (existingEffect != null)
             {
                 existingEffect.stackCount++;
+                // 全効果発動時は、最も高いレアリティを優先する
+                if (canUseAllEffects && clonedEffect.rarity > existingEffect.rarity)
+                {
+                    existingEffect.rarity = clonedEffect.rarity;
+                }
             }
             else
             {

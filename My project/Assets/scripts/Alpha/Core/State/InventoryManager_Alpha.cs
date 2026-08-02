@@ -286,14 +286,11 @@ public class InventoryManager_Alpha : MonoBehaviour
 
         if (padding)
         {
-            if (requiredSlots < lastFilled + 1 + 3)
+            if (requiredSlots < lastFilled + 1 + 1)
             {
-                requiredSlots = lastFilled + 1 + 3;
+                requiredSlots = lastFilled + 1 + 1;
             }
-            if (requiredSlots % 3 != 0)
-            {
-                requiredSlots += 3 - (requiredSlots % 3);
-            }
+            // 3の倍数に揃える処理を削除し、余分なスロットが1つだけになるようにする
         }
 
         while (equipInstance.Count < requiredSlots)
@@ -454,6 +451,11 @@ public class InventoryManager_Alpha : MonoBehaviour
                     if (effectSO == null) continue;
                     processEffect(effectSO, item.rarity);
                 }
+            }
+
+            if (item.setBonusEffect != null && IsGroupSeriesAligned(itemGroup))
+            {
+                processEffect(item.setBonusEffect, item.rarity);
             }
         }
 

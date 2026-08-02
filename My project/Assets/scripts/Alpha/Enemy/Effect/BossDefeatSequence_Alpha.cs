@@ -203,7 +203,9 @@ namespace Alpha.Enemy.Effect
             // ボス報酬のドロップ
             if (Alpha.Flow.RewardManager_Alpha.Instance != null)
             {
-                Alpha.Flow.RewardManager_Alpha.Instance.DropBossReward(transform.position, bossId);
+                var eliteHealth = GetComponent<Alpha_EliteHealth>();
+                bool forceQuality1 = eliteHealth != null && eliteHealth.timedOutCount >= 2;
+                Alpha.Flow.RewardManager_Alpha.Instance.DropBossReward(transform.position, bossId, forceQuality1);
             }
 
             // クリア進行

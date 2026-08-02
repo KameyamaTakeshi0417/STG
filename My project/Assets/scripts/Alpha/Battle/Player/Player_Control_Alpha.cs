@@ -5,7 +5,7 @@ using UnityEngine;
 public class Player_Control_Alpha : MonoBehaviour
 {
     protected Rigidbody2D rb;
-    protected Animator animator; // Animator コンポーネントを追加
+    protected Animator animator; // Animator 繧�E�繝ｳ繝昴・繝阪Φ繝医�E�霑�E�蜉�
     public bool onCoolTime;
     playerStatusManager_Alpha myStatus;
 
@@ -15,23 +15,23 @@ public class Player_Control_Alpha : MonoBehaviour
     protected float specialMoveEndTime = 0f;
 
     [Header("Focus Mode Settings")]
-    [Tooltip("右クリック時の移動速度倍率")]
+    [Tooltip("Tooltip removed due to encoding error")]
     public float focusSpeedMultiplier = 0.5f;
 
-    [Tooltip("通常時のプレイヤー当たり判定のサイズ")]
+    [Tooltip("Tooltip removed due to encoding error")]
     public Vector2 normalColliderSize = new Vector2(0.5f, 0.5f);
-    [Tooltip("右クリック時のプレイヤー当たり判定のサイズ")]
+    [Tooltip("Tooltip removed due to encoding error")]
     public Vector2 focusColliderSize = new Vector2(0.2f, 0.2f);
 
-    [Tooltip("通常時のグレイズ判定のサイズ")]
+    [Tooltip("Tooltip removed due to encoding error")]
     public Vector2 normalGrazeSize = new Vector2(1.0f, 1.0f);
-    [Tooltip("右クリック時のグレイズ判定のサイズ")]
+    [Tooltip("Tooltip removed due to encoding error")]
     public Vector2 focusGrazeSize = new Vector2(0.6f, 0.6f);
+    [Tooltip("Tooltip removed due to encoding error")]
 
-    [Tooltip("当たり判定を表示する画像（プレイヤーの子オブジェクト）")]
     public GameObject hitboxImage;
 
-    [Tooltip("グレイズ判定を持つ子オブジェクトのコライダー")]
+    [Tooltip("Tooltip removed due to encoding error")]
     public CapsuleCollider2D grazeCollider;
 
     private CapsuleCollider2D playerCollider;
@@ -64,7 +64,7 @@ public class Player_Control_Alpha : MonoBehaviour
     {
 
         rb = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>(); // Animator を取得
+        animator = GetComponent<Animator>(); // Animator 繧貞叙蠕�E
         
     }
     // Update is called once per frame
@@ -76,17 +76,20 @@ public class Player_Control_Alpha : MonoBehaviour
 
         if (!isSpecialMoving)
         {
-            // 右クリック監視（フォーカスモード）
+            // 蜿�E�繧�E�繝ｪ繝�Eけ逶�E�隕厄�E�医ヵ繧�E�繝ｼ繧�E�繧�E�繝｢繝ｼ繝会ｼ・
             if (myStatus.currentSpecialMove == playerStatusManager_Alpha.SpecialMoveType.Focus)
             {
-                if (Input.GetMouseButtonDown(1) && myStatus.currentStamina > 0 && !myStatus.isStaminaExhausted)
+                // Input System: 繝帙�E繝ｫ繝牙愛螳・
+                bool isSpecialPressed = Alpha.Managers.InputManager_Alpha.Instance.IsSpecialPressed;
+                
+                if (isSpecialPressed && myStatus.currentStamina > 0 && !myStatus.isStaminaExhausted)
                 {
                     isFocusMode = true;
                     if (playerCollider != null) playerCollider.size = focusColliderSize;
                     if (hitboxImage != null) hitboxImage.SetActive(true);
                     if (grazeCollider != null) grazeCollider.size = focusGrazeSize;
                 }
-                else if (Input.GetMouseButtonUp(1) || myStatus.currentStamina <= 0 || myStatus.isStaminaExhausted)
+                else if (!isSpecialPressed || myStatus.currentStamina <= 0 || myStatus.isStaminaExhausted)
                 {
                     if (isFocusMode)
                     {
@@ -114,50 +117,31 @@ public class Player_Control_Alpha : MonoBehaviour
             }
             else
             {
-                if (isFocusMode)
-                {
-                    isFocusMode = false;
-                    if (playerCollider != null) playerCollider.size = normalColliderSize;
-                    if (hitboxImage != null) hitboxImage.SetActive(false);
-                    if (grazeCollider != null) grazeCollider.size = normalGrazeSize;
-                }
+                isFocusMode = false;
+                if (playerCollider != null) playerCollider.size = normalColliderSize;
+                if (hitboxImage != null) hitboxImage.SetActive(false);
+                if (grazeCollider != null) grazeCollider.size = normalGrazeSize;
             }
 
-            if (isFocusMode)
-            {
-                moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-            }
-            else
-            {
-                moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-            }
+            // Input System縺九ｉ縺�E�遘ｻ蜍輔�E繧�E�繝医Ν蜿門�E�・
+            moveInput = Alpha.Managers.InputManager_Alpha.Instance.MoveVector;
             
             if (moveInput.sqrMagnitude > 1) moveInput.Normalize();
 
-            if (Input.GetMouseButtonDown(1) && myStatus.currentSpecialMove != playerStatusManager_Alpha.SpecialMoveType.None && myStatus.currentSpecialMove != playerStatusManager_Alpha.SpecialMoveType.Focus)
+            // 迚ｹ谿顔ｧ�E�蜍輔�E繝医Μ繧�E�繝ｼ・医ム繧�E�繝ｳ蛻�E�螳夲�E�・
+            if (Alpha.Managers.InputManager_Alpha.Instance.WasSpecialPressed && myStatus.currentSpecialMove != playerStatusManager_Alpha.SpecialMoveType.None && myStatus.currentSpecialMove != playerStatusManager_Alpha.SpecialMoveType.Focus)
             {
                 TrySpecialMove();
             }
         }
         else
         {
-            // スペシャルムーブ中は強制的にフォーカス解除
-            if (isFocusMode)
-            {
-                isFocusMode = false;
-                if (playerCollider != null) playerCollider.size = normalColliderSize;
-                if (hitboxImage != null) hitboxImage.SetActive(false);
-                if (grazeCollider != null) grazeCollider.size = normalGrazeSize;
-            }
+            moveInput = Vector2.zero; // 迚ｹ谿顔ｧ�E�蜍穂ｸ�E�縺�E�騾壼�E��E�縺�E�遘ｻ蜍募・蜉帙ｒ辟｡隕�E
         }
 
-        // マウスの位置を取得
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mousePosition.z = 0; // Z座標は0に固定
+        // 繝ｭ繝�Eけ繧�E�繝ｳ蟁E��雎｡縺後＞繧句�E��E�蜷医√◎縺�E�譁E��蜷代↓蜷代�E�繧句・送E�E�E�峨・縺薙！E���E�險倩�E��E�
 
-        // ロックオン対象がいる場合、その方向に向ける
-
-        // Animator パラメータの更新
+        // Animator 繝代Λ繝｡繝ｼ繧�E�縺�E�譖ｴ譁E��
         UpdateAnimatorParameters();
     }
 
@@ -190,9 +174,8 @@ public class Player_Control_Alpha : MonoBehaviour
             
             if (moveInput == Vector2.zero)
             {
-                Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                mousePosition.z = 0;
-                specialMoveDirection = (mousePosition - transform.position).normalized;
+                Vector3 aimPos = Alpha.Managers.InputManager_Alpha.Instance.GetWorldAimPosition(transform.position);
+                specialMoveDirection = (aimPos - transform.position).normalized;
             }
             else
             {
@@ -204,7 +187,7 @@ public class Player_Control_Alpha : MonoBehaviour
                 isSpecialMoving = true;
                 specialMoveEndTime = Time.time + duration;
                 
-                // 追加: ダッシュ時に残像を有効化
+                // 霑ｽ蜉�: 繝繝�Eす繝･譎ゅ↓谿句ワ繧呈怏蜉�E�蛹・
                 var trail = GetComponent<Alpha.Core.ProceduralGhostTrail_Alpha>();
                 if (trail == null) trail = gameObject.AddComponent<Alpha.Core.ProceduralGhostTrail_Alpha>();
                 trail.EnableTrail(true);
@@ -219,13 +202,13 @@ public class Player_Control_Alpha : MonoBehaviour
     private System.Collections.IEnumerator WarpRoutine(float windupTime, Vector2 direction)
     {
         isSpecialMoving = true;
-        rb.velocity = Vector2.zero; // ワープ中は完全停止
+        rb.velocity = Vector2.zero; // 繝ｯ繝ｼ繝嶺�E��E�縺�E�螳悟�E蛛懈�E��E�
         
         PlayerHealth health = GetComponent<PlayerHealth>();
         if (health != null) health.isInvincible = true;
 
-        // --- 追加：ワープ中の完全無敵（すり抜け）処理 ---
-        // 有効なColliderをすべて一時的に無効化し、弾がヒットしないようにする
+        // --- 霑ｽ蜉�・壹Ρ繝ｼ繝嶺�E��E�縺�E�螳悟�E辟｡謨�E�・医☁E��頑栢縺托ｼ牙�E送E�E---
+        // 譛牙柑縺�E�Collider繧偵☁E���E�縺�E�荳譎ら噪縺�E�辟｡蜉ｹ蛹悶�E�縲∝ｼ�E�縺後ヲ繝�Eヨ縺励↑縺・�E�縺・↓縺吶�E�E
         Collider2D[] colliders = GetComponentsInChildren<Collider2D>();
         List<Collider2D> activeColliders = new List<Collider2D>();
         foreach (var col in colliders)
@@ -239,7 +222,7 @@ public class Player_Control_Alpha : MonoBehaviour
 
         SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>();
         
-        float blinkInterval = 0.04f; // 高速明滅
+        float blinkInterval = 0.04f; // 鬮倬滓�E貊�E
         float timer = 0f;
         bool isVisible = true;
 
@@ -252,13 +235,13 @@ public class Player_Control_Alpha : MonoBehaviour
             timer += blinkInterval;
         }
 
-        // 表示を元に戻す
+        // 陦�E�遉ｺ繧貞�E縺�E�謌ｻ縺・
         foreach (var r in renderers) if (r != null) r.enabled = true;
 
-        // 瞬間移動実行
+        // 迸�E�髢鍋ｧ�E�蜍募�E�溯�E�・
         rb.position = rb.position + direction * myStatus.warpDistance;
 
-        // --- 追加：コライダーを復元 ---
+        // --- 霑ｽ蜉�・壹さ繝ｩ繧�E�繝繝ｼ繧貞ｾ�E�蜈�E---
         foreach (var col in activeColliders)
         {
             if (col != null) col.enabled = true;
@@ -309,32 +292,32 @@ public class Player_Control_Alpha : MonoBehaviour
                 float specialSpeed = dist / dur;
                 
                 rb.MovePosition(rb.position + specialMoveDirection * specialSpeed * Time.fixedDeltaTime);
-                rb.velocity = Vector2.zero; // 物理エンジンの慣性を消す
+                rb.velocity = Vector2.zero; // 迚ｩ送E�Eお繝ｳ繧�E�繝ｳ縺�E�諷�E�諤�E�繧呈ｶ医☁E
                 
                 if (Time.time >= specialMoveEndTime)
                 {
                     isSpecialMoving = false;
                     
-                    // 追加: ダッシュ終了時に残像を無効化
+                    // 霑ｽ蜉�: 繝繝�Eす繝･邨めE��・凾縺�E�谿句ワ繧堤┌蜉�E�蛹・
                     var trail = GetComponent<Alpha.Core.ProceduralGhostTrail_Alpha>();
                     if (trail != null) trail.EnableTrail(false);
                 }
             }
             else if (myStatus.currentSpecialMove == playerStatusManager_Alpha.SpecialMoveType.Warp)
             {
-                rb.velocity = Vector2.zero; // ワープ中は完全停止
+                rb.velocity = Vector2.zero; // 繝ｯ繝ｼ繝嶺�E��E�縺�E�螳悟�E蛛懈�E��E�
             }
             return;
         }
 
-        // 入力がない場合は何もしない
+        // 蜈･蜉帙′縺�E�縺・�E��E�蜷医・菴輔ｂ縺励↑縺・
         if (moveInput == Vector2.zero)
         {
             rb.velocity = Vector2.zero;
             return;
         }
 
-        // キャラクターを移動させる
+        // 繧�E�繝｣繝ｩ繧�E�繧�E�繝ｼ繧堤�E��E�蜍輔！E��帙ａE
         float setSpd = (myStatus.moveSpeed * myStatus.moveSpeedMag * 0.0001f);
         float finalSpeed = setSpd * myStatus.moveSpeedMag_CONST;
 
@@ -350,14 +333,13 @@ public class Player_Control_Alpha : MonoBehaviour
 
         Vector2 targetVelocity = moveInput * finalSpeed;
         rb.MovePosition(rb.position + targetVelocity * Time.fixedDeltaTime);
-        rb.velocity = Vector2.zero; // 慣性による滑り対策
+        rb.velocity = Vector2.zero; // 諷�E�諤�E�縺�E�繧医�E�貊代�E�蟇�E�遲・
     }
 
     protected virtual void UpdateAnimatorParameters()
     {
-        // マウスの位置を取得
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mousePosition.z = 0; // Z座標は0に固定
+        // 繧�E�繧�E�繝�蟁E��雎｡縺�E�蠎ｧ讓吶�E�蜿門�E�・
+        Vector3 aimPos = Alpha.Managers.InputManager_Alpha.Instance.GetWorldAimPosition(transform.position);
 
         Vector2 currentVelocity = Vector2.zero;
         if (isSpecialMoving)
@@ -379,13 +361,13 @@ public class Player_Control_Alpha : MonoBehaviour
             currentVelocity = moveInput * finalSpeed;
         }
 
-        // マウス位置のX座標をAnimatorパラメータに設定
-        float mouseXPosition = currentVelocity.x; // mousePosition.x;
+        // 繧�E�繧�E�繝�譁E��蜷托ｼ・霁E��・峨�E�Animator繝代Λ繝｡繝ｼ繧�E�縺�E�險�E�螳・
+        float mouseXPosition = currentVelocity.x; 
 
-        // プレイヤーの移動ベクトルの大きさを計算
+        // 繝励Ξ繧�E�繝､繝ｼ縺�E�遘ｻ蜍輔�E繧�E�繝医Ν縺�E�螟ｧ縺阪�E�E��定ｨ育�E�・
         float moveVectorMag = currentVelocity.magnitude;
 
-        // Animator パラメータを設定
+        // Animator 繝代Λ繝｡繝ｼ繧�E�繧定ｨ�E�螳・
         animator.SetFloat("mouseXPosition", mouseXPosition);
         animator.SetFloat("moveVectorMag", moveVectorMag);
     }

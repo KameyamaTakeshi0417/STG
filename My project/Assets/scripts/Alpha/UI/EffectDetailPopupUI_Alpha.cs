@@ -30,7 +30,16 @@ namespace Alpha.UI
             
             if (!string.IsNullOrEmpty(effect.description))
             {
-                finalStr += $"{effect.description}\n\n";
+                string desc = effect.description;
+                try
+                {
+                    desc = string.Format(desc, currentFlatValue);
+                }
+                catch (System.FormatException)
+                {
+                    // フォールバック
+                }
+                finalStr += $"{desc}\n\n";
             }
 
             string stagesStr = "";
@@ -66,6 +75,13 @@ namespace Alpha.UI
                     }
                     
                     if (string.IsNullOrEmpty(stepDesc)) continue;
+
+                    try
+                    {
+                        float val = (effect.qualityValues != null && i < effect.qualityValues.Length) ? effect.qualityValues[i] : 0f;
+                        stepDesc = string.Format(stepDesc, val);
+                    }
+                    catch (System.FormatException) {}
 
                     string colorHex = (i == activeStageIndex) ? "#FFFFFF" : "#808080"; // White for active, Gray for others
                     string prefix = (i == activeStageIndex) ? "▶" : "・";

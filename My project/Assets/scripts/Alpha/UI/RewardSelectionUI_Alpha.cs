@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using DG.Tweening;
 using Alpha.Data;
 using Alpha.Flow;
 
@@ -78,6 +79,32 @@ namespace Alpha.UI
                 
                 if (panel != null) panel.SetActive(true);
                 if (detailPopup != null) detailPopup.gameObject.SetActive(false);
+
+                Canvas.ForceUpdateCanvases();
+                if (choiceButtons.Length > 0 && choiceButtons[0] != null)
+                {
+                    var layout = choiceButtons[0].transform.parent.GetComponent<UnityEngine.UI.LayoutGroup>();
+                    if (layout != null) layout.enabled = false;
+                }
+
+                // カードの落下アニメーション
+                for (int i = 0; i < choiceButtons.Length; i++)
+                {
+                    if (choiceButtons[i] != null)
+                    {
+                        RectTransform rt = choiceButtons[i].GetComponent<RectTransform>();
+                        if (rt != null)
+                        {
+                            // 現在の正しいY座標を保存しておく
+                            float targetY = rt.anchoredPosition.y;
+                            // 画面外の上方に配置
+                            rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, targetY + 800f);
+                            // 時間差で元の位置へ落とす
+                            // timescaleが0になっている可能性があるのでSetUpdate(true)を使用
+                            rt.DOAnchorPosY(targetY, 0.4f).SetEase(Ease.OutCubic).SetDelay(i * 0.15f).SetUpdate(true);
+                        }
+                    }
+                }
             }
             else
             {

@@ -243,17 +243,19 @@ namespace Alpha.Flow
         /// <summary>
         /// 中ボス撃破時のドロップ判定
         /// </summary>
-        public void DropMidBossReward(Vector3 position)
+        public void DropMidBossReward(Vector3 position, bool forceQuality1 = false)
         {
             int dropCount = Alpha.Flow.StageManager_Alpha.Instance != null ? Alpha.Flow.StageManager_Alpha.Instance.GetCurrentRewardDropCount() : 1;
             
             for (int i = 0; i < dropCount; i++)
             {
                 Vector3 spawnPos = position + new Vector3(i * 0.5f - ((dropCount - 1) * 0.25f), 0, 0);
-                SpawnOrb(spawnPos, midBossDropTable.GetRandomRarity(), OrbSource_Alpha.MidBoss);
+                int quality = forceQuality1 ? 1 : midBossDropTable.GetRandomRarity();
+                SpawnOrb(spawnPos, quality, OrbSource_Alpha.MidBoss);
                 if (Random.value <= midBossDropTable.extraDropChance)
                 {
-                    SpawnOrb(spawnPos + new Vector3(0.2f, 0.2f, 0), midBossDropTable.GetRandomRarity(), OrbSource_Alpha.MidBoss);
+                    int extraQuality = forceQuality1 ? 1 : midBossDropTable.GetRandomRarity();
+                    SpawnOrb(spawnPos + new Vector3(0.2f, 0.2f, 0), extraQuality, OrbSource_Alpha.MidBoss);
                 }
             }
         }
@@ -261,17 +263,19 @@ namespace Alpha.Flow
         /// <summary>
         /// ボス撃破時のドロップ判定
         /// </summary>
-        public void DropBossReward(Vector3 position, string bossId)
+        public void DropBossReward(Vector3 position, string bossId, bool forceQuality1 = false)
         {
             int dropCount = Alpha.Flow.StageManager_Alpha.Instance != null ? Alpha.Flow.StageManager_Alpha.Instance.GetCurrentRewardDropCount() : 1;
 
             for (int i = 0; i < dropCount; i++)
             {
                 Vector3 spawnPos = position + new Vector3(i * 0.5f - ((dropCount - 1) * 0.25f), 0, 0);
-                SpawnOrb(spawnPos, bossDropTable.GetRandomRarity(), OrbSource_Alpha.Boss, bossId);
+                int quality = forceQuality1 ? 1 : bossDropTable.GetRandomRarity();
+                SpawnOrb(spawnPos, quality, OrbSource_Alpha.Boss, bossId);
                 if (Random.value <= bossDropTable.extraDropChance)
                 {
-                    SpawnOrb(spawnPos + new Vector3(0.2f, 0.2f, 0), bossDropTable.GetRandomRarity(), OrbSource_Alpha.Boss, bossId);
+                    int extraQuality = forceQuality1 ? 1 : bossDropTable.GetRandomRarity();
+                    SpawnOrb(spawnPos + new Vector3(0.2f, 0.2f, 0), extraQuality, OrbSource_Alpha.Boss, bossId);
                 }
             }
         }

@@ -13,6 +13,9 @@ public class ElitePhaseData
 
     [Tooltip("カットイン用の立ち絵スプライト")]
     public Sprite cutInSprite;
+
+    [Tooltip("このフェーズの制限時間（秒）。0以下の場合は時間無制限（タイムアウトしない）")]
+    public float timeLimit = 30f;
     
     [Tooltip("移動パターンの挙動")]
     public EnemyBehaviorData_Base movementBehavior;
@@ -35,6 +38,7 @@ public class Alpha_EliteEnemyAI : Alpha_EnemyAI
     private Coroutine movementCoroutine;
     private Coroutine attackCoroutine;
     private Coroutine summonCoroutine;
+    private Coroutine timerCoroutine;
 
     private Alpha_EliteHealth eliteHealth;
 
@@ -54,7 +58,7 @@ public class Alpha_EliteEnemyAI : Alpha_EnemyAI
         // 誤ってInitialBehaviorが裏で無限に動き続けるのを完全に防ぎます。
         InitialPosition = transform.position;
 
-        // エリート初遭遇時のチュートリアル表示
+        // エリート遭遇時のチュートリアル表示
         if (Alpha.UI.TutorialManager_Alpha.Instance != null)
         {
             Alpha.UI.TutorialManager_Alpha.Instance.ShowTutorial("Tutorial_Elite");
@@ -72,6 +76,16 @@ public class Alpha_EliteEnemyAI : Alpha_EnemyAI
             eliteHealth.SetTotalPhases(phases.Count);
         }
 
+        // ボス用のUIに切り替え
+        if (Alpha.UI.SequenceBarUI_Alpha.Instance != null)
+        {
+            Alpha.UI.SequenceBarUI_Alpha.Instance.gameObject.SetActive(false);
+        }
+        if (Alpha.UI.BossPhaseSequenceBarUI_Alpha.Instance != null)
+        {
+            Alpha.UI.BossPhaseSequenceBarUI_Alpha.Instance.Show();
+        }
+
         // 常にphasesリストの先頭（0番目）から確実にスタートする
         if (phases != null && phases.Count > 0)
         {
@@ -86,6 +100,16 @@ public class Alpha_EliteEnemyAI : Alpha_EnemyAI
         if (eliteHealth != null)
         {
             eliteHealth.OnPhaseBreak -= HandlePhaseBreak;
+        }
+
+        // 通常のUIに戻す
+        if (Alpha.UI.SequenceBarUI_Alpha.Instance != null)
+        {
+            Alpha.UI.SequenceBarUI_Alpha.Instance.gameObject.SetActive(true);
+        }
+        if (Alpha.UI.BossPhaseSequenceBarUI_Alpha.Instance != null)
+        {
+            Alpha.UI.BossPhaseSequenceBarUI_Alpha.Instance.Hide();
         }
 
         // エリート死亡時に画面上の敵弾とサーキュレーターを一掃する
@@ -178,6 +202,32 @@ public class Alpha_EliteEnemyAI : Alpha_EnemyAI
 
         if (currentPhase.summonBehavior != null)
             summonCoroutine = StartCoroutine(currentPhase.summonBehavior.RunBehavior(this));
+
+        // タイマーを開始
+        if (currentPhase.timeLimit > 0)
+        {
+            timerCoroutine = StartCoroutine(PhaseTimerRoutine(currentPhase.timeLimit));
+        }
+    }
+
+    private System.Collections.IEnumerator PhaseTimerRoutine(float timeLimit)
+    {
+        float elapsed = 0f;
+        while (elapsed < timeLimit)
+        {
+            elapsed += Time.deltaTime;
+            if (Alpha.UI.BossPhaseSequenceBarUI_Alpha.Instance != null)
+            {
+                Alpha.UI.BossPhaseSequenceBarUI_Alpha.Instance.UpdateProgress(elapsed, timeLimit);
+            }
+            yield return null;
+        }
+
+        // タイムアップ時の強制ブレイク
+        if (eliteHealth != null)
+        {
+            eliteHealth.ForcePhaseBreak(true);
+        }
     }
 
     public void StopAllBehaviors()
@@ -186,6 +236,15 @@ public class Alpha_EliteEnemyAI : Alpha_EnemyAI
         if (movementCoroutine != null) StopCoroutine(movementCoroutine);
         if (attackCoroutine != null) StopCoroutine(attackCoroutine);
         if (summonCoroutine != null) StopCoroutine(summonCoroutine);
+        if (timerCoroutine != null)
+        {
+            StopCoroutine(timerCoroutine);
+            // HPブレイク等で早期終了した場合はゲージを0に戻す演出を呼ぶ
+            if (Alpha.UI.BossPhaseSequenceBarUI_Alpha.Instance != null)
+            {
+                Alpha.UI.BossPhaseSequenceBarUI_Alpha.Instance.DrainToZero();
+            }
+        }
         
         // 親クラス側の機能で動いているものも念のため停止
         ChangeBehavior(null);
@@ -197,6 +256,7 @@ public class Alpha_EliteEnemyAI : Alpha_EnemyAI
         movementCoroutine = null;
         attackCoroutine = null;
         summonCoroutine = null;
+        timerCoroutine = null;
 
         if (Rb != null) Rb.velocity = Vector2.zero;
     }

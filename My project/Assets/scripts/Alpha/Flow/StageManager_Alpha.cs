@@ -83,7 +83,7 @@ namespace Alpha.Flow
                 currentStageData = stageList[currentStageIndex];
             }
 
-            // 繧ｲ繝ｼ繝髢句ｧ区凾縺ｮ繝輔ぉ繝ｼ繝峨う繝ｳ
+            // 繧�E�繝ｼ繝髢句�E�区凾縺�E�繝輔ぉ繝ｼ繝峨ぁE��ｳ
             if (fadeController != null)
             {
                 if (stageTitleText != null && currentStageData != null)
@@ -102,7 +102,7 @@ namespace Alpha.Flow
             }
             else
             {
-                // 繝輔ぉ繝ｼ繝峨さ繝ｳ繝医Ο繝ｼ繝ｩ繝ｼ縺後↑縺・ｴ蜷医・縺昴・縺ｾ縺ｾ髢句ｧ九☆繧・
+                // 繝輔ぉ繝ｼ繝峨さ繝ｳ繝医Ο繝ｼ繝ｩ繝ｼ縺後�E縺・�E��E�蜷医・縺昴・縺�E�縺�E�髢句�E�九�E繧・
                 if (stageTitleText != null && currentStageData != null)
                 {
                     stageTitleText.text = currentStageData.stageName;
@@ -159,36 +159,35 @@ namespace Alpha.Flow
                         {
                             SetState(StageState_Alpha.Transition);
                             StartCoroutine(WaitUntilAllOrbsCollected(() => {
-                                // 繝懊せ蜑榊ｱ驟ｬ繝輔ぉ繝ｼ繧ｺ繝ｻ骰帛・繝輔ぉ繝ｼ繧ｺ繧貞ｱ暮幕・医ヵ繧ｧ繝ｼ繝峨い繧ｦ繝医＆縺帙※縺九ｉ髢句ｧ具ｼ・
-                                if (fadeController != null)
-                                {
-                                    fadeController.FadeOut(() => {
-                                        if (RewardSequenceManager_Alpha.Instance != null)
-                                        {
-                                            RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
-                                                StartPreBlacksmithADV();
-                                            });
-                                        }
-                                        else
-                                        {
-                                            StartPreBlacksmithADV();
-                                        }
-                                    });
-                                }
-                                else
-                                {
-                                    // 繝輔ぉ繝ｼ繝峨さ繝ｳ繝医Ο繝ｼ繝ｩ繝ｼ縺檎┌縺・ｴ蜷医・繝輔か繝ｼ繝ｫ繝舌ャ繧ｯ
-                                    if (RewardSequenceManager_Alpha.Instance != null)
+                                    // 繝懊せ蜑榊�E�驟ｬ繝輔ぉ繝ｼ繧�E�繧貞ｱ暮幁E
+                                    if (fadeController != null)
                                     {
-                                        RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
-                                            StartPreBlacksmithADV();
+                                        fadeController.FadeOut(() => {
+                                            if (RewardSequenceManager_Alpha.Instance != null)
+                                            {
+                                                RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
+                                                    StartPreBossADVAndFight();
+                                                });
+                                            }
+                                            else
+                                            {
+                                                StartPreBossADVAndFight();
+                                            }
                                         });
                                     }
                                     else
                                     {
-                                            StartPreBlacksmithADV();
+                                        if (RewardSequenceManager_Alpha.Instance != null)
+                                        {
+                                            RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
+                                                StartPreBossADVAndFight();
+                                            });
+                                        }
+                                        else
+                                        {
+                                            StartPreBossADVAndFight();
+                                        }
                                     }
-                                }
                             }));
                         }
                         else
@@ -207,20 +206,20 @@ namespace Alpha.Flow
 
         public void RestartStageFromFirstHalf()
         {
-            // HP縺ｪ縺ｩ縺ｮ繝励Ξ繧､繝､繝ｼ迥ｶ諷九・蝗槫ｾｩ
+            // HP縺�E�縺�E�縺�E�繝励Ξ繧�E�繝､繝ｼ迥�E�諷九�E蝗槫�E��E�
             if (playerStatusManager_Alpha.Instance != null)
             {
                 playerStatusManager_Alpha.Instance.currentHP = playerStatusManager_Alpha.Instance.HP;
             }
 
-            // 謨ｵ蠑ｾ繝ｻ謨ｵ縺ｮ繝ｪ繧ｻ繝・ヨ
+            // 謨�E�蠑ｾ繝ｻ謨�E�縺�E�繝ｪ繧�E�繝�Eヨ
             ClearAllEnemyBullets();
             if (spawnManager != null)
             {
-                // 蠢・ｦ√↓蠢懊§縺ｦ謨ｵ縺ｮ蜈ｨ貊・ｄ迥ｶ諷九Μ繧ｻ繝・ヨ蜃ｦ逅・
+                // 蠢・�E�√�E蠢懊§縺�E�謨�E�縺�E�蜈ｨ貊�E�E�E���E�諷九Μ繧�E�繝�Eヨ蜁E��送E�E
             }
 
-            // 繧ｹ繝・・繧ｸ繧貞燕蜊頑姶縺九ｉ蜀埼幕
+            // 繧�E�繝�E・繧�E�繧貞��蜊頑姶縺九ｉ蜀埼幁E
             StartFirstHalf();
         }
 
@@ -230,17 +229,17 @@ namespace Alpha.Flow
         {
             if (activeSequence == null) return;
 
-            // ポーズ中やチュートリアル表示中は時間を進めない
+            // ポ�Eズ中めE��ュートリアル表示中は時間を進めなぁE
             if (Time.timeScale == 0f) return;
             if (Alpha.UI.TutorialManager_Alpha.Instance != null && Alpha.UI.TutorialManager_Alpha.Instance.IsPausingTimeline) return;
             if (isSequenceAnimating) return;
 
             currentSequenceTime += Time.deltaTime;
             
-            // 繝√Η繝ｼ繝医Μ繧｢繝ｫ縺ｮ繝√ぉ繝・け
+            // 繝�EΗ繝ｼ繝医Μ繧�E�繝ｫ縺�E�繝�Eぉ繝�EぁE
             CheckTutorials();
 
-            // 繧ｦ繧ｧ繝ｼ繝悶・繝√ぉ繝・け
+            // 繧�E�繧�E�繝ｼ繝悶・繝�Eぉ繝�EぁE
             spawnManager.CheckSpawn(currentSequenceTime);
             sequenceBarUI.UpdateProgress(currentSequenceTime / activeSequence.duration);
 
@@ -259,7 +258,7 @@ namespace Alpha.Flow
 
         private void HandleWaveSkip()
         {
-            // ポーズ中のスキップを受け付けない
+            // ポ�Eズ中のスキチE�Eを受け付けなぁE
             if (Time.timeScale == 0f) return;
             if (isSequenceAnimating) return;
 
@@ -313,7 +312,7 @@ namespace Alpha.Flow
         {
             isSequenceAnimating = true;
 
-            // 1. 次の移動位置にシークエンスバーのハンドルを移動させる
+            // 1. 次の移動位置にシークエンスバ�Eのハンドルを移動させる
             float startProgress = activeSequence.duration > 0f ? currentSequenceTime / activeSequence.duration : 0f;
             float endProgress = activeSequence.duration > 0f ? targetTime / activeSequence.duration : 1f;
             
@@ -322,10 +321,10 @@ namespace Alpha.Flow
             currentSequenceTime = targetTime;
             sequenceBarUI.UpdateProgress(endProgress);
 
-            // 2. 敵のスポーン
+            // 2. 敵のスポ�Eン
             spawnManager.CheckSpawn(currentSequenceTime);
 
-            // 3. スコア表示UIにスコアを加算
+            // 3. スコア表示UIにスコアを加箁E
             if (RewardManager_Alpha.Instance != null && pointsToGain > 0)
             {
                 yield return StartCoroutine(RewardManager_Alpha.Instance.AddPointsSequence(pointsToGain));
@@ -365,7 +364,7 @@ namespace Alpha.Flow
                 Alpha.Core.Utils.CursorManager_Alpha.Instance.SetCombatMode(isCombat);
             }
             
-            // ボス戦状態の変更を通知
+            // ボス戦状態�E変更を通知
             OnBossBattleStateChanged?.Invoke(IsBossBattleActive);
         }
 
@@ -439,7 +438,7 @@ namespace Alpha.Flow
             {
                 if (enemy != null && enemy.gameObject.activeInHierarchy)
                 {
-                    // プレイヤー自身は消さないようにする
+                    // プレイヤー自身は消さなぁE��ぁE��する
                     if (enemy.gameObject.CompareTag("Player")) continue;
                     
                     Destroy(enemy.gameObject);
@@ -466,11 +465,11 @@ namespace Alpha.Flow
                     {
                         Debug.Log("[StageManager] Fade Out Complete. Hook for Equipment Turn.");
                         
-                        // 荳ｭ繝懊せ謦・ｴ蝣ｱ驟ｬ縺ｮ繧ｪ繝ｼ繝悶ｒ荳譁蛾幕蟆・
+                        // 荳�E�繝懊せ謦・�E��E�蝣�E�驟ｬ縺�E�繧�E�繝ｼ繝悶�E�荳譁蛾幕蟆・
                         if (RewardSequenceManager_Alpha.Instance != null)
                         {
                             RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
-                                // 蝣ｱ驟ｬ逕ｻ髱｢縺檎ｵゅｏ縺｣縺ｦ縺九ｉ蠕悟濠蠕・ｩ溘∈
+                                // 蝣�E�驟ｬ逕ｻ髱�E�縺檎ｵめE��縺�E�縺�E�縺九ｉ蠕悟濠蠕�E�E�溘�E
                                 fadeController.FadeIn(() => 
                                 {
                                     activeSequence = currentStageData.secondHalf;
@@ -536,12 +535,26 @@ namespace Alpha.Flow
             {
                 ADVManager_Alpha.Instance.StartADV(currentStageData.postBlacksmithADV, () =>
                 {
-                    StartPreBossADVAndFight();
+                    ExecuteBossRewardPhase();
                 });
             }
             else
             {
-                StartPreBossADVAndFight();
+                ExecuteBossRewardPhase();
+            }
+        }
+
+        private void ExecuteBossRewardPhase()
+        {
+            if (RewardSequenceManager_Alpha.Instance != null)
+            {
+                RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
+                    ExecuteStageClearBackEnd();
+                });
+            }
+            else
+            {
+                ExecuteStageClearBackEnd();
             }
         }
 
@@ -579,18 +592,18 @@ namespace Alpha.Flow
 
         private System.Collections.IEnumerator BossClearSequenceRoutine()
         {
-            // 1. 闕臥函縺・
+            // 1. 闕�E函縺・
             var grassGenerator = FindObjectOfType<Environment.ProceduralGrassGenerator_Alpha>();
             if (grassGenerator != null)
             {
                 grassGenerator.gameObject.SetActive(true);
-                grassGenerator.GenerateGrass(0.2f); // 0.2遘偵°縺代※騾｣邯夂函謌・
+                grassGenerator.GenerateGrass(0.2f); // 0.2遘�E°縺代※騾�E�邯夂�E謌�E
             }
 
-            // 菴咎渊
+            // 菴咎渁E
             yield return new WaitForSeconds(1.5f);
 
-            // 2. 繧ｯ繝ｪ繧｢貍泌・ (Stage Clear繝・く繧ｹ繝郁｡ｨ遉ｺ)
+            // 2. 繧�E�繝ｪ繧�E�貍泌�E (Stage Clear繝�Eく繧�E�繝郁�E��E�遉ｺ)
             if (stageClearText != null)
             {
                 if (Alpha.Audio.SoundManager_Alpha.Instance != null && currentStageData != null && currentStageData.stageClearSE != null)
@@ -602,7 +615,7 @@ namespace Alpha.Flow
                 CanvasGroup cg = stageClearText.gameObject.GetComponent<CanvasGroup>();
                 if (cg == null) cg = stageClearText.gameObject.AddComponent<CanvasGroup>();
                 
-                // 繝輔ぉ繝ｼ繝峨う繝ｳ
+                // 繝輔ぉ繝ｼ繝峨ぁE��ｳ
                 float t = 0;
                 while (t < 1f)
                 {
@@ -615,7 +628,7 @@ namespace Alpha.Flow
                 yield return new WaitForSeconds(2f);
             }
 
-            // 3. 縺昴・迥ｶ諷九・縺ｾ縺ｾ繝輔ぉ繝ｼ繝峨い繧ｦ繝医＠縺ｦADV縺ｸ
+            // 3. 縺昴・迥�E�諷九�E縺�E�縺�E�繝輔ぉ繝ｼ繝峨ぁE���E�繝医�E�縺�E�ADV縺�E�
             bool isFaded = false;
             if (fadeController != null)
             {
@@ -627,28 +640,28 @@ namespace Alpha.Flow
             }
             yield return new WaitUntil(() => isFaded);
 
-            // STAGE CLEAR 繝・く繧ｹ繝医・證苓ｻ｢蠕後↓髱櫁｡ｨ遉ｺ縺ｫ謌ｻ縺・
+            // STAGE CLEAR 繝�Eく繧�E�繝医・證苓�E��E�蠕後�E髱櫁E���E�遉ｺ縺�E�謌ｻ縺・
             if (stageClearText != null) stageClearText.gameObject.SetActive(false);
 
             // 4. 繝懊せ蠕窟DV
             if (currentStageData.postBossADV != null && ADVManager_Alpha.Instance != null && currentStageData.postBossADV.pages != null && currentStageData.postBossADV.pages.Count > 0)
             {
-                // 證苓ｻ｢縺励◆縺ｾ縺ｾADV繧帝幕蟋・
+                // 證苓�E��E�縺励◁E���E�縺�E�ADV繧帝幕蟋・
                 ADVManager_Alpha.Instance.StartADV(currentStageData.postBossADV, () => {
-                    // ADV邨ゆｺ・ｾ後∵ｬ｡繧ｹ繝・・繧ｸ驕ｷ遘ｻ貅門ｙ縺ｸ
-                    ExecuteStageClearBackEnd();
-                });
+                    // ADV�I����A���p�t�F�[�Y��
+                    StartPreBlacksmithADV();
+                    });
             }
             else
             {
                 if (grassGenerator != null) grassGenerator.ClearGrass();
-                ExecuteStageClearBackEnd();
+                StartPreBlacksmithADV();
             }
         }
 
         private void ExecuteStageClearBackEnd()
         {
-            // 谺｡縺ｮ繧ｹ繝・・繧ｸ縺ｸ驕ｷ遘ｻ縺吶ｋ蜑阪↓闕峨ｒ螳悟・縺ｫ豸亥悉縺吶ｋ
+            // 谺�E�縺�E�繧�E�繝�E・繧�E�縺�E�驕ｷ遘ｻ縺吶�E�蜑阪↓闕峨�E�螳悟�E縺�E�豸亥悉縺吶�E�E
             var grassGenerators = Resources.FindObjectsOfTypeAll<Environment.ProceduralGrassGenerator_Alpha>();
             Debug.Log($"[StageManager] Found {grassGenerators.Length} grass generators to clear.");
             foreach (var generator in grassGenerators)
@@ -664,43 +677,43 @@ namespace Alpha.Flow
             SetState(StageState_Alpha.StageClear);
             Debug.Log("[StageManager] STAGE CLEAR (BackEnd)!");
 
-            // 1. 蝣ｱ驟ｬ繧ｲ繝ｼ繧ｸ縺ｮ繝ｪ繧ｻ繝・ヨ
+            // 1. 蝣�E�驟ｬ繧�E�繝ｼ繧�E�縺�E�繝ｪ繧�E�繝�Eヨ
             if (RewardManager_Alpha.Instance != null)
             {
                 RewardManager_Alpha.Instance.ResetRewardCycle();
             }
 
-            // 2. 繝励Ξ繧､繝､繝ｼ縺ｮ蝗槫ｾｩ蜃ｦ逅・
+            // 2. 繝励Ξ繧�E�繝､繝ｼ縺�E�蝗槫�E��E�蜁E��送E�E
             if (playerStatusManager_Alpha.Instance != null)
             {
-                // 繧ｹ繧ｿ繝溘リ蜈ｨ蠢ｫ
+                // 繧�E�繧�E�繝溘リ蜈ｨ蠢�E�
                 playerStatusManager_Alpha.Instance.currentStamina = playerStatusManager_Alpha.Instance.maxStamina;
                 
-                // HP繧呈怙螟ｧHP縺ｮ30%蝗槫ｾｩ (繧ｪ繝ｼ繝舌・繝輔Ο繝ｼ蜃ｦ逅・・ Heal 蜀・〒蟇ｾ蠢懈ｸ医∩)
+                // HP繧呈怙螟�E�HP縺�E�30%蝗槫�E��E� (繧�E�繝ｼ繝�E・繝輔Ο繝ｼ蜁E��送E�E・ Heal 蜀・〒蟇�E�蠢懈ｸ医∩)
                 float healAmount = playerStatusManager_Alpha.Instance.HP * 0.3f;
                 playerStatusManager_Alpha.Instance.Heal(healAmount);
                 
                 Debug.Log($"[StageManager] Player recovered. Healed {healAmount} HP.");
             }
 
-            // 3. 繝輔Μ繝ｼ繧ｹ繝ｭ繝・ヨ縺ｮ霑ｽ蜉
+            // 3. 繝輔Μ繝ｼ繧�E�繝ｭ繝�Eヨ縺�E�霑ｽ蜉
             if (InventoryManager_Alpha.Instance != null)
             {
                 InventoryManager_Alpha.Instance.AddFreeSlot();
             }
 
-            // 4. 谺｡繧ｹ繝・・繧ｸ縺ｸ縺ｮ驕ｷ遘ｻ貅門ｙ (縺吶〒縺ｫ證苓ｻ｢縺励※縺・ｋ諠ｳ螳・
-            // StartCoroutine(StageClearTransitionRoutine()) 縺ｮ莉｣繧上ｊ縺ｫ縺昴・縺ｾ縺ｾ蜃ｦ逅・
+            // 4. 谺�E�繧�E�繝�E・繧�E�縺�E�縺�E�驕ｷ遘ｻ貁E���E�E(縺吶〒縺�E�證苓�E��E�縺励※縺・�E�諠�E�螳・
+            // StartCoroutine(StageClearTransitionRoutine()) 縺�E�莉｣繧上ｊ縺�E�縺昴・縺�E�縺�E�蜁E��送E�E
             currentStageIndex++;
             if (stageList != null && currentStageIndex < stageList.Length && stageList[currentStageIndex] != null)
             {
                 currentStageData = stageList[currentStageIndex];
                 
-                // 謨ｵ繧・ｼｾ縺ｪ縺ｩ繧呈祉髯､
+                // 謨�E�繧・�E��E�縺�E�縺�E�繧呈祉髯�E�
                 ClearAllEnemyBullets();
                 ClearAllEnemies();
                 
-                // 谺｡繧ｹ繝・・繧ｸ縺ｮ蛻晄悄蛹・
+                // 谺�E�繧�E�繝�E・繧�E�縺�E�蛻晁E��蛹・
                 SetState(StageState_Alpha.WaitToStartFirstHalf);
                 wasMobCleared = false;
                 
@@ -727,9 +740,9 @@ namespace Alpha.Flow
             }
             else
             {
-                // 蜈ｨ繧ｹ繝・・繧ｸ繧ｯ繝ｪ繧｢
+                // 蜈ｨ繧�E�繝�E・繧�E�繧�E�繝ｪ繧�E�
                 Debug.Log("[StageManager] ALL STAGES CLEARED!");
-                // 諡轤ｹ繧・ち繧､繝医Ν縺ｫ謌ｻ繧句・逅・ｒ險倩ｿｰ
+                // 諡�E�轤�E�繧・ち繧�E�繝医Ν縺�E�謌ｻ繧句・送E�E�E�險倩�E��E�
             }
         }
 
@@ -770,7 +783,7 @@ namespace Alpha.Flow
 
         private System.Collections.IEnumerator StageClearTransitionRoutine()
         {
-            // STAGE CLEAR 繝・く繧ｹ繝医・繝輔ぉ繝ｼ繝芽｡ｨ遉ｺ
+            // STAGE CLEAR 繝�Eく繧�E�繝医・繝輔ぉ繝ｼ繝芽�E��E�遉ｺ
             if (stageClearText != null)
             {
                 yield return StartCoroutine(FadeTextRoutine(stageClearText, 2f));
@@ -780,7 +793,7 @@ namespace Alpha.Flow
                 yield return new WaitForSecondsRealtime(3f);
             }
 
-            // 繝輔ぉ繝ｼ繝峨い繧ｦ繝茨ｼ域囓霆｢・・
+            // 繝輔ぉ繝ｼ繝峨ぁE���E�繝茨�E�域囓霁E��・・
             bool isFaded = false;
             if (fadeController != null)
             {
@@ -792,17 +805,17 @@ namespace Alpha.Flow
             }
             yield return new WaitUntil(() => isFaded);
 
-            // --- 縺薙％縺ｧ陬丞・縺ｮ繧ｯ繝ｪ繝ｼ繝ｳ繧｢繝・・縺ｨ谺｡繧ｹ繝・・繧ｸ貅門ｙ ---
+            // --- 縺薙！E���E�陬丞�E縺�E�繧�E�繝ｪ繝ｼ繝ｳ繧�E�繝�E・縺�E�谺�E�繧�E�繝�E・繧�E�貁E���E�E---
             currentStageIndex++;
             if (stageList != null && currentStageIndex < stageList.Length && stageList[currentStageIndex] != null)
             {
                 currentStageData = stageList[currentStageIndex];
                 
-                // 謨ｵ繧・ｼｾ縺ｪ縺ｩ繧呈祉髯､
+                // 謨�E�繧・�E��E�縺�E�縺�E�繧呈祉髯�E�
                 ClearAllEnemyBullets();
                 ClearAllEnemies();
                 
-                // 谺｡繧ｹ繝・・繧ｸ縺ｮ蛻晄悄蛹・
+                // 谺�E�繧�E�繝�E・繧�E�縺�E�蛻晁E��蛹・
                 SetState(StageState_Alpha.WaitToStartFirstHalf);
                 wasMobCleared = false;
                 
@@ -829,9 +842,9 @@ namespace Alpha.Flow
             }
             else
             {
-                // 蜈ｨ繧ｹ繝・・繧ｸ繧ｯ繝ｪ繧｢
+                // 蜈ｨ繧�E�繝�E・繧�E�繧�E�繝ｪ繧�E�
                 Debug.Log("[StageManager] ALL STAGES CLEARED!");
-                // 諡轤ｹ繧・ち繧､繝医Ν縺ｫ謌ｻ繧句・逅・ｒ險倩ｿｰ
+                // 諡�E�轤�E�繧・ち繧�E�繝医Ν縺�E�謌ｻ繧句・送E�E�E�險倩�E��E�
             }
         }
 
@@ -839,7 +852,7 @@ namespace Alpha.Flow
         {
             Debug.Log("[StageManager] Waiting for orbs, items, exp, and petals to be collected...");
             
-            // 蜈ｨ縺ｦ縺ｮ繧ｪ繝ｼ繝悶√い繧､繝・Β縲∫ｵ碁ｨ灘､縲∬干蠑√′逕ｻ髱｢荳翫°繧画ｶ医∴繧具ｼ亥叙蠕励＆繧後ｋ・峨∪縺ｧ蠕・ｩ・
+            // 蜈ｨ縺�E�縺�E�繧�E�繝ｼ繝悶√い繧�E�繝�EΒ縲∫�E�碁E��灘�E�縲∬干蠑�E′逕ｻ髱�E�荳翫°繧画�E�医∴繧具�E�亥叙蠕励�E�E��後ｋ�E峨∪縺�E�蠕�E�E�・
             while (FindObjectsOfType<OrbControll_Alpha>().Length > 0 || 
                    FindObjectsOfType<Alpha.Battle.OrbItem_Alpha>().Length > 0 ||
                    FindObjectsOfType<ItemPickUp>().Length > 0 ||
@@ -880,3 +893,4 @@ namespace Alpha.Flow
         }
     }
 }
+
