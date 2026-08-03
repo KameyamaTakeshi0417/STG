@@ -58,14 +58,14 @@ public class Player_Shooter_Alpha : MonoBehaviour
             return;
 
         // 豁ｦ蝎ｨ繧ｰ繝ｫ繝ｼ繝励・繝ｫ繝ｼ繝怜・繧頑崛縺・
-        if (Alpha.Managers.InputManager_Alpha.Instance.WasWeaponPrevPressed || Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
+        if (Alpha.Managers.PlayerInputManager_Alpha.Instance.WasWeaponPrevPressed || Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
         {
             currentWeaponGroup--;
             if (currentWeaponGroup < 0) currentWeaponGroup = 2;
             Debug.Log("Switched weapon group.");
             if (playerStatusScript != null) playerStatusScript.UpdateEquipmentBuffs();
         }
-        else if (Alpha.Managers.InputManager_Alpha.Instance.WasWeaponNextPressed || Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3))
+        else if (Alpha.Managers.PlayerInputManager_Alpha.Instance.WasWeaponNextPressed || Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3))
         {
             currentWeaponGroup++;
             if (currentWeaponGroup > 2) currentWeaponGroup = 0;
@@ -74,7 +74,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
         }
 
         // 繧ｨ繧､繝蟇ｾ雎｡縺ｮ蠎ｧ讓吶ｒ蜿門ｾ・
-        Vector3 aimPos = Alpha.Managers.InputManager_Alpha.Instance.GetWorldAimPosition(transform.position);
+        Vector3 aimPos = Alpha.Managers.PlayerInputManager_Alpha.Instance.GetWorldAimPosition(transform.position);
 
         // 郢ｧ・ｿ郢晢ｽｼ郢ｧ・ｲ郢昴・繝ｨ郢晢ｽｭ郢昴・縺醍ｹｧ・ｪ郢晢ｽｳ隴弱ｅ繝ｻ陷・ｽｦ騾・・・帝恆・ｽ陷・
         if (pointerSystem == null) 
@@ -104,7 +104,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
         float angle = Mathf.Atan2(watch.y, watch.x) * Mathf.Rad2Deg;
 
         // 蠑ｾ縺ｮ逋ｺ蟆・愛螳・
-        if (Time.timeScale != 0f && (Alpha.Managers.InputManager_Alpha.Instance.IsFiring && !onCoolTime))
+        if (Time.timeScale != 0f && (Alpha.Managers.PlayerInputManager_Alpha.Instance.IsFiring && !onCoolTime))
         {
             onCoolTime = true;
             StartCoroutine(ShootAndCooldownRoutine());
@@ -336,7 +336,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
         {
             // do nothing
         }
-        Vector3 aimPoint = Alpha.Managers.InputManager_Alpha.Instance.GetWorldAimPosition(transform.position);
+        Vector3 aimPoint = Alpha.Managers.PlayerInputManager_Alpha.Instance.GetWorldAimPosition(transform.position);
         aimPoint.z = 0;
         bool isTargetLocked = false;
         Transform lockedTarget = null;

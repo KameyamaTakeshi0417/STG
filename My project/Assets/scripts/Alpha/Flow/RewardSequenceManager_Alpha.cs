@@ -30,16 +30,7 @@ namespace Alpha.Flow
             Instance = this;
         }
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                if (inventoryUI != null)
-                {
-                    inventoryUI.ToggleEscapeInventory();
-                }
-            }
-        }
+
 
         /// <summary>
         /// 報酬獲得シーケンスを開始する

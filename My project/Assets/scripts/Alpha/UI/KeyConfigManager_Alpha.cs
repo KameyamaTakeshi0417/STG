@@ -1,4 +1,4 @@
-ï»¿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Collections;
@@ -17,10 +17,10 @@ namespace Alpha.UI
         public GameObject unassignedWarningPopup;
 
         [Header("Wait Input UI")]
-        public TextMeshProUGUI waitInputTitleText; // e.g. "Shoot ã‚­ãƒ¼ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„"
+        public TextMeshProUGUI waitInputTitleText; // e.g. "Shoot ƒL[‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢"
 
         [Header("Swap Warning UI")]
-        public TextMeshProUGUI swapWarningText; // e.g. "Spaceã‚­ãƒ¼ã‚’Bombã‹ã‚‰Shootã«å¤‰æ›´ã—ã¾ã—ãŸ"
+        public TextMeshProUGUI swapWarningText; // e.g. "SpaceƒL[‚ğBomb‚©‚çShoot‚É•ÏX‚µ‚Ü‚µ‚½"
         public Button swapWarningOkButton;
 
         [Header("Unassigned Warning UI")]
@@ -31,7 +31,7 @@ namespace Alpha.UI
         [Header("Buttons")]
         public Button backButton;
 
-        // å†…éƒ¨ã‚¹ãƒ†ãƒ¼ãƒˆ
+        // “à•”ƒXƒe[ƒg
         private ActionType_Alpha actionWaitingForInput;
         private bool isWaitingForInput = false;
 
@@ -58,9 +58,9 @@ namespace Alpha.UI
 
         private void RefreshUI()
         {
-            // TODO: UIã®ãƒœã‚¿ãƒ³ãƒ†ã‚­ã‚¹ãƒˆãªã©ã‚’ç¾åœ¨ã® InputManager_Alpha ã®ã‚¢ã‚µã‚¤ãƒ³ã§æ›´æ–°ã™ã‚‹ã€‚
-            // ã‚¤ãƒ³ã‚¹ãƒšã‚¯ã‚¿ã§å„Actionã«å¯¾å¿œã™ã‚‹ãƒœã‚¿ãƒ³ã‚’é…ç½®ã—ã€ãã‚Œã‚’æ›´æ–°ã™ã‚‹æƒ³å®šã€‚
-            // ä»Šå›ã¯ãƒ­ã‚¸ãƒƒã‚¯ã®ã¿æ§‹ç¯‰ã€‚
+            // TODO: UI‚Ìƒ{ƒ^ƒ“ƒeƒLƒXƒg‚È‚Ç‚ğŒ»İ‚Ì InputManager_Alpha ‚ÌƒAƒTƒCƒ“‚ÅXV‚·‚éB
+            // ƒCƒ“ƒXƒyƒNƒ^‚ÅŠeAction‚É‘Î‰‚·‚éƒ{ƒ^ƒ“‚ğ”z’u‚µA‚»‚ê‚ğXV‚·‚é‘z’èB
+            // ¡‰ñ‚ÍƒƒWƒbƒN‚Ì‚İ\’zB
         }
 
         public void StartWaitingForInput(ActionType_Alpha action)
@@ -72,7 +72,7 @@ namespace Alpha.UI
             {
                 waitInputPopup.SetActive(true);
                 if (waitInputTitleText != null)
-                    waitInputTitleText.text = $"{action} ã®æ–°ã—ã„ã‚­ãƒ¼ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„";
+                    waitInputTitleText.text = $"{action} ‚ÌV‚µ‚¢ƒL[‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢";
             }
         }
 
@@ -82,12 +82,12 @@ namespace Alpha.UI
             {
                 if (Input.anyKeyDown)
                 {
-                    // ãƒã‚¦ã‚¹ã‚„ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®å…¥åŠ›ã‚’åˆ¤å®š
+                    // ƒ}ƒEƒX‚âƒL[ƒ{[ƒh‚Ì“ü—Í‚ğ”»’è
                     foreach (KeyCode keyCode in Enum.GetValues(typeof(KeyCode)))
                     {
                         if (Input.GetKeyDown(keyCode))
                         {
-                            // ESCã‚­ãƒ¼ã¯ã‚­ãƒ£ãƒ³ã‚»ãƒ«æ‰±ã„
+                            // ESCƒL[‚ÍƒLƒƒƒ“ƒZƒ‹ˆµ‚¢
                             if (keyCode == KeyCode.Escape)
                             {
                                 CancelWaitInput();
@@ -115,12 +115,12 @@ namespace Alpha.UI
 
             if (InputManager_Alpha.Instance == null) return;
 
-            // é‡è¤‡ãƒã‚§ãƒƒã‚¯
+            // d•¡ƒ`ƒFƒbƒN
             if (InputManager_Alpha.Instance.IsKeyUsed(newKey, out ActionType_Alpha oldAction))
             {
                 if (oldAction != actionWaitingForInput)
                 {
-                    // Swap (å¤ã„ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚’æœªå‰²å½“=Noneã«ã™ã‚‹ã‹ã€ã‚¹ãƒ¯ãƒƒãƒ—ã™ã‚‹ã‹ã€‚ä»Šå›ã¯æœªå‰²å½“ã«ã™ã‚‹)
+                    // Swap (ŒÃ‚¢ƒAƒNƒVƒ‡ƒ“‚ğ–¢Š„“–=None‚É‚·‚é‚©AƒXƒƒbƒv‚·‚é‚©B¡‰ñ‚Í–¢Š„“–‚É‚·‚é)
                     InputManager_Alpha.Instance.SetKeyForAction(oldAction, KeyCode.None);
                     InputManager_Alpha.Instance.SetKeyForAction(actionWaitingForInput, newKey);
 
@@ -143,7 +143,7 @@ namespace Alpha.UI
                 swapWarningPopup.SetActive(true);
                 if (swapWarningText != null)
                 {
-                    swapWarningText.text = $"{key}ã‚­ãƒ¼ã‚’ {oldAction} ã‹ã‚‰ {newAction} ã«å‰²ã‚Šå½“ã¦å¤‰æ›´ã—ã¾ã—ãŸã€‚";
+                    swapWarningText.text = $"{key}ƒL[‚ğ {oldAction} ‚©‚ç {newAction} ‚ÉŠ„‚è“–‚Ä•ÏX‚µ‚Ü‚µ‚½B";
                 }
             }
         }
@@ -156,7 +156,7 @@ namespace Alpha.UI
                 return;
             }
 
-            // æœªå‰²ã‚Šå½“ã¦ãƒã‚§ãƒƒã‚¯
+            // –¢Š„‚è“–‚Äƒ`ƒFƒbƒN
             List<ActionType_Alpha> unassigned = new List<ActionType_Alpha>();
             foreach (ActionType_Alpha action in Enum.GetValues(typeof(ActionType_Alpha)))
             {
@@ -173,7 +173,7 @@ namespace Alpha.UI
                     unassignedWarningPopup.SetActive(true);
                     if (unassignedWarningText != null)
                     {
-                        unassignedWarningText.text = "æœªå‰²å½“ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãŒã‚ã‚Šã¾ã™ï¼\n" + string.Join(", ", unassigned) + "\nè¨­å®šã‚’å®Œäº†ã—ã¦ã‚ˆã‚ã—ã„ã§ã™ã‹ï¼Ÿ";
+                        unassignedWarningText.text = "–¢Š„“–‚ÌƒAƒNƒVƒ‡ƒ“‚ª‚ ‚è‚Ü‚·I\n" + string.Join(", ", unassigned) + "\nİ’è‚ğŠ®—¹‚µ‚Ä‚æ‚ë‚µ‚¢‚Å‚·‚©H";
                     }
                 }
                 else

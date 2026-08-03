@@ -23,7 +23,7 @@ namespace Alpha.Core
     {
         public static InputManager_Alpha Instance { get; private set; }
 
-        // デフォルトのキーアサイン
+        // チE��ォルト�Eキーアサイン
         private Dictionary<ActionType_Alpha, KeyCode> defaultKeys = new Dictionary<ActionType_Alpha, KeyCode>
         {
             { ActionType_Alpha.MoveUp, KeyCode.W },
@@ -104,7 +104,7 @@ namespace Alpha.Core
             return false;
         }
 
-        // --- 実際の入力取得メソッド ---
+        // --- 実際の入力取得メソチE�� ---
 
         public bool GetAction(ActionType_Alpha action)
         {
@@ -124,7 +124,7 @@ namespace Alpha.Core
             return Input.GetKeyUp(code);
         }
 
-        // Horizontal, Vertical の擬似 Axis (-1.0f ～ 1.0f) を返す
+        // Horizontal, Vertical の擬似 Axis (-1.0f �E�E1.0f) を返す
         public float GetAxisRaw(string axisName)
         {
             float val = 0f;

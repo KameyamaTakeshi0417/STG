@@ -80,7 +80,7 @@ public class Player_Control_Alpha : MonoBehaviour
             if (myStatus.currentSpecialMove == playerStatusManager_Alpha.SpecialMoveType.Focus)
             {
                 // Input System: 郢晏ｸ吶・郢晢ｽｫ郢晉甥諢幄楜繝ｻ
-                bool isSpecialPressed = Alpha.Managers.InputManager_Alpha.Instance.IsSpecialPressed;
+                bool isSpecialPressed = Alpha.Managers.PlayerInputManager_Alpha.Instance.IsSpecialPressed;
                 
                 if (isSpecialPressed && myStatus.currentStamina > 0 && !myStatus.isStaminaExhausted)
                 {
@@ -124,12 +124,12 @@ public class Player_Control_Alpha : MonoBehaviour
             }
 
             // Input System邵ｺ荵晢ｽ臥ｸｺ・ｮ驕假ｽｻ陷崎ｼ斐・郢ｧ・ｯ郢晏現ﾎ晁愾髢・ｾ繝ｻ
-            moveInput = Alpha.Managers.InputManager_Alpha.Instance.MoveVector;
+            moveInput = Alpha.Managers.PlayerInputManager_Alpha.Instance.MoveVector;
             
             if (moveInput.sqrMagnitude > 1) moveInput.Normalize();
 
             // 霑夲ｽｹ隹ｿ鬘費ｽｧ・ｻ陷崎ｼ斐・郢晏現ﾎ懃ｹｧ・ｬ郢晢ｽｼ繝ｻ蛹ｻ繝郢ｧ・ｦ郢晢ｽｳ陋ｻ・､陞ｳ螟ｲ・ｼ繝ｻ
-            if (Alpha.Managers.InputManager_Alpha.Instance.WasSpecialPressed && myStatus.currentSpecialMove != playerStatusManager_Alpha.SpecialMoveType.None && myStatus.currentSpecialMove != playerStatusManager_Alpha.SpecialMoveType.Focus)
+            if (Alpha.Managers.PlayerInputManager_Alpha.Instance.WasSpecialPressed && myStatus.currentSpecialMove != playerStatusManager_Alpha.SpecialMoveType.None && myStatus.currentSpecialMove != playerStatusManager_Alpha.SpecialMoveType.Focus)
             {
                 TrySpecialMove();
             }
@@ -174,7 +174,7 @@ public class Player_Control_Alpha : MonoBehaviour
             
             if (moveInput == Vector2.zero)
             {
-                Vector3 aimPos = Alpha.Managers.InputManager_Alpha.Instance.GetWorldAimPosition(transform.position);
+                Vector3 aimPos = Alpha.Managers.PlayerInputManager_Alpha.Instance.GetWorldAimPosition(transform.position);
                 specialMoveDirection = (aimPos - transform.position).normalized;
             }
             else
@@ -339,7 +339,7 @@ public class Player_Control_Alpha : MonoBehaviour
     protected virtual void UpdateAnimatorParameters()
     {
         // 郢ｧ・ｨ郢ｧ・､郢晢ｿｽ陝・ｽｾ髮趣ｽ｡邵ｺ・ｮ陟趣ｽｧ隶灘生・定愾髢・ｾ繝ｻ
-        Vector3 aimPos = Alpha.Managers.InputManager_Alpha.Instance.GetWorldAimPosition(transform.position);
+        Vector3 aimPos = Alpha.Managers.PlayerInputManager_Alpha.Instance.GetWorldAimPosition(transform.position);
 
         Vector2 currentVelocity = Vector2.zero;
         if (isSpecialMoving)

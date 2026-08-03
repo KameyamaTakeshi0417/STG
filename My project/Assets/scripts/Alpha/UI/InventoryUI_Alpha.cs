@@ -95,40 +95,10 @@ namespace Alpha.UI
             }
         }
 
-        public void ToggleEscapeInventory()
-        {
-            // 縺吶〒縺ｫEsc縺ｧ髢九＞縺溽憾諷九↑繧蛾哩縺倥ｋ
-            if (panel != null && panel.activeSelf && openedByEscape)
-            {
-                CloseEscapeInventory();
-            }
-            // 髱櫁｡ｨ遉ｺ迥ｶ諷九°縺､縲∫樟蝨ｨ繧ｲ繝ｼ繝�縺悟虚縺・※縺・ｋ・亥�ｱ驟ｬ繝輔ぉ繝ｼ繧ｺ荳ｭ縺ｪ縺ｩ縺ｧ縺ｯ縺ｪ縺・ｼ牙�ｴ蜷医↓Esc縺ｧ髢九￥
-            else if (panel != null && !panel.activeSelf)
-            {
-                if (TutorialManager_Alpha.Instance != null && TutorialManager_Alpha.Instance.IsShowing)
-                {
-                    TutorialManager_Alpha.Instance.isQueuePaused = true;
-                    TutorialManager_Alpha.Instance.ForceCloseCurrentTutorial();
-                }
-
-                if (Time.timeScale > 0f)
-                {
-                    OpenEscapeInventory();
-                }
-                else
-                {
-                    if (TutorialManager_Alpha.Instance != null)
-                    {
-                        TutorialManager_Alpha.Instance.isQueuePaused = false;
-                    }
-                }
-            }
-        }
-        private void OpenEscapeInventory()
+        public void OpenAsTab()
         {
             openedByEscape = true;
             isReadOnly = true;
-            Time.timeScale = 0f;
             
             if (panel != null) panel.SetActive(true);
             if (detailPopup != null) detailPopup.gameObject.SetActive(false);
@@ -140,19 +110,12 @@ namespace Alpha.UI
             TryShowEquipTutorial();
         }
 
-        private void CloseEscapeInventory()
+        public void CloseAsTab()
         {
             openedByEscape = false;
             
-            Time.timeScale = 1f;
-            
             if (panel != null) panel.SetActive(false);
             if (detailPopup != null) detailPopup.gameObject.SetActive(false);
-
-            if (TutorialManager_Alpha.Instance != null)
-            {
-                TutorialManager_Alpha.Instance.isQueuePaused = false;
-            }
         }
         public void ShowForCheck(System.Action callback)
         {
@@ -742,7 +705,7 @@ namespace Alpha.UI
         {
             if (openedByEscape)
             {
-                CloseEscapeInventory();
+                if (PauseMenuManager_Alpha.Instance != null) PauseMenuManager_Alpha.Instance.CloseMenu();
                 return;
             }
 
