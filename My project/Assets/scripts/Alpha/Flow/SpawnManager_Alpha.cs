@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 using Alpha.Data;
 
@@ -154,17 +154,31 @@ namespace Alpha.Flow
             }
         }
 
-        /// <summary>
-        /// 次のウェーブの時間を返す（スキップ用）
-        /// </summary>
         public float GetNextWaveTime()
         {
-            if (currentSequence == null || currentWaveIndex >= currentSequence.waves.Count)
+            if (currentSequence == null) return float.MaxValue;
+
+            float nextWaveTime = float.MaxValue;
+            if (currentWaveIndex < currentSequence.waves.Count)
             {
-                // 次のウェーブがない場合はシーケンスの終了時間を返す
-                return currentSequence != null ? currentSequence.duration : float.MaxValue;
+                nextWaveTime = currentSequence.waves[currentWaveIndex].time;
             }
-            return currentSequence.waves[currentWaveIndex].time;
+
+            float nextRushTime = float.MaxValue;
+            if (currentSequence.enemyRushes != null && currentRushIndex < currentSequence.enemyRushes.Count)
+            {
+                nextRushTime = currentSequence.enemyRushes[currentRushIndex].startTime;
+            }
+
+            float nextTime = Mathf.Min(nextWaveTime, nextRushTime);
+
+            if (nextTime == float.MaxValue)
+            {
+                // 次のウェーブ・ラッシュがない場合はシーケンスの終了時間を返す
+                return currentSequence.duration;
+            }
+
+            return nextTime;
         }
 
         public bool IsRushActive()

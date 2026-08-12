@@ -1766,7 +1766,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -381, y: 483.61}
+  m_AnchoredPosition: {x: -381, y: 483.60934}
   m_SizeDelta: {x: 762, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &127728103
@@ -12121,7 +12121,13 @@ MonoBehaviour:
   Exp: 0
   VulnerableTime: 0
   VulnerableFlg: 0
+  isDead: 0
   PierceVolume: 1
+  DropBounusExp: 0
+  DropRateExp: 0
+  contactDamage: 10
+  LifeCount: 1
+  isNormalMob: 1
   VoltCount: 0
   StunResistance: 0
   BaseStunResistance: 0.5
@@ -20476,7 +20482,7 @@ MonoBehaviour:
   pow: 50
   DamageAdd: 0
   DamageMag: 110
-  BlockDmg: 5
+  BlockDmg: 2
   BlockMag: 100
   bulletLifeMag: 1
   ignorePierceDecay: 0
@@ -20607,7 +20613,7 @@ MonoBehaviour:
     rarity: 1
     originalRarity: 0
     affix: {fileID: 0}
-    series: {fileID: 11400000, guid: bcac33972cb35084696b8559417c8b57, type: 2}
+    series: {fileID: 11400000, guid: 237f171f9deada94ebfb78e4c73b1569, type: 2}
     partType: 2
     currentEffects:
     - {fileID: 0}

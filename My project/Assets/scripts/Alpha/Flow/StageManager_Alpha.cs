@@ -246,6 +246,7 @@ namespace Alpha.Flow
             sequenceBarUI.UpdateProgress(currentSequenceTime / activeSequence.duration);
 
             if (currentSequenceTime >= activeSequence.duration)
+            if (currentSequenceTime >= activeSequence.duration)
             {
                 if (currentState == StageState_Alpha.FirstHalf)
                 {
@@ -279,25 +280,17 @@ namespace Alpha.Flow
             if (isSkipInput)
             {
                 if (activeSequence == null) return;
-
+                
                 float targetTime = activeSequence.duration;
-                float previousTime = 0f;
-
-                foreach (var wave in activeSequence.waves)
+                if (spawnManager != null)
                 {
-                    if (wave.time <= currentSequenceTime + 0.01f)
+                    float nextTime = spawnManager.GetNextWaveTime();
+                    if (nextTime < float.MaxValue && nextTime > currentSequenceTime + 0.01f)
                     {
-                        previousTime = wave.time;
-                    }
-                    
-                    if (wave.time > currentSequenceTime + 0.01f)
-                    {
-                        targetTime = wave.time;
-                        break;
+                        targetTime = nextTime;
                     }
                 }
 
-                if (targetTime > currentSequenceTime)
                 {
                     float skipRatio = activeSequence.duration > 0f ? (targetTime - currentSequenceTime) / activeSequence.duration : 0f;
                     

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Alpha.Core.Utils;
 
 public class _Health_Base : MonoBehaviour
 {
@@ -14,10 +15,24 @@ public class _Health_Base : MonoBehaviour
     protected HPBar_Base m_handler;
     public float VulnerableTime = 0f;
     public bool VulnerableFlg = false;
+    public bool isDead = false;
 
     [Header("Pierce Settings")]
     [Tooltip("このエネミーに対して許容される貫通の最大回数")]
     public int PierceVolume = 1;
+
+    [Header("Reward Status")]
+    public float DropBounusExp = 0; // ドロップする基本の経験値
+    public float DropRateExp = 0;   // 経験値ドロップ率
+
+    [Header("Contact Damage")]
+    public float contactDamage = 10f; // 接触ダメージ（0ならダメージなし）
+    private bool isTouchingPlayer = false;
+    private PlayerHealth currentPlayerHealth = null;
+
+    [Header("UI Status")]
+    public int LifeCount = 1;       // エリートなどが持つ複数ゲージの数
+    public bool isNormalMob = true; // ザコ敵かどうか（演出などに使用）
 
     [Header("Status Effects")]
     [Tooltip("感電の蓄積値。0より大きい場合帯電状態")]
@@ -293,7 +308,82 @@ public class _Health_Base : MonoBehaviour
     public void addHP(float hp)
     {
         HP += hp;
-        return;
+    }
+
+    protected virtual void OnEnable()
+    {
+        if (Alpha_TickManager.Instance != null)
+        {
+            Alpha_TickManager.Instance.OnTick += HandleTick;
+        }
+    }
+
+    protected virtual void OnDisable()
+    {
+        if (Alpha_TickManager.Instance != null)
+        {
+            Alpha_TickManager.Instance.OnTick -= HandleTick;
+        }
+        isTouchingPlayer = false;
+        currentPlayerHealth = null;
+    }
+
+    private void HandleTick()
+    {
+        if (contactDamage <= 0f) return;
+        if (isDead) return;
+        
+        if (isTouchingPlayer && currentPlayerHealth != null)
+        {
+            currentPlayerHealth.TakeDamage(contactDamage);
+            // プレイヤーを無敵にはしない（Tickごとの連続ダメージを許容）
+        }
+    }
+
+    protected virtual void OnCollisionEnter2D(Collision2D collision)
+    {
+        TryDealInitialContactDamage(collision.collider);
+    }
+
+    protected virtual void OnTriggerEnter2D(Collider2D collider)
+    {
+        TryDealInitialContactDamage(collider);
+    }
+
+    protected virtual void OnCollisionExit2D(Collision2D collision)
+    {
+        RemoveContact(collision.collider);
+    }
+
+    protected virtual void OnTriggerExit2D(Collider2D collider)
+    {
+        RemoveContact(collider);
+    }
+
+    protected void TryDealInitialContactDamage(Collider2D col)
+    {
+        if (contactDamage <= 0f) return;
+        if (isDead) return;
+
+        if (col.CompareTag("Player"))
+        {
+            var pHealth = col.GetComponentInParent<PlayerHealth>();
+            if (pHealth != null)
+            {
+                pHealth.TakeDamage(contactDamage); // 接触時に即ダメージ
+                isTouchingPlayer = true;
+                currentPlayerHealth = pHealth;
+            }
+        }
+    }
+
+    protected void RemoveContact(Collider2D col)
+    {
+        if (col.CompareTag("Player"))
+        {
+            isTouchingPlayer = false;
+            currentPlayerHealth = null;
+        }
     }
 
     public void AddCurrentHP(float set)

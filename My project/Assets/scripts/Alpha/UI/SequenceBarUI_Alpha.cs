@@ -102,7 +102,7 @@ namespace Alpha.UI
                     EnemyRushUIBlock_Alpha rushUI = blockObj.GetComponent<EnemyRushUIBlock_Alpha>();
                     if (rushUI == null) rushUI = blockObj.AddComponent<EnemyRushUIBlock_Alpha>();
                     
-                    rushUI.Setup(rush.spawnInterval, rush.startTime);
+                    rushUI.Setup(rush.spawnInterval, rush.startTime, rush.startTime, rush.endTime);
                     activeRushBlocks.Add(rushUI);
                     activeMarkers.Add(blockObj);
                 }

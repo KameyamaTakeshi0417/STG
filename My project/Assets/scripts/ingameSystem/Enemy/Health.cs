@@ -97,12 +97,12 @@ public class Health : _Health_Base
         }
     }
 
-    protected bool isDead = false;
-
     protected override void Awake() { base.Awake(); }
 
-    protected virtual void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
+        
         if (isFleeing)
         {
             isFleeing = false;
@@ -167,6 +167,17 @@ public class Health : _Health_Base
             if (rb != null)
             {
                 rb.velocity = fleeDir * 30f;
+            }
+
+            // 画面外に出たら削除
+            if (Camera.main != null)
+            {
+                Vector3 viewportPos = Camera.main.WorldToViewportPoint(transform.position);
+                if (viewportPos.x < -0.2f || viewportPos.x > 1.2f || viewportPos.y < -0.2f || viewportPos.y > 1.2f)
+                {
+                    if (canvasInstance != null) Destroy(canvasInstance);
+                    Destroy(gameObject);
+                }
             }
             return;
         }
