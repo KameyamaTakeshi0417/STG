@@ -67,6 +67,8 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
     public int executionerTier = 0;
     public bool isOmniBouquetOverride = false;
 
+    private Transform playerDamageCanvasTransform;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -660,6 +662,49 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
                 if (Alpha.Core.JuiceManager_Alpha.Instance != null)
                 {
                     Alpha.Core.JuiceManager_Alpha.Instance.ScreenShake(0.3f, 0.5f);
+                }
+            }
+
+            // --- Damage Popup ---
+            GameObject damageTextPrefab = Resources.Load<GameObject>("UI/DamageText");
+            if (damageTextPrefab != null)
+            {
+                if (playerDamageCanvasTransform == null)
+                {
+                    GameObject canvasInstance = Instantiate(
+                        Resources.Load<GameObject>("UI/EnemyHPCanvas"),
+                        playerObj.transform.position,
+                        Quaternion.identity
+                    );
+                    playerDamageCanvasTransform = canvasInstance.transform;
+                    
+                    // Canvasの位置をプレイヤーに追従させる
+                    var follower = canvasInstance.GetComponent<HPBarFollower>();
+                    if (follower != null) follower.setTargetTransform(playerObj.transform);
+                    
+                    // 不要なHPバーは非表示にする
+                    Transform hpBar = canvasInstance.transform.Find("HPBar");
+                    if (hpBar != null) hpBar.gameObject.SetActive(false);
+                }
+
+                GameObject damageTextInstance = Instantiate(damageTextPrefab, playerDamageCanvasTransform);
+                RectTransform rt = damageTextInstance.GetComponent<RectTransform>();
+                if (rt != null)
+                {
+                    rt.localPosition = Vector3.zero;
+                    rt.localScale = Vector3.one * 0.1f;
+                }
+                
+                var damageUI = damageTextInstance.GetComponent<DamageUI3D>();
+                if (damageUI != null)
+                {
+                    damageUI.damage = finalDamage;
+                }
+                
+                var tmpro = damageTextInstance.GetComponent<TMPro.TextMeshProUGUI>();
+                if (tmpro != null)
+                {
+                    tmpro.color = Color.red; // プレイヤーの被ダメージは赤色
                 }
             }
         }

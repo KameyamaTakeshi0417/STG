@@ -79,6 +79,7 @@ MonoBehaviour:
   defeatedSprite: {fileID: 0}
   targetSpriteRenderer: {fileID: 4072359245072878589}
   eliteCanvasResourcePath: UI/CircleHPBar/EliteEnemyHPCanvas
+  timedOutCount: 0
 --- !u!50 &7380120385798461888
 Rigidbody2D:
   serializedVersion: 4
@@ -118,7 +119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 467b3cbae22a01c458f097d473ee129c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialMovementBehavior: {fileID: 0}
+  initialMovementBehavior: {fileID: 11400000, guid: 3f2a6441438320d41a7e67a26dc55cf2, type: 2}
   initialAttackBehavior: {fileID: 0}
   initialSummonBehavior: {fileID: 0}
   spawnWithDelay: 1
@@ -128,12 +129,14 @@ MonoBehaviour:
   - phaseName: "\u83EF\u70C8\u6483-\u53CC\u5927\u8F2A-"
     useCutIn: 1
     cutInSprite: {fileID: 21300000, guid: 3439f27bc1a27d240ab012158d678283, type: 3}
+    timeLimit: 30
     movementBehavior: {fileID: 11400000, guid: 0d8afc241ca8f36489766383f8468aee, type: 2}
     attackBehavior: {fileID: 11400000, guid: 47d780a3f5c00ce49ab03d3c5f455fec, type: 2}
     summonBehavior: {fileID: 11400000, guid: c7127de5f735ac2478173c9f94041d52, type: 2}
   - phaseName: "\u83EF\u70C8\u6483-\u707C\u83EF\u7E5A\u4E71-"
     useCutIn: 1
     cutInSprite: {fileID: 21300000, guid: 3439f27bc1a27d240ab012158d678283, type: 3}
+    timeLimit: 30
     movementBehavior: {fileID: 11400000, guid: cf2ce169e9c380e4e842c25bb911264d, type: 2}
     attackBehavior: {fileID: 11400000, guid: 64be175568601a648bc4853fc69538fd, type: 2}
     summonBehavior: {fileID: 0}

@@ -258,7 +258,7 @@ namespace Alpha.UI
             }
         }
 
-        private void ShowPopup(string message, float duration = 2f)
+        public void ShowPopup(string message, float duration = 2f)
         {
             if (popupPanel == null || popupText == null) return;
             popupText.text = message;

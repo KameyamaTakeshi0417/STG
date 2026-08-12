@@ -108,6 +108,17 @@ namespace Alpha.Data
         [Tooltip("インスペクタで段階ごと（1～4段階）の強化内容を説明するテキスト")]
         public string[] stepDescriptions = new string[4];
 
+        public bool IsDebuff()
+        {
+            return effectType == WeaponEffectType_Alpha.AttackFlatMinus ||
+                   effectType == WeaponEffectType_Alpha.AttackMultiplierMinus ||
+                   effectType == WeaponEffectType_Alpha.DefenseFlatMinus ||
+                   effectType == WeaponEffectType_Alpha.DefenseMultiplierMinus ||
+                   effectType == WeaponEffectType_Alpha.BulletSpeedDebuff ||
+                   effectType == WeaponEffectType_Alpha.BulletLifeDebuff ||
+                   effectType == WeaponEffectType_Alpha.ReloadSpeedMinus;
+        }
+
         public float GetValue(int quality)
         {
           

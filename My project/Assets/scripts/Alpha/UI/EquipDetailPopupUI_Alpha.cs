@@ -34,8 +34,14 @@ namespace Alpha.UI
                 string colorSuffix = "</color>";
                 float val = setBonusEffect.GetValue(quality);
                 string desc = setBonusEffect.description;
-                try { desc = string.Format(desc, val); } catch {}
+                try { desc = desc.Contains("{0}") ? string.Format(desc, val) : desc.Replace("{0}", val.ToString()); } catch {}
                 effectStr += $"\n{colorPrefix}<b>[セットボーナス]</b> {setBonusEffect.effectName}: {desc}{colorSuffix}";
+
+                string stages = BuildStagesString(setBonusEffect, quality, "  ");
+                if (!string.IsNullOrEmpty(stages))
+                {
+                    effectStr += $"\n{stages}";
+                }
             }
 
             string partStr = "";
@@ -178,14 +184,14 @@ namespace Alpha.UI
                     }
                     else
                     {
-                        string prefix = string.IsNullOrEmpty(indent) ? prefixIcon : "└";
+                        string prefix = string.IsNullOrEmpty(indent) ? prefixIcon : "・";
                         
                         string descStr = "";
                         if (!string.IsNullOrEmpty(eff.description))
                         {
                             try 
                             { 
-                                descStr = string.Format(eff.description, eff.GetValue(quality)); 
+                                descStr = eff.description.Contains("{0}") ? string.Format(eff.description, eff.GetValue(quality)) : eff.description.Replace("{0}", eff.GetValue(quality).ToString()); 
                             }
                             catch 
                             { 
@@ -200,6 +206,12 @@ namespace Alpha.UI
                         else
                         {
                             result += $"\n{indent}{prefix} {eff.effectName}";
+                        }
+
+                        string stagesStr = BuildStagesString(eff, quality, indent + "  ");
+                        if (!string.IsNullOrEmpty(stagesStr))
+                        {
+                            result += "\n" + stagesStr;
                         }
 
                         if (eff.effectType == WeaponEffectType_Alpha.AllEquipable)
@@ -223,12 +235,77 @@ namespace Alpha.UI
             return result;
         }
 
+        private string BuildStagesString(WeaponEffectSO_Alpha effect, int currentCount, string indent)
+        {
+            string stagesStr = "";
+            if (effect.useStepMultiplier)
+            {
+                int activeStageIndex = 0;
+                int[] requiredCounts = new int[4];
+                requiredCounts[0] = 1;
+                if (effect.stepThresholds != null)
+                {
+                    for (int i = 0; i < effect.stepThresholds.Length && i < 3; i++)
+                    {
+                        requiredCounts[i + 1] = effect.stepThresholds[i];
+                    }
+                }
+
+                for (int i = 0; i < requiredCounts.Length; i++)
+                {
+                    if (currentCount >= requiredCounts[i])
+                    {
+                        activeStageIndex = i;
+                    }
+                }
+
+                for (int i = 0; i < 4; i++)
+                {
+                    string stepDesc = "";
+                    if (effect.stepDescriptions != null && i < effect.stepDescriptions.Length)
+                    {
+                        stepDesc = effect.stepDescriptions[i];
+                    }
+                    if (string.IsNullOrEmpty(stepDesc)) continue;
+
+                    try
+                    {
+                        float val = (effect.qualityValues != null && i < effect.qualityValues.Length) ? effect.qualityValues[i] : 0f;
+                        stepDesc = stepDesc.Contains("{0}") ? string.Format(stepDesc, val) : stepDesc.Replace("{0}", val.ToString());
+                    }
+                    catch { }
+
+                    string colorHex = (i == activeStageIndex) ? "#FFFFFF" : "#808080";
+                    string prefix = (i == activeStageIndex) ? "▶" : "・";
+
+                    stagesStr += $"{indent}<color={colorHex}>{prefix} [必要: {requiredCounts[i]}] {stepDesc}</color>\n";
+                }
+            }
+            else
+            {
+                string baseDesc = "";
+                if (effect.stepDescriptions != null && effect.stepDescriptions.Length > 0 && !string.IsNullOrEmpty(effect.stepDescriptions[0]))
+                {
+                    baseDesc = effect.stepDescriptions[0];
+                    float val = effect.GetValue(currentCount);
+                    try
+                    {
+                        baseDesc = baseDesc.Contains("{0}") ? string.Format(baseDesc, val) : baseDesc.Replace("{0}", val.ToString());
+                    }
+                    catch { }
+                    stagesStr += $"{indent}<color=#FFFFFF>▶ {baseDesc}</color>\n";
+                }
+            }
+
+            return stagesStr.TrimEnd('\n');
+        }
+
         public void SetupForSkill(WeaponEffectSO_Alpha effect, Vector2 clickPos)
         {
             if (effect == null) return;
             
             string desc = effect.description;
-            try { desc = string.Format(effect.description, effect.GetValue(1)); } catch { }
+            try { desc = desc.Contains("{0}") ? string.Format(desc, effect.GetValue(1)) : desc.Replace("{0}", effect.GetValue(1).ToString()); } catch { }
             
             if (detailText != null)
             {

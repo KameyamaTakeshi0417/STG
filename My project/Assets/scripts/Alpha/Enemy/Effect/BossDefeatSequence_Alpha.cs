@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 namespace Alpha.Enemy.Effect
@@ -152,36 +152,43 @@ namespace Alpha.Enemy.Effect
 
         private void StopBossBehavior()
         {
-            // エリート特有のフェーズ管理AIを停止
             var eliteAi = GetComponent<global::Alpha_EliteEnemyAI>();
             if (eliteAi != null)
             {
                 eliteAi.StopAllBehaviors();
             }
 
-            // ベースのAIを完全停止（移動・攻撃・召喚スロットすべて）
             var baseAi = GetComponent<global::Alpha_EnemyAI>();
             if (baseAi != null)
             {
                 baseAi.StopAllBehaviors(true);
-                // ツタの生成コルーチンなど、変数に保存されていない独立したコルーチンを強制的に全て止める
                 baseAi.StopAllCoroutines(); 
             }
 
-            // 被弾判定の停止（弾に当たらないように）
             var colliders = GetComponentsInChildren<Collider2D>();
             foreach (var col in colliders)
             {
                 col.enabled = false;
             }
 
-            // 画面上の敵弾を削除
+            var allScripts = GetComponentsInChildren<MonoBehaviour>();
+            foreach (var script in allScripts)
+            {
+                if (script != null && script != this && script.GetType() != typeof(Alpha_EliteHealth) && script.GetType() != typeof(Alpha.Enemy.Effect.BossDefeatSequence_Alpha))
+                {
+                    script.StopAllCoroutines();
+                    if (script.GetType().Name.Contains("Turret") || script.GetType().Name.Contains("Behavior") || script.GetType().Name.Contains("Controller"))
+                    {
+                        script.enabled = false;
+                    }
+                }
+            }
+
             if (Alpha.Flow.StageManager_Alpha.Instance != null)
             {
                 Alpha.Flow.StageManager_Alpha.Instance.ClearAllEnemyBullets();
             }
-
-            // HPバー等のUIを非表示
+            
             var hpBar = GetComponentInChildren<Alpha.UI.Alpha_EliteCircleHPBar>();
             if (hpBar != null)
             {
@@ -218,3 +225,5 @@ namespace Alpha.Enemy.Effect
         }
     }
 }
+
+

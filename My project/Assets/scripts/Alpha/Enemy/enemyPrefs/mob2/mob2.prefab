@@ -90,6 +90,7 @@ MonoBehaviour:
   initialAttackBehavior: {fileID: 11400000, guid: c2c2204526645cf4b8f3a74a5420f834, type: 2}
   initialSummonBehavior: {fileID: 0}
   spawnWithDelay: 0
+  startDelayTime: 0
   PhaseSpawnedObjects: []
 --- !u!212 &8577484155658214149
 SpriteRenderer:
@@ -227,10 +228,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb0a0133be190184ba2ee0765de617fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialMovementBehavior: {fileID: 0}
+  initialMovementBehavior: {fileID: 11400000, guid: d10f43a6a4366924db3580eadcae3c3b, type: 2}
   initialAttackBehavior: {fileID: 0}
   initialSummonBehavior: {fileID: 0}
   spawnWithDelay: 0
+  startDelayTime: 0
   PhaseSpawnedObjects: []
   behaviorTurret: {fileID: 11400000, guid: b8110ebef1da2cf49b11fd874b678002, type: 2}
   behaviorDash: {fileID: 11400000, guid: df690f91e0fd1f04a8a9eb5cdfe20977, type: 2}

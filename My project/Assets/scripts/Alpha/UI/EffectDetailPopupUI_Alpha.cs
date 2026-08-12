@@ -33,9 +33,9 @@ namespace Alpha.UI
                 string desc = effect.description;
                 try
                 {
-                    desc = string.Format(desc, currentFlatValue);
+                    desc = desc.Contains("{0}") ? string.Format(desc, currentFlatValue) : desc.Replace("{0}", currentFlatValue.ToString());
                 }
-                catch (System.FormatException)
+                catch (System.Exception)
                 {
                     // フォールバック
                 }
@@ -79,9 +79,9 @@ namespace Alpha.UI
                     try
                     {
                         float val = (effect.qualityValues != null && i < effect.qualityValues.Length) ? effect.qualityValues[i] : 0f;
-                        stepDesc = string.Format(stepDesc, val);
+                        stepDesc = stepDesc.Contains("{0}") ? string.Format(stepDesc, val) : stepDesc.Replace("{0}", val.ToString());
                     }
-                    catch (System.FormatException) {}
+                    catch (System.Exception) {}
 
                     string colorHex = (i == activeStageIndex) ? "#FFFFFF" : "#808080"; // White for active, Gray for others
                     string prefix = (i == activeStageIndex) ? "▶" : "・";
@@ -100,14 +100,12 @@ namespace Alpha.UI
 
                 if (!string.IsNullOrEmpty(baseDesc))
                 {
-                    // Try formatting it (e.g. "Attack Flat +{0}")
                     try
                     {
-                        stagesStr = $"<color=#FFFFFF>▶ {string.Format(baseDesc, currentFlatValue)}</color>";
+                        stagesStr = $"<color=#FFFFFF>▶ { (baseDesc.Contains("{0}") ? string.Format(baseDesc, currentFlatValue) : baseDesc.Replace("{0}", currentFlatValue.ToString())) }</color>";
                     }
-                    catch (System.FormatException)
+                    catch (System.Exception)
                     {
-                        // Fallback if formatting fails (e.g., the user didn't put {0} or formatting is broken)
                         stagesStr = $"<color=#FFFFFF>▶ {baseDesc}\n(Total: {currentFlatValue})</color>";
                     }
                 }

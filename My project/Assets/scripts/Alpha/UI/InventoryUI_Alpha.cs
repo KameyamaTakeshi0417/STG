@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -17,9 +17,12 @@ namespace Alpha.UI
         [Header("Player Status Display")]
         public TextMeshProUGUI statusText;
 
-        [Header("Active Effects UI")]
-        public Transform activeEffectsContainer;
-        public GameObject activeEffectPrefab; 
+            [Header("Active Effects UI")]
+    public Transform globalEffectsContainer;
+    public Transform group1EffectsContainer;
+    public Transform group2EffectsContainer;
+    public Transform group3EffectsContainer;
+    public GameObject activeEffectPrefab; 
         public Alpha.UI.EffectDetailPopupUI_Alpha effectDetailPopup;
         private List<GameObject> spawnedActiveEffects = new List<GameObject>();
         
@@ -359,7 +362,7 @@ namespace Alpha.UI
 
         private void UpdateActiveEffectsDisplay()
         {
-            if (activeEffectsContainer == null || activeEffectPrefab == null || InventoryManager_Alpha.Instance == null) return;
+            if (activeEffectPrefab == null || InventoryManager_Alpha.Instance == null) return;
 
             foreach (var go in spawnedActiveEffects)
             {
@@ -367,31 +370,29 @@ namespace Alpha.UI
             }
             spawnedActiveEffects.Clear();
 
-            int activeGroup = -1;
-            Player_Shooter_Alpha shooter = Object.FindAnyObjectByType<Player_Shooter_Alpha>();
-            if (shooter != null) activeGroup = shooter.currentWeaponGroup;
-            int groupToPass = (InventoryManager_Alpha.Instance.IsBouquetActive() || (playerStatusManager_Alpha.Instance != null && playerStatusManager_Alpha.Instance.isOmniBouquetOverride)) ? -1 : activeGroup;
+            var activeEffects = InventoryManager_Alpha.Instance.GetActiveEffectsForDisplay();
 
-            var activeEffects = InventoryManager_Alpha.Instance.GetAllActiveEffectQualities(groupToPass);
-            
-            Debug.Log($"[InventoryUI] UpdateActiveEffectsDisplay called. Found {activeEffects.Count} active effects.");
-            
-            foreach (var kvp in activeEffects)
+            foreach (var info in activeEffects)
             {
-                var effect = kvp.Key;
-                int count = kvp.Value.count;
-                float flatValue = kvp.Value.flatValue;
-                
-                Debug.Log($"[InventoryUI] Effect: {(effect != null ? effect.effectName : "null")}, Count: {count}, FlatValue: {flatValue}");
+                var effect = info.effectSO;
+                int count = info.count;
+                float flatValue = info.flatValue;
+                int groupIndex = info.groupIndex;
                 
                 if (count <= 0 || effect == null) continue;
 
-                GameObject go = Instantiate(activeEffectPrefab, activeEffectsContainer, false);
+                Transform targetContainer = null;
+                if (groupIndex == -1) targetContainer = globalEffectsContainer;
+                else if (groupIndex == 0) targetContainer = group1EffectsContainer;
+                else if (groupIndex == 1) targetContainer = group2EffectsContainer;
+                else if (groupIndex == 2) targetContainer = group3EffectsContainer;
+
+                if (targetContainer == null) continue;
+
+                GameObject go = Instantiate(activeEffectPrefab, targetContainer, false);
                 go.SetActive(true);
                 spawnedActiveEffects.Add(go);
                 
-                // ScrollView (LayoutGroup) 縺ｫ繧医▲縺ｦWidth/Height縺・縺ｫ貎ｰ縺輔ｌ繧九・繧帝亟縺舌◆繧√・
-                // 繝励Ξ繝上ヶ譛ｬ譚･縺ｮ繧ｵ繧､繧ｺ繧貞叙蠕励＠縺ｦLayoutElement縺ｧ蠑ｷ蛻ｶ縺吶ｋ
                 RectTransform prefabRt = activeEffectPrefab.transform as RectTransform;
                 if (prefabRt != null)
                 {
@@ -412,20 +413,19 @@ namespace Alpha.UI
                         bool isBoss = Alpha.Flow.StageManager_Alpha.Instance != null && Alpha.Flow.StageManager_Alpha.Instance.IsBossBattleActive;
                         if (isBoss)
                         {
-                            colorTag = "<color=#FF4444>"; // Boss battle: Bright Red
+                            colorTag = "<color=#FF4444>"; 
                             colorEnd = "</color>";
                         }
                         else
                         {
-                            colorTag = "<color=#808080>"; // Normal: Gray
+                            colorTag = "<color=#808080>"; 
                             colorEnd = "</color>";
                         }
                     }
 
-                    text.text = $"{colorTag}{count} \"{effect.effectName}\"{colorEnd}";
+                    text.text = $"・{colorTag}{count} \"{effect.effectName}\"{colorEnd}";
                 }
 
-                // 繧｢繧､繧ｳ繝ｳ繧定ｨｭ螳夲ｼ・Icon" 縺ｨ縺・≧蜷榊燕縺ｮ蟄占ｦ∫ｴ�繧呈爾縺吶°縲∝ｭ占ｦ∫ｴ�縺ｮ荳ｭ縺ｮ譛蛻昴・Image繧呈爾縺呻ｼ・
                 Image iconImg = null;
                 foreach (Transform child in go.transform)
                 {
@@ -436,7 +436,6 @@ namespace Alpha.UI
                     }
                 }
                 
-                // "Icon"縺ｨ縺・≧蜷榊燕縺後↑縺九▲縺溘ｉ縲√Ν繝ｼ繝医ｒ驕ｿ縺代※縲悟ｭ占ｦ∫ｴ�縲阪°繧迂mage繧呈爾縺・
                 if (iconImg == null)
                 {
                     foreach (Transform child in go.transform)
@@ -463,6 +462,16 @@ namespace Alpha.UI
                         effectDetailPopup.Setup(effect, count, flatValue, eventData.position);
                     }
                 };
+            }
+
+            Canvas.ForceUpdateCanvases();
+            if (globalEffectsContainer != null) UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(globalEffectsContainer as RectTransform);
+            if (group1EffectsContainer != null) UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(group1EffectsContainer as RectTransform);
+            if (group2EffectsContainer != null) UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(group2EffectsContainer as RectTransform);
+            if (group3EffectsContainer != null) UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(group3EffectsContainer as RectTransform);
+            if (globalEffectsContainer != null && globalEffectsContainer.parent != null)
+            {
+                UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(globalEffectsContainer.parent as RectTransform);
             }
         }
 
@@ -793,3 +802,7 @@ namespace Alpha.UI
         }
     }
 }
+
+
+
+

@@ -4,6 +4,27 @@ using System.Collections.Generic;
 namespace Alpha.Data
 {
     [System.Serializable]
+    public class EnemyRushData_Alpha
+    {
+        [Tooltip("ラッシュの開始時間（秒）")]
+        public float startTime;
+        [Tooltip("ラッシュの終了時間（秒）")]
+        public float endTime;
+        [Tooltip("敵がスポーンする間隔（秒）")]
+        public float spawnInterval = 1.0f;
+        [Tooltip("スポーンさせる敵のプレハブ（複数登録でランダム抽選）")]
+        public List<GameObject> enemyPrefabs = new List<GameObject>();
+        [Tooltip("1回の間隔でスポーンする敵の最小数")]
+        public int minSpawnCountPerInterval = 1;
+        [Tooltip("1回の間隔でスポーンする敵の最大数")]
+        public int maxSpawnCountPerInterval = 1;
+        [Tooltip("スポーン範囲の中心座標")]
+        public Vector2 spawnCenter;
+        [Tooltip("スポーン範囲のサイズ（X軸、Y軸のブレ幅）")]
+        public Vector2 spawnAreaSize = new Vector2(5f, 5f);
+    }
+
+    [System.Serializable]
     public class TutorialEventData_Alpha
     {
         [Tooltip("チュートリアルを起動するタイミング（秒）")]
@@ -28,6 +49,9 @@ namespace Alpha.Data
         
         [Tooltip("ウェーブのリスト")]
         public List<WaveData_Alpha> waves = new List<WaveData_Alpha>();
+
+        [Tooltip("エネミーラッシュのリスト")]
+        public List<EnemyRushData_Alpha> enemyRushes = new List<EnemyRushData_Alpha>();
 
         [Tooltip("チュートリアルイベントのリスト")]
         public List<TutorialEventData_Alpha> tutorialEvents = new List<TutorialEventData_Alpha>();

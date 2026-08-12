@@ -66,7 +66,8 @@ public class _Health_Base : MonoBehaviour
         // 1. 経験値のドロップ
         if (Exp > 0)
         {
-            int remainingExp = Exp;
+            // 設定された経験値に対して0～3のランダムなブレを追加
+            int remainingExp = Exp + Random.Range(0, 4);
             
             int count100 = remainingExp / 100;
             remainingExp %= 100;

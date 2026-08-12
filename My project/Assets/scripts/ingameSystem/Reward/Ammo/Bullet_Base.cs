@@ -65,11 +65,18 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
 
     // 雋ｫ騾壼・逅・畑繧ｹ繝・・繝・
     protected float initialDmg; // 貂幄｡ｰ險育ｮ励・繝ｼ繧ｹ縺ｮ蛻晄悄繝€繝｡繝ｼ繧ｸ
+    protected float basePrefabSpeed; // 本来のプレハブの弾速（相対計算用）
     protected Dictionary<GameObject, int> hitCountsPerEnemy = new Dictionary<GameObject, int>(); // 謨ｵ縺斐→縺ｮ繝偵ャ繝亥屓謨ｰ
     protected Collider2D bulletCollider; // 蜀榊愛螳夂畑縺ｫ繧ｳ繝ｩ繧､繝€繝ｼ繧剃ｸ€譎ら噪縺ｫ蛻ｶ蠕｡
 
     // Bomb destruction flag
     public bool canDestructByBomb { get; set; } = true;
+
+    protected virtual void Awake()
+    {
+        basePrefabSpeed = Speed;
+        if (basePrefabSpeed <= 0f) basePrefabSpeed = 1f; // ゼロ除算防止
+    }
 
     // Start is called before the first frame update
     void Start() { }
@@ -219,10 +226,16 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
         // 蠑ｾ縺ｮ逋ｺ蟆・
         rb = gameObject.GetComponent<Rigidbody2D>();
 
-        // 迚ｩ逅・お繝ｳ繧ｸ繝ｳ縺ｮ諷｣諤ｧ繧・｡晉ｪ√↓繧医ｋ貂幃溘ｒ髦ｲ縺舌◆繧√∝・騾溘ｒ蠑ｷ蛻ｶ縺吶ｋ
+        // 迚ｩ逅・お繝ｳ繧ｸ繝ｳ縺ｮ諷｣諤ｧ繧・｡晉ｪ√↓繧医ｋ貂幃€溘ｒ髦ｲ縺舌◆繧√€∝・騾溘ｒ蠑ｷ蛻ｶ縺吶ｋ
         if (rb != null)
         {
-            rb.velocity = rotate.normalized * (Speed * 0.02f);
+            rb.velocity = rotate.normalized * (Speed * 0.01f);
+            
+            // 弾速が元の3倍以上の場合はすり抜け防止のためContinuousに切り替え
+            if ((Speed / basePrefabSpeed) >= 3.0f) 
+            {
+                rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+            }
         }
 
         while (count <= DestroyTime || preventAutoDestroy)
@@ -233,14 +246,14 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
                 count++;
             }
 
-            // 豈弱ヵ繝ｬ繝ｼ繝�縲∫樟蝨ｨ縺ｮ騾ｲ陦梧婿蜷・rotate)縺ｨ繧ｹ繝斐・繝・Speed)縺ｧ騾溷ｺｦ繧剃ｸ頑嶌縺阪＠邯壹￠繧・
-            // ・医・繝ｬ繧､繝､繝ｼ遘ｻ蜍慕ｳｻ縺ｮ謾ｹ菫ｮ縺ｨ蜷梧ｧ倥∫黄逅・ｼ皮ｮ励↓繧医ｋ諢丞峙縺励↑縺・ｸ幃溘ｒ螳悟・縺ｫ髦ｲ縺撰ｼ・
+            // 豈弱ヵ繝ｬ繝ｼ繝縲∫樟蝨ｨ縺ｮ騾ｲ陦梧婿蜷・rotate)縺ｨ繧ｹ繝斐・繝・Speed)縺ｧ騾溷ｺｦ繧剃ｸ頑嶌縺阪＠邯壹￠繧・
+            // ・医・繝ｬ繧､繝､繝ｼ遘ｻ蜍慕ｳｻ縺ｮ謾ｹ菫ｮ縺ｨ蜷梧ｧ倥€∫黄逅・ｼ皮ｮ励↓繧医ｋ諢丞峙縺励↑縺・ｸ幃€溘ｒ螳悟・縺ｫ髦ｲ縺撰ｼ・
             if (rb != null)
             {
-                rb.velocity = rotate.normalized * (Speed * 0.02f);
+                rb.velocity = rotate.normalized * (Speed * 0.01f);
             }
 
-            // 逕ｻ髱｢螟厄ｼ医ヰ繧ｦ繝ｳ繝繝ｪ・峨メ繧ｧ繝・け
+            // 逕ｻ髱｢螟厄ｼ医ヰ繧ｦ繝ｳ繝€繝ｪ・峨メ繧ｧ繝・け
             if (Alpha.Core.ScreenBoundaryManager_Alpha.Instance != null)
             {
                 if (Alpha.Core.ScreenBoundaryManager_Alpha.Instance.IsOutOfBounds(transform.position))
@@ -312,7 +325,7 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
 
     protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
-        // 雋ｫ騾壻ｸｭ・・gnoreCollision迥ｶ諷具ｼ峨・繧ｳ繝ｩ繧､繝繝ｼ縺九ｉ縺ｮ繧､繝吶Φ繝医・辟｡隕悶☆繧・
+        // 雋ｫ騾壻ｸｭ・・gnoreCollision迥ｶ諷具ｼ峨・繧ｳ繝ｩ繧､繝€繝ｼ縺九ｉ縺ｮ繧､繝吶Φ繝医・辟｡隕悶☆繧・
         if (ignoredColliders.Contains(collision)) return;
 
         bool hitSomething = false;
@@ -331,21 +344,21 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
             _Health_Base health = collision.GetComponentInParent<_Health_Base>();
             if (health != null)
             {
-                GameObject targetObj = health.gameObject; // 繝繝｡繝ｼ繧ｸ繧貞女縺代◆譛ｬ菴薙ｒ繧ｿ繝ｼ繧ｲ繝・ヨ縺ｨ縺励※險倬鹸
+                GameObject targetObj = health.gameObject; // 繝€繝｡繝ｼ繧ｸ繧貞女縺代◆譛ｬ菴薙ｒ繧ｿ繝ｼ繧ｲ繝・ヨ縺ｨ縺励※險倬鹸
                 if (!hitCountsPerEnemy.ContainsKey(targetObj))
                 {
                     hitCountsPerEnemy[targetObj] = 0;
                 }
 
                 int prevHitCount = hitCountsPerEnemy[targetObj];
-                // PierceVolume縺・莉･荳具ｼ域悴險ｭ螳壹↑縺ｩ・峨・蝣ｴ蜷医・譛菴・蝗槭→縺励※謇ｱ縺・
+                // PierceVolume縺・莉･荳具ｼ域悴險ｭ螳壹↑縺ｩ・峨・蝣ｴ蜷医・譛€菴・蝗槭→縺励※謇ｱ縺・
                 int pVol = health.PierceVolume > 0 ? health.PierceVolume : 1;
 
-                // 譌｢縺ｫ縺薙・謨ｵ縺ｮ譛螟ｧ繝偵ャ繝域焚縺ｫ驕斐＠縺ｦ縺・ｋ蝣ｴ蜷医・菴輔ｂ縺励↑縺・
+                // 譌｢縺ｫ縺薙・謨ｵ縺ｮ譛€螟ｧ繝偵ャ繝域焚縺ｫ驕斐＠縺ｦ縺・ｋ蝣ｴ蜷医・菴輔ｂ縺励↑縺・
                 if (prevHitCount >= pVol) return;
 
                 // 莉雁屓縺ｮ陦晉ｪ√〒荳弱∴繧九∋縺阪ヲ繝・ヨ蝗樊焚・亥ｼｾ縺ｮ谿九ｊ雋ｫ騾壼屓謨ｰ+1 縺ｨ縲∵雰縺ｮ谿九ｊ險ｱ螳ｹ繝偵ャ繝域焚縺ｮ蟆代↑縺・婿・・
-                // 窶ｻ piercingCount 縺梧ｮ九▲縺ｦ縺・ｋ蝗樊焚 = 縺ゅ→縲碁壹ｊ謚懊￠繧峨ｌ繧九榊屓謨ｰ
+                // 窶ｻ piercingCount 縺梧ｮ九▲縺ｦ縺・ｋ蝗樊焚 = 縺ゅ→縲碁€壹ｊ謚懊￠繧峨ｌ繧ｎ€榊屓謨ｰ
                 //   縺､縺ｾ繧翫ヲ繝・ヨ縺ｧ縺阪ｋ蝗樊焚縺ｯ piercingCount + 1 蝗・
                 int allowableHits = pVol - prevHitCount;
                 int actualHits = Mathf.Min(piercingCount + 1, allowableHits);
@@ -360,7 +373,7 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
                 }
                 else
                 {
-                    // 縺ｪ縺代ｌ縺ｰ繝励Ξ繧､繝､繝ｼ繧ｹ繝・・繧ｿ繧ｹ・医・繝阪・繧ｸ繝｣繝ｼ・峨・險ｭ螳壼､繧貞叙蠕・
+                    // 縺ｪ縺代ｌ縺ｰ繝励Ξ繧､繝､繝ｼ繧ｹ繝・・繧ｿ繧ｹ・医・繝阪・繧ｸ繝｣繝ｼ・峨・險ｭ螳壼€､繧貞叙蠕・
                     GameObject manager = (playerStatusManager_Alpha.Instance != null ? playerStatusManager_Alpha.Instance.gameObject : null);
                     if (manager != null)
                     {
@@ -372,11 +385,16 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
                 // actualHits縺ｮ蝗樊焚蛻・Ν繝ｼ繝・
                 for (int i = 0; i < actualHits; i++)
                 {
-                    // HP繧呈ｸ帙ｉ縺吶・蝗樒岼縺ｯ莉翫・dmg縲・蝗樒岼莉･髯阪・縺輔▲縺肴ｸ幄｡ｰ縺輔ｌ縺歸mg繧剃ｽｿ縺・・
-                    health.ApplyDamage(dmg, this);
+                    // 速度倍率によるダメージスケーリングを適用 (最大5.0倍)
+                    float velocityRatio = Speed / basePrefabSpeed;
+                    float damageMultiplier = Mathf.Clamp(velocityRatio, 0.1f, 5.0f);
+                    float finalImpactDamage = dmg * damageMultiplier;
+
+                    // HP繧呈ｸ帙ｉ縺吶€・蝗樒岼縺ｯ莉翫・dmg縲・蝗樒岼莉･髯阪・縺輔▲縺肴ｸ幄｡ｰ縺輔ｌ縺歸mg繧剃ｽｿ縺・€・
+                    health.ApplyDamage(finalImpactDamage, this);
                     hitCountsPerEnemy[targetObj]++;
 
-                    // 雋ｫ騾壽棧繧呈ｶ郁ｲｻ縺吶ｋ縲ゑｼ域怙蠕後・1繝偵ャ繝茨ｼ昴ｂ縺・ｲｫ騾壹〒縺阪↑縺・凾縺ｯ豸郁ｲｻ縺励↑縺・√ｂ縺励￥縺ｯ0譛ｪ貅縺ｫ縺ｪ繧具ｼ・
+                    // 雋ｫ騾壽棧繧呈ｶ郁ｲｻ縺吶ｋ縲ゑｼ域怙蠕後・1繝偵ャ繝茨ｼ昴ｂ縺・ｲｫ騾壹〒縺阪↑縺・凾縺ｯ豸郁ｲｻ縺励↑縺・€√ｂ縺励￥縺ｯ0譛ｪ貅€縺ｫ縺ｪ繧具ｼ・
                     piercingCount--;
 
                     // 谺｡縺ｮ繝偵ャ繝茨ｼ亥酔縺俶雰縺ｮ騾｣邯壹ヲ繝・ヨ縲√ｂ縺励￥縺ｯ谺｡縺ｮ謨ｵ縺ｸ縺ｮ繝偵ャ繝茨ｼ峨・縺溘ａ縺ｫ螽∝鴨繧呈ｸ幄｡ｰ縺輔○繧・

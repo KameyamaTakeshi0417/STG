@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,17 +15,31 @@ public class HPBarFollower : MonoBehaviour
         targetObject = target;
     }
 
+    private bool isOrphaned = false;
+
     // Update is called once per frame
     void Update()
     {
-        if (targetObject != null)
+        bool hasTarget = targetObject != null && targetObject.gameObject.activeInHierarchy;
+
+        if (hasTarget)
         {
-            transform.position = targetObject.position +offset; // ターゲットの上にオフセットを追加
-            //transform.LookAt(Camera.main.transform); // カメラの方向を向く
+            transform.position = targetObject.position + offset; 
         }
-        if (targetObject == null)
+        else if (!isOrphaned)
         {
-            Destroy(this.gameObject);
+            isOrphaned = true;
+            
+            // エネミーが消滅・非アクティブになったら、HPバーは即座に非表示にする
+            Transform hpBar = transform.Find("HPBar");
+            if (hpBar != null)
+            {
+                hpBar.gameObject.SetActive(false);
+            }
+            
+            // ダメージポップアップ（DamageUI3D）の演出完了を待ってからCanvasごと破棄する
+            // DamageUI3DのDeleteTime(1.0f)より少し長めに設定
+            Destroy(this.gameObject, 1.5f);
         }
     }
 }

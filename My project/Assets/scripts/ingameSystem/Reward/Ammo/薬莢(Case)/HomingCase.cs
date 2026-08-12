@@ -12,44 +12,6 @@ public class HomingCase : Case_Base
     // Update is called once per frame
     void Update() { }
 
-    protected override IEnumerator move()
-    {
-        int count = 0;
-        Rigidbody2D rb;
-        //弾の発射
-        rb = gameObject.GetComponent<Rigidbody2D>();
-        GameObject player = GameObject.Find("Player");
-        targetEnemy = GameObject.Find("Player").GetComponent<Player>().getTargetEnemy();
-        Vector3 targetWay = new Vector3(0, 0, 0);
-        Vector2 force = new Vector2(rotate.x, rotate.y) * Speed;
-        if (targetEnemy != null)
-        {
-            targetWay = targetEnemy.transform.position - transform.position;
-            Vector3.Normalize(targetWay);
-            force = new Vector2(targetWay.x, targetWay.y) * (Speed * 0.01f);
-        }
-        else
-        {
-            targetWay = player.GetComponent<Player>().watch;
-            Vector3.Normalize(targetWay);
-            force = new Vector2(targetWay.x, targetWay.y) * (Speed * 0.01f);
-            DestroyTime = 100f;
-        }
-        rb.velocity = force;
-
-        while (count <= DestroyTime)
-        {
-            // 弾の位置を更新する
-            if (isHoming == true)
-            {
-                HomingMove(targetEnemy);
-            }
-
-            count++;
-            yield return new WaitForEndOfFrame();
-        }
-
-        Destroy(this.gameObject);
-        yield break;
-    }
+    
 }
+

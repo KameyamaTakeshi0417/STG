@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -230,8 +230,9 @@ public class Alpha_EliteEnemyAI : Alpha_EnemyAI
         }
     }
 
-    public void StopAllBehaviors()
+    public new void StopAllBehaviors()
     {
+        this.StopAllCoroutines();
         if (phaseSequenceCoroutine != null) StopCoroutine(phaseSequenceCoroutine);
         if (movementCoroutine != null) StopCoroutine(movementCoroutine);
         if (attackCoroutine != null) StopCoroutine(attackCoroutine);
@@ -267,3 +268,4 @@ public class Alpha_EliteEnemyAI : Alpha_EnemyAI
         OnAttackStartEvent?.Invoke(attackName);
     }
 }
+

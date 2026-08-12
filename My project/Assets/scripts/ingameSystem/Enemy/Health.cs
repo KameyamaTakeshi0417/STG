@@ -12,6 +12,15 @@ public class Health : _Health_Base
     public GameObject damageTextPrefab; // ダメージ表示用のプレハブ
     public float DamageUIMagnitude = 0.1f;
 
+    [Header("Flee Settings")]
+    public bool canFlee = true;
+    public float fleeTimeLimit = 10f;
+    protected float currentFleeTime = 0f;
+    protected bool isFleeing = false;
+    protected Slider fleeSlider;
+    protected Vector2 fleeDir = Vector2.left;
+    protected Color originalHPColor = Color.red;
+
     protected virtual void Start()
     {
         currentHP = HP;
@@ -40,6 +49,46 @@ public class Health : _Health_Base
                 // HPバーの初期設定
                 hpSlider.maxValue = HP;
                 hpSlider.value = (float)currentHP; // HPバーの最初の値を現在のHPに設定
+
+                Image hpFill = hpSlider.transform.Find("Fill Area/Fill")?.GetComponent<Image>();
+                if (hpFill != null)
+                {
+                    originalHPColor = hpFill.color;
+                }
+
+                if (canFlee && !isBoss && !isMidBoss)
+                {
+                    // 逃亡ゲージの生成
+                    GameObject fleeBarObj = Instantiate(hpSlider.gameObject, hpSlider.transform.parent);
+                    fleeBarObj.name = "FleeBar";
+                    // 指定のスケールに変更
+                    fleeBarObj.transform.localScale = new Vector3(3f, 1.5f, 1f);
+                    
+                    RectTransform fleeRect = fleeBarObj.GetComponent<RectTransform>();
+                    if (fleeRect != null)
+                    {
+                        // 指定のYPosに変更（Xは元のHPバーを維持）
+                        fleeRect.anchoredPosition = new Vector2(fleeRect.anchoredPosition.x, 50f);
+                    }
+                    else
+                    {
+                        fleeBarObj.transform.localPosition = new Vector3(fleeBarObj.transform.localPosition.x, 50f, fleeBarObj.transform.localPosition.z);
+                    }
+
+                    // 描画順を最前面（一番下）にする
+                    fleeBarObj.transform.SetAsLastSibling();
+
+                    fleeSlider = fleeBarObj.GetComponent<Slider>();
+                    fleeSlider.maxValue = fleeTimeLimit;
+                    fleeSlider.value = 0f;
+                    
+                    // 色をグレー等に変更（可能であれば）
+                    Image fillImage = fleeBarObj.transform.Find("Fill Area/Fill")?.GetComponent<Image>();
+                    if (fillImage != null)
+                    {
+                        fillImage.color = new Color(0.7f, 0.7f, 0.7f, 0.8f);
+                    }
+                }
             }
         }
         else
@@ -51,6 +100,149 @@ public class Health : _Health_Base
     protected bool isDead = false;
 
     protected override void Awake() { base.Awake(); }
+
+    protected virtual void OnEnable()
+    {
+        if (isFleeing)
+        {
+            isFleeing = false;
+            currentFleeTime = 0f;
+            if (fleeSlider != null) fleeSlider.value = 0f;
+
+            // 1. アルファ値の復旧
+            SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
+            if (sr != null)
+            {
+                Color c = sr.color;
+                c.a = 1f;
+                sr.color = c;
+            }
+
+            // 2. 壁との衝突無視の解除
+            Collider2D myCol = GetComponent<Collider2D>();
+            if (myCol != null)
+            {
+                GameObject[] walls = GameObject.FindGameObjectsWithTag("wall");
+                foreach (var wall in walls)
+                {
+                    Collider2D wallCol = wall.GetComponent<Collider2D>();
+                    if (wallCol != null)
+                    {
+                        Physics2D.IgnoreCollision(myCol, wallCol, false);
+                    }
+                }
+            }
+
+            // 3. 移動スクリプトの再稼働
+            var movement = GetComponent<Alpha_Enemy_Movement>();
+            if (movement != null)
+            {
+                movement.enabled = true;
+            }
+
+            // 4. キャンバスの再表示と色の復旧
+            if (canvasInstance != null)
+            {
+                canvasInstance.SetActive(true);
+            }
+            
+            if (hpSlider != null)
+            {
+                Image hpFill = hpSlider.transform.Find("Fill Area/Fill")?.GetComponent<Image>();
+                if (hpFill != null)
+                {
+                    hpFill.color = originalHPColor;
+                }
+            }
+        }
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+
+        if (isFleeing)
+        {
+            Rigidbody2D rb = GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                rb.velocity = fleeDir * 30f;
+            }
+            return;
+        }
+
+        if (canFlee && !isBoss && !isMidBoss && !isDead && !isFleeing)
+        {
+            currentFleeTime += Time.deltaTime;
+            if (fleeSlider != null)
+            {
+                fleeSlider.value = currentFleeTime;
+            }
+
+            if (currentFleeTime >= fleeTimeLimit)
+            {
+                StartFlee();
+            }
+        }
+    }
+
+    protected virtual void StartFlee()
+    {
+        isFleeing = true;
+        
+        // 1. 半透明化
+        SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
+        if (sr != null)
+        {
+            Color c = sr.color;
+            c.a = 0.5f;
+            sr.color = c;
+        }
+
+        // 2. 壁との接触判定のみ無効化（弾は当たる）
+        Collider2D myCol = GetComponent<Collider2D>();
+        if (myCol != null)
+        {
+            GameObject[] walls = GameObject.FindGameObjectsWithTag("wall");
+            foreach (var wall in walls)
+            {
+                Collider2D wallCol = wall.GetComponent<Collider2D>();
+                if (wallCol != null)
+                {
+                    Physics2D.IgnoreCollision(myCol, wallCol, true);
+                }
+            }
+        }
+
+        // 3. 既存の移動を停止し、プレイヤーと逆方向へ走らせる
+        var movement = GetComponent<Alpha_Enemy_Movement>();
+        if (movement != null)
+        {
+            movement.enabled = false;
+        }
+
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            fleeDir = Vector2.left; // プレイヤーが見つからない場合のデフォルト
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null)
+            {
+                fleeDir = (transform.position - player.transform.position).normalized;
+            }
+            rb.velocity = fleeDir * 15f; // 初期の15fに速度を戻す
+        }
+
+        // 4. HPバーの色を青に変更
+        if (hpSlider != null)
+        {
+            Image hpFill = hpSlider.transform.Find("Fill Area/Fill")?.GetComponent<Image>();
+            if (hpFill != null)
+            {
+                hpFill.color = new Color(0.1f, 0.6f, 1f, 1f); // 鮮やかな青色
+            }
+        }
+    }
 
     // ダメージを受け取るメソッド
     public override void TakeDamage(float damage)

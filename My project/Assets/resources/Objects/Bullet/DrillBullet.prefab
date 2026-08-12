@@ -193,7 +193,7 @@ MonoBehaviour:
   lockedTarget: {fileID: 0}
   Objname: 
   dmg: 20
-  Speed: 900
+  Speed: 2000
   DestroyTime: 10
   bullettype: 0
   rotate: {x: 0, y: 0, z: 0}
@@ -202,6 +202,8 @@ MonoBehaviour:
   addDmg: 0
   piercingCount: 1
   extraShotCount: 0
+  voltTickReduceCount: 0
+  secondaryDamageMultiplier: 1
   preventAutoDestroy: 0
   localPierceDamageReductionRate: -1
   canUseAllEffects: 0
