@@ -232,6 +232,14 @@ public class Health : _Health_Base
             movement.enabled = false;
         }
 
+        // 行動系AI（Alpha_EnemyAI）も強制停止
+        var enemyAI = GetComponent<Alpha_EnemyAI>();
+        if (enemyAI != null)
+        {
+            enemyAI.StopAllBehaviors(clearSpawnedObjectsOnStop: false);
+            enemyAI.enabled = false;
+        }
+
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
         if (rb != null)
         {

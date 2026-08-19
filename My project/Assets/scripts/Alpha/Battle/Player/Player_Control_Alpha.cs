@@ -5,7 +5,7 @@ using UnityEngine;
 public class Player_Control_Alpha : MonoBehaviour
 {
     protected Rigidbody2D rb;
-    protected Animator animator; // Animator 繧�E�繝ｳ繝昴・繝阪Φ繝医�E�霑�E�蜉�
+    protected Animator animator; // Animator 郢ｧ・ｳ郢晢ｽｳ郢晄亢繝ｻ郢晞亂ﾎｦ郢晏現・帝恆・ｽ陷会ｿｽ
     public bool onCoolTime;
     playerStatusManager_Alpha myStatus;
 
@@ -64,7 +64,7 @@ public class Player_Control_Alpha : MonoBehaviour
     {
 
         rb = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>(); // Animator 繧貞叙蠕�E
+        animator = GetComponent<Animator>(); // Animator 郢ｧ雋槫徐陟輔・
         
     }
     // Update is called once per frame
@@ -76,10 +76,10 @@ public class Player_Control_Alpha : MonoBehaviour
 
         if (!isSpecialMoving)
         {
-            // 蜿�E�繧�E�繝ｪ繝�Eけ逶�E�隕厄�E�医ヵ繧�E�繝ｼ繧�E�繧�E�繝｢繝ｼ繝会ｼ・
+            // 陷ｿ・ｳ郢ｧ・ｯ郢晢ｽｪ郢昴・縺鷹ｶ・｣髫募私・ｼ蛹ｻ繝ｵ郢ｧ・ｩ郢晢ｽｼ郢ｧ・ｫ郢ｧ・ｹ郢晢ｽ｢郢晢ｽｼ郢昜ｼ夲ｽｼ繝ｻ
             if (myStatus.currentSpecialMove == playerStatusManager_Alpha.SpecialMoveType.Focus)
             {
-                // Input System: 繝帙�E繝ｫ繝牙愛螳・
+                // Input System: 郢晏ｸ吶・郢晢ｽｫ郢晉甥諢幄楜繝ｻ
                 bool isSpecialPressed = Alpha.Managers.PlayerInputManager_Alpha.Instance.IsSpecialPressed;
                 
                 if (isSpecialPressed && myStatus.currentStamina > 0 && !myStatus.isStaminaExhausted)
@@ -123,25 +123,29 @@ public class Player_Control_Alpha : MonoBehaviour
                 if (grazeCollider != null) grazeCollider.size = normalGrazeSize;
             }
 
-            // Input System縺九ｉ縺�E�遘ｻ蜍輔�E繧�E�繝医Ν蜿門�E�・
+            // Input System邵ｺ荵晢ｽ臥ｸｺ・ｮ驕假ｽｻ陷崎ｼ斐・郢ｧ・ｯ郢晏現ﾎ晁愾髢・ｾ繝ｻ
             moveInput = Alpha.Managers.PlayerInputManager_Alpha.Instance.MoveVector;
             
             if (moveInput.sqrMagnitude > 1) moveInput.Normalize();
 
-            // 迚ｹ谿顔ｧ�E�蜍輔�E繝医Μ繧�E�繝ｼ・医ム繧�E�繝ｳ蛻�E�螳夲�E�・
+            // 霑夲ｽｹ隹ｿ鬘費ｽｧ・ｻ陷崎ｼ斐・郢晏現ﾎ懃ｹｧ・ｬ郢晢ｽｼ繝ｻ蛹ｻ繝�郢ｧ・ｦ郢晢ｽｳ陋ｻ・､陞ｳ螟ｲ・ｼ繝ｻ
             if (Alpha.Managers.PlayerInputManager_Alpha.Instance.WasSpecialPressed && myStatus.currentSpecialMove != playerStatusManager_Alpha.SpecialMoveType.None && myStatus.currentSpecialMove != playerStatusManager_Alpha.SpecialMoveType.Focus)
             {
-                TrySpecialMove();
+                // アクティブスキルが装備されている場合は、特殊移動（ダッシュ/ワープ）を上書きする
+                if (!myStatus.HasActiveSkill)
+                {
+                    TrySpecialMove();
+                }
             }
         }
         else
         {
-            moveInput = Vector2.zero; // 迚ｹ谿顔ｧ�E�蜍穂ｸ�E�縺�E�騾壼�E��E�縺�E�遘ｻ蜍募・蜉帙ｒ辟｡隕�E
+            moveInput = Vector2.zero; // 霑夲ｽｹ隹ｿ鬘費ｽｧ・ｻ陷咲ｩゑｽｸ・ｭ邵ｺ・ｯ鬨ｾ螢ｼ・ｸ・ｸ邵ｺ・ｮ驕假ｽｻ陷榊供繝ｻ陷牙ｸ呻ｽ定ｾ滂ｽ｡髫輔・
         }
 
-        // 繝ｭ繝�Eけ繧�E�繝ｳ蟁E��雎｡縺後＞繧句�E��E�蜷医√◎縺�E�譁E��蜷代↓蜷代�E�繧句・送E�E�E�峨・縺薙！E���E�險倩�E��E�
+        // 郢晢ｽｭ郢昴・縺醍ｹｧ・ｪ郢晢ｽｳ陝・ｽｾ髮趣ｽ｡邵ｺ蠕鯉ｼ樒ｹｧ蜿･・ｽ・ｴ陷ｷ蛹ｻﾂ竏壺落邵ｺ・ｮ隴・ｽｹ陷ｷ莉｣竊楢惺莉｣・�郢ｧ蜿･繝ｻ騾・・・ｭ蟲ｨ繝ｻ邵ｺ阮呻ｼ・ｸｺ・ｫ髫ｪ蛟ｩ・ｿ・ｰ
 
-        // Animator 繝代Λ繝｡繝ｼ繧�E�縺�E�譖ｴ譁E��
+        // Animator 郢昜ｻ｣ﾎ帷ｹ晢ｽ｡郢晢ｽｼ郢ｧ・ｿ邵ｺ・ｮ隴厄ｽｴ隴・ｽｰ
         UpdateAnimatorParameters();
     }
 
@@ -187,7 +191,7 @@ public class Player_Control_Alpha : MonoBehaviour
                 isSpecialMoving = true;
                 specialMoveEndTime = Time.time + duration;
                 
-                // 霑ｽ蜉�: 繝繝�Eす繝･譎ゅ↓谿句ワ繧呈怏蜉�E�蛹・
+                // 髴托ｽｽ陷会ｿｽ: 郢敖郢昴・縺咏ｹ晢ｽ･隴弱ｅ竊楢ｰｿ蜿･繝ｯ郢ｧ蜻域剰怏・ｹ陋ｹ繝ｻ
                 var trail = GetComponent<Alpha.Core.ProceduralGhostTrail_Alpha>();
                 if (trail == null) trail = gameObject.AddComponent<Alpha.Core.ProceduralGhostTrail_Alpha>();
                 trail.EnableTrail(true);
@@ -202,13 +206,13 @@ public class Player_Control_Alpha : MonoBehaviour
     private System.Collections.IEnumerator WarpRoutine(float windupTime, Vector2 direction)
     {
         isSpecialMoving = true;
-        rb.velocity = Vector2.zero; // 繝ｯ繝ｼ繝嶺�E��E�縺�E�螳悟�E蛛懈�E��E�
+        rb.velocity = Vector2.zero; // 郢晢ｽｯ郢晢ｽｼ郢晏ｶｺ・ｸ・ｭ邵ｺ・ｯ陞ｳ謔溘・陋帶㊧・ｭ・｢
         
         PlayerHealth health = GetComponent<PlayerHealth>();
         if (health != null) health.isInvincible = true;
 
-        // --- 霑ｽ蜉�・壹Ρ繝ｼ繝嶺�E��E�縺�E�螳悟�E辟｡謨�E�・医☁E��頑栢縺托ｼ牙�E送E�E---
-        // 譛牙柑縺�E�Collider繧偵☁E���E�縺�E�荳譎ら噪縺�E�辟｡蜉ｹ蛹悶�E�縲∝ｼ�E�縺後ヲ繝�Eヨ縺励↑縺・�E�縺・↓縺吶�E�E
+        // --- 髴托ｽｽ陷会ｿｽ繝ｻ螢ｹﾎ｡郢晢ｽｼ郢晏ｶｺ・ｸ・ｭ邵ｺ・ｮ陞ｳ謔溘・霎滂ｽ｡隰ｨ・ｵ繝ｻ蛹ｻ笘・ｹｧ鬆第�｢邵ｺ謇假ｽｼ迚吶・騾・・---
+        // 隴帷甥譟醍ｸｺ・ｪCollider郢ｧ蛛ｵ笘・ｸｺ・ｹ邵ｺ・ｦ闕ｳﾂ隴弱ｉ蝎ｪ邵ｺ・ｫ霎滂ｽ｡陷会ｽｹ陋ｹ謔ｶ・�邵ｲ竏晢ｽｼ・ｾ邵ｺ蠕後Υ郢昴・繝ｨ邵ｺ蜉ｱ竊醍ｸｺ繝ｻ・育ｸｺ繝ｻ竊鍋ｸｺ蜷ｶ・・
         Collider2D[] colliders = GetComponentsInChildren<Collider2D>();
         List<Collider2D> activeColliders = new List<Collider2D>();
         foreach (var col in colliders)
@@ -222,7 +226,7 @@ public class Player_Control_Alpha : MonoBehaviour
 
         SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>();
         
-        float blinkInterval = 0.04f; // 鬮倬滓�E貊�E
+        float blinkInterval = 0.04f; // 鬯ｮ蛟ｬﾂ貊薙・雋翫・
         float timer = 0f;
         bool isVisible = true;
 
@@ -235,13 +239,13 @@ public class Player_Control_Alpha : MonoBehaviour
             timer += blinkInterval;
         }
 
-        // 陦�E�遉ｺ繧貞�E縺�E�謌ｻ縺・
+        // 髯ｦ・ｨ驕会ｽｺ郢ｧ雋槭・邵ｺ・ｫ隰鯉ｽｻ邵ｺ繝ｻ
         foreach (var r in renderers) if (r != null) r.enabled = true;
 
-        // 迸�E�髢鍋ｧ�E�蜍募�E�溯�E�・
+        // 霑ｸ・ｬ鬮｢骰具ｽｧ・ｻ陷榊供・ｮ貅ｯ・｡繝ｻ
         rb.position = rb.position + direction * myStatus.warpDistance;
 
-        // --- 霑ｽ蜉�・壹さ繝ｩ繧�E�繝繝ｼ繧貞ｾ�E�蜈�E---
+        // --- 髴托ｽｽ陷会ｿｽ繝ｻ螢ｹ縺慕ｹ晢ｽｩ郢ｧ・､郢敖郢晢ｽｼ郢ｧ雋橸ｽｾ・ｩ陷医・---
         foreach (var col in activeColliders)
         {
             if (col != null) col.enabled = true;
@@ -292,32 +296,32 @@ public class Player_Control_Alpha : MonoBehaviour
                 float specialSpeed = dist / dur;
                 
                 rb.MovePosition(rb.position + specialMoveDirection * specialSpeed * Time.fixedDeltaTime);
-                rb.velocity = Vector2.zero; // 迚ｩ送E�Eお繝ｳ繧�E�繝ｳ縺�E�諷�E�諤�E�繧呈ｶ医☁E
+                rb.velocity = Vector2.zero; // 霑夲ｽｩ騾・・縺顔ｹ晢ｽｳ郢ｧ・ｸ郢晢ｽｳ邵ｺ・ｮ隲ｷ・｣隲､・ｧ郢ｧ蜻茨ｽｶ蛹ｻ笘・
                 
                 if (Time.time >= specialMoveEndTime)
                 {
                     isSpecialMoving = false;
                     
-                    // 霑ｽ蜉�: 繝繝�Eす繝･邨めE��・凾縺�E�谿句ワ繧堤┌蜉�E�蛹・
+                    // 髴托ｽｽ陷会ｿｽ: 郢敖郢昴・縺咏ｹ晢ｽ･驍ｨ繧・ｽｺ繝ｻ蜃ｾ邵ｺ・ｫ隹ｿ蜿･繝ｯ郢ｧ蝣､笏瑚怏・ｹ陋ｹ繝ｻ
                     var trail = GetComponent<Alpha.Core.ProceduralGhostTrail_Alpha>();
                     if (trail != null) trail.EnableTrail(false);
                 }
             }
             else if (myStatus.currentSpecialMove == playerStatusManager_Alpha.SpecialMoveType.Warp)
             {
-                rb.velocity = Vector2.zero; // 繝ｯ繝ｼ繝嶺�E��E�縺�E�螳悟�E蛛懈�E��E�
+                rb.velocity = Vector2.zero; // 郢晢ｽｯ郢晢ｽｼ郢晏ｶｺ・ｸ・ｭ邵ｺ・ｯ陞ｳ謔溘・陋帶㊧・ｭ・｢
             }
             return;
         }
 
-        // 蜈･蜉帙′縺�E�縺・�E��E�蜷医・菴輔ｂ縺励↑縺・
+        // 陷茨ｽ･陷牙ｸ吮ｲ邵ｺ・ｪ邵ｺ繝ｻ・ｽ・ｴ陷ｷ蛹ｻ繝ｻ闖ｴ霈費ｽらｸｺ蜉ｱ竊醍ｸｺ繝ｻ
         if (moveInput == Vector2.zero)
         {
             rb.velocity = Vector2.zero;
             return;
         }
 
-        // 繧�E�繝｣繝ｩ繧�E�繧�E�繝ｼ繧堤�E��E�蜍輔！E��帙ａE
+        // 郢ｧ・ｭ郢晢ｽ｣郢晢ｽｩ郢ｧ・ｯ郢ｧ・ｿ郢晢ｽｼ郢ｧ蝣､・ｧ・ｻ陷崎ｼ費ｼ・ｸｺ蟶呻ｽ・
         float setSpd = (myStatus.moveSpeed * myStatus.moveSpeedMag * 0.0001f);
         float finalSpeed = setSpd * myStatus.moveSpeedMag_CONST;
 
@@ -333,12 +337,12 @@ public class Player_Control_Alpha : MonoBehaviour
 
         Vector2 targetVelocity = moveInput * finalSpeed;
         rb.MovePosition(rb.position + targetVelocity * Time.fixedDeltaTime);
-        rb.velocity = Vector2.zero; // 諷�E�諤�E�縺�E�繧医�E�貊代�E�蟇�E�遲・
+        rb.velocity = Vector2.zero; // 隲ｷ・｣隲､・ｧ邵ｺ・ｫ郢ｧ蛹ｻ・玖ｲ贋ｻ｣・願汞・ｾ驕ｲ繝ｻ
     }
 
     protected virtual void UpdateAnimatorParameters()
     {
-        // 繧�E�繧�E�繝�蟁E��雎｡縺�E�蠎ｧ讓吶�E�蜿門�E�・
+        // 郢ｧ・ｨ郢ｧ・､郢晢ｿｽ陝・ｽｾ髮趣ｽ｡邵ｺ・ｮ陟趣ｽｧ隶灘生・定愾髢・ｾ繝ｻ
         Vector3 aimPos = Alpha.Managers.PlayerInputManager_Alpha.Instance.GetWorldAimPosition(transform.position);
 
         Vector2 currentVelocity = Vector2.zero;
@@ -361,13 +365,13 @@ public class Player_Control_Alpha : MonoBehaviour
             currentVelocity = moveInput * finalSpeed;
         }
 
-        // 繧�E�繧�E�繝�譁E��蜷托ｼ・霁E��・峨�E�Animator繝代Λ繝｡繝ｼ繧�E�縺�E�險�E�螳・
+        // 郢ｧ・ｨ郢ｧ・､郢晢ｿｽ隴・ｽｹ陷ｷ謇假ｽｼ繝ｻ髴・ｽｸ繝ｻ蟲ｨ・但nimator郢昜ｻ｣ﾎ帷ｹ晢ｽ｡郢晢ｽｼ郢ｧ・ｿ邵ｺ・ｫ髫ｪ・ｭ陞ｳ繝ｻ
         float mouseXPosition = currentVelocity.x; 
 
-        // 繝励Ξ繧�E�繝､繝ｼ縺�E�遘ｻ蜍輔�E繧�E�繝医Ν縺�E�螟ｧ縺阪�E�E��定ｨ育�E�・
+        // 郢晏干ﾎ樒ｹｧ・､郢晢ｽ､郢晢ｽｼ邵ｺ・ｮ驕假ｽｻ陷崎ｼ斐・郢ｧ・ｯ郢晏現ﾎ晉ｸｺ・ｮ陞滂ｽｧ邵ｺ髦ｪ・・ｹｧ螳夲ｽｨ閧ｲ・ｮ繝ｻ
         float moveVectorMag = currentVelocity.magnitude;
 
-        // Animator 繝代Λ繝｡繝ｼ繧�E�繧定ｨ�E�螳・
+        // Animator 郢昜ｻ｣ﾎ帷ｹ晢ｽ｡郢晢ｽｼ郢ｧ・ｿ郢ｧ螳夲ｽｨ・ｭ陞ｳ繝ｻ
         animator.SetFloat("mouseXPosition", mouseXPosition);
         animator.SetFloat("moveVectorMag", moveVectorMag);
     }

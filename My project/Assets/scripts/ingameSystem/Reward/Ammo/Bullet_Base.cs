@@ -103,7 +103,54 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
                 float rotationAngle = Mathf.Atan2(originalAimDirection.y, originalAimDirection.x) * Mathf.Rad2Deg;
                 transform.rotation = Quaternion.Euler(new Vector3(0, 0, rotationAngle));
                 
-                // 莉･髯阪√・繝ｼ繝溘Φ繧ｰ遲峨・繧ｨ繝輔ぉ繧ｯ繝医′縺ゅｌ縺ｰ縺昴■繧峨′閾ｪ逋ｺ逧・↓蜉ｹ縺榊ｧ九ａ繧・
+                // 莉･髯阪€√・繝ｼ繝溘Φ繧ｰ遲峨・繧ｨ繝輔ぉ繧ｯ繝医′縺ゅｌ縺ｰ縺昴■繧峨′閾ｪ逋ｺ逧・↓蜉ｹ縺榊ｧ九ａ繧・
+            }
+        }
+    }
+
+    private float GetExplosionScaleByRarity(int rarity)
+    {
+        if (rarity <= 1) return 0.8f;
+        if (rarity == 2) return 1.0f;
+        if (rarity == 3) return 1.2f;
+        return 2.0f;
+    }
+
+    private void SpawnExplosionArea(Vector3 position, float explDmg, float scaleMultiplier = 1.0f)
+    {
+        GameObject prefab = Resources.Load<GameObject>("Objects/Effect_Explosion");
+        if (prefab != null)
+        {
+            GameObject obj = null;
+            if (Alpha_ObjectPoolManager.Instance != null)
+            {
+                obj = Alpha_ObjectPoolManager.Instance.Rent(prefab, position, Quaternion.identity);
+            }
+            else
+            {
+                obj = Instantiate(prefab, position, Quaternion.identity);
+            }
+
+            if (obj != null)
+            {
+                obj.transform.localScale = prefab.transform.localScale * scaleMultiplier;
+            }
+
+            Alpha_ExplosionArea areaScript = obj.GetComponent<Alpha_ExplosionArea>();
+            if (areaScript != null)
+            {
+                areaScript.sourcePrefab = prefab;
+                areaScript.lifetime = 1.0f;
+                areaScript.ActivateExplosionArea(explDmg);
+            }
+            else
+            {
+                Effect_Explosion oldScript = obj.GetComponent<Effect_Explosion>();
+                if (oldScript != null)
+                {
+                    oldScript.sourcePrefab = prefab;
+                    oldScript.startExplosion(explDmg, 10);
+                }
             }
         }
     }
@@ -135,11 +182,12 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
     [Tooltip("Tooltip")]
     public bool preventAutoDestroy = false;
 
-    // 雋ｫ騾壼ｼｾ逕ｨ縺ｮ繝ｭ繝ｼ繧ｫ繝ｫ繝繝｡繝ｼ繧ｸ貂幄｡ｰ邇・ｼ・1縺ｮ蝣ｴ蜷医・繧ｰ繝ｭ繝ｼ繝舌Ν險ｭ螳壹ｒ菴ｿ逕ｨ・・
+    // 雋ｫ騾壼ｼｾ逕ｨ縺ｮ繝ｭ繝ｼ繧ｫ繝ｫ繝€繝｡繝ｼ繧ｸ貂幄｡ｰ邇・ｼ・1縺ｮ蝣ｴ蜷医・繧ｰ繝ｭ繝ｼ繝舌Ν險ｭ螳壹ｒ菴ｿ逕ｨ・・
     public float localPierceDamageReductionRate = -1f;
 
     public bool canUseAllEffects = false;
     public List<Alpha_Effect_Base> activeEffects = new List<Alpha_Effect_Base>();
+    public List<Alpha.Data.ActiveWeaponEffect_Alpha> soEffects = new List<Alpha.Data.ActiveWeaponEffect_Alpha>();
 
     public void setStatus(Vector3 Prot, float pSpeed, float pDmg)
     {
@@ -148,7 +196,20 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
         dmg = pDmg;
     }
 
-    // 豁ｦ蝎ｨ縺ｮ蜉ｹ譫懊ョ繝ｼ繧ｿ繧貞ｼｾ縺ｫ蜑ｲ繧雁ｽ薙※繧・
+    public void SetWeaponEffectsSO(List<Alpha.Data.ActiveWeaponEffect_Alpha> effects)
+    {
+        soEffects.Clear();
+        if (effects != null)
+        {
+            foreach(var eff in effects)
+            {
+                // Instantiate a new wrapper struct so each bullet has its own timer state
+                soEffects.Add(new Alpha.Data.ActiveWeaponEffect_Alpha(eff.effectSO, eff.rarity));
+            }
+        }
+    }
+
+    // 効果データを引き継いで割り当てる
     public void SetWeaponEffects(List<Alpha_Effect_Base> effects, bool allEffects)
     {
         canUseAllEffects = allEffects;
@@ -206,6 +267,10 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
         {
             effect.Setup(this, pStatus);
             effect.OnFire(this);
+        }
+        foreach (var eff in soEffects)
+        {
+            eff.effectSO.OnFire(this, eff.rarity);
         }
 
         StartCoroutine(move());
@@ -267,6 +332,27 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
             {
                 effect.OnFlight(this, 0.01f);
             }
+            for (int i = 0; i < soEffects.Count; i++)
+            {
+                var eff = soEffects[i];
+                eff.effectSO.OnFlight(this, eff.rarity, ref eff.genericTimer, 0.01f);
+
+                if (eff.effectSO.effectType == Alpha.Data.WeaponEffectType_Alpha.Explosion_OnFlight)
+                {
+                    eff.genericTimer += 0.01f;
+                    float interval = eff.effectSO.GetValue(eff.rarity) * 0.5f; // AlphaTickManagerのTick(0.5s)基準
+                    if (interval <= 0f) interval = 0.5f;
+
+                    if (eff.genericTimer >= interval)
+                    {
+                        eff.genericTimer = 0f;
+                        float scale = GetExplosionScaleByRarity(eff.rarity);
+                        float explDmg = this.dmg * (0.25f * eff.rarity) * this.secondaryDamageMultiplier;
+                        SpawnExplosionArea(transform.position, explDmg, scale);
+                    }
+                }
+                soEffects[i] = eff;
+            }
 
             yield return new WaitForSeconds(0.01f);
         }
@@ -275,6 +361,16 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
         foreach (var effect in activeEffects)
         {
             effect.OnHit(this, null);
+        }
+        foreach (var eff in soEffects)
+        {
+            eff.effectSO.OnHit(this, eff.rarity, null);
+            if (eff.effectSO.effectType == Alpha.Data.WeaponEffectType_Alpha.Explosion_OnHit)
+            {
+                float scale = GetExplosionScaleByRarity(eff.rarity);
+                float explDmg = this.dmg * (0.25f * eff.rarity) * this.secondaryDamageMultiplier;
+                SpawnExplosionArea(transform.position, explDmg, scale);
+            }
         }
 
         if (Alpha_ObjectPoolManager.Instance != null && sourcePrefab != null)
@@ -411,19 +507,34 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
 
         if (hitSomething)
         {
-            // 逹蠑ｾ蜉ｹ譫懊ｒ逋ｺ蜍・
+            // 着弾効果を発動
             foreach (var effect in activeEffects)
             {
                 effect.OnHit(this, collision);
             }
+            foreach (var eff in soEffects)
+            {
+                eff.effectSO.OnHit(this, eff.rarity, collision);
+                if (eff.effectSO.effectType == Alpha.Data.WeaponEffectType_Alpha.Explosion_OnHit)
+                {
+                    Vector3 spawnPos = transform.position;
+                    if (collision != null && (collision.CompareTag("Enemy") || collision.CompareTag("Player")))
+                    {
+                        spawnPos = collision.ClosestPoint(transform.position);
+                    }
+                    float scale = GetExplosionScaleByRarity(eff.rarity);
+                    float explDmg = this.dmg * (0.25f * eff.rarity) * this.secondaryDamageMultiplier;
+                    SpawnExplosionArea(spawnPos, explDmg, scale);
+                }
+            }
 
-            // 谿九ｊ縺ｮ雋ｫ騾壼屓謨ｰ縺・譛ｪ貅・茨ｼ昴ｂ縺・ｲｫ騾壽棧縺後↑縺・ｼ峨ｂ縺励￥縺ｯ螢√↓蠖薙◆縺｣縺溷�ｴ蜷医・豸域ｻ・
+            // 谿九ｊ縺ｮ雋ｫ騾壼屓謨ｰ縺・譛ｪ貅€・茨ｼ昴ｂ縺・ｲｫ騾壽棧縺後↑縺・ｼ峨ｂ縺励￥縺ｯ螢√↓蠖薙◆縺｣縺溷ｴ蜷医・豸域ｻ・
             if (piercingCount < 0 || collision.CompareTag("wall"))
             {
                 // 繝峨Ο繝ｼ繝ｳ縺ｮ繧医≧縺ｪCircularObject縺九▽preventAutoDestroy縺ｮ蝣ｴ蜷医・縺ｿ豸域ｻ・ｒ蜈阪ｌ繧・
                 if (preventAutoDestroy && GetComponent<CircularObject>() != null)
                 {
-                    // 菫晁ｭｷ縺輔ｌ縺ｦ縺・ｋ蝣ｴ蜷医・豸域ｻ・○縺壹√☆繧頑栢縺代＆縺帙ｋ
+                    // 菫晁ｭｷ縺輔ｌ縺ｦ縺・ｋ蝣ｴ蜷医・豸域ｻ・○縺壹€√☆繧頑栢縺代＆縺帙ｋ
                     StartCoroutine(TemporaryDisableCollider(collision));
                 }
                 else

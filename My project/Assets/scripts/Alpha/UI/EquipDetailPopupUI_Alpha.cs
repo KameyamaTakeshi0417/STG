@@ -61,6 +61,11 @@ namespace Alpha.UI
                                   $"部位: {partStr}\n" +
                                   $"Quality: {quality}\n" +
                                   $"\n<color=#FFFF00>【効果】</color>{effectStr}";
+                
+                if (series != null && !string.IsNullOrEmpty(series.activeEffectClassName) && !string.IsNullOrEmpty(series.activeEffectDescription))
+                {
+                    detailText.text += $"\n\n<color=#00FFFF>【マトリックス効果】</color>\n<color=#CCCCCC>{series.activeEffectDescription}</color>";
+                }
             }
 
             // 2. アイコンの設定

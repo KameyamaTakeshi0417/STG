@@ -10,6 +10,12 @@ public class Effect_ExplosionPassive_Alpha : Effect_Explosion_Alpha
         this.flightEffectInterval = interval * 0.01f;
     }
 
+    // ActiveEffect欄から直接名前でインスタンス化される場合（2引数）のコンストラクタ
+    public Effect_ExplosionPassive_Alpha(int pos, int rarity) : base(pos, rarity)
+    {
+        this.flightEffectInterval = 0.1f; // デフォルト値
+    }
+
     protected override float CalculateExplosionDamage(Bullet_Base bullet)
     {
         // パッシブとしての爆発は基礎倍率を0.15fとする

@@ -5,11 +5,11 @@ using UnityEngine;
 public class Player_Shooter_Alpha : MonoBehaviour
 {
     public bool onCoolTime;
-    public AudioSource shootAudioSource; // 蠑ｾ縺�E�逋ｺ蟁E�E浹逕ｨ縺�E�AudioSource
-    public float moveRadius = 2f; // 繝励Ξ繧�E�繝､繝ｼ繧剁E���E�蠢・→縺吶�E�蜊雁E��・
+    public AudioSource shootAudioSource; // 陟托ｽｾ邵ｺ・ｮ騾具ｽｺ陝・・豬ｹ騾包ｽｨ邵ｺ・ｮAudioSource
+    public float moveRadius = 2f; // 郢晏干ﾎ樒ｹｧ・､郢晢ｽ､郢晢ｽｼ郢ｧ蜑・ｽｸ・ｭ陟｢繝ｻ竊堤ｸｺ蜷ｶ・玖怺髮・ｽｾ繝ｻ
 
     [Header("Weapon Settings")]
-    public BASE_WeaponData_Alpha equippedWeaponData; // 迴�E�蝨�E�陬・�E�縺励※縺・�E�豁E��蝎ｨ繝�E・繧�E�・・nspector縺九ｉ繧�E�繧�E�繝�Eメ蜿�E�閭�E�・・
+    public BASE_WeaponData_Alpha equippedWeaponData; // 霑ｴ・ｾ陜ｨ・ｨ髯ｬ繝ｻ・咏ｸｺ蜉ｱ窶ｻ邵ｺ繝ｻ・玖ｱ・ｽｦ陜趣ｽｨ郢昴・繝ｻ郢ｧ・ｿ繝ｻ繝ｻnspector邵ｺ荵晢ｽ臥ｹｧ・｢郢ｧ・ｿ郢昴・繝｡陷ｿ・ｯ髢ｭ・ｽ繝ｻ繝ｻ
 
     [Header("Spawn Pattern Settings")]
     public float shotIntervalSec = 0.05f;
@@ -57,7 +57,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
         if (Time.timeScale == 0f || isPaused)
             return;
 
-        // 武器グループ�Eループ�Eり替ぁE
+        // 豁ｦ蝎ｨ繧ｰ繝ｫ繝ｼ繝励・繝ｫ繝ｼ繝怜・繧頑崛縺・
         if (Alpha.Managers.PlayerInputManager_Alpha.Instance.WasWeaponPrevPressed || Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
         {
             currentWeaponGroup--;
@@ -73,10 +73,19 @@ public class Player_Shooter_Alpha : MonoBehaviour
             if (playerStatusScript != null) playerStatusScript.UpdateEquipmentBuffs();
         }
 
-        // エイム対象の座標を取征E
+        // --- アクティブスキルの発動判定 ---
+        if (playerStatusScript != null && playerStatusScript.HasActiveSkill)
+        {
+            if (Alpha.Managers.PlayerInputManager_Alpha.Instance.WasSpecialPressed)
+            {
+                TriggerActiveSkill();
+            }
+        }
+
+        // 繧ｨ繧､繝蟇ｾ雎｡縺ｮ蠎ｧ讓吶ｒ蜿門ｾ・
         Vector3 aimPos = Alpha.Managers.PlayerInputManager_Alpha.Instance.GetWorldAimPosition(transform.position);
 
-        // 繧�E�繝ｼ繧�E�繝�Eヨ繝ｭ繝�Eけ繧�E�繝ｳ譎ゅ・蜁E��送E�E�E�霑�E�蜁E
+        // 郢ｧ・ｿ郢晢ｽｼ郢ｧ・ｲ郢昴・繝ｨ郢晢ｽｭ郢昴・縺醍ｹｧ・ｪ郢晢ｽｳ隴弱ｅ繝ｻ陷・ｽｦ騾・・・帝恆・ｽ陷・
         if (pointerSystem == null) 
         {
             pointerSystem = Object.FindAnyObjectByType<Alpha.PointerLineSystem>();
@@ -84,26 +93,26 @@ public class Player_Shooter_Alpha : MonoBehaviour
         
         Vector3 direction;
         Vector3 pPos = playerTransform.position;
-        pPos.z = 0; // Z蠎ｧ讓吶・0縺�E�蝗ｺ螳・
+        pPos.z = 0; // Z陟趣ｽｧ隶灘生繝ｻ0邵ｺ・ｫ陜暦ｽｺ陞ｳ繝ｻ
 
         if (pointerSystem != null && pointerSystem.CurrentTarget != null)
         {
-            // 繝ｭ繝�Eけ繧�E�繝ｳ縺励※縺・�E�蟇�E�雎｡縺後＞繧後�E縲√◎縺�E�蟁E��雎｡縺�E�譁E��蜷代�E�蜷代�E�
+            // 郢晢ｽｭ郢昴・縺醍ｹｧ・ｪ郢晢ｽｳ邵ｺ蜉ｱ窶ｻ邵ｺ繝ｻ・玖汞・ｾ髮趣ｽ｡邵ｺ蠕鯉ｼ樒ｹｧ蠕後・邵ｲ竏壺落邵ｺ・ｮ陝・ｽｾ髮趣ｽ｡邵ｺ・ｮ隴・ｽｹ陷ｷ莉｣・定惺莉｣・･
             Vector3 targetPos = pointerSystem.CurrentTarget.position;
             targetPos.z = 0; 
             direction = (targetPos - pPos).normalized;
         }
         else
         {
-            // 縺・↑縺代�E�縺�E�莉翫∪縺�E�騾壹�E�繝槭え繧�E�縺�E�譁E��蜷代�E�蜷代�E�
+            // 邵ｺ繝ｻ竊醍ｸｺ莉｣・檎ｸｺ・ｰ闔臥ｿｫ竏ｪ邵ｺ・ｧ鬨ｾ螢ｹ・顔ｹ晄ｧｭ縺育ｹｧ・ｹ邵ｺ・ｮ隴・ｽｹ陷ｷ莉｣・定惺莉｣・･
             direction = (aimPos - pPos).normalized;
         }
 
-        // 発封E��向�E計算（�Eウス方向また�E右スチE��チE��方向！E
+        // 逋ｺ蟆・婿蜷代・險育ｮ暦ｼ医・繧ｦ繧ｹ譁ｹ蜷代∪縺溘・蜿ｳ繧ｹ繝・ぅ繝・け譁ｹ蜷托ｼ・
         watch = direction;
         float angle = Mathf.Atan2(watch.y, watch.x) * Mathf.Rad2Deg;
 
-        // 弾の発封E��宁E
+        // 蠑ｾ縺ｮ逋ｺ蟆・愛螳・
         if (Time.timeScale != 0f && (Alpha.Managers.PlayerInputManager_Alpha.Instance.IsFiring && !onCoolTime))
         {
             onCoolTime = true;
@@ -113,12 +122,13 @@ public class Player_Shooter_Alpha : MonoBehaviour
 
     private IEnumerator ShootAndCooldownRoutine()
     {
+        if (playerStatusScript == null) playerStatusScript = playerStatusManager_Alpha.Instance;
         int burstCount = playerStatusScript != null ? Mathf.Max(1, playerStatusScript.burstCount) : 1;
-        float burstInterval = 0.05f; // 繝ｦ繝ｼ繧�E�繝ｼ隕∵悍縺�E�繧医�E�E.1遘�E∪縺溘�E2-3繝輔Ξ繝ｼ繝�遞句�E��E�縺�E�遏ｭ縺・俣髫・
+        float burstInterval = 0.05f; // 郢晢ｽｦ郢晢ｽｼ郢ｧ・ｶ郢晢ｽｼ髫補扱謔咲ｸｺ・ｫ郢ｧ蛹ｻ・・.1驕伜・竏ｪ邵ｺ貅倥・2-3郢晁ｼ釆樒ｹ晢ｽｼ郢晢ｿｽ驕槫唱・ｺ・ｦ邵ｺ・ｮ驕擾ｽｭ邵ｺ繝ｻ菫｣鬮ｫ繝ｻ
 
         for (int i = 0; i < burstCount; i++)
         {
-            ShootBullet(); // 蜊倡匱逋ｺ蟁E�E�E�・pawnBulletRoutine繧貞他縺�E�蜁E��縺呻�E�・
+            Shoot(); // 発射処理を呼び出し
             
             if (i < burstCount - 1)
             {
@@ -126,10 +136,10 @@ public class Player_Shooter_Alpha : MonoBehaviour
             }
         }
 
-        // 繝�E・繧�E�繝育匱蟁E�E�E�めE��・�E�後�E繧�E�繝ｼ繝ｫ繧�E�繧�E�繝�・医Μ繝ｭ繝ｼ繝会ｼ峨�E�髢句�E�九�E繧・
-        // 蝓ｺ貁E��・逋ｺ蟁E�E俣髫斐ａE.8遘�E↓險�E�螳・
+        // 郢晁・繝ｻ郢ｧ・ｹ郢晁ご蛹ｱ陝・・・ｵ繧・ｽｺ繝ｻ・ｾ蠕娯・郢ｧ・ｯ郢晢ｽｼ郢晢ｽｫ郢ｧ・ｿ郢ｧ・､郢晢ｿｽ繝ｻ蛹ｻﾎ懃ｹ晢ｽｭ郢晢ｽｼ郢昜ｼ夲ｽｼ蟲ｨ・帝ｫ｢蜿･・ｧ荵昶・郢ｧ繝ｻ
+        // 陜難ｽｺ雋・じ繝ｻ騾具ｽｺ陝・・菫｣鬮ｫ譁撰ｽ・.8驕伜・竊馴坎・ｭ陞ｳ繝ｻ
         float baseInterval = 0.8f;
-        // 髢�E�謨�E�縺�E�蛟咲紫繧帝�E逕ｨ (萓�E BulletSpanMag縺・00縺�E�蝣�E�蜷医・1蛟阪・0縺�E�蝣�E�蜷医・0.5蛟�E
+        // 鬮｢・｢隰ｨ・ｰ邵ｺ・ｮ陋溷調邏ｫ郢ｧ蟶昶・騾包ｽｨ (關薙・ BulletSpanMag邵ｺ繝ｻ00邵ｺ・ｮ陜｣・ｴ陷ｷ蛹ｻ繝ｻ1陋滄亂ﾂ€繝ｻ0邵ｺ・ｮ陜｣・ｴ陷ｷ蛹ｻ繝ｻ0.5陋溘・
         float targetInterval = baseInterval * (playerStatusScript != null ? playerStatusScript.BulletSpanMag * 0.01f : 1f);
         
         yield return new WaitForSecondsRealtime(targetInterval);
@@ -146,9 +156,32 @@ public class Player_Shooter_Alpha : MonoBehaviour
         watch = direction;
     }
 
-    void ShootBullet()
+    public void Shoot()
     {
-        // InventoryManagerから現在の武器(y = currentWeaponGroup)の3つの武器チE�Eタを取征E
+        if (playerStatusScript == null) playerStatusScript = playerStatusManager_Alpha.Instance;
+        if (playerStatusScript == null) return;
+        ShootFromData(false);
+    }
+
+    private void TriggerActiveSkill()
+    {
+        if (playerStatusScript == null) playerStatusScript = playerStatusManager_Alpha.Instance;
+        if (playerStatusScript == null || !playerStatusScript.HasActiveSkill) return;
+
+        string effectClass = playerStatusScript.currentActiveEffectClassName;
+        int pos = playerStatusScript.currentActiveEffectEquipPosition;
+        int rarity = playerStatusScript.currentActiveEffectRarity;
+
+        Alpha_Effect_Base activeEffect = Alpha.Battle.Bullet.EffectFactory_Alpha.CreateEffect(effectClass, pos, rarity);
+        if (activeEffect != null)
+        {
+            activeEffect.OnActiveSkill(this);
+        }
+    }
+
+    private void ShootFromData(bool isBouquet)
+    {
+        // InventoryManager縺九ｉ迴ｾ蝨ｨ縺ｮ豁ｦ蝎ｨ(y = currentWeaponGroup)縺ｮ3縺､縺ｮ豁ｦ蝎ｨ繝・・繧ｿ繧貞叙蠕・
         Alpha.Data.WeaponSeriesData_Alpha series1 = null;
         Alpha.Data.WeaponSeriesData_Alpha series2 = null;
         Alpha.Data.WeaponSeriesData_Alpha series3 = null;
@@ -164,13 +197,13 @@ public class Player_Shooter_Alpha : MonoBehaviour
             series3 = inst3.series;
         }
 
-        bool isBouquet = false;
-        if (inventoryManager != null) isBouquet = inventoryManager.IsBouquetActive();
+        bool isBouquetLocal = isBouquet;
+        if (inventoryManager != null && !isBouquetLocal) isBouquetLocal = inventoryManager.IsBouquetActive();
 
         List<GameObject> prefabsToInstantiate = new List<GameObject>();
         float bulletChangeMultiplier = 0f;
 
-        if (isBouquet)
+        if (isBouquetLocal)
         {
             if (inventoryManager != null)
             {
@@ -193,7 +226,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
         else
         {
             GameObject singlePrefab = Resources.Load<GameObject>("Objects/Bullet/NormalBullet");
-            // --- 新しい弾優先度ロジチE�� ---
+            // --- 譁ｰ縺励＞蠑ｾ蜆ｪ蜈亥ｺｦ繝ｭ繧ｸ繝・け ---
             Alpha.Data.BulletChangeWeaponEffectSO_Alpha bestEffect = null;
             int bestSlotIndex = -1;
             bool bestHasAllEq = false;
@@ -268,6 +301,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
             prefabsToInstantiate.Add(singlePrefab);
         }
         float baseWeaponDamage = 0f;
+
         if (prefabsToInstantiate.Count > 0 && prefabsToInstantiate[0] != null)
         {
             Bullet_Base baseBullet = prefabsToInstantiate[0].GetComponent<Bullet_Base>();
@@ -277,7 +311,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
             }
         }
 
-        // --- 逋ｺ蟁E�E↓蠢・�E�√�E蜈ｱ騾壹ヱ繝ｩ繝｡繝ｼ繧�E�縺�E�險育�E�・---
+        // --- 騾具ｽｺ陝・・竊楢｢繝ｻ・ｦ竏壺・陷茨ｽｱ鬨ｾ螢ｹ繝ｱ郢晢ｽｩ郢晢ｽ｡郢晢ｽｼ郢ｧ・ｿ邵ｺ・ｮ髫ｪ閧ｲ・ｮ繝ｻ---
         if (playerStatusScript == null) 
         {
             playerStatusScript = playerStatusManager_Alpha.Instance;
@@ -324,12 +358,12 @@ public class Player_Shooter_Alpha : MonoBehaviour
         int bulletExtraShots = 0;
         if (prefabsToInstantiate.Count > 0 && prefabsToInstantiate[0] != null && prefabsToInstantiate[0].GetComponent<CircularObject>() != null)
         {
-            bulletExtraShots = localCircularSubShots; // 専用エフェクト�E子弾増加
+            bulletExtraShots = localCircularSubShots; // 蟆ら畑繧ｨ繝輔ぉ繧ｯ繝医・蟄仙ｼｾ蠅怜刈
 
             int burstCount = playerStatusScript != null ? Mathf.Max(1, playerStatusScript.burstCount) : 1;
             if (burstCount > 1 || totalShotCount > 1)
             {
-                finalDamage *= 0.3f; // 親発封E��が増えた場合�E0.3倁E
+                finalDamage *= 0.3f; // 隕ｪ逋ｺ蟆・焚縺悟｢励∴縺溷�ｴ蜷医・0.3蛟・
             }
         }
         else
@@ -349,9 +383,115 @@ public class Player_Shooter_Alpha : MonoBehaviour
         }
 
         Vector3 muzzlePos = playerTransform.position + (watch * moveRadius);
-        Vector3 aimDirection = watch; // 繝槭え繧�E�縺後�E繝ｬ繧�E�繝､繝ｼ縺�E�霑代☁E��弱�E�縺�E� (aimPoint - muzzlePos) 縺碁E�・�E��E�縺吶�E�繝�Eげ繧帝亟縺舌◆繧√∝ｸ�E�縺�E�watch譁E��蜷代�E�菴�E�逕ｨ
+        Vector3 aimDirection = watch; // 郢晄ｧｭ縺育ｹｧ・ｹ邵ｺ蠕後・郢晢ｽｬ郢ｧ・､郢晢ｽ､郢晢ｽｼ邵ｺ・ｫ髴台ｻ｣笘・ｸｺ蠑ｱ・狗ｸｺ・ｨ (aimPoint - muzzlePos) 邵ｺ遒・繝ｻ・ｻ・｢邵ｺ蜷ｶ・狗ｹ晁・縺堤ｹｧ蟶昜ｺ溽ｸｺ闊娯螺郢ｧ竏堋竏晢ｽｸ・ｸ邵ｺ・ｫwatch隴・ｽｹ陷ｷ莉｣・定抄・ｿ騾包ｽｨ
+
+        TriggerWeaponFireEffects(muzzlePos, aimDirection, finalDamage, isBouquet);
 
         StartCoroutine(SpawnBulletRoutine(prefabsToInstantiate, muzzlePos, aimDirection, aimPoint, totalShotCount, pattern, finalDamage, isTargetLocked, lockedTarget, isBouquet, bulletExtraShots, 0, bulletChangeMultiplier, localVoltTickReduce, localSecondaryDamageUp));
+    }
+
+    private float GetExplosionScaleByRarity(int rarity)
+    {
+        if (rarity <= 1) return 0.8f;
+        if (rarity == 2) return 1.0f;
+        if (rarity == 3) return 1.2f;
+        return 2.0f;
+    }
+
+    private void SpawnExplosionArea(Vector3 position, float dmg, float scaleMultiplier = 1.0f)
+    {
+        GameObject prefab = Resources.Load<GameObject>("Objects/Effect_Explosion");
+        if (prefab != null)
+        {
+            GameObject obj = null;
+            if (Alpha_ObjectPoolManager.Instance != null)
+            {
+                obj = Alpha_ObjectPoolManager.Instance.Rent(prefab, position, Quaternion.identity);
+            }
+            else
+            {
+                obj = Instantiate(prefab, position, Quaternion.identity);
+            }
+
+            if (obj != null)
+            {
+                obj.transform.localScale = prefab.transform.localScale * scaleMultiplier;
+            }
+
+            Alpha_ExplosionArea areaScript = obj.GetComponent<Alpha_ExplosionArea>();
+            if (areaScript != null)
+            {
+                areaScript.sourcePrefab = prefab;
+                areaScript.lifetime = 1.0f; // 1秒で消える
+                areaScript.ActivateExplosionArea(dmg);
+            }
+            else
+            {
+                Effect_Explosion oldScript = obj.GetComponent<Effect_Explosion>();
+                if (oldScript != null)
+                {
+                    oldScript.sourcePrefab = prefab;
+                    oldScript.startExplosion(dmg, 10);
+                }
+            }
+        }
+    }
+
+    private void TriggerWeaponFireEffects(Vector3 muzzlePos, Vector3 aimDir, float finalDamage, bool isBouquet)
+    {
+        if (inventoryManager == null) return;
+        
+        System.Action<Alpha.Data.WeaponEffectSO_Alpha, int> triggerEffect = null;
+        triggerEffect = (effSO, rarity) =>
+        {
+            if (effSO == null) return;
+            if (effSO.effectType == Alpha.Data.WeaponEffectType_Alpha.Composite)
+            {
+                var comp = effSO as Alpha.Data.CompositeWeaponEffectSO_Alpha;
+                if (comp != null && comp.subEffects != null)
+                {
+                    foreach (var sub in comp.subEffects) triggerEffect(sub, rarity);
+                }
+                return;
+            }
+
+            if (effSO.effectType == Alpha.Data.WeaponEffectType_Alpha.Explosion_OnFire)
+            {
+                Vector3 spawnPos = muzzlePos + aimDir.normalized * 0.5f;
+                float scale = GetExplosionScaleByRarity(rarity);
+                float explDmg = finalDamage * (0.25f * rarity);
+                SpawnExplosionArea(spawnPos, explDmg, scale);
+            }
+
+            effSO.OnWeaponFire(this.gameObject, muzzlePos, aimDir, finalDamage, rarity);
+        };
+
+        System.Action<Alpha.Data.WeaponSeriesData_Alpha, int> processSeries = (series, rarity) =>
+        {
+            if (series == null) return;
+            foreach (var eff in series.bulletSpecificEffects) triggerEffect(eff, rarity);
+            foreach (var eff in series.casingSpecificEffects) triggerEffect(eff, rarity);
+            foreach (var eff in series.primerSpecificEffects) triggerEffect(eff, rarity);
+        };
+
+        if (isBouquet)
+        {
+            var instA = inventoryManager.Get(0, 0);
+            var instB = inventoryManager.Get(0, 1);
+            var instC = inventoryManager.Get(0, 2);
+            processSeries(instA.series, instA.rarity);
+            processSeries(instB.series, instB.rarity);
+            processSeries(instC.series, instC.rarity);
+        }
+        else
+        {
+            var inst1 = inventoryManager.Get(0, currentWeaponGroup);
+            var inst2 = inventoryManager.Get(1, currentWeaponGroup);
+            var inst3 = inventoryManager.Get(2, currentWeaponGroup);
+            processSeries(inst1.series, inst1.rarity);
+            processSeries(inst2.series, inst2.rarity);
+            processSeries(inst3.series, inst3.rarity);
+        }
     }
 
     private IEnumerator SpawnBulletRoutine(List<GameObject> prefabs, Vector3 muzzlePos, Vector3 aimDir, Vector3 aimPoint, int shotCount, playerStatusManager_Alpha.SpawnPattern pattern, float finalDmg, bool isTargetLocked, Transform lockedTarget, bool isBouquet, int extraShotsForBullet = 0, int extraPierceForBullet = 0, float bulletChangeMultiplier = 0f, int voltTickReduceForBullet = 0, float secondaryDamageUpForBullet = 0f)
@@ -362,8 +502,9 @@ public class Player_Shooter_Alpha : MonoBehaviour
             Vector3 spawnDir = aimDir;
             float currentReverseTime = 0f;
 
-            // 蜷・�E��E�縺斐�E縺�E�繧�E�繝輔ぉ繧�E�繝医ぁE��ｳ繧�E�繧�E�繝ｳ繧�E�繧堤函謌�E☁E��・
+            // 陷ｷ繝ｻ・ｼ・ｾ邵ｺ譁絶・邵ｺ・ｫ郢ｧ・ｨ郢晁ｼ斐♂郢ｧ・ｯ郢晏現縺・ｹ晢ｽｳ郢ｧ・ｹ郢ｧ・ｿ郢晢ｽｳ郢ｧ・ｹ郢ｧ蝣､蜃ｽ隰瑚・笘・ｹｧ繝ｻ
             List<Alpha_Effect_Base> effectsToApply = new List<Alpha_Effect_Base>();
+            List<Alpha.Data.ActiveWeaponEffect_Alpha> soEffectsToApply = new List<Alpha.Data.ActiveWeaponEffect_Alpha>();
 
             float totalHomingStrength = 0f;
             if (inventoryManager != null)
@@ -371,8 +512,8 @@ public class Player_Shooter_Alpha : MonoBehaviour
                 totalHomingStrength = inventoryManager.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.Homing, isBouquet ? -1 : currentWeaponGroup);
                 if (totalHomingStrength > 0f)
                 {
-                    totalHomingStrength = Mathf.Min(totalHomingStrength, 100f); // 譌句屓蜉帙�E譛螟ｧ100
-                    // 驛ｨ菴阪・蠑ｾ鬁E��(2)縲√Ξ繧�E�蠎ｦ縺�E�繝繝溘�E(1)縺�E�縺励※謁E��縺・
+                    totalHomingStrength = Mathf.Min(totalHomingStrength, 100f); // 隴悟唱螻楢怏蟶吶・隴崢陞滂ｽｧ100
+                    // 鬩幢ｽｨ闖ｴ髦ｪ繝ｻ陟托ｽｾ鬯・ｽｭ(2)邵ｲ竏墅樒ｹｧ・｢陟趣ｽｦ邵ｺ・ｯ郢敖郢晄ｺ倥・(1)邵ｺ・ｨ邵ｺ蜉ｱ窶ｻ隰・ｽｱ邵ｺ繝ｻ
                     effectsToApply.Add(new Effect_Homing_Alpha(2, 1, totalHomingStrength));
                 }
             }
@@ -421,7 +562,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
             }
             else if (pattern == playerStatusManager_Alpha.SpawnPattern.Reverse)
             {
-                // 繧�E�繝ｼ繧�E�繝�Eヨ繝ｭ繝�Eけ縺�E�譛�E┌縺�E�髢�E�繧上ｉ縺壹∫漁縺�E�縺滓婿蜷托ｼ医・繧�E�繧�E�縺�E�縺溘�E繧�E�繝ｼ繧�E�繝�Eヨ・峨・騾・∈逋ｺ蟁E�E�E�縲∽�E�螳壽凾髢灘ｾ後�E譛ｬ譚･縺�E�譁E��蜷代∈蜷代°縺・
+                // 郢ｧ・ｿ郢晢ｽｼ郢ｧ・ｲ郢昴・繝ｨ郢晢ｽｭ郢昴・縺醍ｸｺ・ｮ隴幄・笏檎ｸｺ・ｫ鬮｢・｢郢ｧ荳奇ｽ臥ｸｺ螢ｹﾂ竏ｫ貍∫ｸｺ・｣邵ｺ貊灘ｩｿ陷ｷ謇假ｽｼ蛹ｻ繝ｻ郢ｧ・ｦ郢ｧ・ｹ邵ｺ・ｾ邵ｺ貅倥・郢ｧ・ｿ郢晢ｽｼ郢ｧ・ｲ郢昴・繝ｨ繝ｻ蟲ｨ繝ｻ鬨ｾ繝ｻ竏磯具ｽｺ陝・・・�邵ｲ竏ｽ・ｸﾂ陞ｳ螢ｽ蜃ｾ鬮｢轣假ｽｾ蠕娯・隴幢ｽｬ隴夲ｽ･邵ｺ・ｮ隴・ｽｹ陷ｷ莉｣竏郁惺莉｣ﾂｰ邵ｺ繝ｻ
                 float randomAngle = Random.Range(-spreadRangeDeg / 2f, spreadRangeDeg / 2f);
                 spawnDir = Quaternion.Euler(0, 0, randomAngle) * (-aimDir);
                 currentReverseTime = reverseTravelTimeSec;
@@ -436,38 +577,60 @@ public class Player_Shooter_Alpha : MonoBehaviour
                         var inst = inventoryManager.Get(n % 3, n / 3);
                         if (inst.series != null)
                         {
-                            if (!string.IsNullOrEmpty(inst.series.activeEffectClassName))
+                            // 郢昜ｻ｣繝｣郢ｧ・ｷ郢晞摩譟題ｭｫ諛翫・陋ｻ・､陞ｳ繝ｻ
+                            System.Action<Alpha.Data.WeaponEffectSO_Alpha, int> addEffect = null;
+                            addEffect = (effSO, rarity) =>
                             {
-                                var ef = Alpha.Battle.Bullet.EffectFactory_Alpha.CreateEffect(inst.series.activeEffectClassName, n % 3, inst.rarity > 0 ? inst.rarity : 1);
-                                if (ef != null) 
+                                if (effSO == null) return;
+                                soEffectsToApply.Add(new Alpha.Data.ActiveWeaponEffect_Alpha(effSO, rarity));
+                                if (effSO.effectType == Alpha.Data.WeaponEffectType_Alpha.Composite)
                                 {
-                                    ef.sourceSeries = inst.series;
-                                    effectsToApply.Add(ef);
+                                    var comp = effSO as Alpha.Data.CompositeWeaponEffectSO_Alpha;
+                                    if (comp != null && comp.subEffects != null)
+                                    {
+                                        foreach (var sub in comp.subEffects) addEffect(sub, rarity);
+                                    }
+                                    return;
+                                }
+                                if (effSO.effectType == Alpha.Data.WeaponEffectType_Alpha.AddActiveEffect_Volt)
+                                {
+                                    float interval = effSO.GetValue(rarity);
+                                    var passiveVolt = new Effect_VoltPassive_Alpha(n % 3, rarity, interval);
+                                    passiveVolt.sourceSeries = inst.series;
+                                    effectsToApply.Add(passiveVolt);
+                                }
+                                if (effSO.effectType == Alpha.Data.WeaponEffectType_Alpha.AddActiveEffect_Explosion)
+                                {
+                                    float interval = effSO.GetValue(rarity);
+                                    var passiveExplosion = new Effect_ExplosionPassive_Alpha(n % 3, rarity, interval);
+                                    passiveExplosion.sourceSeries = inst.series;
+                                    effectsToApply.Add(passiveExplosion);
+                                }
+                            };
+
+                            if (inst.series.passiveEffects != null)
+                            {
+                                foreach (var pe in inst.series.passiveEffects)
+                                {
+                                    if (pe.effect != null)
+                                    {
+                                        int r = pe.fixedQualityOverride > 0 ? pe.fixedQualityOverride : (inst.rarity > 0 ? inst.rarity : 1);
+                                        addEffect(pe.effect, r);
+                                    }
                                 }
                             }
-                            
-                            // 繝代ャ繧�E�繝門柑譫懊�E蛻�E�螳・
                             if (inst.currentEffects != null)
                             {
                                 foreach (var effSO in inst.currentEffects)
                                 {
-                                    if (effSO != null && effSO.effectType == Alpha.Data.WeaponEffectType_Alpha.AddActiveEffect_Volt)
-                                    {
-                                        float interval = effSO.GetValue(inst.rarity);
-                                        // 阮�E�闔｢縺�E�驛ｨ菴・1)縺�E�縺励※謁E��縺・°縲∫樟蝨�E�縺�E�陬・�E�邂・圁En % 3)縺�E�縺励※謁E��縺・°
-                                        // 闊ｪ陦御�E��E�縺�E�關ｽ縺�E�縺励◁E��・・縺�E�驛ｨ菴阪↓髢�E�繧上ｉ縺壹ヱ繝�Eす繝悶→縺励※霑ｽ蜉�
-                                        var passiveVolt = new Effect_VoltPassive_Alpha(n % 3, inst.rarity > 0 ? inst.rarity : 1, interval);
-                                        passiveVolt.sourceSeries = inst.series;
-                                        effectsToApply.Add(passiveVolt);
-                                    }
-                                    if (effSO != null && effSO.effectType == Alpha.Data.WeaponEffectType_Alpha.AddActiveEffect_Explosion)
-                                    {
-                                        float interval = effSO.GetValue(inst.rarity);
-                                        var passiveExplosion = new Effect_ExplosionPassive_Alpha(n % 3, inst.rarity > 0 ? inst.rarity : 1, interval);
-                                        passiveExplosion.sourceSeries = inst.series;
-                                        effectsToApply.Add(passiveExplosion);
-                                    }
+                                    int r = inst.rarity > 0 ? inst.rarity : 1;
+                                    addEffect(effSO, r);
                                 }
+                            }
+                            if (inst.setBonusEffect != null && inventoryManager.IsGroupSeriesAligned(n / 3))
+                            {
+                                int r = inst.rarity > 0 ? inst.rarity : 1;
+                                addEffect(inst.setBonusEffect, r);
                             }
                         }
                     }
@@ -482,37 +645,60 @@ public class Player_Shooter_Alpha : MonoBehaviour
                         var inst = inventoryManager.Get(n, currentWeaponGroup);
                         if (inst.series != null)
                         {
-                            Debug.Log("Switched weapon group.");
-                            if (!string.IsNullOrEmpty(inst.series.activeEffectClassName))
+                            // 郢昜ｻ｣繝｣郢ｧ・ｷ郢晞摩譟題ｭｫ諛翫・陋ｻ・､陞ｳ繝ｻ
+                            System.Action<Alpha.Data.WeaponEffectSO_Alpha, int> addEffect = null;
+                            addEffect = (effSO, rarity) =>
                             {
-                                var ef = Alpha.Battle.Bullet.EffectFactory_Alpha.CreateEffect(inst.series.activeEffectClassName, n, inst.rarity > 0 ? inst.rarity : 1);
-                                if (ef != null) 
+                                if (effSO == null) return;
+                                soEffectsToApply.Add(new Alpha.Data.ActiveWeaponEffect_Alpha(effSO, rarity));
+                                if (effSO.effectType == Alpha.Data.WeaponEffectType_Alpha.Composite)
                                 {
-                                    ef.sourceSeries = inst.series;
-                                    effectsToApply.Add(ef);
+                                    var comp = effSO as Alpha.Data.CompositeWeaponEffectSO_Alpha;
+                                    if (comp != null && comp.subEffects != null)
+                                    {
+                                        foreach (var sub in comp.subEffects) addEffect(sub, rarity);
+                                    }
+                                    return;
+                                }
+                                if (effSO.effectType == Alpha.Data.WeaponEffectType_Alpha.AddActiveEffect_Volt)
+                                {
+                                    float interval = effSO.GetValue(rarity);
+                                    var passiveVolt = new Effect_VoltPassive_Alpha(n, rarity, interval);
+                                    passiveVolt.sourceSeries = inst.series;
+                                    effectsToApply.Add(passiveVolt);
+                                }
+                                if (effSO.effectType == Alpha.Data.WeaponEffectType_Alpha.AddActiveEffect_Explosion)
+                                {
+                                    float interval = effSO.GetValue(rarity);
+                                    var passiveExplosion = new Effect_ExplosionPassive_Alpha(n, rarity, interval);
+                                    passiveExplosion.sourceSeries = inst.series;
+                                    effectsToApply.Add(passiveExplosion);
+                                }
+                            };
+
+                            if (inst.series.passiveEffects != null)
+                            {
+                                foreach (var pe in inst.series.passiveEffects)
+                                {
+                                    if (pe.effect != null)
+                                    {
+                                        int r = pe.fixedQualityOverride > 0 ? pe.fixedQualityOverride : (inst.rarity > 0 ? inst.rarity : 1);
+                                        addEffect(pe.effect, r);
+                                    }
                                 }
                             }
-
-                            // 繝代ャ繧�E�繝門柑譫懊�E蛻�E�螳・
                             if (inst.currentEffects != null)
                             {
                                 foreach (var effSO in inst.currentEffects)
                                 {
-                                    if (effSO != null && effSO.effectType == Alpha.Data.WeaponEffectType_Alpha.AddActiveEffect_Volt)
-                                    {
-                                        float interval = effSO.GetValue(inst.rarity);
-                                        var passiveVolt = new Effect_VoltPassive_Alpha(n, inst.rarity > 0 ? inst.rarity : 1, interval);
-                                        passiveVolt.sourceSeries = inst.series;
-                                        effectsToApply.Add(passiveVolt);
-                                    }
-                                    if (effSO != null && effSO.effectType == Alpha.Data.WeaponEffectType_Alpha.AddActiveEffect_Explosion)
-                                    {
-                                        float interval = effSO.GetValue(inst.rarity);
-                                        var passiveExplosion = new Effect_ExplosionPassive_Alpha(n, inst.rarity > 0 ? inst.rarity : 1, interval);
-                                        passiveExplosion.sourceSeries = inst.series;
-                                        effectsToApply.Add(passiveExplosion);
-                                    }
+                                    int r = inst.rarity > 0 ? inst.rarity : 1;
+                                    addEffect(effSO, r);
                                 }
+                            }
+                            if (inst.setBonusEffect != null && inventoryManager.IsGroupSeriesAligned(currentWeaponGroup))
+                            {
+                                int r = inst.rarity > 0 ? inst.rarity : 1;
+                                addEffect(inst.setBonusEffect, r);
                             }
                         }
                     }
@@ -520,9 +706,9 @@ public class Player_Shooter_Alpha : MonoBehaviour
             }
 
             GameObject prefabToUse = prefabs[i % prefabs.Count];
-            CreateSingleBullet(prefabToUse, spawnPos, spawnDir, aimDir, currentReverseTime, finalDmg, effectsToApply, lockedTarget, isBouquet, extraShotsForBullet, extraPierceForBullet, bulletChangeMultiplier, voltTickReduceForBullet, secondaryDamageUpForBullet);
+            CreateSingleBullet(prefabToUse, spawnPos, spawnDir, aimDir, currentReverseTime, finalDmg, effectsToApply, soEffectsToApply, lockedTarget, isBouquet, extraShotsForBullet, extraPierceForBullet, bulletChangeMultiplier, voltTickReduceForBullet, secondaryDamageUpForBullet);
 
-            // サウンドエフェクト�E再生�E�忁E��に応じて�E�E
+            // 繧ｵ繧ｦ繝ｳ繝峨お繝輔ぉ繧ｯ繝医・蜀咲函・亥ｿ・ｦ√↓蠢懊§縺ｦ・・
             // if (shootAudioSource != null) shootAudioSource.Play();
 
             if (pattern == playerStatusManager_Alpha.SpawnPattern.Barrage || pattern == playerStatusManager_Alpha.SpawnPattern.Reverse)
@@ -532,7 +718,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
         }
     }
 
-    private void CreateSingleBullet(GameObject prefabToInstantiate, Vector3 spawnPos, Vector3 spawnDir, Vector3 originalAimDir, float reverseTime, float finalDamage, List<Alpha_Effect_Base> effectsToApply, Transform lockedTarget, bool isBouquet, int extraShotsForBullet = 0, int extraPierceForBullet = 0, float bulletChangeMultiplier = 0f, int voltTickReduceForBullet = 0, float secondaryDamageUpForBullet = 0f)
+    private void CreateSingleBullet(GameObject prefabToInstantiate, Vector3 spawnPos, Vector3 spawnDir, Vector3 originalAimDir, float reverseTime, float finalDamage, List<Alpha_Effect_Base> effectsToApply, List<Alpha.Data.ActiveWeaponEffect_Alpha> soEffectsToApply, Transform lockedTarget, bool isBouquet, int extraShotsForBullet = 0, int extraPierceForBullet = 0, float bulletChangeMultiplier = 0f, int voltTickReduceForBullet = 0, float secondaryDamageUpForBullet = 0f)
     {
         GameObject bulletPrefab;
         if (Alpha_ObjectPoolManager.Instance != null)
@@ -575,6 +761,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
             }
 
             bulletScript.SetWeaponEffects(effectsToApply, playerStatusScript.canUseAllEffects);
+            bulletScript.SetWeaponEffectsSO(soEffectsToApply);
 
             if (cachedBulletManager == null && !hasSearchedBulletManager) 
             {
@@ -597,7 +784,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
             bulletScript.voltTickReduceCount += voltTickReduceForBullet;
             bulletScript.secondaryDamageMultiplier += secondaryDamageUpForBullet;
 
-            // 紫のオーラ�E�ErailRenderer�E�を動的に付丁E
+            // 邏ｫ縺ｮ繧ｪ繝ｼ繝ｩ・・railRenderer・峨ｒ蜍慕噪縺ｫ莉倅ｸ・
             if (isBouquet)
             {
                 TrailRenderer tr = bulletPrefab.GetComponent<TrailRenderer>();

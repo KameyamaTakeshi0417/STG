@@ -63,9 +63,14 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
     public enum SpawnPattern { Straight, Barrage, Radial, Reverse }
     public SpawnPattern currentSpawnPattern = SpawnPattern.Straight;
 
-    [Header("Executioner Status")]
     public int executionerTier = 0;
     public bool isOmniBouquetOverride = false;
+
+    [Header("Active Skill State")]
+    public string currentActiveEffectClassName = "";
+    public int currentActiveEffectEquipPosition = -1;
+    public int currentActiveEffectRarity = 1;
+    public bool HasActiveSkill => !string.IsNullOrEmpty(currentActiveEffectClassName);
 
     private Transform playerDamageCanvasTransform;
 
@@ -204,11 +209,35 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
 
         bulletSpeedMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletSpeed, groupToPass);
         bulletSpeedMag -= inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletSpeedDebuff, groupToPass);
-        bulletSpeedMag = Mathf.Max(bulletSpeedMag, 0.2f); // 下限20%
 
         bulletLifeMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletLife, groupToPass);
         bulletLifeMag -= inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletLifeDebuff, groupToPass);
+        
+        // 部位ごとの基礎バフを加算
+        float additionalPower = 0f;
+        float additionalSurvivalTime = 0f;
+        float additionalSpeed = 0f;
+
+        if (groupToPass >= 0 && groupToPass <= 2)
+        {
+            var instA = inv.Get(0, groupToPass);
+            var instB = inv.Get(1, groupToPass);
+            var instC = inv.Get(2, groupToPass);
+            
+            additionalSpeed = instA.GetSpeedBonus() + instB.GetSpeedBonus() + instC.GetSpeedBonus();
+            additionalSurvivalTime = instA.GetSurvivalBonus() + instB.GetSurvivalBonus() + instC.GetSurvivalBonus();
+            additionalPower = instA.GetPowerBonus() + instB.GetPowerBonus() + instC.GetPowerBonus();
+        }
+
+        DamageAdd += additionalPower;
+        // speedBonus は基本の500に対する増加量として設定されているため、倍率に変換 (100 = 20% = 0.2f)
+        bulletSpeedMag += (additionalSpeed / 500f);
+        // survivalTimeBonus は秒数加算。基本を2秒として倍率に変換 (0.5 = 25% = 0.25f)
+        bulletLifeMag += (additionalSurvivalTime / 2.0f);
+
+        bulletSpeedMag = Mathf.Max(bulletSpeedMag, 0.2f); // 下限20%
         bulletLifeMag = Mathf.Max(bulletLifeMag, 0.5f); // 下限50%
+
 
         bool isBoss = Alpha.Flow.StageManager_Alpha.Instance != null && Alpha.Flow.StageManager_Alpha.Instance.IsBossBattleActive;
         if (isBoss && executionerTier >= 1)
@@ -394,6 +423,38 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         if (currentSpecialMove == SpecialMoveType.Focus && bestFocusCost != 9999f) focusStaminaCostPerSec = bestFocusCost;
         if (currentSpecialMove == SpecialMoveType.Warp && bestWarpCost != 9999f) warpStaminaCost = bestWarpCost;
         if (currentSpecialMove == SpecialMoveType.Dash && bestDashCost != 9999f) dashStaminaCost = bestDashCost;
+
+        // --- 5.5 アクティブスキルの優先度決定 ---
+        currentActiveEffectClassName = "";
+        currentActiveEffectEquipPosition = -1;
+        currentActiveEffectRarity = 1;
+        int maxActiveRarity = -1;
+
+        for (int i = 0; i < inv.equipInstance.Count; i++)
+        {
+            var item = inv.equipInstance[i];
+            if (item.series == null || string.IsNullOrEmpty(item.series.activeEffectClassName)) continue;
+            
+            int itemGroup = i / 3;
+            int itemPos = i % 3; // 0:雷管, 1:薬莢, 2:弾頭
+            
+            // ブーケ中ではない場合、現在の装備グループ以外のアクティブスキルは無効
+            if (groupToPass != -1 && itemGroup != groupToPass) continue;
+
+            // 優先度：現在装備 ＞ レアリティ
+            if (item.rarity > maxActiveRarity)
+            {
+                // インスタンス化して本当にアクティブスキルを持っているか確認する
+                var tempEffect = Alpha.Battle.Bullet.EffectFactory_Alpha.CreateEffect(item.series.activeEffectClassName, itemPos, item.rarity);
+                if (tempEffect != null && tempEffect.HasActiveSkill)
+                {
+                    maxActiveRarity = item.rarity;
+                    currentActiveEffectClassName = item.series.activeEffectClassName;
+                    currentActiveEffectEquipPosition = itemPos;
+                    currentActiveEffectRarity = item.rarity > 0 ? item.rarity : 1;
+                }
+            }
+        }
 
         // --- 6. HPGaugeの増加処理 ---
         int hpGaugeBuffCount = 0;

@@ -19,16 +19,31 @@ public class InventoryManager_Alpha : MonoBehaviour
         public int originalRarity; // ボス戦等での一時的な品質書き換え前の保存用
         public BASE_WeaponData_Alpha affix; 
         
-        // 旧仕様の効果（既存コードとの互換性のため残す）
-        public Alpha_Effect_Base effect1;
-        public Alpha_Effect_Base effect2;
-        public Alpha_Effect_Base effect3;
-
         // 新仕様（ScriptableObject）の効果
         public WeaponSeriesData_Alpha series;
         public WeaponPartType_Alpha partType;
         public List<WeaponEffectSO_Alpha> currentEffects;
         public WeaponEffectSO_Alpha setBonusEffect; // 生成時にベストスロットなら付与されるセットボーナス（シリーズ統一時のみ発動）
+
+        public float GetMultiplier(WeaponPartType_Alpha statType)
+        {
+            if (series == null) return 0f;
+            float mult = 0f;
+
+            // 1. 自身の部佁Eself)なめE+1.0
+            if (statType == partType) mult += 1.0f;
+
+            // 2. レアリチEごとのボEナス加箁E
+            if (rarity == 2) // Uncommon
+            {
+            }
+
+            return mult;
+        }
+
+        public float GetPowerBonus() => series != null ? series.basePowerBonus * GetMultiplier(WeaponPartType_Alpha.Bullet) : 0f;
+        public float GetSurvivalBonus() => series != null ? series.survivalTimeBonus * GetMultiplier(WeaponPartType_Alpha.Casing) : 0f;
+        public float GetSpeedBonus() => series != null ? series.speedBonus * GetMultiplier(WeaponPartType_Alpha.Primer) : 0f;
     }
 
     [Header("Inventory Management")]
@@ -92,12 +107,7 @@ public class InventoryManager_Alpha : MonoBehaviour
             {
                 EquipInstance instance = Get(x, y);
                 // スロットが未設定（defId が null または空）の場合はスキップ
-                if (string.IsNullOrEmpty(instance.defId) && instance.series == null)
-                    continue;
-
-                instance.effect1?.StartEffect(instance.rarity);
-                instance.effect2?.StartEffect(instance.rarity);
-                instance.effect3?.StartEffect(instance.rarity);
+                if (instance.series == null) continue;
             }
         }
     }

@@ -177,7 +177,13 @@ MonoBehaviour:
   Exp: 75
   VulnerableTime: 0
   VulnerableFlg: 0
+  isDead: 0
   PierceVolume: 1
+  DropBounusExp: 0
+  DropRateExp: 0
+  contactDamage: 10
+  LifeCount: 1
+  isNormalMob: 1
   VoltCount: 0
   StunResistance: 0
   BaseStunResistance: 0.5
@@ -196,6 +202,8 @@ MonoBehaviour:
   bossId: 0
   damageTextPrefab: {fileID: 3988437868621658341, guid: 5ccc0cd62017e7542bc9974c88b5c92d, type: 3}
   DamageUIMagnitude: 0.1
+  canFlee: 1
+  fleeTimeLimit: 999
   phaseHPs:
   - 1000
   - 1500
@@ -203,6 +211,7 @@ MonoBehaviour:
   defeatedSprite: {fileID: 0}
   targetSpriteRenderer: {fileID: 0}
   eliteCanvasResourcePath: UI/CircleHPBar/EliteEnemyHPCanvas
+  timedOutCount: 0
 --- !u!114 &3508095160209487777
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -215,22 +224,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 467b3cbae22a01c458f097d473ee129c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialMovementBehavior: {fileID: 0}
+  initialMovementBehavior: {fileID: 11400000, guid: 3f2a6441438320d41a7e67a26dc55cf2, type: 2}
   initialAttackBehavior: {fileID: 0}
   initialSummonBehavior: {fileID: 0}
   spawnWithDelay: 1
-  startDelayTime: 0
+  startDelayTime: 2
   PhaseSpawnedObjects: []
   phases:
   - phaseName: "\u6211\u6D41-\u91CE\u54B2-"
     useCutIn: 1
     cutInSprite: {fileID: 21300000, guid: 3f5537e5edde7c44390d54e4b60923d6, type: 3}
+    timeLimit: 30
     movementBehavior: {fileID: 11400000, guid: 7d6e069f965413a4aa5e455b7f9d83d8, type: 2}
     attackBehavior: {fileID: 11400000, guid: cb79e47fc9fc6ee47b48a5a82ee13061, type: 2}
     summonBehavior: {fileID: 0}
   - phaseName: "\u7167\u967D\u6D41\u5F62\u7121-\u5929\u843D\u9396-"
     useCutIn: 1
     cutInSprite: {fileID: 21300000, guid: 3f5537e5edde7c44390d54e4b60923d6, type: 3}
+    timeLimit: 30
     movementBehavior: {fileID: 11400000, guid: 7d6e069f965413a4aa5e455b7f9d83d8, type: 2}
     attackBehavior: {fileID: 11400000, guid: cb79e47fc9fc6ee47b48a5a82ee13061, type: 2}
     summonBehavior: {fileID: 11400000, guid: c7127de5f735ac2478173c9f94041d52, type: 2}

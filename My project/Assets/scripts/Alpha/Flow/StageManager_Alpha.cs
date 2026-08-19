@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.Events;
 using Alpha.Data;
 using Alpha.UI;
@@ -40,6 +40,9 @@ namespace Alpha.Flow
         public TMPro.TextMeshProUGUI stageClearText;
         [Tooltip("")]
         public TMPro.TextMeshProUGUI stageTitleText;
+
+        [Header("Effects")]
+        public Alpha.Effect.Alpha_MidBossAppearEffect midBossAppearEffectUI;
 
         [Header("State (Read Only)")]
         public StageState_Alpha currentState = StageState_Alpha.None;
@@ -193,12 +196,27 @@ namespace Alpha.Flow
                         }
                         else
                         {
-                            if (Alpha.Audio.SoundManager_Alpha.Instance != null && currentStageData.midBossBGM != null)
+                            SetState(StageState_Alpha.Transition);
+                            if (midBossAppearEffectUI != null)
                             {
-                                Alpha.Audio.SoundManager_Alpha.Instance.PlayBGM(currentStageData.midBossBGM, 0.5f);
+                                midBossAppearEffectUI.PlayEffect(() => {
+                                    spawnManager.SpawnBoss(activeSequence.bossPrefab);
+                                    SetState(StageState_Alpha.MidBossFight);
+                                    if (Alpha.Audio.SoundManager_Alpha.Instance != null && currentStageData.midBossBGM != null)
+                                    {
+                                        Alpha.Audio.SoundManager_Alpha.Instance.PlayBGM(currentStageData.midBossBGM, 0.5f);
+                                    }
+                                });
                             }
-                            SetState(StageState_Alpha.MidBossFight);
-                            spawnManager.SpawnBoss(activeSequence.bossPrefab);
+                            else
+                            {
+                                spawnManager.SpawnBoss(activeSequence.bossPrefab);
+                                SetState(StageState_Alpha.MidBossFight);
+                                if (Alpha.Audio.SoundManager_Alpha.Instance != null && currentStageData.midBossBGM != null)
+                                {
+                                    Alpha.Audio.SoundManager_Alpha.Instance.PlayBGM(currentStageData.midBossBGM, 0.5f);
+                                }
+                            }
                         }
                     }
                     break;

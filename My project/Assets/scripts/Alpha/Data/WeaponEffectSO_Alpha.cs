@@ -2,6 +2,21 @@ using UnityEngine;
 
 namespace Alpha.Data
 {
+    [System.Serializable]
+    public class ActiveWeaponEffect_Alpha
+    {
+        public WeaponEffectSO_Alpha effectSO;
+        public int rarity;
+        public float genericTimer;
+
+        public ActiveWeaponEffect_Alpha(WeaponEffectSO_Alpha so, int rarity)
+        {
+            this.effectSO = so;
+            this.rarity = rarity;
+            this.genericTimer = 0f;
+        }
+    }
+
     public enum WeaponEffectType_Alpha
     {
         // --- 今回追加する8種類のステータス系 ---
@@ -25,8 +40,8 @@ namespace Alpha.Data
         
         // --- 特殊効果 ---
         AddActiveEffect_Volt,      // 雷生成パッシブ効果
-        AddActiveEffect_Explosion, // 爆発生成パッシブ効果
-        IgnorePierceDecay,         // 貫通減衰無効化
+        AddActiveEffect_Explosion, // 爆発生成パッシブ効果 (Legacy)
+        IgnorePierceDecay,         // 貫通減衰無効化化
         MakeBarrier,               // バリア付与
         BurstFire,                 // 指定回数のバースト発射化
         Homing,                    // ホーミング（旋回力0〜100）
@@ -65,7 +80,12 @@ namespace Alpha.Data
         Unsellable,             // 販売不能（売却不可）
         
         // --- 固有スキル ---
-        DivineExecutioner       // 神裁者（ジャッジメント/エクスキューショナー固有）
+        DivineExecutioner,      // 神裁者（ジャッジメント/エクスキューショナー固有）
+
+        // --- 追加爆発エフェクト ---
+        Explosion_OnFire,          // 発射時前方爆発
+        Explosion_OnFlight,        // 航行時定期爆発
+        Explosion_OnHit            // 着弾時巨大爆発
     }
 
     [CreateAssetMenu(fileName = "NewWeaponEffect", menuName = "Alpha/Weapon Effect")]
@@ -107,6 +127,15 @@ namespace Alpha.Data
         [TextArea(2, 5)]
         [Tooltip("インスペクタで段階ごと（1～4段階）の強化内容を説明するテキスト")]
         public string[] stepDescriptions = new string[4];
+
+        // --- フックメソッド ---
+        // 武器単位での攻撃時に1回だけ呼ばれる（ショットガンなどで複数弾が出る場合も1回）
+        public virtual void OnWeaponFire(GameObject shooter, Vector3 muzzlePos, Vector3 aimDir, float damage, int rarity) { }
+
+        // 弾ごとに発射時に呼ばれる
+        public virtual void OnFire(Bullet_Base bullet, int rarity) { }
+        public virtual void OnFlight(Bullet_Base bullet, int rarity, ref float genericTimer, float deltaTime) { }
+        public virtual void OnHit(Bullet_Base bullet, int rarity, Collider2D target) { }
 
         public bool IsDebuff()
         {

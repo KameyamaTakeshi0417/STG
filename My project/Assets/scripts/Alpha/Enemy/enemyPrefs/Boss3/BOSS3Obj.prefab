@@ -209,7 +209,13 @@ MonoBehaviour:
   Exp: 200
   VulnerableTime: 0
   VulnerableFlg: 0
+  isDead: 0
   PierceVolume: 1
+  DropBounusExp: 0
+  DropRateExp: 0
+  contactDamage: 10
+  LifeCount: 1
+  isNormalMob: 1
   VoltCount: 0
   StunResistance: 0
   BaseStunResistance: 0.5
@@ -228,6 +234,8 @@ MonoBehaviour:
   bossId: 0
   damageTextPrefab: {fileID: 3988437868621658341, guid: 5ccc0cd62017e7542bc9974c88b5c92d, type: 3}
   DamageUIMagnitude: 0.1
+  canFlee: 1
+  fleeTimeLimit: 999
   phaseHPs:
   - 4000
   - 5500

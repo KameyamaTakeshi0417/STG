@@ -60,30 +60,34 @@ namespace Alpha.Data
         [Tooltip("このシリーズの最適部位（個性が出る枠）")]
         public WeaponPartType_Alpha bestSlot;
 
-        [Header("Set Bonus Effect")]
-        [Tooltip("このシリーズが装備グループ内で3部位すべて統一された時に発動するセットボーナス効果。ベストスロットのパーツに固定エフェクトとして付与されます。")]
-        public WeaponEffectSO_Alpha seriesCompleteEffect;
+        [Header("Synergy (Blessing) Settings")]
+        [Tooltip("このシリーズが装備された際に加算される特性ポイント（祝福の発動に用いる）")]
+        public int traitPoint = 1;
+
+        [Header("Part Specific Buffs")]
+        public float basePowerBonus = 1.0f;
+        
+        public float survivalTimeBonus = 0.5f;
+        
+        public float speedBonus = 100.0f;
 
         [Header("Bullet Settings")]
         [Tooltip("このシリーズが雷管（インデックス2）に装備された時に発射される弾のプレハブ")]
         public GameObject bulletPrefab;
 
-        [Header("Effects (Series Common)")]
-        [Tooltip("装備枠・フリー枠・テンポラリー枠のどこにあっても発動するパッシブステータス効果（全パーツ共通）")]
+        [Header("Legacy Effects (Will be removed in Phase 4)")]
+        public WeaponEffectSO_Alpha seriesCompleteEffect;
         public List<SeriesPassiveEffect> passiveEffects = new List<SeriesPassiveEffect>();
-        
-        [Header("Effects (Part Specific)")]
-        [Tooltip("このシリーズの弾頭(Bullet)パーツが生成された時に付与される固有効果")]
         public List<WeaponEffectSO_Alpha> bulletSpecificEffects = new List<WeaponEffectSO_Alpha>();
-
-        [Tooltip("このシリーズの薬莢(Casing)パーツが生成された時に付与される固有効果")]
         public List<WeaponEffectSO_Alpha> casingSpecificEffects = new List<WeaponEffectSO_Alpha>();
-
-        [Tooltip("このシリーズの雷管(Primer)パーツが生成された時に付与される固有効果")]
         public List<WeaponEffectSO_Alpha> primerSpecificEffects = new List<WeaponEffectSO_Alpha>();
 
         [Header("Active Effect")]
-        [Tooltip("発射・航行・着弾時に挙動を変化させる Alpha_Effect_Base 派生クラスの名前（例: Karamidan_Effect_Alpha）")]
+        [Tooltip("発射・航行・着弾時に挙動を変化させるAlpha_Effect_Base 派生クラスの名前（例: Karamidan_Effect_Alpha）")]
         public string activeEffectClassName;
+
+        [Tooltip("上記のアクティブエフェクト（マトリックスエフェクト）のUI表示用説明文")]
+        [TextArea(2, 5)]
+        public string activeEffectDescription;
     }
 }

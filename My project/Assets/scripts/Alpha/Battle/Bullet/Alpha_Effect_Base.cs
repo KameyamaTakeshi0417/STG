@@ -10,6 +10,9 @@ public abstract class Alpha_Effect_Base
     public int rarity = 1; // レアリティ
     public bool isSubBullet = false; // サブバレットとして発射された弾に付与されているかどうかの判定フラグ
     
+    // このエフェクトが右クリック等のアクティブスキルを持っているか
+    public virtual bool HasActiveSkill => false;
+    
     // 航行エフェクトの発動間隔（秒）、0以下なら毎フレーム
     protected float flightEffectInterval = 0f;
     private float flightEffectTimer = 0f;
@@ -84,6 +87,15 @@ public abstract class Alpha_Effect_Base
 
     // サブクラスは着弾時の効果をこちらに記述する
     protected virtual void DoHitEffect(Bullet_Base bullet, Collider2D target) { }
+
+    // 右クリック（特殊入力）などのアクティブスキル発動時に呼ばれる
+    public void OnActiveSkill(Player_Shooter_Alpha shooter)
+    {
+        DoActiveSkill(shooter);
+    }
+
+    // サブクラスはアクティブスキルの効果をこちらに記述する
+    protected virtual void DoActiveSkill(Player_Shooter_Alpha shooter) { }
 }
 
 // 効果のサンプル例（デバッグ等用）

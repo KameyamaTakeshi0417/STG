@@ -27,7 +27,7 @@ public class Effect_Explosion : MonoBehaviour, IAlphaPoolable
 
     public void startExplosion(float setdmg, int setExplosionTime)
     {
-      //  dmg = setdmg;
+        dmg = setdmg;
         explosionTime = setExplosionTime;
         isExploding = true;
         currentFrame = 0;
