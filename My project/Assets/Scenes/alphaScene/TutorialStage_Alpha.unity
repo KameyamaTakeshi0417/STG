@@ -1766,7 +1766,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -381, y: 483.61}
+  m_AnchoredPosition: {x: -381, y: 483.60995}
   m_SizeDelta: {x: 762, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &127728103
@@ -18684,7 +18684,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1923382335}
   m_HandleRect: {fileID: 1923382334}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -20559,7 +20559,7 @@ MonoBehaviour:
     rarity: 1
     originalRarity: 0
     affix: {fileID: 0}
-    series: {fileID: 11400000, guid: 370696efd582b2748847e5be969b26d9, type: 2}
+    series: {fileID: 11400000, guid: bcac33972cb35084696b8559417c8b57, type: 2}
     partType: 2
     currentEffects:
     - {fileID: 11400000, guid: ebd55e241054711459874ed3d3e98f3d, type: 2}
@@ -20568,7 +20568,7 @@ MonoBehaviour:
     rarity: 1
     originalRarity: 0
     affix: {fileID: 0}
-    series: {fileID: 11400000, guid: 370696efd582b2748847e5be969b26d9, type: 2}
+    series: {fileID: 11400000, guid: bcac33972cb35084696b8559417c8b57, type: 2}
     partType: 1
     currentEffects:
     - {fileID: 0}
@@ -20579,12 +20579,10 @@ MonoBehaviour:
     rarity: 4
     originalRarity: 0
     affix: {fileID: 0}
-    series: {fileID: 11400000, guid: 370696efd582b2748847e5be969b26d9, type: 2}
+    series: {fileID: 11400000, guid: bcac33972cb35084696b8559417c8b57, type: 2}
     partType: 0
     currentEffects:
     - {fileID: 11400000, guid: 53c8ac5d09f41944ea83c43b341d5f56, type: 2}
-    - {fileID: 11400000, guid: 0248bb0f9273f60488ddbd2ed9e75e8f, type: 2}
-    - {fileID: 0}
     setBonusEffect: {fileID: 0}
   - defId: 
     rarity: 1
@@ -20599,7 +20597,7 @@ MonoBehaviour:
     rarity: 1
     originalRarity: 0
     affix: {fileID: 0}
-    series: {fileID: 11400000, guid: 370696efd582b2748847e5be969b26d9, type: 2}
+    series: {fileID: 11400000, guid: bcac33972cb35084696b8559417c8b57, type: 2}
     partType: 1
     currentEffects:
     - {fileID: 0}

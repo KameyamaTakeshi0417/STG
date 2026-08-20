@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,12 +18,10 @@ public class VoltBullet : Bullet_Base
         {
             base.callHitEffect();
 
-            if (activeEffects != null)
+
             {
-                foreach (var effect in activeEffects)
-                {
-                    effect.OnHit(this, collision);
-                }
+
+                
             }
 
             Health health = collision.GetComponent<Health>();
@@ -36,14 +34,14 @@ public class VoltBullet : Bullet_Base
         else if (collision.CompareTag("wall"))
         {
             base.callHitEffect();
-            if (activeEffects != null)
+
             {
-                foreach (var effect in activeEffects)
-                {
-                    effect.OnHit(this, collision);
-                }
+
+                
             }
             DestroyCheck();
         }
     }
 }
+
+

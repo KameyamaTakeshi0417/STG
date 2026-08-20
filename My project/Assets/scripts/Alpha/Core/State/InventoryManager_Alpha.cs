@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Alpha.Data;
@@ -15,25 +15,25 @@ public class InventoryManager_Alpha : MonoBehaviour
     public struct EquipInstance
     {
         public string defId;
-        public int rarity; // 1〜4 (qualityとして利用)
-        public int originalRarity; // ボス戦等での一時的な品質書き換え前の保存用
+        public int rarity; // 1縲・ (quality縺ｨ縺励※蛻ｩ逕ｨ)
+        public int originalRarity; // 繝懊せ謌ｦ遲峨〒縺ｮ荳譎ら噪縺ｪ蜩∬ｳｪ譖ｸ縺肴鋤縺亥燕縺ｮ菫晏ｭ倡畑
         public BASE_WeaponData_Alpha affix; 
         
-        // 新仕様（ScriptableObject）の効果
+        // 譁ｰ莉墓ｧ假ｼ・criptableObject・峨・蜉ｹ譫・
         public WeaponSeriesData_Alpha series;
         public WeaponPartType_Alpha partType;
         public List<WeaponEffectSO_Alpha> currentEffects;
-        public WeaponEffectSO_Alpha setBonusEffect; // 生成時にベストスロットなら付与されるセットボーナス（シリーズ統一時のみ発動）
+        public WeaponEffectSO_Alpha setBonusEffect; // 逕滓・譎ゅ↓繝吶せ繝医せ繝ｭ繝・ヨ縺ｪ繧我ｻ倅ｸ弱＆繧後ｋ繧ｻ繝・ヨ繝懊・繝翫せ・医す繝ｪ繝ｼ繧ｺ邨ｱ荳譎ゅ・縺ｿ逋ｺ蜍包ｼ・
 
         public float GetMultiplier(WeaponPartType_Alpha statType)
         {
             if (series == null) return 0f;
             float mult = 0f;
 
-            // 1. 自身の部佁Eself)なめE+1.0
+            // 1. 閾ｪ霄ｫ縺ｮ驛ｨ菴・self)縺ｪ繧・+1.0
             if (statType == partType) mult += 1.0f;
 
-            // 2. レアリチEごとのボEナス加箁E
+            // 2. 繝ｬ繧｢繝ｪ繝・縺斐→縺ｮ繝廢繝翫せ蜉邂・
             if (rarity == 2) // Uncommon
             {
             }
@@ -47,10 +47,10 @@ public class InventoryManager_Alpha : MonoBehaviour
     }
 
     [Header("Inventory Management")]
-    [Tooltip("インデックス0〜8: 基本枠\nインデックス9〜(8+freeSlotCount): フリー枠\nそれ以降: テンポラリー枠")]
+    
     public List<EquipInstance> equipInstance = new List<EquipInstance>();
 
-    [Tooltip("インデックス9からいくつ分をフリースロットとするかを管理")]
+    
     public int freeSlotCount = 0;
 
     private void Awake()
@@ -62,14 +62,14 @@ public class InventoryManager_Alpha : MonoBehaviour
         }
         Instance = this;
 
-        // 初期状態で9枠は最低限確保しておく
+        // 蛻晄悄迥ｶ諷九〒9譫縺ｯ譛菴朱剞遒ｺ菫昴＠縺ｦ縺翫￥
         while (equipInstance.Count < BASIC_SLOT_COUNT)
         {
             equipInstance.Add(new EquipInstance());
         }
     }
 
-    // --- 既存コード (Player_Shooter_Alpha) から呼ばれるメソッド群 ---
+    // --- 譌｢蟄倥さ繝ｼ繝・(Player_Shooter_Alpha) 縺九ｉ蜻ｼ縺ｰ繧後ｋ繝｡繧ｽ繝・ラ鄒､ ---
 
     public EquipInstance Get(int x, int y)
     {
@@ -96,6 +96,7 @@ public class InventoryManager_Alpha : MonoBehaviour
         equipInstance[index] = v;
         
         playerStatusManager_Alpha.Instance?.UpdateEquipmentBuffs();
+        Alpha_BulletPrototypeBuilder.ClearPrototypes();
         UpdateSlotCount(true);
     }
 
@@ -106,13 +107,13 @@ public class InventoryManager_Alpha : MonoBehaviour
             for (int x = 0; x < W; x++)
             {
                 EquipInstance instance = Get(x, y);
-                // スロットが未設定（defId が null または空）の場合はスキップ
+                // 繧ｹ繝ｭ繝・ヨ縺梧悴險ｭ螳夲ｼ・efId 縺・null 縺ｾ縺溘・遨ｺ・峨・蝣ｴ蜷医・繧ｹ繧ｭ繝・・
                 if (instance.series == null) continue;
             }
         }
     }
 
-    // --- 新しいシステム用のメソッド群 ---
+    // --- 譁ｰ縺励＞繧ｷ繧ｹ繝・Β逕ｨ縺ｮ繝｡繧ｽ繝・ラ鄒､ ---
 
     public void AddItem(EquipInstance item)
     {
@@ -141,7 +142,7 @@ public class InventoryManager_Alpha : MonoBehaviour
             }
         }
 
-        // 空き枠（defIdがnullまたは空）があればそこに入れる
+        // 遨ｺ縺肴棧・・efId縺系ull縺ｾ縺溘・遨ｺ・峨′縺ゅｌ縺ｰ縺昴％縺ｫ蜈･繧後ｋ
         bool added = false;
         for (int i = 0; i < equipInstance.Count; i++)
         {
@@ -150,18 +151,20 @@ public class InventoryManager_Alpha : MonoBehaviour
                 equipInstance[i] = item;
                 added = true;
                 playerStatusManager_Alpha.Instance?.UpdateEquipmentBuffs();
+        Alpha_BulletPrototypeBuilder.ClearPrototypes();
                 break;
             }
         }
         
-        // 空きがなければ末尾に追加
+        // 遨ｺ縺阪′縺ｪ縺代ｌ縺ｰ譛ｫ蟆ｾ縺ｫ霑ｽ蜉
         if (!added)
         {
             equipInstance.Add(item);
             playerStatusManager_Alpha.Instance?.UpdateEquipmentBuffs();
+        Alpha_BulletPrototypeBuilder.ClearPrototypes();
         }
 
-        // 追加HP回復処理
+        // 霑ｽ蜉HP蝗槫ｾｩ蜃ｦ逅・
         if (hasHPGaugePlus && playerStatusManager_Alpha.Instance != null && healPercent > 0)
         {
             float healAmount = playerStatusManager_Alpha.Instance.HP * (healPercent / 100f);
@@ -186,13 +189,13 @@ public class InventoryManager_Alpha : MonoBehaviour
 
         if (equipInstance.Count > keepCount)
         {
-            // 後ろから削除していく
+            // 蠕後ｍ縺九ｉ蜑企勁縺励※縺・￥
             for (int i = equipInstance.Count - 1; i >= keepCount; i--)
             {
                 var item = equipInstance[i];
                 if (item.series != null)
                 {
-                    // 販売不能エフェクトのチェック
+                    // 雋ｩ螢ｲ荳崎・繧ｨ繝輔ぉ繧ｯ繝医・繝√ぉ繝・け
                     bool isUnsellable = false;
                     if (item.currentEffects != null)
                     {
@@ -219,7 +222,7 @@ public class InventoryManager_Alpha : MonoBehaviour
 
                     if (isUnsellable)
                     {
-                        // 売却不可アイテムはリストに退避しておき、後で戻す
+                        // 螢ｲ蜊ｴ荳榊庄繧｢繧､繝・Β縺ｯ繝ｪ繧ｹ繝医↓騾驕ｿ縺励※縺翫″縲∝ｾ後〒謌ｻ縺・
                         itemsToKeep.Add(item);
                         equipInstance.RemoveAt(i);
                         Debug.Log($"[InventoryManager] Item '{item.series.name}' is unsellable and was kept.");
@@ -229,9 +232,9 @@ public class InventoryManager_Alpha : MonoBehaviour
                     int exp = 0;
                     if (item.series.name != "InitialSeries")
                     {
-                        // 売却処理: rarity * 2 の EXP
+                        // 螢ｲ蜊ｴ蜃ｦ逅・ rarity * 2 縺ｮ EXP
                         exp = item.rarity * 2;
-                        if (exp <= 0) exp = 2; // 最低保証
+                        if (exp <= 0) exp = 2; // 譛菴惹ｿ晁ｨｼ
                     }
                     
                     totalExpGained += exp;
@@ -240,7 +243,7 @@ public class InventoryManager_Alpha : MonoBehaviour
                 equipInstance.RemoveAt(i);
             }
 
-            // 売却不可だったアイテムを元の順序で末尾に戻す
+            // 螢ｲ蜊ｴ荳榊庄縺縺｣縺溘い繧､繝・Β繧貞・縺ｮ鬆・ｺ上〒譛ｫ蟆ｾ縺ｫ謌ｻ縺・
             itemsToKeep.Reverse();
             foreach (var item in itemsToKeep)
             {
@@ -251,7 +254,7 @@ public class InventoryManager_Alpha : MonoBehaviour
         if (totalExpGained > 0)
         {
             Debug.Log($"[InventoryManager] Total EXP gained from selling temporary items: {totalExpGained}");
-            // TODO: 実際のプレイヤーステータス等にEXPを加算する処理をここに繋げる
+            // TODO: 螳滄圀縺ｮ繝励Ξ繧､繝､繝ｼ繧ｹ繝・・繧ｿ繧ｹ遲峨↓EXP繧貞刈邂励☆繧句・逅・ｒ縺薙％縺ｫ郢九￡繧・
         }
 
         UpdateSlotCount(false);
@@ -259,8 +262,8 @@ public class InventoryManager_Alpha : MonoBehaviour
     }
 
     /// <summary>
-    /// 一時スロットにある初期装備(InitialSeries)を直ちに削除します
-    /// 報酬獲得画面等で装備整理が終わった際に呼び出されます
+    /// 荳譎ゅせ繝ｭ繝・ヨ縺ｫ縺ゅｋ蛻晄悄陬・ｙ(InitialSeries)繧堤峩縺｡縺ｫ蜑企勁縺励∪縺・
+    /// 蝣ｱ驟ｬ迯ｲ蠕礼判髱｢遲峨〒陬・ｙ謨ｴ逅・′邨ゅｏ縺｣縺滄圀縺ｫ蜻ｼ縺ｳ蜃ｺ縺輔ｌ縺ｾ縺・
     /// </summary>
     public void CleanUpInitialSeriesInEXSlots()
     {
@@ -268,13 +271,13 @@ public class InventoryManager_Alpha : MonoBehaviour
 
         if (equipInstance.Count > keepCount)
         {
-            // 後ろから調べて削除
+            // 蠕後ｍ縺九ｉ隱ｿ縺ｹ縺ｦ蜑企勁
             for (int i = equipInstance.Count - 1; i >= keepCount; i--)
             {
                 var item = equipInstance[i];
                 if (item.series != null && item.series.name == "InitialSeries")
                 {
-                    // 初期装備なら即削除
+                    // 蛻晄悄陬・ｙ縺ｪ繧牙叉蜑企勁
                     equipInstance.RemoveAt(i);
                     Debug.Log("[InventoryManager] Cleaned up InitialSeries from EX slot.");
                 }
@@ -300,7 +303,7 @@ public class InventoryManager_Alpha : MonoBehaviour
             {
                 requiredSlots = lastFilled + 1 + 1;
             }
-            // 3の倍数に揃える処理を削除し、余分なスロットが1つだけになるようにする
+            // 3縺ｮ蛟肴焚縺ｫ謠・∴繧句・逅・ｒ蜑企勁縺励∽ｽ吝・縺ｪ繧ｹ繝ｭ繝・ヨ縺・縺､縺縺代↓縺ｪ繧九ｈ縺・↓縺吶ｋ
         }
 
         while (equipInstance.Count < requiredSlots)
@@ -315,8 +318,8 @@ public class InventoryManager_Alpha : MonoBehaviour
     }
 
     /// <summary>
-    /// ブーケ状態の判定
-    /// 全てのセット(行)が、それぞれ同じシリーズで統一されているか（全9枠が埋まっている必要がある）
+    /// 繝悶・繧ｱ迥ｶ諷九・蛻､螳・
+    /// 蜈ｨ縺ｦ縺ｮ繧ｻ繝・ヨ(陦・縺後√◎繧後◇繧悟酔縺倥す繝ｪ繝ｼ繧ｺ縺ｧ邨ｱ荳縺輔ｌ縺ｦ縺・ｋ縺具ｼ亥・9譫縺悟沂縺ｾ縺｣縺ｦ縺・ｋ蠢・ｦ√′縺ゅｋ・・
     /// </summary>
     public bool IsBouquetActive()
     {
@@ -331,7 +334,7 @@ public class InventoryManager_Alpha : MonoBehaviour
     }
 
     /// <summary>
-    /// アイテムにWildcardエフェクトが付与されているかチェックする
+    /// 繧｢繧､繝・Β縺ｫWildcard繧ｨ繝輔ぉ繧ｯ繝医′莉倅ｸ弱＆繧後※縺・ｋ縺九メ繧ｧ繝・け縺吶ｋ
     /// </summary>
     private bool HasWildcardEffect(int itemIndex)
     {
@@ -345,13 +348,13 @@ public class InventoryManager_Alpha : MonoBehaviour
     }
 
     /// <summary>
-    /// 特定のグループ（行）の3つのパーツすべて同じシリーズで統一されているか（Wildcardを考慮）
+    /// 迚ｹ螳壹・繧ｰ繝ｫ繝ｼ繝暦ｼ郁｡鯉ｼ峨・3縺､縺ｮ繝代・繝・☆縺ｹ縺ｦ蜷後§繧ｷ繝ｪ繝ｼ繧ｺ縺ｧ邨ｱ荳縺輔ｌ縺ｦ縺・ｋ縺具ｼ・ildcard繧定・・・・
     /// </summary>
     public bool IsGroupSeriesAligned(int groupIndex)
     {
         int startIndex = groupIndex * 3;
         
-        // 追加: リストの範囲外アクセスを防ぐ
+        // 霑ｽ蜉: 繝ｪ繧ｹ繝医・遽・峇螟悶い繧ｯ繧ｻ繧ｹ繧帝亟縺・
         if (startIndex + 2 >= equipInstance.Count) return false;
 
         var instA = equipInstance[startIndex];
@@ -369,16 +372,16 @@ public class InventoryManager_Alpha : MonoBehaviour
         bool jokerB = HasWildcardEffect(startIndex + 1);
         bool jokerC = HasWildcardEffect(startIndex + 2);
 
-        // ベースとなるシリーズを探す（Wildcard以外の最初のシリーズ）
+        // 繝吶・繧ｹ縺ｨ縺ｪ繧九す繝ｪ繝ｼ繧ｺ繧呈爾縺呻ｼ・ildcard莉･螟悶・譛蛻昴・繧ｷ繝ｪ繝ｼ繧ｺ・・
         Alpha.Data.WeaponSeriesData_Alpha baseSeries = null;
         if (!jokerA) baseSeries = seriesA;
         else if (!jokerB) baseSeries = seriesB;
         else if (!jokerC) baseSeries = seriesC;
 
-        // 3つともWildcardの場合は統一されているとみなす
+        // 3縺､縺ｨ繧８ildcard縺ｮ蝣ｴ蜷医・邨ｱ荳縺輔ｌ縺ｦ縺・ｋ縺ｨ縺ｿ縺ｪ縺・
         if (baseSeries == null) return true; 
 
-        // Wildcard以外のパーツがベースシリーズと一致するかチェック
+        // Wildcard莉･螟悶・繝代・繝・′繝吶・繧ｹ繧ｷ繝ｪ繝ｼ繧ｺ縺ｨ荳閾ｴ縺吶ｋ縺九メ繧ｧ繝・け
         if (!jokerA && seriesA != baseSeries) return false;
         if (!jokerB && seriesB != baseSeries) return false;
         if (!jokerC && seriesC != baseSeries) return false;
@@ -598,7 +601,7 @@ public class InventoryManager_Alpha : MonoBehaviour
         int totalQuality = 0;
         Alpha.Data.WeaponEffectSO_Alpha stepEffectRef = null;
         
-        // activeGroupが-1（グループ指定なし）の場合は無条件でアクティブとする
+        // activeGroup縺・1・医げ繝ｫ繝ｼ繝玲欠螳壹↑縺暦ｼ峨・蝣ｴ蜷医・辟｡譚｡莉ｶ縺ｧ繧｢繧ｯ繝・ぅ繝悶→縺吶ｋ
         bool isActive = (activeGroup == -1);
 
         for (int i = 0; i < equipInstance.Count; i++)
@@ -608,7 +611,7 @@ public class InventoryManager_Alpha : MonoBehaviour
 
             int itemGroup = i / 3;
 
-            // 1. 武器のベース(series)に紐づくパッシブ効果を加算
+            // 1. 豁ｦ蝎ｨ縺ｮ繝吶・繧ｹ(series)縺ｫ邏舌▼縺上ヱ繝・す繝門柑譫懊ｒ蜉邂・
             if (item.series.passiveEffects != null)
             {
                 foreach (var spe in item.series.passiveEffects)
@@ -619,7 +622,7 @@ public class InventoryManager_Alpha : MonoBehaviour
                 }
             }
 
-            // 2. プレイヤーが直接付与した固有効果(currentEffects)を加算
+            // 2. 繝励Ξ繧､繝､繝ｼ縺檎峩謗･莉倅ｸ弱＠縺溷崋譛牙柑譫・currentEffects)繧貞刈邂・
             if (item.currentEffects != null)
             {
                 foreach (var effectSO in item.currentEffects)
@@ -629,14 +632,14 @@ public class InventoryManager_Alpha : MonoBehaviour
                 }
             }
 
-            // 3. セットボーナスエフェクトの加算（シリーズ統一時のみ発動）
+            // 3. 繧ｻ繝・ヨ繝懊・繝翫せ繧ｨ繝輔ぉ繧ｯ繝医・蜉邂暦ｼ医す繝ｪ繝ｼ繧ｺ邨ｱ荳譎ゅ・縺ｿ逋ｺ蜍包ｼ・
             if (item.setBonusEffect != null && IsGroupSeriesAligned(itemGroup))
             {
                 AccumulateSingleEffect(item.setBonusEffect, effectType, item.rarity, itemGroup, activeGroup, ref totalFlatValue, ref totalQuality, ref stepEffectRef, ref isActive);
             }
         }
 
-        // 現在のグループで発動条件を満たしていなければ効果量は0
+        // 迴ｾ蝨ｨ縺ｮ繧ｰ繝ｫ繝ｼ繝励〒逋ｺ蜍墓擅莉ｶ繧呈ｺ縺溘＠縺ｦ縺・↑縺代ｌ縺ｰ蜉ｹ譫憺㍼縺ｯ0
         if (!isActive) return 0f;
 
         if (stepEffectRef != null && stepEffectRef.useStepMultiplier)
@@ -649,7 +652,7 @@ public class InventoryManager_Alpha : MonoBehaviour
 
     private void AccumulateSingleEffect(Alpha.Data.WeaponEffectSO_Alpha effectSO, Alpha.Data.WeaponEffectType_Alpha targetType, int rarity, int itemGroup, int activeGroup, ref float flatValue, ref int totalQuality, ref Alpha.Data.WeaponEffectSO_Alpha stepEffectRef, ref bool isActive)
     {
-        // 複合スキルの場合は再帰的に中身を取り出す
+        // 隍・粋繧ｹ繧ｭ繝ｫ縺ｮ蝣ｴ蜷医・蜀榊ｸｰ逧・↓荳ｭ霄ｫ繧貞叙繧雁・縺・
         if (effectSO.effectType == Alpha.Data.WeaponEffectType_Alpha.Composite)
         {
             var comp = effectSO as Alpha.Data.CompositeWeaponEffectSO_Alpha;
@@ -665,24 +668,24 @@ public class InventoryManager_Alpha : MonoBehaviour
         else if (effectSO.effectType == targetType)
         {
 
-                // 発動条件のチェック（現在のグループが対象か、またはグローバル効果か）
+                // 逋ｺ蜍墓擅莉ｶ縺ｮ繝√ぉ繝・け・育樟蝨ｨ縺ｮ繧ｰ繝ｫ繝ｼ繝励′蟇ｾ雎｡縺九√∪縺溘・繧ｰ繝ｭ繝ｼ繝舌Ν蜉ｹ譫懊°・・
                 if (effectSO.isGlobalEffect || itemGroup == activeGroup)
                 {
                     isActive = true;
                 }
 
-            // 加算条件のチェック
-            // accumulateGloballyがfalseの場合、現在構えているグループではないなら加算しない
-            // （グローバル効果の場合はisGlobalEffectで無条件に加算される設計ではなく、あくまでこのグループが関係しているかどうかの制御）
+            // 蜉邂玲擅莉ｶ縺ｮ繝√ぉ繝・け
+            // accumulateGlobally縺掲alse縺ｮ蝣ｴ蜷医∫樟蝨ｨ讒九∴縺ｦ縺・ｋ繧ｰ繝ｫ繝ｼ繝励〒縺ｯ縺ｪ縺・↑繧牙刈邂励＠縺ｪ縺・
+            // ・医げ繝ｭ繝ｼ繝舌Ν蜉ｹ譫懊・蝣ｴ蜷医・isGlobalEffect縺ｧ辟｡譚｡莉ｶ縺ｫ蜉邂励＆繧後ｋ險ｭ險医〒縺ｯ縺ｪ縺上√≠縺上∪縺ｧ縺薙・繧ｰ繝ｫ繝ｼ繝励′髢｢菫ゅ＠縺ｦ縺・ｋ縺九←縺・°縺ｮ蛻ｶ蠕｡・・
             if (!effectSO.accumulateGlobally && !effectSO.isGlobalEffect && activeGroup != -1 && itemGroup != activeGroup)
             {
                 return;
             }
 
-            // 値の加算は「発動条件を満たしているか」に関わらず、(上記条件をパスしていれば)全スロットからパブリックに行う
+            // 蛟､縺ｮ蜉邂励・縲檎匱蜍墓擅莉ｶ繧呈ｺ縺溘＠縺ｦ縺・ｋ縺九阪↓髢｢繧上ｉ縺壹・荳願ｨ俶擅莉ｶ繧偵ヱ繧ｹ縺励※縺・ｌ縺ｰ)蜈ｨ繧ｹ繝ｭ繝・ヨ縺九ｉ繝代ヶ繝ｪ繝・け縺ｫ陦後≧
             if (effectSO.useStepMultiplier)
             {
-                totalQuality += rarity; // シリーズ側で指定された固定品質、または通常品質を加算
+                totalQuality += rarity; // 繧ｷ繝ｪ繝ｼ繧ｺ蛛ｴ縺ｧ謖・ｮ壹＆繧後◆蝗ｺ螳壼刀雉ｪ縲√∪縺溘・騾壼ｸｸ蜩∬ｳｪ繧貞刈邂・
                 if (stepEffectRef == null) stepEffectRef = effectSO;
             }
             else
@@ -705,7 +708,7 @@ public class InventoryManager_Alpha : MonoBehaviour
         }
         else
         {
-            // 段階の判定
+            // 谿ｵ髫弱・蛻､螳・
             int stepIndex = 0;
             for (int i = 0; i < thresholds.Length; i++)
             {
@@ -715,11 +718,11 @@ public class InventoryManager_Alpha : MonoBehaviour
                 }
                 else
                 {
-                    break; // 閾値に満たない場合はそれ以上の段階には進まない
+                    break; // 髢ｾ蛟､縺ｫ貅縺溘↑縺・ｴ蜷医・縺昴ｌ莉･荳翫・谿ｵ髫弱↓縺ｯ騾ｲ縺ｾ縺ｪ縺・
                 }
             }
 
-            // qualityValues から対応する乗数を取得
+            // qualityValues 縺九ｉ蟇ｾ蠢懊☆繧倶ｹ玲焚繧貞叙蠕・
             if (effectSO.qualityValues != null && effectSO.qualityValues.Length > 0)
             {
                 int valIndex = Mathf.Clamp(stepIndex, 0, effectSO.qualityValues.Length - 1);
@@ -727,7 +730,8 @@ public class InventoryManager_Alpha : MonoBehaviour
             }
         }
 
-        // 最終的な計算：合計品質 * 対応する乗数
+        // 譛邨ら噪縺ｪ險育ｮ暦ｼ壼粋險亥刀雉ｪ * 蟇ｾ蠢懊☆繧倶ｹ玲焚
         return totalQuality * multiplier;
     }
 }
+
