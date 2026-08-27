@@ -455,13 +455,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
                 return;
             }
 
-            if (effSO.effectType == Alpha.Data.WeaponEffectType_Alpha.Explosion_OnFire)
-            {
-                Vector3 spawnPos = muzzlePos + aimDir.normalized * 0.5f;
-                float scale = GetExplosionScaleByRarity(rarity);
-                float explDmg = finalDamage * (0.25f * rarity);
-                SpawnExplosionArea(spawnPos, explDmg, scale);
-            }
+            
 
             effSO.OnWeaponFire(this.gameObject, muzzlePos, aimDir, finalDamage, rarity);
         };
@@ -565,6 +559,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
         else
         {
             bulletPrefab = Instantiate(prefabToInstantiate, spawnPos, Quaternion.identity);
+            bulletPrefab.SetActive(true);
         }
 
         float rotationAngle = Mathf.Atan2(spawnDir.y, spawnDir.x) * Mathf.Rad2Deg;
@@ -582,7 +577,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
             float originalSpeed = prefabScript != null ? prefabScript.Speed : bulletScript.Speed;
             float originalDestroyTime = prefabScript != null ? prefabScript.DestroyTime : bulletScript.DestroyTime;
             
-            float baseBulletSpeed = playerStatusScript.bulletSpeed * playerStatusScript.bulletSpeedMag * 1.5f * (originalSpeed * 0.01f);
+            float baseBulletSpeed = playerStatusScript.bulletSpeed * playerStatusScript.bulletSpeedMag * (originalSpeed * 0.01f);
             baseBulletSpeed *= (1f + bulletChangeMultiplier);
             
             bulletScript.setStatus(spawnDir, baseBulletSpeed, finalDamage);
@@ -648,10 +643,15 @@ public class Player_Shooter_Alpha : MonoBehaviour
                 if (tr != null) tr.enabled = false;
             }
 
+            bulletPrefab.SetActive(true);
             bulletScript.shoot();
         }
     }
 }
+
+
+
+
 
 
 

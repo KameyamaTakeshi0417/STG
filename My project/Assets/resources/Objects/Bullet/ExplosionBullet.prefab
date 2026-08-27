@@ -166,12 +166,12 @@ MonoBehaviour:
   sourcePrefab: {fileID: 0}
   isEnemyBullet: 0
   canHitBoth: 0
-  originalAimDirection: {x: 0, y: 0, z: 0}
-  reverseTimeRemaining: 0
   lockedTarget: {fileID: 0}
+  behaviors: []
+  originalAimDirection: {x: 0, y: 0, z: 0}
   Objname: 
   dmg: 50
-  Speed: 800
+  Speed: 1000
   DestroyTime: 100
   bullettype: 0
   rotate: {x: 0, y: 0, z: 0}
@@ -184,7 +184,6 @@ MonoBehaviour:
   secondaryDamageMultiplier: 1
   preventAutoDestroy: 0
   localPierceDamageReductionRate: -1
-  canUseAllEffects: 1
 --- !u!114 &-7321520396698675924
 MonoBehaviour:
   m_ObjectHideFlags: 0

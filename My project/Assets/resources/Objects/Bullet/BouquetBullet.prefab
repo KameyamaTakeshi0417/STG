@@ -50,12 +50,12 @@ MonoBehaviour:
   sourcePrefab: {fileID: 0}
   isEnemyBullet: 0
   canHitBoth: 0
-  originalAimDirection: {x: 0, y: 0, z: 0}
-  reverseTimeRemaining: 0
   lockedTarget: {fileID: 0}
+  behaviors: []
+  originalAimDirection: {x: 0, y: 0, z: 0}
   Objname: 
   dmg: 50
-  Speed: 1000
+  Speed: 2000
   DestroyTime: 300
   bullettype: 0
   rotate: {x: 0, y: 0, z: 0}
@@ -68,7 +68,6 @@ MonoBehaviour:
   secondaryDamageMultiplier: 1
   preventAutoDestroy: 0
   localPierceDamageReductionRate: -1
-  canUseAllEffects: 0
 --- !u!70 &-4419250601203256453
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

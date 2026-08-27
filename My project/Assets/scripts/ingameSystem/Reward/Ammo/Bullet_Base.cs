@@ -17,7 +17,7 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
     public bool canHitBoth = false;
  
     public Transform lockedTarget;
-    public Alpha_BulletBehavior_Base[] behaviors;
+    public System.Collections.Generic.List<ActiveBulletBehavior_Alpha> activeBehaviors;
     public Vector3 originalAimDirection;
 
     public virtual void OnRentFromPool()
@@ -40,7 +40,7 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
     public virtual void OnReturnToPool()
     {
         StopAllCoroutines();
-        if (behaviors != null) { foreach (var b in behaviors) b.OnReturnToPool(); }
+        if (activeBehaviors != null) { foreach (var ab in activeBehaviors) ab.behaviorSO.OnReturnToPool(this, ab.rarity); }
     }
     
     public string Objname;
@@ -68,7 +68,7 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
 
     protected virtual void Awake()
     {
-        behaviors = GetComponents<Alpha_BulletBehavior_Base>();
+        // behaviors = GetComponents<Alpha_BulletBehavior_Base>();
         basePrefabSpeed = Speed;
         if (basePrefabSpeed <= 0f) basePrefabSpeed = 1f; 
     }
@@ -118,7 +118,7 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
         initialSpeed = Speed; 
         bulletCollider = GetComponent<Collider2D>(); 
 
-        if (behaviors != null) { foreach (var b in behaviors) b.OnSpawn(); }
+        if (activeBehaviors != null) { foreach (var ab in activeBehaviors) ab.behaviorSO.OnSpawn(this, ab.rarity, ref ab.stateTimer); }
         StartCoroutine(move());
     }
 
@@ -164,7 +164,7 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
                 }
             }
 
-            if (behaviors != null) { foreach (var b in behaviors) b.OnFlight(0.01f); }
+            if (activeBehaviors != null) { foreach (var ab in activeBehaviors) ab.behaviorSO.OnFlight(this, ab.rarity, ref ab.stateTimer, 0.01f); }
             yield return new WaitForSeconds(0.01f);
         }
 
@@ -219,7 +219,7 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
         if (ignoredColliders.Contains(collision)) return;
 
         bool hitSomething = false;
-        if (behaviors != null) { foreach (var b in behaviors) b.OnHit(collision); }
+        if (activeBehaviors != null) { foreach (var ab in activeBehaviors) ab.behaviorSO.OnHit(this, ab.rarity, collision); }
 
         if (collision.CompareTag("Enemy") || collision.CompareTag("Player"))
         {
@@ -381,4 +381,7 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
         }
     }
 }
+
+
+
 

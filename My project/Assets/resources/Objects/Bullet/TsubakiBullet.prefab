@@ -206,12 +206,12 @@ MonoBehaviour:
   sourcePrefab: {fileID: 0}
   isEnemyBullet: 0
   canHitBoth: 0
-  originalAimDirection: {x: 0, y: 0, z: 0}
-  reverseTimeRemaining: 0
   lockedTarget: {fileID: 0}
+  behaviors: []
+  originalAimDirection: {x: 0, y: 0, z: 0}
   Objname: TsubakiBullet
   dmg: 100
-  Speed: 1500
+  Speed: 2000
   DestroyTime: 500
   bullettype: 0
   rotate: {x: 0, y: 0, z: 0}
@@ -220,6 +220,7 @@ MonoBehaviour:
   addDmg: 0
   piercingCount: 10
   extraShotCount: 0
+  voltTickReduceCount: 0
+  secondaryDamageMultiplier: 1
   preventAutoDestroy: 1
   localPierceDamageReductionRate: -1
-  canUseAllEffects: 0

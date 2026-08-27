@@ -40,6 +40,7 @@ public static class Alpha_BulletPrototypeBuilder
         GameObject basePrefab = null;
         List<Alpha.Data.WeaponSeriesData_Alpha> seriesList = new List<Alpha.Data.WeaponSeriesData_Alpha>();
         List<int> rarities = new List<int>();
+        List<int> slotIndices = new List<int>();
 
         if (weaponGroup == -1) // Bouquet
         {
@@ -50,6 +51,7 @@ public static class Alpha_BulletPrototypeBuilder
                 {
                     seriesList.Add(inst.series);
                     rarities.Add(inst.rarity);
+                    slotIndices.Add(0); // Bouquet parts are treated as Bullet slot (0)
                     if (basePrefab == null && inst.series.bulletPrefab != null)
                     {
                         basePrefab = inst.series.bulletPrefab;
@@ -66,6 +68,7 @@ public static class Alpha_BulletPrototypeBuilder
                 {
                     seriesList.Add(inst.series);
                     rarities.Add(inst.rarity);
+                    slotIndices.Add(i); // Actual slot (0=Bullet, 1=Casing, 2=Primer)
                     if (basePrefab == null && inst.series.bulletPrefab != null)
                     {
                         basePrefab = inst.series.bulletPrefab;
@@ -74,6 +77,7 @@ public static class Alpha_BulletPrototypeBuilder
             }
             seriesList.Reverse();
             rarities.Reverse();
+            slotIndices.Reverse();
         }
 
         if (basePrefab == null)
@@ -96,15 +100,21 @@ public static class Alpha_BulletPrototypeBuilder
         Bullet_Base bulletScript = prototype.GetComponent<Bullet_Base>();
         if (bulletScript == null) return prototype;
 
+        List<ActiveBulletBehavior_Alpha> activeBehaviors = new List<ActiveBulletBehavior_Alpha>();
+
         for (int i = 0; i < seriesList.Count; i++)
         {
             var series = seriesList[i];
             int rarity = rarities[i];
+            int slot = slotIndices[i];
             
             List<Alpha.Data.WeaponEffectSO_Alpha> effectsToApply = new List<Alpha.Data.WeaponEffectSO_Alpha>();
-            if (series.bulletSpecificEffects != null) effectsToApply.AddRange(series.bulletSpecificEffects);
-            if (series.casingSpecificEffects != null) effectsToApply.AddRange(series.casingSpecificEffects);
-            if (series.primerSpecificEffects != null) effectsToApply.AddRange(series.primerSpecificEffects);
+            
+            // スロットに応じたエフェクトのみを抽出する（AllEquipable対応）
+            if (slot == 0 && series.bulletSpecificEffects != null) effectsToApply.AddRange(series.bulletSpecificEffects);
+            if (slot == 1 && series.casingSpecificEffects != null) effectsToApply.AddRange(series.casingSpecificEffects);
+            if (slot == 2 && series.primerSpecificEffects != null) effectsToApply.AddRange(series.primerSpecificEffects);
+            
             if (series.passiveEffects != null)
             {
                 foreach(var pe in series.passiveEffects)
@@ -117,19 +127,17 @@ public static class Alpha_BulletPrototypeBuilder
             {
                 if (eff == null) continue;
                 
-                if (eff.effectType == Alpha.Data.WeaponEffectType_Alpha.Homing)
+                // Behaviorアセットがセットされていれば、リストに追加するだけ！
+                if (eff.overrideBehavior != null)
                 {
-                    var homing = prototype.AddComponent<Behavior_Homing_Alpha>();
-                    homing.homingStrength = eff.GetValue(rarity) * 2f; 
-                    homing.Initialize(bulletScript, rarity);
+                    eff.overrideBehavior.Initialize(bulletScript, rarity);
+                    activeBehaviors.Add(new ActiveBulletBehavior_Alpha(eff.overrideBehavior, rarity));
                 }
-                // Tsubaki commented out
             }
         }
         
-        bulletScript.behaviors = prototype.GetComponents<Alpha_BulletBehavior_Base>();
+        bulletScript.activeBehaviors = activeBehaviors;
 
         return prototype;
     }
 }
-
