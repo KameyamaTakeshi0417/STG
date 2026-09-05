@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -64,12 +64,15 @@ namespace Alpha.Data
         [Tooltip("このシリーズが装備された際に加算される特性ポイント（祝福の発動に用いる）")]
         public int traitPoint = 1;
 
-        [Header("Part Specific Buffs")]
-        public float basePowerBonus = 1.0f;
+        [Header("Part Specific Buffs (Per Rarity 1-4)")]
+        [Tooltip("基礎攻撃力（レアリティ1〜4）")]
+        public float[] basePowerBonus = new float[4] { 1.0f, 2.0f, 3.0f, 4.0f };
         
-        public float survivalTimeBonus = 0.5f;
+        [Tooltip("リロード速度（レアリティ1〜4）")]
+        public float[] reloadSpeedBonus = new float[4] { 0.1f, 0.2f, 0.3f, 0.4f };
         
-        public float speedBonus = 100.0f;
+        [Tooltip("弾速（レアリティ1〜4）")]
+        public float[] bulletSpeedBonus = new float[4] { 100.0f, 150.0f, 200.0f, 250.0f };
 
         [Header("Bullet Settings")]
         [Tooltip("このシリーズが雷管（インデックス2）に装備された時に発射される弾のプレハブ")]

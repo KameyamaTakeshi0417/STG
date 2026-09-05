@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -215,7 +215,7 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         
         // 部位ごとの基礎バフを加算
         float additionalPower = 0f;
-        float additionalSurvivalTime = 0f;
+        float additionalReload = 0f;
         float additionalSpeed = 0f;
 
         if (groupToPass >= 0 && groupToPass <= 2)
@@ -225,15 +225,15 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
             var instC = inv.Get(2, groupToPass);
             
             additionalSpeed = instA.GetSpeedBonus() + instB.GetSpeedBonus() + instC.GetSpeedBonus();
-            additionalSurvivalTime = instA.GetSurvivalBonus() + instB.GetSurvivalBonus() + instC.GetSurvivalBonus();
+            additionalReload = instA.GetReloadBonus() + instB.GetReloadBonus() + instC.GetReloadBonus();
             additionalPower = instA.GetPowerBonus() + instB.GetPowerBonus() + instC.GetPowerBonus();
         }
 
         DamageAdd += additionalPower;
-        // speedBonus は基本の500に対する増加量として設定されているため、倍率に変換 (100 = 20% = 0.2f)
-        bulletSpeedMag += (additionalSpeed / 500f);
-        // survivalTimeBonus は秒数加算。基本を2秒として倍率に変換 (0.5 = 25% = 0.25f)
-        bulletLifeMag += (additionalSurvivalTime / 2.0f);
+        float speedMagIncrease = (additionalSpeed / 500f);
+        bulletSpeedMag += speedMagIncrease;
+        DamageMag += (speedMagIncrease * 0.5f);
+        BulletSpanMag -= additionalReload;
 
         bulletSpeedMag = Mathf.Max(bulletSpeedMag, 0.2f); // 下限20%
         bulletLifeMag = Mathf.Max(bulletLifeMag, 0.5f); // 下限50%

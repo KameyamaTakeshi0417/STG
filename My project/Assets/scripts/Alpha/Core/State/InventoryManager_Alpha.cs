@@ -41,9 +41,9 @@ public class InventoryManager_Alpha : MonoBehaviour
             return mult;
         }
 
-        public float GetPowerBonus() => series != null ? series.basePowerBonus * GetMultiplier(WeaponPartType_Alpha.Bullet) : 0f;
-        public float GetSurvivalBonus() => series != null ? series.survivalTimeBonus * GetMultiplier(WeaponPartType_Alpha.Casing) : 0f;
-        public float GetSpeedBonus() => series != null ? series.speedBonus * GetMultiplier(WeaponPartType_Alpha.Primer) : 0f;
+        public float GetPowerBonus() => series != null ? series.basePowerBonus[Mathf.Clamp(rarity - 1, 0, 3)] * GetMultiplier(WeaponPartType_Alpha.Bullet) : 0f;
+        public float GetReloadBonus() => series != null ? series.reloadSpeedBonus[Mathf.Clamp(rarity - 1, 0, 3)] * GetMultiplier(WeaponPartType_Alpha.Casing) : 0f;
+        public float GetSpeedBonus() => series != null ? series.bulletSpeedBonus[Mathf.Clamp(rarity - 1, 0, 3)] * GetMultiplier(WeaponPartType_Alpha.Primer) : 0f;
     }
 
     [Header("Inventory Management")]
