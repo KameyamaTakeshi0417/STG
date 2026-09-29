@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 using Alpha.Data;
 using Alpha.UI;
@@ -599,9 +599,22 @@ namespace Alpha.Flow
             {
                 fadeController.FadeOut(() => {
                     ADVManager_Alpha.Instance.StartADV(currentStageData.preBossADV, () => {
-                        fadeController.FadeIn(() => {
-                            StartBossFight();
-                        });
+                        // ADV終了後、カットインがあればカットインでトランジション
+                        if (Alpha.UI.BossCutinPlayer_Alpha.Instance != null)
+                        {
+                            // まず黒幕を外す（カットインが画面を覆うので黒幕は不要）
+                            if (fadeController != null) fadeController.FadeIn(null);
+                            // カットイン再生。3秒待機中にStartBossFightを裏で実行する
+                            Alpha.UI.BossCutinPlayer_Alpha.Instance.PlayCutin(
+                                onMidPoint: () => { StartBossFight(); },
+                                onComplete: null
+                            );
+                        }
+                        else
+                        {
+                            // カットインなし：従来通りフェードインしてボス戦開始
+                            fadeController.FadeIn(() => { StartBossFight(); });
+                        }
                     });
                 });
             }
@@ -619,6 +632,33 @@ namespace Alpha.Flow
                 }
             }
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         private void StartBossClearSequence()
         {

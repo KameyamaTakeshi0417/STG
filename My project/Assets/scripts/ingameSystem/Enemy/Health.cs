@@ -7,8 +7,8 @@ using UnityEngine.UI;
 public class Health : _Health_Base
 {
     public delegate void HPChangedHandler();
-    GameObject canvasInstance;
-    Transform canvasTransform; // エネミーのCanvasのTransform
+    protected GameObject canvasInstance;
+    protected Transform canvasTransform; // エネミーのCanvasのTransform
     public GameObject damageTextPrefab; // ダメージ表示用のプレハブ
     public float DamageUIMagnitude = 0.1f;
 

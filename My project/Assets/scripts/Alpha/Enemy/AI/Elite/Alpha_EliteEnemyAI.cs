@@ -193,6 +193,12 @@ public class Alpha_EliteEnemyAI : Alpha_EnemyAI
             yield return new WaitForSecondsRealtime(2.7f); // カットインの演出時間分待機（TimeScaleの影響を受けないように変更）
         }
 
+        // ボスカットイン演出中は行動開始を待機する
+        while (Alpha.UI.BossCutinPlayer_Alpha.IsCutinPlaying)
+        {
+            yield return null;
+        }
+
         // 行動を並列で実行
         if (currentPhase.movementBehavior != null)
             movementCoroutine = StartCoroutine(currentPhase.movementBehavior.RunBehavior(this));

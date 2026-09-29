@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Alpha.Data;
+using DG.Tweening;
 
 namespace Alpha.UI
 {
@@ -48,6 +50,11 @@ namespace Alpha.UI
         private System.Action onConfirmCallback;
         private bool openedByEscape = false;
         private bool isReadOnly = false;
+
+        // Animation fields
+        private CanvasGroup panelCanvasGroup;
+        private Vector3 panelOriginalScale = Vector3.one;
+        private bool isCloseAnimating = false;
         
         // 驕ｸ謚樔ｸｭ縺ｮ繧ｹ繝ｭ繝・ヨ繧､繝ｳ繝・ャ繧ｯ繧ｹ・・1縺ｯ譛ｪ驕ｸ謚橸ｼ・
         private int selectedIndex = -1;
@@ -110,6 +117,7 @@ namespace Alpha.UI
             if (backButtonForCheck != null) backButtonForCheck.gameObject.SetActive(false);
 
             RefreshUI();
+            PlayOpenAnimation();
             TryShowEquipTutorial();
         }
 
@@ -117,7 +125,7 @@ namespace Alpha.UI
         {
             openedByEscape = false;
             
-            if (panel != null) panel.SetActive(false);
+            PlayCloseAnimation(null);
             if (detailPopup != null) detailPopup.gameObject.SetActive(false);
         }
         public void ShowForCheck(System.Action callback)
@@ -144,6 +152,7 @@ namespace Alpha.UI
             if (backToForgeButton != null) backToForgeButton.gameObject.SetActive(false);
 
             RefreshUI();
+            PlayOpenAnimation();
             TryShowEquipTutorial();
         }
 
@@ -162,6 +171,7 @@ namespace Alpha.UI
             if (backToForgeButton != null) backToForgeButton.gameObject.SetActive(false);
 
             RefreshUI();
+            PlayOpenAnimation();
             TryShowEquipTutorial();
         }
 
@@ -193,6 +203,7 @@ namespace Alpha.UI
             }
 
             RefreshUI();
+            PlayOpenAnimation();
         }
 
         private void TryShowEquipTutorial()
@@ -205,12 +216,12 @@ namespace Alpha.UI
 
         public void Hide()
         {
-            if (panel != null) panel.SetActive(false);
             if (detailPopup != null) detailPopup.gameObject.SetActive(false);
             if (effectDetailPopup != null) effectDetailPopup.Hide();
             if (confirmButton != null) confirmButton.gameObject.SetActive(false);
             if (backButtonForCheck != null) backButtonForCheck.gameObject.SetActive(false);
             if (backToForgeButton != null) backToForgeButton.gameObject.SetActive(false);
+            PlayCloseAnimation(null);
         }
 
         private void RefreshUI()
@@ -599,6 +610,7 @@ namespace Alpha.UI
                 selectedIndex = index;
                 Debug.Log($"[InventoryUI] Selected slot {index}");
                 RefreshUI();
+            PlayOpenAnimation();
             }
             else
             {
@@ -615,6 +627,7 @@ namespace Alpha.UI
                     selectedIndex = -1;
                 }
                 RefreshUI();
+            PlayOpenAnimation();
             }
         }
 
@@ -629,6 +642,7 @@ namespace Alpha.UI
             // 繧ゅ＠驕ｸ謚樔ｸｭ縺�縺｣縺溘ｂ縺ｮ縺檎ｧｻ蜍輔＠縺溘ｉ驕ｸ謚櫁ｧ｣髯､縺吶ｋ縺ｪ縺ｩ縺ｮ繧ｱ繧｢
             selectedIndex = -1;
             RefreshUI();
+            PlayOpenAnimation();
         }
 
         private void SwapItems(int index1, int index2)
@@ -799,6 +813,56 @@ namespace Alpha.UI
 
                 detailPopup.Setup(item.series, item.partType, item.rarity, displayEffects, eventData.position, item.setBonusEffect);
             }
+        }
+
+        // --- Panel Animation Helpers ---
+        private CanvasGroup EnsurePanelCanvasGroup()
+        {
+            if (panelCanvasGroup != null) return panelCanvasGroup;
+            if (panel == null) return null;
+            panelCanvasGroup = panel.GetComponent<CanvasGroup>();
+            if (panelCanvasGroup == null) panelCanvasGroup = panel.AddComponent<CanvasGroup>();
+            panelOriginalScale = panel.transform.localScale;
+            if (panelOriginalScale.sqrMagnitude < 0.01f) panelOriginalScale = Vector3.one;
+            return panelCanvasGroup;
+        }
+
+        private void PlayOpenAnimation()
+        {
+            var cg = EnsurePanelCanvasGroup();
+            if (cg == null || panel == null) return;
+
+            cg.alpha = 0f;
+            panel.transform.localScale = panelOriginalScale * 0.85f;
+
+            cg.DOFade(1f, 0.2f).SetEase(Ease.OutCubic).SetUpdate(true);
+            panel.transform.DOScale(panelOriginalScale, 0.2f).SetEase(Ease.OutCubic).SetUpdate(true);
+        }
+
+        private void PlayCloseAnimation(System.Action onComplete)
+        {
+            var cg = EnsurePanelCanvasGroup();
+            if (cg == null || panel == null)
+            {
+                if (panel != null) panel.SetActive(false);
+                onComplete?.Invoke();
+                return;
+            }
+
+            isCloseAnimating = true;
+            UIInputBlocker_Alpha.Block();
+
+            cg.DOFade(0f, 0.12f).SetEase(Ease.InCubic).SetUpdate(true);
+            panel.transform.DOScale(panelOriginalScale * 0.85f, 0.12f).SetEase(Ease.InCubic).SetUpdate(true)
+                .OnComplete(() =>
+                {
+                    panel.SetActive(false);
+                    panel.transform.localScale = panelOriginalScale;
+                    cg.alpha = 1f;
+                    isCloseAnimating = false;
+                    UIInputBlocker_Alpha.Unblock();
+                    onComplete?.Invoke();
+                });
         }
     }
 }

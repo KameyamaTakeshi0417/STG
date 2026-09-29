@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -32,6 +33,7 @@ namespace Alpha.UI
 
         private System.Action<WeaponPartInstance_Alpha> onChoiceSelected;
         private List<WeaponPartInstance_Alpha> currentChoices;
+        private bool isAnimating = false;
 
         private void Awake()
         {
@@ -322,21 +324,76 @@ namespace Alpha.UI
 
         private void OnButtonClicked(int index)
         {
+            if (isAnimating) return;
             if (currentChoices != null && index < currentChoices.Count)
             {
                 var selectedWeapon = currentChoices[index];
                 Debug.Log($"[RewardSelectionUI] Selected: {selectedWeapon.series.seriesName} ({selectedWeapon.partType})");
                 
-                // ポップアップが開いたままになっていたら消す
                 if (detailPopup != null) detailPopup.gameObject.SetActive(false);
                 
-                // コールバックで選択されたものを返す
-                onChoiceSelected?.Invoke(selectedWeapon);
+                StartCoroutine(AnimateSelection(index, selectedWeapon));
             }
             else
             {
                 onChoiceSelected?.Invoke(null);
             }
+        }
+
+        private IEnumerator AnimateSelection(int selectedIndex, WeaponPartInstance_Alpha selectedWeapon)
+        {
+            isAnimating = true;
+            UIInputBlocker_Alpha.Block();
+
+            // 各カードにCanvasGroupを確保
+            CanvasGroup[] cardGroups = new CanvasGroup[choiceButtons.Length];
+            for (int i = 0; i < choiceButtons.Length; i++)
+            {
+                if (choiceButtons[i] != null && choiceButtons[i].gameObject.activeSelf)
+                {
+                    cardGroups[i] = choiceButtons[i].GetComponent<CanvasGroup>();
+                    if (cardGroups[i] == null)
+                        cardGroups[i] = choiceButtons[i].gameObject.AddComponent<CanvasGroup>();
+                }
+            }
+
+            // 他のカードを即フェードアウト（0.1s）
+            for (int i = 0; i < choiceButtons.Length; i++)
+            {
+                if (i != selectedIndex && cardGroups[i] != null)
+                {
+                    cardGroups[i].DOFade(0f, 0.1f).SetUpdate(true);
+                }
+            }
+
+            // 選んだカードをポップ（1.15x, 0.1s, OutBack）
+            if (choiceButtons[selectedIndex] != null)
+            {
+                RectTransform rt = choiceButtons[selectedIndex].GetComponent<RectTransform>();
+                if (rt != null)
+                {
+                    rt.DOScale(rt.localScale * 1.15f, 0.1f).SetEase(Ease.OutBack).SetUpdate(true);
+                }
+            }
+
+            // 0.15s待ち
+            float waited = 0f;
+            while (waited < 0.15f) { waited += Time.unscaledDeltaTime; yield return null; }
+
+            // 選んだカードをフェードアウト（0.15s）
+            if (cardGroups[selectedIndex] != null)
+            {
+                cardGroups[selectedIndex].DOFade(0f, 0.15f).SetUpdate(true);
+            }
+
+            // フェード完了待ち
+            waited = 0f;
+            while (waited < 0.18f) { waited += Time.unscaledDeltaTime; yield return null; }
+
+            UIInputBlocker_Alpha.Unblock();
+            isAnimating = false;
+
+            onChoiceSelected?.Invoke(selectedWeapon);
         }
 
         private void OnChoiceRightClicked(int index, UnityEngine.EventSystems.PointerEventData eventData)
@@ -356,20 +413,70 @@ namespace Alpha.UI
             Debug.Log($"[RewardSelectionUI] OnCheckEquipClicked called. inventoryUI is null? {inventoryUI == null}");
             if (inventoryUI != null)
             {
-                // 報酬UIを一時的に隠す
-                if (panel != null) panel.SetActive(false);
-                
-                // インベントリ画面を確認モードで開く
-                Debug.Log("[RewardSelectionUI] Calling inventoryUI.ShowForCheck()");
-                inventoryUI.ShowForCheck(OnCheckEquipFinished);
+                StartCoroutine(TransitionToInventory());
             }
+        }
+
+        private IEnumerator TransitionToInventory()
+        {
+            UIInputBlocker_Alpha.Block();
+
+            // 報酬パネルをフェードアウト
+            CanvasGroup panelCG = panel != null ? panel.GetComponent<CanvasGroup>() : null;
+            if (panelCG == null && panel != null) panelCG = panel.AddComponent<CanvasGroup>();
+
+            if (panelCG != null)
+            {
+                panelCG.DOFade(0f, 0.12f).SetUpdate(true);
+                float waited = 0f;
+                while (waited < 0.14f) { waited += Time.unscaledDeltaTime; yield return null; }
+            }
+
+            if (panel != null) panel.SetActive(false);
+
+            UIInputBlocker_Alpha.Unblock();
+
+            inventoryUI.ShowForCheck(OnCheckEquipFinished);
         }
 
         private void OnCheckEquipFinished()
         {
             Debug.Log("[RewardSelectionUI] OnCheckEquipFinished called.");
-            // インベントリ画面が閉じられたら、報酬UIを再表示する
-            if (panel != null) panel.SetActive(true);
+            StartCoroutine(TransitionBackToReward());
+        }
+
+        private IEnumerator TransitionBackToReward()
+        {
+            UIInputBlocker_Alpha.Block();
+
+            // 報酬パネルをフェードインで再表示
+            CanvasGroup panelCG = panel != null ? panel.GetComponent<CanvasGroup>() : null;
+            if (panelCG == null && panel != null) panelCG = panel.AddComponent<CanvasGroup>();
+
+            if (panel != null)
+            {
+                if (panelCG != null) panelCG.alpha = 0f;
+                panel.SetActive(true);
+
+                // カードのCanvasGroupもalphaをリセット
+                for (int i = 0; i < choiceButtons.Length; i++)
+                {
+                    if (choiceButtons[i] != null && choiceButtons[i].gameObject.activeSelf)
+                    {
+                        CanvasGroup cg = choiceButtons[i].GetComponent<CanvasGroup>();
+                        if (cg != null) cg.alpha = 1f;
+                    }
+                }
+
+                if (panelCG != null)
+                {
+                    panelCG.DOFade(1f, 0.15f).SetUpdate(true);
+                    float waited = 0f;
+                    while (waited < 0.17f) { waited += Time.unscaledDeltaTime; yield return null; }
+                }
+            }
+
+            UIInputBlocker_Alpha.Unblock();
         }
     }
 }

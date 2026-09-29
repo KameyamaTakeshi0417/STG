@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -64,7 +64,9 @@ public class Player_Control_Alpha : MonoBehaviour
     {
 
         rb = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>(); // Animator 郢ｧ雋槫徐陟輔・
+        Transform animTransform = transform.Find("animation");
+        if (animTransform != null) animator = animTransform.GetComponent<Animator>();
+        if (animator == null) animator = GetComponentInChildren<Animator>();
         
     }
     // Update is called once per frame
@@ -372,7 +374,31 @@ public class Player_Control_Alpha : MonoBehaviour
         float moveVectorMag = currentVelocity.magnitude;
 
         // Animator 郢昜ｻ｣ﾎ帷ｹ晢ｽ｡郢晢ｽｼ郢ｧ・ｿ郢ｧ螳夲ｽｨ・ｭ陞ｳ繝ｻ
-        animator.SetFloat("mouseXPosition", mouseXPosition);
-        animator.SetFloat("moveVectorMag", moveVectorMag);
+
+        if (animator != null)
+        {
+            // animator.SetFloat("mouseXPosition", mouseXPosition);
+            // animator.SetFloat("moveVectorMag", moveVectorMag);
+            
+            // マウスの位置に合わせてanimationオブジェクトの向きを反転させる
+            Transform animTransform = transform.Find("animation");
+            if (animTransform != null)
+            {
+                float aimDirX = aimPos.x - transform.position.x;
+                Vector3 scale = animTransform.localScale;
+                if (aimDirX < 0) {
+                    scale.x = Mathf.Abs(scale.x); // 反転
+                } else {
+                    scale.x = -Mathf.Abs(scale.x);  // 反転
+                }
+                animTransform.localScale = scale;
+            }
+            
+            bool isMoving = moveVectorMag > 0.05f;
+            animator.SetBool("isMoving", isMoving);
+            
+            bool isShooting = Alpha.Managers.PlayerInputManager_Alpha.Instance.IsFiring;
+            animator.SetBool("isShooting", isShooting);
+        }
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -482,8 +482,13 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
                 for (int i = 0; i < actualHits; i++)
                 {
                     // 速度倍率によるダメージスケーリングを適用 (最大5.0倍)
-                    float velocityRatio = Speed / basePrefabSpeed;
-                    float damageMultiplier = Mathf.Clamp(velocityRatio, 0.1f, 5.0f);
+                    float damageMultiplier = 1.0f;
+                    if (!isEnemyBullet)
+                    {
+                        float velocityRatio = Speed / basePrefabSpeed;
+                        damageMultiplier = UnityEngine.Mathf.Clamp(velocityRatio, 0.1f, 5.0f);
+                    }
+
                     float finalImpactDamage = dmg * damageMultiplier;
 
                     // HP繧呈ｸ帙ｉ縺吶€・蝗樒岼縺ｯ莉翫・dmg縲・蝗樒岼莉･髯阪・縺輔▲縺肴ｸ幄｡ｰ縺輔ｌ縺歸mg繧剃ｽｿ縺・€・

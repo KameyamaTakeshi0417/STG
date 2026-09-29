@@ -155,6 +155,20 @@ public class Alpha_EnemyAI : MonoBehaviour
     protected virtual void Update()
     {
         var health = GetComponent<_Health_Base>();
+        
+        // プレイヤーの方向を向く処理（基本左向き＝スケールXが正）
+        if (TargetTransform != null)
+        {
+            float diffX = TargetTransform.position.x - transform.position.x;
+            Vector3 scale = transform.localScale;
+            // プレイヤーが右にいるなら反転（マイナス）、左にいるなら通常（プラス）
+            if (diffX > 0.1f) {
+                scale.x = -Mathf.Abs(scale.x);
+            } else if (diffX < -0.1f) {
+                scale.x = Mathf.Abs(scale.x);
+            }
+            transform.localScale = scale;
+        }
         if (health != null && health.isStunned)
         {
             if (Rb != null) Rb.velocity = Vector2.zero;
@@ -212,6 +226,20 @@ public class Alpha_EnemyAI : MonoBehaviour
         while (true)
         {
             // スタン中は元のコルーチンを進めずに待機
+        
+        // プレイヤーの方向を向く処理（基本左向き＝スケールXが正）
+        if (TargetTransform != null)
+        {
+            float diffX = TargetTransform.position.x - transform.position.x;
+            Vector3 scale = transform.localScale;
+            // プレイヤーが右にいるなら反転（マイナス）、左にいるなら通常（プラス）
+            if (diffX > 0.1f) {
+                scale.x = -Mathf.Abs(scale.x);
+            } else if (diffX < -0.1f) {
+                scale.x = Mathf.Abs(scale.x);
+            }
+            transform.localScale = scale;
+        }
             if (health != null && health.isStunned)
             {
                 yield return null;

@@ -91,6 +91,26 @@ public class Alpha_EliteHealth : Health
 
         // 頭上のスライダーは使用しないので非表示
         if (hpSlider != null) hpSlider.gameObject.SetActive(false);
+
+        // ----- ダメージテキスト用Canvas の生成（通常エネミーと同じ仕組みを流用） -----
+        var dmgCanvasPrefab = Resources.Load<GameObject>("UI/EnemyHPCanvas");
+        if (dmgCanvasPrefab != null)
+        {
+            GameObject dmgCanvasObj = Instantiate(dmgCanvasPrefab, transform.position, Quaternion.identity);
+            var follower = dmgCanvasObj.GetComponent<HPBarFollower>();
+            if (follower != null) follower.setTargetTransform(transform);
+            canvasTransform = dmgCanvasObj.transform;
+
+            // HPバー部分は非表示（ダメージテキスト表示のみに使用）
+            Transform hpBar = dmgCanvasObj.transform.Find("HPBar");
+            if (hpBar != null) hpBar.gameObject.SetActive(false);
+
+            // ダメージテキストプレハブを設定
+            if (damageTextPrefab == null)
+            {
+                damageTextPrefab = Resources.Load<GameObject>("UI/DamageText");
+            }
+        }
     }
 
     public override void TakeDamage(float damage)
