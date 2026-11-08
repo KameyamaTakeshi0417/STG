@@ -32,6 +32,13 @@ namespace Alpha.Flow
         [Tooltip("敵出現の2秒前に表示する予兆マーカー（未設定時はResourcesからロードします）")]
         public GameObject spawnIndicatorPrefab;
 
+        [Header("Audio Settings")]
+        [Tooltip("雑魚敵出現時の電磁波領域SE（未設定時は Resources/SE/SE_EnemySpawn_Oven_02_HeavyHum が自動ロードされます）")]
+        public AudioClip battleStartSEClip;
+        [Range(0f, 1f)] public float battleStartSEVolume = 0.85f;
+        private static float lastBattleStartSoundTime = -1f;
+        private const float MinBattleStartSoundInterval = 0.7f;
+
         public void SetupSequence(StageSequenceData_Alpha sequence)
         {
             currentSequence = sequence;
@@ -99,12 +106,14 @@ namespace Alpha.Flow
         private System.Collections.IEnumerator SpawnWaveDelayed(WaveData_Alpha wave)
         {
             List<GameObject> indicators = new List<GameObject>();
+            bool hasSpawns = false;
 
             // 1. 予兆マーカーの生成
             foreach (var spawn in wave.spawns)
             {
                 if (spawn.enemyPrefab != null)
                 {
+                    hasSpawns = true;
                     pendingSpawns++;
                     if (spawnIndicatorPrefab != null)
                     {
@@ -112,6 +121,12 @@ namespace Alpha.Flow
                         indicators.Add(indicator);
                     }
                 }
+            }
+
+            // 予兆マーカー出現時にSEを再生
+            if (hasSpawns)
+            {
+                PlayBattleStartSE();
             }
 
             // 2秒待機
@@ -231,6 +246,9 @@ namespace Alpha.Flow
                 indicator = Instantiate(spawnIndicatorPrefab, spawnPos, Quaternion.identity);
             }
 
+            // 予兆マーカー出現時にSEを再生
+            PlayBattleStartSE();
+
             if (useIndicator)
             {
                 yield return new WaitForSeconds(2.0f);
@@ -245,6 +263,38 @@ namespace Alpha.Flow
             pendingSpawns--;
             GameObject enemy = Instantiate(prefab, spawnPos, Quaternion.identity);
             activeMobs.Add(enemy);
+        }
+
+        public void PlayBattleStartSE()
+        {
+            if (Time.unscaledTime - lastBattleStartSoundTime < MinBattleStartSoundInterval) return;
+            lastBattleStartSoundTime = Time.unscaledTime;
+
+            if (battleStartSEClip == null)
+            {
+                battleStartSEClip = Resources.Load<AudioClip>("SE/SE_EnemySpawn_Oven_02_HeavyHum");
+                if (battleStartSEClip == null)
+                {
+                    battleStartSEClip = Resources.Load<AudioClip>("SE/SE_EnemySpawn_Oven_01_Magnetron");
+                }
+                if (battleStartSEClip == null)
+                {
+                    battleStartSEClip = Resources.Load<AudioClip>("SE/戦闘突入音");
+                }
+            }
+
+            if (battleStartSEClip != null)
+            {
+                if (Alpha.Audio.SoundManager_Alpha.Instance != null)
+                {
+                    Alpha.Audio.SoundManager_Alpha.Instance.PlaySE(battleStartSEClip, battleStartSEVolume);
+                }
+                else
+                {
+                    Vector3 playPos = Camera.main != null ? Camera.main.transform.position : transform.position;
+                    AudioSource.PlayClipAtPoint(battleStartSEClip, playPos, battleStartSEVolume);
+                }
+            }
         }
     }
 }

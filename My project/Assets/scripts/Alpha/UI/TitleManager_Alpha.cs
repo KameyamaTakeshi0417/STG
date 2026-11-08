@@ -80,10 +80,17 @@ namespace Alpha.UI
 
         private void OnResumeYes()
         {
-            // TODO: セーブデータから復元して開始する処理（シーンロードなど）
-            // ひとまず保存されているステージを読み込む想定
             Debug.Log("[Title] Load Save Data and Start!");
-            TransitionToScene("TutorialStage_Alpha");
+            string sceneToLoad = "Stage_Alpha";
+            if (Alpha.Core.SaveManager_Alpha.Instance != null && Alpha.Core.SaveManager_Alpha.Instance.HasSaveData())
+            {
+                int stageIdx = Alpha.Core.SaveManager_Alpha.Instance.currentSaveData.currentStageIndex;
+                if (stageIdx == 0)
+                {
+                    sceneToLoad = "Stage_Alpha";
+                }
+            }
+            TransitionToScene(sceneToLoad);
         }
 
         private void OnResumeNewGame()
@@ -129,7 +136,18 @@ namespace Alpha.UI
 
         private void OnOptionsClicked()
         {
-            if (optionsPanel != null) optionsPanel.SetActive(true);
+            if (optionsPanel != null)
+            {
+                var optUI = optionsPanel.GetComponent<OptionsUI_Alpha>();
+                if (optUI != null)
+                {
+                    optUI.OpenOptions();
+                }
+                else
+                {
+                    optionsPanel.SetActive(true);
+                }
+            }
         }
 
         private void OnEncyclopediaClicked()

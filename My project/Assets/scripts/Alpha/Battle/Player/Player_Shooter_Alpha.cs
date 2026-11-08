@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +6,13 @@ public class Player_Shooter_Alpha : MonoBehaviour
 {
     public bool onCoolTime;
     public AudioSource shootAudioSource; // 陟托ｽｾ邵ｺ・ｮ騾具ｽｺ陝・・豬ｹ騾包ｽｨ邵ｺ・ｮAudioSource
+    [Header("Audio Settings")]
+    [Tooltip("Shot SE Clip (Default: SE_Shot_Touhou_01_Zu)")]
+    public AudioClip shootSEClip;
+    [Range(0f, 1f)] public float shootSEVolume = 1.0f;
+    [Tooltip("Weapon Switch SE Clip (Default: SE_WeaponSwitch_4)")]
+    public AudioClip weaponSwitchSEClip;
+    [Range(0f, 1f)] public float weaponSwitchSEVolume = 0.75f;
     public float moveRadius = 2f; // 郢晏干ﾎ樒ｹｧ・､郢晢ｽ､郢晢ｽｼ郢ｧ蜑・ｽｸ・ｭ陟｢繝ｻ竊堤ｸｺ蜷ｶ・玖怺髮・ｽｾ繝ｻ
 
     [Header("Weapon Settings")]
@@ -54,7 +61,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
 
     void Update()
     {
-        if (Time.timeScale == 0f || isPaused)
+        if (Time.timeScale == 0f || isPaused || (Alpha.UI.PauseMenuManager_Alpha.Instance != null && Alpha.UI.PauseMenuManager_Alpha.Instance.IsPaused))
             return;
 
         // 豁ｦ蝎ｨ繧ｰ繝ｫ繝ｼ繝励・繝ｫ繝ｼ繝怜・繧頑崛縺・
@@ -64,6 +71,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
             if (currentWeaponGroup < 0) currentWeaponGroup = 2;
             Debug.Log("Switched weapon group.");
             if (playerStatusScript != null) playerStatusScript.UpdateEquipmentBuffs();
+            PlayWeaponSwitchSE();
         }
         else if (Alpha.Managers.PlayerInputManager_Alpha.Instance.WasWeaponNextPressed || Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3))
         {
@@ -71,6 +79,7 @@ public class Player_Shooter_Alpha : MonoBehaviour
             if (currentWeaponGroup > 2) currentWeaponGroup = 0;
             Debug.Log("Switched weapon group.");
             if (playerStatusScript != null) playerStatusScript.UpdateEquipmentBuffs();
+            PlayWeaponSwitchSE();
         }
 
         // --- アクティブスキルの発動判定 ---
@@ -709,7 +718,11 @@ public class Player_Shooter_Alpha : MonoBehaviour
             CreateSingleBullet(prefabToUse, spawnPos, spawnDir, aimDir, currentReverseTime, finalDmg, effectsToApply, soEffectsToApply, lockedTarget, isBouquet, extraShotsForBullet, extraPierceForBullet, bulletChangeMultiplier, voltTickReduceForBullet, secondaryDamageUpForBullet);
 
             // 繧ｵ繧ｦ繝ｳ繝峨お繝輔ぉ繧ｯ繝医・蜀咲函・亥ｿ・ｦ√↓蠢懊§縺ｦ・・
-            // if (shootAudioSource != null) shootAudioSource.Play();
+            // サウンドエフェクトの再生
+            if (i == 0 || pattern == playerStatusManager_Alpha.SpawnPattern.Barrage || pattern == playerStatusManager_Alpha.SpawnPattern.Reverse)
+            {
+                PlayShootSE();
+            }
 
             if (pattern == playerStatusManager_Alpha.SpawnPattern.Barrage || pattern == playerStatusManager_Alpha.SpawnPattern.Reverse)
             {
@@ -812,6 +825,64 @@ public class Player_Shooter_Alpha : MonoBehaviour
             }
 
             bulletScript.shoot();
+        }
+    }
+
+    private void PlayWeaponSwitchSE()
+    {
+        if (weaponSwitchSEClip == null)
+        {
+            weaponSwitchSEClip = Resources.Load<AudioClip>("SE/SE_WeaponSwitch_4");
+            if (weaponSwitchSEClip == null)
+            {
+                weaponSwitchSEClip = Resources.Load<AudioClip>("SE/武器切り替え_4");
+            }
+        }
+
+        if (weaponSwitchSEClip != null)
+        {
+            if (Alpha.Audio.SoundManager_Alpha.Instance != null)
+            {
+                Alpha.Audio.SoundManager_Alpha.Instance.PlaySE(weaponSwitchSEClip, weaponSwitchSEVolume);
+            }
+            else if (shootAudioSource != null)
+            {
+                shootAudioSource.spatialBlend = 0f;
+                shootAudioSource.PlayOneShot(weaponSwitchSEClip, weaponSwitchSEVolume);
+            }
+            else
+            {
+                AudioSource src = GetComponent<AudioSource>();
+                if (src == null) src = gameObject.AddComponent<AudioSource>();
+                src.spatialBlend = 0f;
+                src.PlayOneShot(weaponSwitchSEClip, weaponSwitchSEVolume);
+            }
+        }
+    }
+
+    private void PlayShootSE()
+    {
+        if (shootSEClip == null)
+        {
+            shootSEClip = Resources.Load<AudioClip>("SE/SE_Shot_Touhou_01_Zu");
+        }
+
+        if (shootSEClip != null)
+        {
+            if (Alpha.Audio.SoundManager_Alpha.Instance != null)
+            {
+                Alpha.Audio.SoundManager_Alpha.Instance.PlaySE(shootSEClip, shootSEVolume);
+            }
+            else if (shootAudioSource != null)
+            {
+                shootAudioSource.PlayOneShot(shootSEClip, shootSEVolume);
+            }
+            else
+            {
+                AudioSource src = GetComponent<AudioSource>();
+                if (src == null) src = gameObject.AddComponent<AudioSource>();
+                src.PlayOneShot(shootSEClip, shootSEVolume);
+            }
         }
     }
 }

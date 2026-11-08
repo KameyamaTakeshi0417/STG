@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -69,6 +69,19 @@ public class _Health_Base : MonoBehaviour
     public bool isBoss = false;
     [Tooltip("ボスのID（ボスの場合のみ）")]
     public string bossId = "";
+
+    [Header("Hit Audio Settings")]
+    [Tooltip("敵被弾時のSE（未設定時は発射音SEを低ピッチで再生、または SE_Hit_Enemy_01_LowZu を自動ロード）")]
+    public AudioClip hitSEClip;
+    [Range(0f, 1f)] public float hitSEVolume = 0.7f;
+    [Tooltip("発射音を低音で再生する場合のピッチ（0.5〜0.7程度で重厚な着弾感になります）")]
+    [Range(0.3f, 1.5f)] public float hitSEPitch = 0.62f;
+    [Tooltip("連射ヒット時に耳障りにならないよう、ピッチをわずかにランダム化するか")]
+    public bool randomizeHitPitch = true;
+    private static float lastEnemyHitSoundTime = -1f;
+    private const float MinEnemyHitSoundInterval = 0.035f;
+    private static AudioClip defaultHitClip = null;
+    private static AudioClip defaultShotClip = null;
 
     /// <summary>
     /// 全エネミー共通のドロップ処理（経験値、オーブ、花弁など）
@@ -252,6 +265,9 @@ public class _Health_Base : MonoBehaviour
         }
         // --- End Juice Additions ---
 
+        // 敵被弾ヒットSEの再生
+        PlayEnemyHitSound();
+
         TakeDamage(damage);
 
         // HitStop on death for normal mobs
@@ -275,6 +291,64 @@ public class _Health_Base : MonoBehaviour
         // 次回の復活時間を設定し、次回用の復活時間を延長する
         barrierRespawnTimer = currentBarrierRespawnTime;
         currentBarrierRespawnTime += barrierBaseRespawnTime;
+    }
+
+    protected virtual void PlayEnemyHitSound()
+    {
+        // プレイヤー自身には適用しない
+        if (this is PlayerHealth || CompareTag("Player")) return;
+
+        // 連射時の音割れ・過多再生防止
+        if (Time.unscaledTime - lastEnemyHitSoundTime < MinEnemyHitSoundInterval) return;
+        lastEnemyHitSoundTime = Time.unscaledTime;
+
+        AudioClip clipToPlay = hitSEClip;
+        float pitchToPlay = hitSEPitch;
+
+        if (clipToPlay == null)
+        {
+            if (defaultHitClip == null)
+            {
+                defaultHitClip = Resources.Load<AudioClip>("SE/SE_Hit_Enemy_01_LowZu");
+            }
+
+            if (defaultHitClip != null)
+            {
+                clipToPlay = defaultHitClip;
+                pitchToPlay = 1.0f;
+            }
+            else
+            {
+                // 専用低音WAVがない場合、発射音を低ピッチで再生
+                if (defaultShotClip == null)
+                {
+                    defaultShotClip = Resources.Load<AudioClip>("SE/SE_Shot_Touhou_01_Zu");
+                }
+                clipToPlay = defaultShotClip;
+                pitchToPlay = hitSEPitch;
+            }
+        }
+
+        if (clipToPlay != null)
+        {
+            if (randomizeHitPitch)
+            {
+                pitchToPlay *= UnityEngine.Random.Range(0.95f, 1.05f);
+            }
+
+            if (Alpha.Audio.SoundManager_Alpha.Instance != null)
+            {
+                Alpha.Audio.SoundManager_Alpha.Instance.PlaySE(clipToPlay, hitSEVolume, pitchToPlay);
+            }
+            else
+            {
+                AudioSource src = GetComponent<AudioSource>();
+                if (src == null) src = gameObject.AddComponent<AudioSource>();
+                src.spatialBlend = 0f;
+                src.pitch = pitchToPlay;
+                src.PlayOneShot(clipToPlay, hitSEVolume);
+            }
+        }
     }
 
     public virtual void TakeDamage(float damage) { }

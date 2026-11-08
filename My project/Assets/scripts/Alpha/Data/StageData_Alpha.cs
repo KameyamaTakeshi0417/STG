@@ -14,6 +14,10 @@ namespace Alpha.Data
         [Tooltip("ステージ後半のシーケンスデータ")]
         public StageSequenceData_Alpha secondHalf;
 
+        [Header("Reward Table Data")]
+        [Tooltip("このステージでドロップする報酬テーブル（未設定時はWeaponGeneratorのデフォルトを使用）")]
+        public RewardTableData_Alpha stageRewardTable;
+
         [Header("ADV Data")]
         [Tooltip("鍛冶フェーズ前に再生するADVデータ（任意）")]
         public ADVData_Alpha preBlacksmithADV;

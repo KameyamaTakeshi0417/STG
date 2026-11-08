@@ -73,7 +73,7 @@ public class Player_Control_Alpha : MonoBehaviour
 
     protected virtual void Update()
     {
-        if (Time.timeScale == 0f)
+        if (Time.timeScale == 0f || (Alpha.UI.PauseMenuManager_Alpha.Instance != null && Alpha.UI.PauseMenuManager_Alpha.Instance.IsPaused))
             return;
 
         if (!isSpecialMoving)
@@ -82,7 +82,7 @@ public class Player_Control_Alpha : MonoBehaviour
             if (myStatus.currentSpecialMove == playerStatusManager_Alpha.SpecialMoveType.Focus)
             {
                 // Input System: 郢晏ｸ吶・郢晢ｽｫ郢晉甥諢幄楜繝ｻ
-                bool isSpecialPressed = Alpha.Managers.PlayerInputManager_Alpha.Instance.IsSpecialPressed;
+                bool isSpecialPressed = Alpha.Managers.PlayerInputManager_Alpha.Instance.IsSpecialPressed || Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
                 
                 if (isSpecialPressed && myStatus.currentStamina > 0 && !myStatus.isStaminaExhausted)
                 {

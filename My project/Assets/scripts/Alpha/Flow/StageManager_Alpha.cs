@@ -45,6 +45,11 @@ namespace Alpha.Flow
         public Alpha.Effect.Alpha_MidBossAppearEffect midBossAppearEffectUI;
 
         [Header("State (Read Only)")]
+        [Header("Timeline Skip Audio")]
+        [Tooltip("タイムラインスキップ時のつまみ移動音（未設定時は Resources/SE/SE_Timeline_Skip_Mech_01_HeavyServo がロードされます）")]
+        public AudioClip timelineSkipMoveClip;
+        [Range(0f, 1f)] public float timelineSkipMoveVolume = 0.8f;
+
         public StageState_Alpha currentState = StageState_Alpha.None;
         public float currentSequenceTime = 0f;
 
@@ -128,6 +133,9 @@ namespace Alpha.Flow
 
         void Update()
         {
+            if (Time.timeScale == 0f || (Alpha.UI.PauseMenuManager_Alpha.Instance != null && Alpha.UI.PauseMenuManager_Alpha.Instance.IsPaused))
+                return;
+
             if (spawnManager != null)
             {
                 bool currentMobCleared = spawnManager.IsMobCleared();
@@ -280,7 +288,7 @@ namespace Alpha.Flow
         private void HandleWaveSkip()
         {
             // ポーズ中のスキップを受け付けない
-            if (Time.timeScale == 0f) return;
+            if (Time.timeScale == 0f || (Alpha.UI.PauseMenuManager_Alpha.Instance != null && Alpha.UI.PauseMenuManager_Alpha.Instance.IsPaused)) return;
             if (isSequenceAnimating) return;
             // ラッシュ中はスキップを受け付けない
             if (spawnManager != null && spawnManager.IsRushActive()) return;
@@ -290,9 +298,11 @@ namespace Alpha.Flow
             {
                 isSkipInput = Alpha.Core.InputManager_Alpha.Instance.GetActionDown(Alpha.Core.ActionType_Alpha.WaveSkip);
             }
-            else
+            
+            // Spaceキーおよび左右Shiftキーでのスキップを許容（ポーズ外でのみ発動）
+            if (!isSkipInput)
             {
-                isSkipInput = Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.LeftShift);
+                isSkipInput = Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift);
             }
 
             if (isSkipInput)
@@ -331,6 +341,7 @@ namespace Alpha.Flow
             float startProgress = activeSequence.duration > 0f ? currentSequenceTime / activeSequence.duration : 0f;
             float endProgress = activeSequence.duration > 0f ? targetTime / activeSequence.duration : 1f;
             
+            PlayTimelineSkipMoveSE();
             yield return StartCoroutine(sequenceBarUI.AnimateProgress(startProgress, endProgress, 0.5f));
 
             currentSequenceTime = targetTime;
@@ -346,6 +357,18 @@ namespace Alpha.Flow
             }
 
             isSequenceAnimating = false;
+        }
+
+        private void PlayTimelineSkipMoveSE()
+        {
+            if (timelineSkipMoveClip == null)
+            {
+                timelineSkipMoveClip = Resources.Load<AudioClip>("SE/SE_Timeline_Skip_Mech_01_HeavyServo");
+            }
+            if (timelineSkipMoveClip != null && Alpha.Audio.SoundManager_Alpha.Instance != null)
+            {
+                Alpha.Audio.SoundManager_Alpha.Instance.PlaySE(timelineSkipMoveClip, timelineSkipMoveVolume);
+            }
         }
 
         private void CheckTutorials()
@@ -412,6 +435,7 @@ namespace Alpha.Flow
                 Alpha.Audio.SoundManager_Alpha.Instance.PlayBGM(currentStageData.stageBGM, 0.5f);
             }
 
+            SpawnWitheredGrassForHalf();
             SetState(StageState_Alpha.FirstHalf);
         }
 
@@ -480,6 +504,12 @@ namespace Alpha.Flow
                     fadeController.FadeOut(() => 
                     {
                         Debug.Log("[StageManager] Fade Out Complete. Hook for Equipment Turn.");
+                        
+                        // ステージ前半終了時（報酬獲得前）のオートセーブ
+                        if (Alpha.Core.SaveManager_Alpha.Instance != null)
+                        {
+                            Alpha.Core.SaveManager_Alpha.Instance.AutoSaveAtMidBossClear();
+                        }
                         
                         // 闕ｳ・ｭ郢晄㈱縺幄ｬｦ繝ｻ・ｰ・ｴ陜｣・ｱ鬩滂ｽｬ邵ｺ・ｮ郢ｧ・ｪ郢晢ｽｼ郢晄じ・定叉ﾂ隴∬崟蟷戊氣繝ｻ
                         if (RewardSequenceManager_Alpha.Instance != null)
@@ -581,6 +611,12 @@ namespace Alpha.Flow
 
         private void ExecuteBossRewardPhase()
         {
+            // ステージ後半終了時（報酬獲得前）のオートセーブ
+            if (Alpha.Core.SaveManager_Alpha.Instance != null)
+            {
+                Alpha.Core.SaveManager_Alpha.Instance.AutoSaveAtBossClear();
+            }
+
             if (RewardSequenceManager_Alpha.Instance != null)
             {
                 RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
@@ -954,7 +990,26 @@ namespace Alpha.Flow
                 Alpha.Audio.SoundManager_Alpha.Instance.PlayBGM(currentStageData.stageBGM, 0.5f);
             }
             
+            SpawnWitheredGrassForHalf();
             SetState(StageState_Alpha.SecondHalf);
+        }
+
+        /// <summary>
+        /// ステージ前半・後半の開始時に枯れ草を生やす。
+        /// 前ステージのクリア時にジェネレーターが非アクティブ化されているため、非アクティブも含めて検索する。
+        /// </summary>
+        private void SpawnWitheredGrassForHalf()
+        {
+            var generators = Resources.FindObjectsOfTypeAll<Environment.ProceduralGrassGenerator_Alpha>();
+            foreach (var generator in generators)
+            {
+                // プレハブアセットを除外（シーン上のものだけ対象）
+                if (generator.gameObject.scene.name == null) continue;
+                if (!generator.spawnWitheredOnHalfStart) continue;
+
+                generator.gameObject.SetActive(true);
+                generator.GenerateWitheredGrass(0f);
+            }
         }
 
         public void TriggerSlowMotion(float targetTimeScale = 0.7f, float duration = 3f)

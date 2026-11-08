@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Alpha.Data;
 using Alpha.Battle;
 
@@ -71,6 +71,11 @@ namespace Alpha.Flow
         public int targetQuality = 1;
         public int currentRewardIndex = 1;
 
+        [Header("Audio Settings")]
+        [Tooltip("スコア加算時のティッカー音（未設定時は Resources/SE/SE_Counter_Tick_Mech_01 がロードされます）")]
+        public AudioClip counterTickClip;
+        [Range(0f, 1f)] public float counterTickVolume = 0.65f;
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -130,11 +135,22 @@ namespace Alpha.Flow
                 float duration = 0.5f;
                 float elapsed = 0f;
                 float particleTimer = 0f;
+                float tickTimer = 0f;
+                const float tickInterval = 0.035f; // 35msごとに小気味よく「カカカカ…」
+                int lastVisPoint = startVis;
 
                 while (elapsed < duration)
                 {
                     elapsed += Time.deltaTime;
+                    tickTimer += Time.deltaTime;
                     visualPoints = Mathf.RoundToInt(Mathf.Lerp(startVis, targetVis, elapsed / duration));
+
+                    if (visualPoints != lastVisPoint && tickTimer >= tickInterval)
+                    {
+                        tickTimer = 0f;
+                        lastVisPoint = visualPoints;
+                        PlayCounterTickSE();
+                    }
                     
                     if (Alpha.UI.SequenceBarUI_Alpha.Instance != null)
                     {
@@ -277,6 +293,18 @@ namespace Alpha.Flow
                     int extraQuality = forceQuality1 ? 1 : bossDropTable.GetRandomRarity();
                     SpawnOrb(spawnPos + new Vector3(0.2f, 0.2f, 0), extraQuality, OrbSource_Alpha.Boss, bossId);
                 }
+            }
+        }
+
+        public void PlayCounterTickSE()
+        {
+            if (counterTickClip == null)
+            {
+                counterTickClip = Resources.Load<AudioClip>("SE/SE_Counter_Tick_Mech_01");
+            }
+            if (counterTickClip != null && Alpha.Audio.SoundManager_Alpha.Instance != null)
+            {
+                Alpha.Audio.SoundManager_Alpha.Instance.PlaySE(counterTickClip, counterTickVolume);
             }
         }
 

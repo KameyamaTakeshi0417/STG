@@ -10,6 +10,23 @@ namespace Alpha.Item
         private Transform playerTransform;
         private bool isCollected = false;
 
+        // オーディオ設定
+        [Header("Audio Settings")]
+        [Tooltip("ドロップ時のSE（未設定の場合は SE_GetExp_01_Pik が自動ロードされます）")]
+        public AudioClip dropSEClip;
+        [Tooltip("取得時のSE（未設定の場合は SE_GetExp_04_DryBlip が自動ロードされます）")]
+        public AudioClip collectSEClip;
+        [Range(0f, 1f)] public float dropSEVolume = 0.65f;
+        [Range(0f, 1f)] public float collectSEVolume = 0.75f;
+
+        private static AudioClip cachedDropClip;
+        private static AudioClip cachedCollectClip;
+        private static float lastDropSoundTime = -1f;
+        private static float lastCollectSoundTime = -1f;
+
+        private const float MinDropSoundInterval = 0.06f;    // 同時に複数ドロップした際の重複再生防止
+        private const float MinCollectSoundInterval = 0.025f; // 大量回収時の心地よいプチチチ感（同一フレーム重なり防止）
+
         private void OnCollisionEnter2D(Collision2D collision)
         {
             if (collision.gameObject.CompareTag("Player"))
@@ -36,6 +53,10 @@ namespace Alpha.Item
             {
                 playerTransform = playerObj.transform;
             }
+
+            // 出現・ドロップ時SEの再生
+            PlayDropSE();
+
             SetupScatter();
         }
 
@@ -102,6 +123,9 @@ namespace Alpha.Item
             {
                 isCollected = true;
                 
+                // 取得時SEの再生
+                PlayCollectSE();
+
                 var playerStatus = FindObjectOfType<playerStatusManager_Alpha>();
                 if (playerStatus != null)
                 {
@@ -119,6 +143,62 @@ namespace Alpha.Item
             }
             // 確実に破壊する
             Destroy(gameObject);
+        }
+
+        private void PlayDropSE()
+        {
+            if (Time.unscaledTime - lastDropSoundTime < MinDropSoundInterval) return;
+            lastDropSoundTime = Time.unscaledTime;
+
+            AudioClip clip = dropSEClip;
+            if (clip == null)
+            {
+                if (cachedDropClip == null)
+                {
+                    cachedDropClip = Resources.Load<AudioClip>("SE/SE_GetExp_01_Pik");
+                }
+                clip = cachedDropClip;
+            }
+
+            if (clip != null)
+            {
+                if (Alpha.Audio.SoundManager_Alpha.Instance != null)
+                {
+                    Alpha.Audio.SoundManager_Alpha.Instance.PlaySE(clip, dropSEVolume);
+                }
+                else
+                {
+                    AudioSource.PlayClipAtPoint(clip, transform.position, dropSEVolume);
+                }
+            }
+        }
+
+        private void PlayCollectSE()
+        {
+            if (Time.unscaledTime - lastCollectSoundTime < MinCollectSoundInterval) return;
+            lastCollectSoundTime = Time.unscaledTime;
+
+            AudioClip clip = collectSEClip;
+            if (clip == null)
+            {
+                if (cachedCollectClip == null)
+                {
+                    cachedCollectClip = Resources.Load<AudioClip>("SE/SE_GetExp_04_DryBlip");
+                }
+                clip = cachedCollectClip;
+            }
+
+            if (clip != null)
+            {
+                if (Alpha.Audio.SoundManager_Alpha.Instance != null)
+                {
+                    Alpha.Audio.SoundManager_Alpha.Instance.PlaySE(clip, collectSEVolume);
+                }
+                else
+                {
+                    AudioSource.PlayClipAtPoint(clip, transform.position, collectSEVolume);
+                }
+            }
         }
     }
 }

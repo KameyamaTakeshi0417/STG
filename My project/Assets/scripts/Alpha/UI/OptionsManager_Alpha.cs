@@ -26,9 +26,34 @@ namespace Alpha.UI
         {
             if (optionsPanel != null) optionsPanel.SetActive(false);
 
-            if (masterVolumeSlider != null) masterVolumeSlider.onValueChanged.AddListener(OnMasterVolumeChanged);
-            if (systemVolumeSlider != null) systemVolumeSlider.onValueChanged.AddListener(OnSystemVolumeChanged);
-            if (battleVolumeSlider != null) battleVolumeSlider.onValueChanged.AddListener(OnBattleVolumeChanged);
+            // 初期ボリュームをマネージャーから反映
+            float masterVol = 1f;
+            float seVol = 0.8f;
+            if (Alpha.Managers.GameSettingsManager_Alpha.Instance != null)
+            {
+                masterVol = Alpha.Managers.GameSettingsManager_Alpha.Instance.CurrentSettings.masterVolume;
+                seVol = Alpha.Managers.GameSettingsManager_Alpha.Instance.CurrentSettings.seVolume;
+            }
+            else if (Alpha.Audio.SoundManager_Alpha.Instance != null)
+            {
+                seVol = Alpha.Audio.SoundManager_Alpha.Instance.masterSEVolume;
+            }
+
+            if (masterVolumeSlider != null)
+            {
+                masterVolumeSlider.value = masterVol;
+                masterVolumeSlider.onValueChanged.AddListener(OnMasterVolumeChanged);
+            }
+            if (systemVolumeSlider != null)
+            {
+                systemVolumeSlider.value = seVol;
+                systemVolumeSlider.onValueChanged.AddListener(OnSystemVolumeChanged);
+            }
+            if (battleVolumeSlider != null)
+            {
+                battleVolumeSlider.value = seVol;
+                battleVolumeSlider.onValueChanged.AddListener(OnBattleVolumeChanged);
+            }
 
             if (keyConfigButton != null) keyConfigButton.onClick.AddListener(OnKeyConfigClicked);
             if (backButton != null) backButton.onClick.AddListener(OnBackClicked);
@@ -41,20 +66,36 @@ namespace Alpha.UI
 
         private void OnMasterVolumeChanged(float value)
         {
-            // TODO: AudioMixer への反映
-            ShowUnderDevelopment();
+            if (Alpha.Managers.GameSettingsManager_Alpha.Instance != null)
+            {
+                Alpha.Managers.GameSettingsManager_Alpha.Instance.SetMasterVolume(value);
+            }
+            else
+            {
+                AudioListener.volume = value;
+            }
         }
 
         private void OnSystemVolumeChanged(float value)
         {
-            // TODO: AudioMixer への反映
-            ShowUnderDevelopment();
+            ApplySEVolume(value);
         }
 
         private void OnBattleVolumeChanged(float value)
         {
-            // TODO: AudioMixer への反映
-            ShowUnderDevelopment();
+            ApplySEVolume(value);
+        }
+
+        private void ApplySEVolume(float value)
+        {
+            if (Alpha.Audio.SoundManager_Alpha.Instance != null)
+            {
+                Alpha.Audio.SoundManager_Alpha.Instance.UpdateSEVolume(value);
+            }
+            if (Alpha.Managers.GameSettingsManager_Alpha.Instance != null)
+            {
+                Alpha.Managers.GameSettingsManager_Alpha.Instance.SetSEVolume(value);
+            }
         }
 
         private void OnKeyConfigClicked()

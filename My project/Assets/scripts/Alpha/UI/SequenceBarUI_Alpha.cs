@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using Alpha.Data;
@@ -43,6 +43,15 @@ namespace Alpha.UI
                 return;
             }
             Instance = this;
+
+            // 木や葉っぱなどのオブジェクト(SortingLayer: object)より手前に確実に表示する
+            Canvas canvas = GetComponentInParent<Canvas>();
+            if (canvas != null)
+            {
+                canvas.overrideSorting = true;
+                canvas.sortingLayerName = "SystemUI";
+                canvas.sortingOrder = 500;
+            }
         }
 
         /// <summary>

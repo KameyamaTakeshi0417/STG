@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
@@ -46,6 +46,15 @@ namespace Alpha.Audio
             DontDestroyOnLoad(gameObject);
 
             InitializeAudioSources();
+            if (Alpha.Managers.GameSettingsManager_Alpha.Instance != null)
+            {
+                var settings = Alpha.Managers.GameSettingsManager_Alpha.Instance.CurrentSettings;
+                if (settings != null)
+                {
+                    masterBGMVolume = settings.bgmVolume;
+                    masterSEVolume = settings.seVolume;
+                }
+            }
         }
 
         private void InitializeAudioSources()
@@ -61,6 +70,7 @@ namespace Alpha.Audio
             {
                 AudioSource seSource = gameObject.AddComponent<AudioSource>();
                 seSource.playOnAwake = false;
+                seSource.spatialBlend = 0f;
                 seSources.Add(seSource);
             }
         }
@@ -105,6 +115,34 @@ namespace Alpha.Audio
             }
         }
 
+                private bool isBGMPaused = false;
+
+        /// <summary>
+        /// ポーズメニュー表示時などにBGMを一時停止します。
+        /// </summary>
+        public void PauseBGM()
+        {
+            if (bgmSource == null) InitializeAudioSources();
+            if (bgmSource != null && bgmSource.isPlaying)
+            {
+                bgmSource.Pause();
+                isBGMPaused = true;
+            }
+        }
+
+        /// <summary>
+        /// ポーズ解除時にBGMを一時停止位置から再開します。
+        /// </summary>
+        public void ResumeBGM()
+        {
+            if (bgmSource == null) InitializeAudioSources();
+            if (bgmSource != null && isBGMPaused)
+            {
+                bgmSource.UnPause();
+                isBGMPaused = false;
+            }
+        }
+
         public void StopBGM(float fadeDuration = 0.5f)
         {
             if (bgmSource.isPlaying)
@@ -127,10 +165,30 @@ namespace Alpha.Audio
         public void UpdateBGMVolume(float newVolume)
         {
             masterBGMVolume = Mathf.Clamp01(newVolume);
-            if (bgmSource.isPlaying)
+            if (bgmSource == null) InitializeAudioSources();
+            if (bgmSource != null)
             {
                 bgmSource.DOKill();
                 bgmSource.volume = masterBGMVolume;
+            }
+        }
+
+        /// <summary>
+        /// オプション画面などからSE全体の音量を更新します。
+        /// </summary>
+        public void UpdateSEVolume(float newVolume)
+        {
+            masterSEVolume = Mathf.Clamp01(newVolume);
+            if (seSources == null || seSources.Count == 0) InitializeAudioSources();
+            if (seSources != null)
+            {
+                foreach (var source in seSources)
+                {
+                    if (source != null)
+                    {
+                        source.volume = masterSEVolume;
+                    }
+                }
             }
         }
 
@@ -139,9 +197,18 @@ namespace Alpha.Audio
         /// </summary>
         public void PlaySE(AudioClip clip, float volumeScale = 1f)
         {
+            PlaySE(clip, volumeScale, 1f);
+        }
+
+        /// <summary>
+        /// ピッチを指定してSEを再生します（敵被弾音など、発射音を低いピッチで鳴らす場合などに使用）。
+        /// </summary>
+        public void PlaySE(AudioClip clip, float volumeScale, float pitch)
+        {
             if (clip == null) return;
 
             AudioSource source = GetAvailableSESource();
+            source.pitch = pitch;
             source.volume = masterSEVolume * volumeScale;
             source.PlayOneShot(clip);
         }
@@ -156,6 +223,7 @@ namespace Alpha.Audio
             // 全て使用中の場合は新しく追加
             AudioSource newSource = gameObject.AddComponent<AudioSource>();
             newSource.playOnAwake = false;
+            newSource.spatialBlend = 0f;
             seSources.Add(newSource);
             return newSource;
         }

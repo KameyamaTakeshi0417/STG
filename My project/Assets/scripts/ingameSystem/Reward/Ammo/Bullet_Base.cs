@@ -14,6 +14,35 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
     [Header("Alignment Settings")]
     [Tooltip("Tooltip")]
     public bool isEnemyBullet = false;
+
+    [Header("Enemy Shoot Audio Settings")]
+    private static float lastEnemyShootSoundTime = -1f;
+    private const float MinEnemyShootSoundInterval = 0.045f;
+    private static AudioClip defaultEnemyShotClip = null;
+
+    public static void PlayEnemyShotSEGlobal(AudioClip customClip = null, float volume = 0.65f)
+    {
+        if (Time.unscaledTime - lastEnemyShootSoundTime < MinEnemyShootSoundInterval) return;
+        lastEnemyShootSoundTime = Time.unscaledTime;
+
+        AudioClip clipToPlay = customClip;
+        if (clipToPlay == null)
+        {
+            if (defaultEnemyShotClip == null)
+            {
+                defaultEnemyShotClip = Resources.Load<AudioClip>("SE/SE_EnemyShot_01_Po");
+            }
+            clipToPlay = defaultEnemyShotClip;
+        }
+
+        if (clipToPlay != null)
+        {
+            if (Alpha.Audio.SoundManager_Alpha.Instance != null)
+            {
+                Alpha.Audio.SoundManager_Alpha.Instance.PlaySE(clipToPlay, volume);
+            }
+        }
+    }
     [Tooltip("Tooltip")]
     public bool canHitBoth = false;
  
@@ -271,6 +300,11 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
         foreach (var eff in soEffects)
         {
             eff.effectSO.OnFire(this, eff.rarity);
+        }
+
+        if (isEnemyBullet)
+        {
+            PlayEnemyShotSEGlobal();
         }
 
         StartCoroutine(move());

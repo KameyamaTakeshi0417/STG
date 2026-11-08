@@ -4,6 +4,10 @@ Shader "Alpha/InteractiveGrass2D"
     {
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
         _Color ("Tint", Color) = (1,1,1,1)
+
+        [Header(Recolor Settings)]
+        [PerRendererData] _Desaturate ("Desaturate (0=Original, 1=Gray then Tint)", Range(0,1)) = 0
+        _GrayBoost ("Gray Brightness Boost", Float) = 2.0
         
         [Header(Wind Settings)]
         _WindSpeed ("Wind Speed", Float) = 2.0
@@ -79,6 +83,9 @@ Shader "Alpha/InteractiveGrass2D"
             float _EnableExternalAlpha;
             fixed4 _RendererColor;
             
+            float _Desaturate;
+            float _GrayBoost;
+            
             // Global Variable set by script
             float3 _PlayerPos;
 
@@ -132,7 +139,17 @@ Shader "Alpha/InteractiveGrass2D"
 
             fixed4 frag(v2f IN) : SV_Target
             {
-                fixed4 c = tex2D(_MainTex, IN.texcoord) * IN.color;
+                fixed4 texCol = tex2D(_MainTex, IN.texcoord);
+                
+                // モノクロ化（白黒）の計算 + 明るさブースト
+                float gray = dot(texCol.rgb, float3(0.299, 0.587, 0.114)) * _GrayBoost;
+                
+                // Desaturateが1なら白黒、0なら元の色
+                float3 baseCol = lerp(texCol.rgb, float3(gray, gray, gray), _Desaturate);
+                
+                // 白黒にしたテクスチャに、頂点カラー（Tint色が含まれている）を掛ける
+                fixed4 c = fixed4(baseCol, texCol.a) * IN.color;
+                
                 if (_EnableExternalAlpha) {
                     c.a = tex2D(_AlphaTex, IN.texcoord).r * IN.color.a;
                 }

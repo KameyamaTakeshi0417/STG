@@ -23,6 +23,16 @@ namespace Alpha.Environment
         public Color colorA = new Color(0.3f, 0.8f, 0.3f, 1f);
         public Color colorB = new Color(0.2f, 0.6f, 0.2f, 1f);
 
+        [Header("Withered Grass (Stage Half Start)")]
+        [Tooltip("ステージ前半・後半の開始時に枯れ草を少量生やすかどうか（StageManager_Alphaから呼ばれる）")]
+        public bool spawnWitheredOnHalfStart = true;
+        [Tooltip("枯れ草の本数（通常の草より少なめ推奨）")]
+        public int witheredGrassCount = 150;
+        [Tooltip("枯れ草のノイズ閾値。高いほどまばら・小さな塊になる")]
+        public float witheredSpawnThreshold = 0.55f;
+        public Color witheredColorA = new Color(0.55f, 0.42f, 0.25f, 1f);
+        public Color witheredColorB = new Color(0.40f, 0.30f, 0.18f, 1f);
+
         [Header("Layer Settings")]
         public string sortingLayerName = "Default";
         public int baseSortingOrder = 0;
@@ -57,13 +67,27 @@ namespace Alpha.Environment
             GenerateGrass(0f);
         }
 
+        [ContextMenu("Generate Withered Grass")]
+        public void GenerateWitheredGrassEditor()
+        {
+            GenerateWitheredGrass(0f);
+        }
+
+        /// <summary>通常（緑）の草を生成する。既存の草（枯れ草含む）は消去される。</summary>
         public void GenerateGrass(float duration = 0.2f)
         {
             StopAllCoroutines(); // ここで既存のコルーチンを停止
-            StartCoroutine(GenerateGrassRoutine(duration));
+            StartCoroutine(GenerateGrassRoutine(duration, grassCount, spawnThreshold, colorA, colorB));
         }
 
-        private System.Collections.IEnumerator GenerateGrassRoutine(float duration)
+        /// <summary>枯れ草（茶色）を少量生成する。既存の草は消去される。</summary>
+        public void GenerateWitheredGrass(float duration = 0f)
+        {
+            StopAllCoroutines();
+            StartCoroutine(GenerateGrassRoutine(duration, witheredGrassCount, witheredSpawnThreshold, witheredColorA, witheredColorB));
+        }
+
+        private System.Collections.IEnumerator GenerateGrassRoutine(float duration, int count, float threshold, Color cA, Color cB)
         {
             ClearGrass();
 
@@ -78,13 +102,13 @@ namespace Alpha.Environment
             float noiseOffsetY = Random.Range(-10000f, 10000f);
 
             int spawned = 0;
-            int maxAttempts = grassCount * 10; // 閾値に引っかからなかった場合のループ上限
+            int maxAttempts = count * 10; // 閾値に引っかからなかった場合のループ上限
 
             float startTime = Time.unscaledTime; // timeScaleに依存しないように変更
 
             for (int i = 0; i < maxAttempts; i++)
             {
-                if (spawned >= grassCount) break;
+                if (spawned >= count) break;
 
                 // エリア内のランダムな座標
                 float randomX = Random.Range(-areaSize.x / 2f, areaSize.x / 2f);
@@ -94,13 +118,15 @@ namespace Alpha.Environment
                 Vector3 worldPos = transform.position + (Vector3)localPos;
 
                 // パーリンノイズを取得
-                float noiseVal = Mathf.PerlinNoise(
+                // noiseScale が 0 以下だとノイズ値が常に一定(約0.465)になり、閾値次第で一本も生えなくなるため、
+                // その場合はクラスタリング無し（常に生成可）として扱う
+                float noiseVal = (noiseScale <= 0f) ? 1f : Mathf.PerlinNoise(
                     (worldPos.x + noiseOffsetX) * noiseScale, 
                     (worldPos.y + noiseOffsetY) * noiseScale
                 );
 
                 // ノイズが閾値を超えていれば生成
-                if (noiseVal > spawnThreshold)
+                if (noiseVal > threshold)
                 {
                     GameObject grassObj = Instantiate(grassPrefab, worldPos, Quaternion.identity, transform);
                     
@@ -110,7 +136,16 @@ namespace Alpha.Environment
                     {
                         // ノイズの値を使って色をブレンドするか、完全にランダムにする
                         float colorBlend = Random.value;
-                        sr.color = Color.Lerp(colorA, colorB, colorBlend);
+                        sr.color = Color.Lerp(cA, cB, colorBlend);
+
+                        // 枯れ草かどうかを判定し、シェーダーの白黒化を適用
+                        // (緑の草と枯れ草を区別するため、閾値かカラーで判定。
+                        // 今回は「countがwitheredGrassCountと同じなら枯れ草」として判定)
+                        bool isWithered = (count == witheredGrassCount);
+                        MaterialPropertyBlock mpb = new MaterialPropertyBlock();
+                        sr.GetPropertyBlock(mpb);
+                        mpb.SetFloat("_Desaturate", isWithered ? 1f : 0f);
+                        sr.SetPropertyBlock(mpb);
 
                         // レイヤー設定
                         sr.sortingLayerName = sortingLayerName;
@@ -144,7 +179,7 @@ namespace Alpha.Environment
                     {
                         float elapsed = Time.unscaledTime - startTime;
                         float progress = Mathf.Clamp01(elapsed / duration);
-                        int targetSpawned = Mathf.RoundToInt(grassCount * progress);
+                        int targetSpawned = Mathf.RoundToInt(count * progress);
 
                         if (spawned > targetSpawned)
                         {

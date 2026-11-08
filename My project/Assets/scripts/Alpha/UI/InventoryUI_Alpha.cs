@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -832,6 +832,12 @@ namespace Alpha.UI
             var cg = EnsurePanelCanvasGroup();
             if (cg == null || panel == null) return;
 
+            cg.DOKill();
+            panel.transform.DOKill();
+            isCloseAnimating = false;
+            UIInputBlocker_Alpha.Unblock();
+
+            panel.SetActive(true);
             cg.alpha = 0f;
             panel.transform.localScale = panelOriginalScale * 0.85f;
 

@@ -8,7 +8,11 @@ namespace Alpha.Flow
     {
         public static WeaponGenerator_Alpha Instance { get; private set; }
 
-        [Header("Series Pool")]
+        [Header("Reward Table Settings")]
+        [Tooltip("ステージ固有の報酬テーブル（未設定時は下記のデフォルトプールが使われます）")]
+        public RewardTableData_Alpha currentRewardTable;
+
+        [Header("Series Pool (Default Fallback)")]
         [Tooltip("実装済みの武器シリーズをすべて登録する")]
         public List<WeaponSeriesData_Alpha> allSeriesPool = new List<WeaponSeriesData_Alpha>();
 
@@ -21,7 +25,7 @@ namespace Alpha.Flow
         }
         public List<BossRewardMapping> bossRewardMappings = new List<BossRewardMapping>();
 
-        [Header("Global Random Effects")]
+        [Header("Global Random Effects (Default Fallback)")]
         [Tooltip("ランダム付与されるバフエフェクトのプール")]
         public List<WeaponEffectSO_Alpha> globalBuffEffects = new List<WeaponEffectSO_Alpha>();
 
@@ -40,9 +44,30 @@ namespace Alpha.Flow
             [Tooltip("Divine(4)が選ばれる確率")] public float prob4;
         }
 
-        [Header("Probability Settings")]
+        [Header("Probability Settings (Default Fallback)")]
         [Tooltip("ベースの品質ごとの各レアリティの抽選確率（オーブドロップ・エフェクト付与で共有）")]
         public List<QualityProbability> qualityProbabilities = new List<QualityProbability>();
+
+        // --- テーブル切り替え対応プロパティ ---
+        public List<WeaponSeriesData_Alpha> ActiveSeriesPool =>
+            (currentRewardTable != null && currentRewardTable.seriesPool != null && currentRewardTable.seriesPool.Count > 0)
+                ? currentRewardTable.seriesPool
+                : allSeriesPool;
+
+        public List<QualityProbability> ActiveQualityProbabilities =>
+            (currentRewardTable != null && currentRewardTable.qualityProbabilities != null && currentRewardTable.qualityProbabilities.Count > 0)
+                ? currentRewardTable.qualityProbabilities
+                : qualityProbabilities;
+
+        public List<BossRewardMapping> ActiveBossRewardMappings =>
+            (currentRewardTable != null && currentRewardTable.bossRewardMappings != null && currentRewardTable.bossRewardMappings.Count > 0)
+                ? currentRewardTable.bossRewardMappings
+                : bossRewardMappings;
+
+        public List<WeaponEffectSO_Alpha> ActiveBuffEffects =>
+            (currentRewardTable != null && currentRewardTable.buffEffects != null && currentRewardTable.buffEffects.Count > 0)
+                ? currentRewardTable.buffEffects
+                : globalBuffEffects;
 
         private void Awake()
         {
@@ -62,6 +87,12 @@ namespace Alpha.Flow
                 return;
             }
             Instance = this;
+        }
+
+        public void SetRewardTable(RewardTableData_Alpha table)
+        {
+            currentRewardTable = table;
+            Debug.Log($"[WeaponGenerator] Reward table changed to: {(table != null ? table.tableName : "Default")}");
         }
 
         /// <summary>
@@ -91,7 +122,8 @@ namespace Alpha.Flow
 
         private int RollQuality(int baseQuality)
         {
-            QualityProbability prob = qualityProbabilities.Find(q => q.baseQuality == baseQuality);
+            var probs = ActiveQualityProbabilities;
+            QualityProbability prob = probs.Find(q => q.baseQuality == baseQuality);
             if (prob.baseQuality == 0) // struct default
             {
                 Debug.LogWarning($"[WeaponGenerator] No QualityProbability found for baseQuality {baseQuality}. Using fallback.");
@@ -112,13 +144,13 @@ namespace Alpha.Flow
             // ボス対応枠の処理
             if (preferBossSeries && !string.IsNullOrEmpty(bossId))
             {
-                var mapping = bossRewardMappings.Find(m => m.bossId == bossId);
-                if (mapping != null && mapping.bossSeries.Count > 0)
+                var mapping = ActiveBossRewardMappings.Find(m => m.bossId == bossId);
+                if (mapping != null && mapping.bossSeries != null && mapping.bossSeries.Count > 0)
                 {
                     // ボスのプール内からQuality条件を満たすものを探す
                     foreach (var s in mapping.bossSeries)
                     {
-                        if (s.minQuality <= quality) validPool.Add(s);
+                        if (s != null && s.minQuality <= quality) validPool.Add(s);
                     }
                     if (validPool.Count > 0)
                     {
@@ -128,11 +160,10 @@ namespace Alpha.Flow
             }
 
             // 通常のプールから抽選
-            foreach (var s in allSeriesPool)
+            var seriesPool = ActiveSeriesPool;
+            foreach (var s in seriesPool)
             {
-                // Hybrid構成になったため、ベストスロットかどうかの追加プールはなく、パッシブ効果プールからのみ引く
-                // アクティブ効果（弾への付与）はシリーズ自身が持っている activeEffectClassName を元に生成される
-                if (s.minQuality <= quality)
+                if (s != null && s.minQuality <= quality)
                 {
                     validPool.Add(s);
                 }
@@ -145,7 +176,7 @@ namespace Alpha.Flow
 
             // フォールバック（条件を満たすものがない場合）
             Debug.LogWarning($"[WeaponGenerator] No valid series found for quality {quality}. Returning random.");
-            return allSeriesPool.Count > 0 ? allSeriesPool[Random.Range(0, allSeriesPool.Count)] : null;
+            return seriesPool.Count > 0 ? seriesPool[Random.Range(0, seriesPool.Count)] : null;
         }
 
         public WeaponPartInstance_Alpha CreatePartInstance(WeaponSeriesData_Alpha series, int quality)
@@ -205,7 +236,8 @@ namespace Alpha.Flow
             }
 
             // グローバルバフのランダム付与
-            if (globalBuffEffects != null && globalBuffEffects.Count > 0)
+            var buffPool = ActiveBuffEffects;
+            if (buffPool != null && buffPool.Count > 0)
             {
                 int maxRandomEffects = quality; // コモン(1)=1, アンコモン(2)=2, レア(3)=3, ディバイン(4)=4
                 int addedCount = 0;
@@ -218,7 +250,7 @@ namespace Alpha.Flow
                     // 指定されたレアリティ、またはそれ以下のエフェクトを探す（フォールバック用）
                     for (int q = targetMinQuality; q >= 1; q--)
                     {
-                        foreach (var effect in globalBuffEffects)
+                        foreach (var effect in buffPool)
                         {
                             // 既に付与されているエフェクトは除外する
                             if (effect != null && effect.minQuality == q && !instance.currentEffects.Contains(effect))
@@ -232,7 +264,7 @@ namespace Alpha.Flow
                     if (availableEffects.Count == 0)
                     {
                         // それでも見つからなければ全ての中からランダム（重複は避ける）
-                        foreach (var effect in globalBuffEffects)
+                        foreach (var effect in buffPool)
                         {
                             if (effect != null && !instance.currentEffects.Contains(effect))
                             {
@@ -256,7 +288,6 @@ namespace Alpha.Flow
                                 {
                                     break; // 30%の抽選に漏れたら終了
                                 }
-                                // 当たりを引いた場合はループを継続し、さらに追加付与を行う
                             }
                         }
                         else
@@ -266,16 +297,10 @@ namespace Alpha.Flow
                     }
                     else
                     {
-                        break; // 付与可能なエフェクトがなくなったら終了
+                        break;
                     }
                 }
             }
-
-            // 将来用：グローバルデバフの付与
-            // if (globalDebuffEffects != null && globalDebuffEffects.Count > 0)
-            // {
-            //     // 難易度や品質などに応じてデバフを抽選・付与する処理をここに追加
-            // }
 
             return instance;
         }

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
@@ -35,6 +35,14 @@ namespace Alpha.UI
             }
             Instance = this;
             gameObject.SetActive(false); // 初期状態は非表示
+
+            Canvas canvas = GetComponentInParent<Canvas>();
+            if (canvas != null)
+            {
+                canvas.overrideSorting = true;
+                canvas.sortingLayerName = "SystemUI";
+                canvas.sortingOrder = 500;
+            }
         }
 
         public void Show()
