@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
 using Alpha.Data;
 
@@ -74,8 +74,18 @@ namespace Alpha.Flow
                 while (currentRushIndex < currentSequence.enemyRushes.Count && 
                        currentTime >= currentSequence.enemyRushes[currentRushIndex].startTime)
                 {
-                    activeRushes.Add(new EnemyRushState(currentSequence.enemyRushes[currentRushIndex]));
+                    var rushState = new EnemyRushState(currentSequence.enemyRushes[currentRushIndex]);
+                    activeRushes.Add(rushState);
                     currentRushIndex++;
+
+                    // ラッシュ開始と同時に即座に第1波をスポーン（開始直後の空白時間を解消）
+                    SpawnRushEnemy(rushState, instantSpawn: true);
+
+                    // 初回エネミーラッシュ発生時にチュートリアルを表示
+                    if (Alpha.UI.TutorialManager_Alpha.Instance != null)
+                    {
+                        Alpha.UI.TutorialManager_Alpha.Instance.ShowTutorial("Tutorial_Rush", true, 4.5f);
+                    }
                 }
             }
 
@@ -215,11 +225,15 @@ namespace Alpha.Flow
             activeMobs.RemoveAll(mob => mob == null);
         }
 
-        private void SpawnRushEnemy(EnemyRushState rush)
+        private void SpawnRushEnemy(EnemyRushState rush, bool instantSpawn = false)
         {
             if (rush.data.enemyPrefabs == null || rush.data.enemyPrefabs.Count == 0) return;
 
-            int count = UnityEngine.Random.Range(rush.data.minSpawnCountPerInterval, rush.data.maxSpawnCountPerInterval + 1);
+            // ラッシュ時は最低1体は確実にスポーンさせる（0体による出現なし・遅延を防止）
+            int minCount = Mathf.Max(1, rush.data.minSpawnCountPerInterval);
+            int maxCount = Mathf.Max(minCount, rush.data.maxSpawnCountPerInterval);
+            int count = UnityEngine.Random.Range(minCount, maxCount + 1);
+
             for (int i = 0; i < count; i++)
             {
                 GameObject prefab = rush.data.enemyPrefabs[UnityEngine.Random.Range(0, rush.data.enemyPrefabs.Count)];
@@ -230,14 +244,14 @@ namespace Alpha.Flow
                     rush.data.spawnCenter.y + UnityEngine.Random.Range(-rush.data.spawnAreaSize.y / 2f, rush.data.spawnAreaSize.y / 2f)
                 );
 
-                StartCoroutine(SpawnRushEnemyDelayed(prefab, spawnPos));
+                StartCoroutine(SpawnRushEnemyDelayed(prefab, spawnPos, instantSpawn));
             }
         }
 
-        private System.Collections.IEnumerator SpawnRushEnemyDelayed(GameObject prefab, Vector2 spawnPos)
+        private System.Collections.IEnumerator SpawnRushEnemyDelayed(GameObject prefab, Vector2 spawnPos, bool instant = false)
         {
             pendingSpawns++;
-            bool useIndicator = activeIndicatorCount < maxRushIndicators;
+            bool useIndicator = !instant && (activeIndicatorCount < maxRushIndicators);
             GameObject indicator = null;
 
             if (useIndicator && spawnIndicatorPrefab != null)
@@ -251,7 +265,8 @@ namespace Alpha.Flow
 
             if (useIndicator)
             {
-                yield return new WaitForSeconds(2.0f);
+                // ラッシュ時は通常の2秒待機ではなく、0.4秒の短い予兆で素早く敵が出現
+                yield return new WaitForSeconds(0.4f);
             }
 
             if (indicator != null)

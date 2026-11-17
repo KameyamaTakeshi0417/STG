@@ -30,11 +30,17 @@ public class HPBarFollower : MonoBehaviour
         {
             isOrphaned = true;
             
-            // エネミーが消滅・非アクティブになったら、HPバーは即座に非表示にする
+            // エネミーが消滅・非アクティブになったら、HPバーおよび逃亡バーは即座に非表示にする
             Transform hpBar = transform.Find("HPBar");
             if (hpBar != null)
             {
                 hpBar.gameObject.SetActive(false);
+            }
+
+            Transform fleeBar = transform.Find("FleeBar");
+            if (fleeBar != null)
+            {
+                fleeBar.gameObject.SetActive(false);
             }
             
             // ダメージポップアップ（DamageUI3D）の演出完了を待ってからCanvasごと破棄する

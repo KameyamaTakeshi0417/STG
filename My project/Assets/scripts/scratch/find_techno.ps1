@@ -1,0 +1,1 @@
+﻿Get-ChildItem -Path '../..' -Recurse -Include '*.cs','*.asset','*.prefab','*.unity' | Where-Object { $_.FullName -notmatch 'Library|Temp' } | Select-String -Pattern 'テクノ|techno|Tekno|tekno' | Select-Object -First 30 Path, LineNumber, Line

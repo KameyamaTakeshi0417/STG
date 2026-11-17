@@ -183,6 +183,11 @@ namespace Alpha.Enemy.Weapons
             {
                 if (circleBulletCount > 0)
                 {
+                    if (Alpha.Audio.EnemyShotSoundManager_Alpha.Instance != null)
+                    {
+                        Alpha.Audio.EnemyShotSoundManager_Alpha.Instance.PlayBarrageShotSE(transform.position, isHeavy: true);
+                    }
+
                     float angleStep = 360f / circleBulletCount;
                     float baseOffset = useRotationOffsetForCircle ? currentZAngle : 0f;
 
@@ -214,6 +219,11 @@ namespace Alpha.Enemy.Weapons
             {
                 if (scatterWays > 0)
                 {
+                    if (Alpha.Audio.EnemyShotSoundManager_Alpha.Instance != null)
+                    {
+                        Alpha.Audio.EnemyShotSoundManager_Alpha.Instance.PlayBarrageShotSE(transform.position, isHeavy: true);
+                    }
+
                     float wayStep = 360f / scatterWays;
 
                     for (int w = 0; w < scatterWays; w++)

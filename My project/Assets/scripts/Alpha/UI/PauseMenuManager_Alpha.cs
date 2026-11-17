@@ -225,13 +225,13 @@ namespace Alpha.UI
                     directShortcutKey = KeyCode.Alpha2
                 });
 
-                // 3. 操作説明タブ（もしボタンが存在すれば登録）
+                // 3. ライブラリタブ（旧Controls枠）
                 if (controlsTabButton != null || controlsPanel != null)
                 {
                     tabs.Add(new PauseTabEntry
                     {
                         tabType = TabType.Controls,
-                        tabName = "操作 (Controls)",
+                        tabName = "ライブラリ (Library)",
                         tabButton = controlsTabButton,
                         tabContentPanel = controlsPanel,
                         directShortcutKey = KeyCode.Alpha3
@@ -249,14 +249,37 @@ namespace Alpha.UI
                 });
             }
 
-            // ボタンのクリックイベントを一括登録
+            // ボタンのクリックイベントを一括登録 ＆ 付箋タブのテキスト・フォント設定
             for (int i = 0; i < tabs.Count; i++)
             {
                 int index = i;
+                if (tabs[index].tabType == TabType.Controls)
+                {
+                    tabs[index].tabName = "ライブラリ (Library)";
+                }
+
                 if (tabs[index].tabButton != null)
                 {
                     tabs[index].tabButton.onClick.RemoveAllListeners();
                     tabs[index].tabButton.onClick.AddListener(() => SwitchTab(index));
+
+                    // タブボタンのテキストとフォントを自動設定
+                    var tmp = tabs[index].tabButton.GetComponentInChildren<TextMeshProUGUI>(true);
+                    if (tmp != null)
+                    {
+                        tmp.text = tabs[index].tabName;
+                        if (customFontAsset != null) tmp.font = customFontAsset;
+                        tmp.fontSize = 20f;
+                        tmp.enableAutoSizing = true;
+                        tmp.fontSizeMin = 13f;
+                        tmp.fontSizeMax = 20f;
+                        tmp.alignment = TextAlignmentOptions.Center;
+                    }
+                    else
+                    {
+                        var txt = tabs[index].tabButton.GetComponentInChildren<UnityEngine.UI.Text>(true);
+                        if (txt != null) txt.text = tabs[index].tabName;
+                    }
                 }
             }
         }
@@ -477,6 +500,27 @@ namespace Alpha.UI
                     }
                     break;
 
+                case TabType.Controls:
+                    if (controlsPanel == null) EnsurePanelsConstructed();
+                    ApplyFontToAllUI();
+                    if (tab.tabContentPanel == null && controlsPanel != null) tab.tabContentPanel = controlsPanel;
+                    if (tab.tabContentPanel != null)
+                    {
+                        tab.tabContentPanel.SetActive(true);
+                        var pc = tab.tabContentPanel.GetComponent<Canvas>();
+                        if (pc != null && pc.worldCamera == null)
+                        {
+                            pc.worldCamera = Camera.main;
+                            pc.planeDistance = 100f;
+                        }
+                        var libUI = tab.tabContentPanel.GetComponent<LibraryPanelUI_Alpha>();
+                        if (libUI != null)
+                        {
+                            libUI.RefreshUI();
+                        }
+                    }
+                    break;
+
                 case TabType.Settings:
                     if (settingsPanel == null) EnsurePanelsConstructed();
             ApplyFontToAllUI();
@@ -547,6 +591,13 @@ namespace Alpha.UI
                     }
                     break;
 
+                case TabType.Controls:
+                    if (tab.tabContentPanel != null)
+                    {
+                        tab.tabContentPanel.SetActive(false);
+                    }
+                    break;
+
                 case TabType.Settings:
                     if (GameSettingsManager_Alpha.Instance != null)
                     {
@@ -610,6 +661,60 @@ namespace Alpha.UI
                 var quitTab = tabs.Find(t => t.tabType == TabType.QuitToTitle);
                 if (quitTab != null) quitTab.tabContentPanel = quitConfirmPanel;
             }
+
+            // 3. Library Panel（旧Controls枠）の確保・LibraryPanelUI_Alpha の自動生成
+            if (controlsPanel == null)
+            {
+                controlsPanel = CreateDefaultLibraryPanel(parentTransform);
+                var ctrlTab = tabs.Find(t => t.tabType == TabType.Controls);
+                if (ctrlTab != null) ctrlTab.tabContentPanel = controlsPanel;
+            }
+        }
+
+        /// <summary>
+        /// ライブラリ（チュートリアル反復確認、敵、弾、エフェクト等）のUIパネルをコードから動的生成
+        /// </summary>
+        private GameObject CreateDefaultLibraryPanel(Transform parent)
+        {
+            GameObject panelGO = new GameObject("PauseLibraryPanel", typeof(RectTransform));
+            panelGO.transform.SetParent(parent, false);
+
+            RectTransform rt = panelGO.GetComponent<RectTransform>();
+            rt.anchorMin = new Vector2(0.12f, 0.08f);
+            rt.anchorMax = new Vector2(0.88f, 0.88f);
+            rt.offsetMin = Vector2.zero;
+            rt.offsetMax = Vector2.zero;
+            rt.anchoredPosition = Vector2.zero;
+            rt.localScale = Vector3.one;
+            rt.localEulerAngles = Vector3.zero;
+
+            // 最前面レイヤー設定 (SystemUI / 1020)
+            Canvas rootCanvas = GetComponentInParent<Canvas>();
+            if (rootCanvas == null) rootCanvas = GetComponent<Canvas>();
+
+            Canvas panelCanvas = panelGO.AddComponent<Canvas>();
+            panelCanvas.overrideSorting = true;
+            panelCanvas.sortingLayerName = "SystemUI";
+            panelCanvas.sortingOrder = 1020;
+            panelCanvas.planeDistance = 100f;
+            if (rootCanvas != null && rootCanvas.worldCamera != null)
+            {
+                panelCanvas.worldCamera = rootCanvas.worldCamera;
+            }
+            else
+            {
+                panelCanvas.worldCamera = Camera.main;
+            }
+
+            GraphicRaycaster gr = panelGO.AddComponent<GraphicRaycaster>();
+            gr.ignoreReversedGraphics = true;
+
+            LibraryPanelUI_Alpha libUI = panelGO.AddComponent<LibraryPanelUI_Alpha>();
+            libUI.customFontAsset = customFontAsset;
+            libUI.BuildLayoutIfNeeded();
+
+            panelGO.SetActive(false);
+            return panelGO;
         }
 
         /// <summary>

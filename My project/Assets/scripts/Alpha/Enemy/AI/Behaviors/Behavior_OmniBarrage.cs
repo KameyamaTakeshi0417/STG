@@ -40,6 +40,12 @@ public class Behavior_OmniBarrage : EnemyBehaviorData_Base
     [Tooltip("弾の生存時間")]
     public float bulletLifeTime = 10f;
 
+    [Header("Audio Settings")]
+    [Tooltip("ボスや強力な攻撃用の強化版重厚SEを使用するか")]
+    public bool isHeavyAttack = true;
+    [Tooltip("trueの場合、弾幕一斉発射時ではなく弾1発ごとにSEを再生します（特殊パターン用）")]
+    public bool playSEPerBullet = false;
+
     public override IEnumerator RunBehavior(Alpha_EnemyAI ai)
     {
         Vector2 lastPos = ai.transform.position;
@@ -82,6 +88,12 @@ public class Behavior_OmniBarrage : EnemyBehaviorData_Base
 
                 float angleStep = 360f / bulletsPerShot;
 
+                // 弾幕発射タイミングSE（メイン処理）
+                if (!playSEPerBullet && Alpha.Audio.EnemyShotSoundManager_Alpha.Instance != null)
+                {
+                    Alpha.Audio.EnemyShotSoundManager_Alpha.Instance.PlayBarrageShotSE(spawnPos, isHeavyAttack);
+                }
+
                 for (int i = 0; i < bulletsPerShot; i++)
                 {
                     float angle = currentAngleOffset + (angleStep * i);
@@ -108,6 +120,12 @@ public class Behavior_OmniBarrage : EnemyBehaviorData_Base
                             bullet.setRotate(dir);
                             bullet.DestroyTime = bulletLifeTime;
                             bullet.shoot();
+                        }
+
+                        // 弾1発ごとの発射SE（特殊パターン用）
+                        if (playSEPerBullet && Alpha.Audio.EnemyShotSoundManager_Alpha.Instance != null)
+                        {
+                            Alpha.Audio.EnemyShotSoundManager_Alpha.Instance.PlaySingleBulletSE(spawnPos, isHeavyAttack);
                         }
                     }
 

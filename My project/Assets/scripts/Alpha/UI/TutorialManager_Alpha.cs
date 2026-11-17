@@ -1,5 +1,7 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
+using TMPro;
+using UnityEngine.InputSystem;
 
 namespace Alpha.UI
 {
@@ -33,6 +35,94 @@ namespace Alpha.UI
         private CanvasGroup fadeCanvasGroup;
         private bool isFadingTutorial = false;
 
+        // ---------- 動的テキスト（操作系切り替え）定義 ----------
+        private struct TutorialTextPair
+        {
+            public string keyboardText;
+            public string gamepadText;
+
+            public TutorialTextPair(string kb, string gp)
+            {
+                keyboardText = kb;
+                gamepadText = gp;
+            }
+        }
+
+        private static readonly Dictionary<string, TutorialTextPair> TutorialTexts = new Dictionary<string, TutorialTextPair>
+        {
+            {
+                "001", new TutorialTextPair(
+                    "WASDで移動\n右クリックで特殊アクション（低速移動＆コア表示）！",
+                    "左スティックで移動\nL3/R3（スティック押し込み）で特殊アクション（低速移動＆コア表示）！"
+                )
+            },
+            {
+                "002", new TutorialTextPair(
+                    "マウスで敵にターゲット！\n左クリックで弾を発射出来ます。",
+                    "右スティックで敵にターゲット！\nLB または RBで弾を発射出来ます。"
+                )
+            },
+            {
+                "003", new TutorialTextPair(
+                    "敵が来なくて退屈ですか？\nShiftキーを入力すると、次ウェーブのエネミーが出てきます！\nウェーブ進行が早まるうえに報酬も増えますが、\n敵の増やし過ぎにはご注意。",
+                    "敵が来なくて退屈ですか？\nShift / Spaceキーで次ウェーブのエネミーが出現！\nウェーブ進行が早まるうえに報酬も増えますが、\n敵の増やし過ぎにはご注意。"
+                )
+            },
+            {
+                "004", new TutorialTextPair(
+                    "報酬ゲージが溜まるとオーブを獲得！\n敵を倒したり、進行ショートカットを使うことでゲージが溜まります。",
+                    "報酬ゲージが溜まるとオーブを獲得！\n敵を倒したり、進行ショートカットを使うことでゲージが溜まります。"
+                )
+            },
+            {
+                "005", new TutorialTextPair(
+                    "エリート戦お疲れ様でした！\n休む間もなく訪れたこのウェーブを抜けたらボス戦です。\nボス戦前には体力回復報酬フェーズがあるので頑張って！",
+                    "エリート戦お疲れ様でした！\n休む間もなく訪れたこのウェーブを抜けたらボス戦です。\nボス戦前には体力回復報酬フェーズがあるので頑張って！"
+                )
+            },
+            {
+                "00-", new TutorialTextPair(
+                    "1,3キーで現在の装備を換装できます！\nパーツをたくさん見つけて装備していきましょう！",
+                    "LT / RT（トリガー）で現在の装備を換装できます！\nパーツをたくさん見つけて装備していきましょう！"
+                )
+            },
+            {
+                "Tutorial_Orb", new TutorialTextPair(
+                    "オーブを拾いました！こうして偶に敵からドロップします。\n中身はウェーブ終了時に獲得できます。\n生き残れ！",
+                    "オーブを拾いました！こうして偶に敵からドロップします。\n中身はウェーブ終了時に獲得できます。\n生き残れ！"
+                )
+            },
+            {
+                "Tutorial_Elite", new TutorialTextPair(
+                    "強敵には体力バーが複数本あります。\nゲージを削ると攻撃が強くなるので注意！\nしかも時間経過で逃げてしまいます！\n倒して豪華報酬をゲット！",
+                    "強敵には体力バーが複数本あります。\nゲージを削ると攻撃が強くなるので注意！\nしかも時間経過で逃げてしまいます！\n倒して豪華報酬をゲット！"
+                )
+            },
+            {
+                "Tutorial_Reward", new TutorialTextPair(
+                    "待ちに待った報酬フェーズです！\nオーブを開封して\n報酬装備をゲットしていきましょう！",
+                    "待ちに待った報酬フェーズです！\nオーブを開封して\n報酬装備をゲットしていきましょう！"
+                )
+            },
+            {
+                "Tutorial_Equip", new TutorialTextPair(
+                    "待ちに待った装備画面です。ポーズ画面でもあります\n装備変更は報酬獲得後しか行えないので注意してください。\n縦スロットに同じ紋章を揃えるとセットボーナスが発動します！",
+                    "待ちに待った装備画面です。ポーズ画面でもあります\n装備変更は報酬獲得後しか行えないので注意してください。\n縦スロットに同じ紋章を揃えるとセットボーナスが発動します！"
+                )
+            },
+            {
+                "Tutorial_Rush", new TutorialTextPair(
+                    "エネミーラッシュはスキップできません。\n大量に出てくる敵を沢山倒して沢山報酬を獲得しましょう！",
+                    "エネミーラッシュはスキップできません。\n大量に出てくる敵を沢山倒して沢山報酬を獲得しましょう！"
+                )
+            }
+        };
+
+        private string currentTutorialId = "";
+        private TextMeshProUGUI currentTMPText = null;
+        private UnityEngine.UI.Text currentLegacyText = null;
+        private bool lastUsingGamepad = false;
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -55,6 +145,12 @@ namespace Alpha.UI
 
         public void ShowTutorial(string tutorialId, bool useFadeMode = false, float displayDuration = 3f, bool pauseTimeline = true)
         {
+            // ライブラリ解放とポップアップ通知（チュートリアル発生時に即座に発火）
+            if (Alpha.Data.LibraryManager_Alpha.Instance != null)
+            {
+                Alpha.Data.LibraryManager_Alpha.Instance.UnlockTutorial(tutorialId);
+            }
+
             if (Application.isEditor)
             {
                 // エディターの場合は、1回のプレイにつき各チュートリアル1回のみ表示する
@@ -137,8 +233,9 @@ namespace Alpha.UI
             if (currentTutorialObject != null)
             {
                 currentTutorialObject.SetActive(false);
-                currentTutorialObject = null;
             }
+
+            ResetCurrentTutorialState();
 
             if (tutorialCanvas != null)
             {
@@ -165,12 +262,43 @@ namespace Alpha.UI
             Transform targetTransform = FindDeepChild(tutorialCanvas.transform, tutorialId);
             if (targetTransform == null)
             {
-                Debug.LogWarning($"[TutorialManager] Tutorial Object '{tutorialId}' not found in TutorialCanvas!");
-                CloseTutorial();
-                return;
+                // 既存のチュートリアルオブジェクトをテンプレートにして自動複製（フォールバック）
+                Transform template = FindDeepChild(tutorialCanvas.transform, "004") 
+                                  ?? FindDeepChild(tutorialCanvas.transform, "001") 
+                                  ?? FindDeepChild(tutorialCanvas.transform, "002")
+                                  ?? FindDeepChild(tutorialCanvas.transform, "Tutorial_Orb");
+
+                // それでも無ければ backgroundPanel 以外の最初の子要素をテンプレートとして利用
+                if (template == null)
+                {
+                    foreach (Transform c in tutorialCanvas.transform)
+                    {
+                        if (backgroundPanel != null && c.gameObject == backgroundPanel) continue;
+                        template = c;
+                        break;
+                    }
+                }
+
+                if (template != null)
+                {
+                    GameObject clone = Instantiate(template.gameObject, tutorialCanvas.transform);
+                    clone.name = tutorialId;
+                    targetTransform = clone.transform;
+                }
+                else
+                {
+                    Debug.LogWarning($"[TutorialManager] Tutorial Object '{tutorialId}' not found in TutorialCanvas!");
+                    CloseTutorial();
+                    return;
+                }
             }
 
             currentTutorialObject = targetTransform.gameObject;
+            currentTutorialId = tutorialId;
+            currentTMPText = currentTutorialObject.GetComponentInChildren<TextMeshProUGUI>(true);
+            currentLegacyText = currentTutorialObject.GetComponentInChildren<UnityEngine.UI.Text>(true);
+            lastUsingGamepad = IsCurrentUsingGamepad();
+            ApplyTutorialText();
 
             // UIの表示
             tutorialCanvas.SetActive(true);
@@ -195,6 +323,39 @@ namespace Alpha.UI
             // 見たことを記録
             PlayerPrefs.SetInt("Tutorial_Seen_" + tutorialId, 1);
             PlayerPrefs.Save();
+
+            // ライブラリへの追加 & 画面右端ポップアップ通知
+            if (Alpha.Data.LibraryManager_Alpha.Instance != null)
+            {
+                Alpha.Data.LibraryManager_Alpha.Instance.UnlockTutorial(tutorialId);
+            }
+        }
+
+        private void ApplyTutorialText()
+        {
+            if (string.IsNullOrEmpty(currentTutorialId)) return;
+            if (!TutorialTexts.TryGetValue(currentTutorialId, out TutorialTextPair pair)) return;
+
+            bool isGamepad = IsCurrentUsingGamepad();
+            string textToSet = isGamepad ? pair.gamepadText : pair.keyboardText;
+
+            if (currentTMPText != null)
+            {
+                currentTMPText.text = textToSet;
+            }
+            else if (currentLegacyText != null)
+            {
+                currentLegacyText.text = textToSet;
+            }
+        }
+
+        private bool IsCurrentUsingGamepad()
+        {
+            if (Alpha.Managers.PlayerInputManager_Alpha.Instance != null)
+            {
+                return Alpha.Managers.PlayerInputManager_Alpha.Instance.IsUsingGamepad;
+            }
+            return false;
         }
 
         public void OverridePreviousTimeScale(float newTimeScale)
@@ -208,7 +369,16 @@ namespace Alpha.UI
         {
             if (isShowing)
             {
-                if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
+                // 入力デバイスの切り替えをリアルタイム検知してテキストを更新
+                bool isGamepad = IsCurrentUsingGamepad();
+                if (isGamepad != lastUsingGamepad)
+                {
+                    lastUsingGamepad = isGamepad;
+                    ApplyTutorialText();
+                }
+
+                // ポーズ型チュートリアルのクローズ判定
+                if (CheckCloseInput())
                 {
                     CloseTutorial();
                 }
@@ -222,6 +392,39 @@ namespace Alpha.UI
             }
         }
 
+        private bool CheckCloseInput()
+        {
+            // マウス・キーボード入力
+            if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) ||
+                Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return) ||
+                Input.GetKeyDown(KeyCode.Escape))
+            {
+                return true;
+            }
+
+            // ゲームパッド入力（New Input System）
+            if (Gamepad.current != null)
+            {
+                var gp = Gamepad.current;
+                if (gp.buttonSouth.wasPressedThisFrame || gp.buttonEast.wasPressedThisFrame ||
+                    gp.startButton.wasPressedThisFrame || gp.selectButton.wasPressedThisFrame ||
+                    gp.leftShoulder.wasPressedThisFrame || gp.rightShoulder.wasPressedThisFrame)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void ResetCurrentTutorialState()
+        {
+            currentTutorialObject = null;
+            currentTutorialId = "";
+            currentTMPText = null;
+            currentLegacyText = null;
+        }
+
         public void ForceCloseCurrentTutorial()
         {
             if (isFadingTutorial)
@@ -231,8 +434,9 @@ namespace Alpha.UI
             if (currentTutorialObject != null)
             {
                 currentTutorialObject.SetActive(false);
-                currentTutorialObject = null;
             }
+            ResetCurrentTutorialState();
+
             if (tutorialCanvas != null)
             {
                 tutorialCanvas.SetActive(false);
@@ -242,6 +446,7 @@ namespace Alpha.UI
             IsPausingTimeline = false;
             isFadingTutorial = false;
         }
+
         public void CloseTutorial()
         {
             if (isFadingTutorial)
@@ -254,8 +459,8 @@ namespace Alpha.UI
             if (currentTutorialObject != null)
             {
                 currentTutorialObject.SetActive(false);
-                currentTutorialObject = null;
             }
+            ResetCurrentTutorialState();
 
             if (tutorialCanvas != null)
             {

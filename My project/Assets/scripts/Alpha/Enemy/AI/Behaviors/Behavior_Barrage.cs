@@ -32,6 +32,14 @@ public class Behavior_Barrage : EnemyBehaviorData_Base
     [Tooltip("弾の生存時間（寿命）")]
     public float bulletLifeTime = 10f;
 
+    [Header("Audio Settings")]
+    [Tooltip("mob1など最弱ザコ敵用の小粒・弱威力SEを使用するか（未指定でもmob1という名前の敵には自動適用されます）")]
+    public bool useLightSE = false;
+    [Tooltip("ボスや強力な攻撃用の強化版重厚SEを使用するか")]
+    public bool isHeavyAttack = true;
+    [Tooltip("trueの場合、弾幕一斉発射時ではなく弾1発ごとにSEを再生します（特殊パターン用）")]
+    public bool playSEPerBullet = false;
+
     public override IEnumerator RunBehavior(Alpha_EnemyAI ai)
     {
         // エリートAIであれば演出用のフックを叩く
@@ -86,6 +94,20 @@ public class Behavior_Barrage : EnemyBehaviorData_Base
                 // 発射位置の計算（ローカルオフセットを加味）
                 Vector3 spawnPos = currentPos + (Vector2)(ai.transform.rotation * spawnOffset);
 
+                // 弾幕発射タイミングSE（メイン処理）
+                if (!playSEPerBullet && Alpha.Audio.EnemyShotSoundManager_Alpha.Instance != null)
+                {
+                    bool isMob1 = useLightSE || (ai != null && ai.gameObject.name.IndexOf("mob1", System.StringComparison.OrdinalIgnoreCase) >= 0);
+                    if (isMob1)
+                    {
+                        Alpha.Audio.EnemyShotSoundManager_Alpha.Instance.PlayLightShotSE(spawnPos);
+                    }
+                    else
+                    {
+                        Alpha.Audio.EnemyShotSoundManager_Alpha.Instance.PlayBarrageShotSE(spawnPos, isHeavyAttack);
+                    }
+                }
+
                 // 発射処理 (N-Way)
                 float startAngle = baseAngle - (spreadAngle / 2f);
                 float angleStep = bulletCount > 1 ? spreadAngle / (bulletCount - 1) : 0f;
@@ -116,6 +138,12 @@ public class Behavior_Barrage : EnemyBehaviorData_Base
                             bullet.setRotate(dir);
                             bullet.DestroyTime = bulletLifeTime;
                             bullet.shoot();
+                        }
+
+                        // 弾1発ごとの発射SE（特殊パターン用）
+                        if (playSEPerBullet && Alpha.Audio.EnemyShotSoundManager_Alpha.Instance != null)
+                        {
+                            Alpha.Audio.EnemyShotSoundManager_Alpha.Instance.PlaySingleBulletSE(spawnPos, isHeavyAttack);
                         }
                     }
 

@@ -142,6 +142,10 @@ public class enemy : MonoBehaviour
             //弾の発射角度
             Vector3 shootPos = playerPos - enemyPos;
             yield return new WaitForSeconds(0.1f); //精度を落とすための待ち時間
+            if (Alpha.Audio.EnemyShotSoundManager_Alpha.Instance != null)
+            {
+                Alpha.Audio.EnemyShotSoundManager_Alpha.Instance.PlayBarrageShotSE(enemyPos, false);
+            }
             GameObject bulletPrefab = Instantiate(bullet, enemyPos, Quaternion.identity); //弾の生成
             bulletPrefab.GetComponent<Bullet_Base>().setRotate(shootPos); //弾の発射角度の決定
             bulletPrefab.GetComponent<Bullet_Base>().setBulletSpeed(0.3f); //弾の速度決定と発射

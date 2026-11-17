@@ -43,6 +43,8 @@ namespace Alpha.Flow
 
         [Header("Effects")]
         public Alpha.Effect.Alpha_MidBossAppearEffect midBossAppearEffectUI;
+        [Tooltip("中ボス出現前の雑魚戦終了時にBGMをフェードアウトさせる時間（秒）")]
+        public float midBossTransitionBGMFadeDuration = 1.5f;
 
         [Header("State (Read Only)")]
         [Header("Timeline Skip Audio")]
@@ -205,6 +207,13 @@ namespace Alpha.Flow
                         else
                         {
                             SetState(StageState_Alpha.Transition);
+
+                            // 雑魚戦終了：中ボス出現演出に向けてBGMをフェードアウト
+                            if (Alpha.Audio.SoundManager_Alpha.Instance != null)
+                            {
+                                Alpha.Audio.SoundManager_Alpha.Instance.StopBGM(midBossTransitionBGMFadeDuration);
+                            }
+
                             if (midBossAppearEffectUI != null)
                             {
                                 midBossAppearEffectUI.PlayEffect(() => {

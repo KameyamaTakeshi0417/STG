@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -15,11 +15,22 @@ public class Health : _Health_Base
     [Header("Flee Settings")]
     public bool canFlee = true;
     public float fleeTimeLimit = 10f;
+    [Tooltip("最高速度に到達するまでの加速時間（秒）")]
+    public float fleeAccelerationDuration = 3.0f;
+    [Tooltip("逃亡時の初速")]
+    public float fleeInitialSpeed = 0f;
+    [Tooltip("逃亡時の最高速度")]
+    public float fleeMaxSpeed = 30f;
     protected float currentFleeTime = 0f;
+    protected float fleeElapsedTime = 0f;
     protected bool isFleeing = false;
     protected Slider fleeSlider;
     protected Vector2 fleeDir = Vector2.left;
     protected Color originalHPColor = Color.red;
+
+    private static float lastGlobalEscapeSoundTime = -1f;
+    private const float MinGlobalEscapeSoundInterval = 0.08f;
+    private static AudioClip cachedEscapeSEClip = null;
 
     protected virtual void Start()
     {
@@ -107,6 +118,7 @@ public class Health : _Health_Base
         {
             isFleeing = false;
             currentFleeTime = 0f;
+            fleeElapsedTime = 0f;
             if (fleeSlider != null) fleeSlider.value = 0f;
 
             // 1. アルファ値の復旧
@@ -163,10 +175,19 @@ public class Health : _Health_Base
 
         if (isFleeing)
         {
+            fleeElapsedTime += Time.deltaTime;
+
+            // easeInQuad による加速: t^2
+            float t = (fleeAccelerationDuration > 0f)
+                ? Mathf.Clamp01(fleeElapsedTime / fleeAccelerationDuration)
+                : 1f;
+            float easeInQuadFactor = t * t;
+            float currentSpeed = Mathf.Lerp(fleeInitialSpeed, fleeMaxSpeed, easeInQuadFactor);
+
             Rigidbody2D rb = GetComponent<Rigidbody2D>();
             if (rb != null)
             {
-                rb.velocity = fleeDir * 30f;
+                rb.velocity = fleeDir * currentSpeed;
             }
 
             // 画面外に出たら削除
@@ -197,9 +218,28 @@ public class Health : _Health_Base
         }
     }
 
+    protected void PlayFleeSound()
+    {
+        if (Time.unscaledTime - lastGlobalEscapeSoundTime < MinGlobalEscapeSoundInterval) return;
+        lastGlobalEscapeSoundTime = Time.unscaledTime;
+
+        if (cachedEscapeSEClip == null)
+        {
+            cachedEscapeSEClip = Resources.Load<AudioClip>("SE/SE_Enemy_Escape_Insect_01_Kasa");
+        }
+
+        if (cachedEscapeSEClip != null && Alpha.Audio.SoundManager_Alpha.Instance != null)
+        {
+            float pitch = Random.Range(0.95f, 1.05f);
+            Alpha.Audio.SoundManager_Alpha.Instance.PlaySE(cachedEscapeSEClip, 0.75f, pitch);
+        }
+    }
+
     protected virtual void StartFlee()
     {
         isFleeing = true;
+        fleeElapsedTime = 0f;
+        PlayFleeSound();
         
         // 1. 半透明化
         SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
@@ -247,9 +287,10 @@ public class Health : _Health_Base
             GameObject player = GameObject.FindGameObjectWithTag("Player");
             if (player != null)
             {
-                fleeDir = (transform.position - player.transform.position).normalized;
+                Vector2 diff = transform.position - player.transform.position;
+                fleeDir = diff.sqrMagnitude > 0.001f ? diff.normalized : Vector2.left;
             }
-            rb.velocity = fleeDir * 15f; // 初期の15fに速度を戻す
+            rb.velocity = fleeDir * fleeInitialSpeed; // 初速からスタート（easeInQuadで加速）
         }
 
         // 4. HPバーの色を青に変更
@@ -278,11 +319,6 @@ public class Health : _Health_Base
         if (gameObject.tag == "Enemy" && currentHP <= 0)
         {
             isDead = true;
-            if (hpSlider != null)
-            {
-                Destroy(hpSlider);
-            }
-
             Die();
         }
     }
@@ -310,6 +346,13 @@ public class Health : _Health_Base
     {
         // 共通のドロップ処理（経験値、オーブ、花弁）を呼び出す
         DropEnemyRewards();
+
+        // 追従している体力バーCanvasを即座に破棄
+        if (canvasInstance != null)
+        {
+            Destroy(canvasInstance);
+            canvasInstance = null;
+        }
 
         // 爆発エフェクトを1回だけ再生する（プール使用）
         GameObject explosionPrefab = Resources.Load<GameObject>("Objects/Effect/Effect_AetherExplosion");
@@ -381,6 +424,16 @@ public class Health : _Health_Base
         if (damageUI != null)
         {
             damageUI.damage = damage;
+        }
+    }
+
+    protected virtual void OnDestroy()
+    {
+        // 敵破棄時に体力バーCanvasも確実に破棄
+        if (canvasInstance != null)
+        {
+            Destroy(canvasInstance);
+            canvasInstance = null;
         }
     }
 }
