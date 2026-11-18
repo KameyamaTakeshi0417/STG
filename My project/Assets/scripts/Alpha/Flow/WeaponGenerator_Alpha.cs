@@ -179,6 +179,46 @@ namespace Alpha.Flow
             return seriesPool.Count > 0 ? seriesPool[Random.Range(0, seriesPool.Count)] : null;
         }
 
+        /// <summary>
+        /// ドロップ用プール（ActiveSeriesPool）から指定レアリティに応じたシリーズをランダムに取得する
+        /// </summary>
+        public WeaponSeriesData_Alpha GetRandomSeriesFromPool(int quality)
+        {
+            var seriesPool = ActiveSeriesPool;
+            if (seriesPool == null || seriesPool.Count == 0) return null;
+
+            List<WeaponSeriesData_Alpha> validPool = new List<WeaponSeriesData_Alpha>();
+            foreach (var s in seriesPool)
+            {
+                if (s != null && s.name != "InitialSeries" && s.minQuality <= quality)
+                {
+                    validPool.Add(s);
+                }
+            }
+
+            if (validPool.Count > 0)
+            {
+                return validPool[Random.Range(0, validPool.Count)];
+            }
+
+            // フォールバック：minQuality条件を満たすものが無い場合はInitialSeries以外の全プールから抽選
+            List<WeaponSeriesData_Alpha> fallbackPool = new List<WeaponSeriesData_Alpha>();
+            foreach (var s in seriesPool)
+            {
+                if (s != null && s.name != "InitialSeries")
+                {
+                    fallbackPool.Add(s);
+                }
+            }
+
+            if (fallbackPool.Count > 0)
+            {
+                return fallbackPool[Random.Range(0, fallbackPool.Count)];
+            }
+
+            return seriesPool[Random.Range(0, seriesPool.Count)];
+        }
+
         public WeaponPartInstance_Alpha CreatePartInstance(WeaponSeriesData_Alpha series, int quality)
         {
             if (series == null) return null;
@@ -200,7 +240,17 @@ namespace Alpha.Flow
                 }
                 partType = otherParts[Random.Range(0, otherParts.Count)];
             }
-            
+
+            return CreatePartInstanceWithType(series, partType, quality);
+        }
+
+        /// <summary>
+        /// 部位（弾頭・薬莢・雷管）を明示指定してパーツインスタンスを生成する
+        /// </summary>
+        public WeaponPartInstance_Alpha CreatePartInstanceWithType(WeaponSeriesData_Alpha series, WeaponPartType_Alpha partType, int quality)
+        {
+            if (series == null) return null;
+
             WeaponPartInstance_Alpha instance = new WeaponPartInstance_Alpha(series, partType, quality);
 
             // ベストスロットの場合、シリーズのセットボーナスを固定枠として付与

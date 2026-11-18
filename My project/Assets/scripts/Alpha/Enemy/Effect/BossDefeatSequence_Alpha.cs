@@ -60,18 +60,32 @@ namespace Alpha.Enemy.Effect
 
         private IEnumerator DefeatSequenceCoroutine()
         {
-            // スロー演出開始
-            Time.timeScale = slowTimeScale;
             canSpawnExplosion = true;
+
+            float totalCinematicDuration = slowDuration + clearTextDelay;
 
             if (Alpha.Core.ProceduralJuiceManager_Alpha.Instance != null)
             {
-                // JuiceManagerの大爆発シーケンス（波紋・フラッシュ・画面揺れ）も並行して再生
+                // 大ボス撃破フル演出（SE・白フラッシュ・ビネット・カメラズーム＆シェイク・2重衝撃波・花弁バースト）
+                Alpha.Core.ProceduralJuiceManager_Alpha.Instance.PlayBossDefeatCinematic(
+                    transform.position,
+                    isBigBoss: true,
+                    slowDuration: totalCinematicDuration,
+                    manageTimeScale: false
+                );
+                // 連続爆発シーケンスも並行再生
                 Alpha.Core.ProceduralJuiceManager_Alpha.Instance.SpawnBossExplosionSequence(transform.position, explosionOffsetRange.x, slowDuration);
             }
 
+            // (a) トドメの一瞬ヒットストップ（0.10秒）
+            Time.timeScale = 0.02f;
+            yield return new WaitForSecondsRealtime(0.10f);
+
+            // (b) 深いスロー演出開始
+            Time.timeScale = slowTimeScale;
+
             // やられスプライト表示までの待機（リアルタイム）
-            yield return new WaitForSecondsRealtime(slowDuration);
+            yield return new WaitForSecondsRealtime(Mathf.Max(0.1f, slowDuration - 0.10f));
 
             ShowDefeatSprite();
 
@@ -83,8 +97,11 @@ namespace Alpha.Enemy.Effect
             // 新規の爆発生成を停止（すでに再生中のものは自然消滅に任せる）
             canSpawnExplosion = false;
 
-            // スロー演出終了
-            Time.timeScale = 1f;
+            // スロー演出終了（ポーズ中でなければ通常速度へ復帰）
+            if (Time.timeScale > 0f)
+            {
+                Time.timeScale = 1f;
+            }
         }
 
         private IEnumerator AetherExplosionCoroutine()
@@ -186,7 +203,7 @@ namespace Alpha.Enemy.Effect
 
             if (Alpha.Flow.StageManager_Alpha.Instance != null)
             {
-                Alpha.Flow.StageManager_Alpha.Instance.ClearAllEnemyBullets();
+                Alpha.Flow.StageManager_Alpha.Instance.ClearAllEnemyBulletsWithEffect(transform.position);
             }
             
             var hpBar = GetComponentInChildren<Alpha.UI.Alpha_EliteCircleHPBar>();

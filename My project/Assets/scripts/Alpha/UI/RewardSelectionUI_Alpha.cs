@@ -35,6 +35,10 @@ namespace Alpha.UI
         private List<WeaponPartInstance_Alpha> currentChoices;
         private bool isAnimating = false;
 
+        private Vector2[] initialCardPositions;
+        private Vector3[] initialCardScales;
+        private bool hasCachedCardLayout = false;
+
         private void Awake()
         {
             if (detailPopup != null) detailPopup.gameObject.SetActive(false);
@@ -66,12 +70,15 @@ namespace Alpha.UI
 
         private void OnSkipClicked()
         {
+            if (isAnimating) return;
             if (detailPopup != null) detailPopup.gameObject.SetActive(false);
             onChoiceSelected?.Invoke(null);
         }
 
         public void ShowChoices(OrbData_Alpha orb, System.Action<WeaponPartInstance_Alpha> callback)
         {
+            StopAllCoroutines();
+            isAnimating = false;
             onChoiceSelected = callback;
             
             if (WeaponGenerator_Alpha.Instance != null)
@@ -79,31 +86,67 @@ namespace Alpha.UI
                 currentChoices = WeaponGenerator_Alpha.Instance.GenerateChoices(orb);
                 UpdateUI(currentChoices);
                 
-                if (panel != null) panel.SetActive(true);
+                if (panel != null)
+                {
+                    panel.SetActive(true);
+                    CanvasGroup panelCG = panel.GetComponent<CanvasGroup>();
+                    if (panelCG != null)
+                    {
+                        panelCG.DOKill();
+                        panelCG.alpha = 1f;
+                    }
+                }
                 if (detailPopup != null) detailPopup.gameObject.SetActive(false);
 
-                Canvas.ForceUpdateCanvases();
-                if (choiceButtons.Length > 0 && choiceButtons[0] != null)
+                // 初回のみレイアウト確定後の正しい位置・スケールをキャッシュ
+                if (!hasCachedCardLayout)
                 {
-                    var layout = choiceButtons[0].transform.parent.GetComponent<UnityEngine.UI.LayoutGroup>();
-                    if (layout != null) layout.enabled = false;
+                    Canvas.ForceUpdateCanvases();
+                    initialCardPositions = new Vector2[choiceButtons.Length];
+                    initialCardScales = new Vector3[choiceButtons.Length];
+                    for (int i = 0; i < choiceButtons.Length; i++)
+                    {
+                        if (choiceButtons[i] != null)
+                        {
+                            RectTransform rt = choiceButtons[i].GetComponent<RectTransform>();
+                            if (rt != null)
+                            {
+                                initialCardPositions[i] = rt.anchoredPosition;
+                                initialCardScales[i] = rt.localScale.sqrMagnitude > 0.001f ? rt.localScale : Vector3.one;
+                            }
+                        }
+                    }
+                    if (choiceButtons.Length > 0 && choiceButtons[0] != null)
+                    {
+                        var layout = choiceButtons[0].transform.parent.GetComponent<UnityEngine.UI.LayoutGroup>();
+                        if (layout != null) layout.enabled = false;
+                    }
+                    hasCachedCardLayout = true;
                 }
 
-                // カードの落下アニメーション
+                // 各カードの状態（透明度・スケール・進行中Tween）を完全にリセットしてから落下アニメーション
                 for (int i = 0; i < choiceButtons.Length; i++)
                 {
                     if (choiceButtons[i] != null)
                     {
+                        CanvasGroup cardCG = choiceButtons[i].GetComponent<CanvasGroup>();
+                        if (cardCG != null)
+                        {
+                            cardCG.DOKill();
+                            cardCG.alpha = 1f;
+                        }
+
                         RectTransform rt = choiceButtons[i].GetComponent<RectTransform>();
                         if (rt != null)
                         {
-                            // 現在の正しいY座標を保存しておく
-                            float targetY = rt.anchoredPosition.y;
+                            rt.DOKill();
+                            rt.localScale = (initialCardScales != null && i < initialCardScales.Length) ? initialCardScales[i] : Vector3.one;
+
+                            Vector2 targetPos = (initialCardPositions != null && i < initialCardPositions.Length) ? initialCardPositions[i] : rt.anchoredPosition;
                             // 画面外の上方に配置
-                            rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, targetY + 800f);
-                            // 時間差で元の位置へ落とす
-                            // timescaleが0になっている可能性があるのでSetUpdate(true)を使用
-                            rt.DOAnchorPosY(targetY, 0.4f).SetEase(Ease.OutCubic).SetDelay(i * 0.15f).SetUpdate(true);
+                            rt.anchoredPosition = new Vector2(targetPos.x, targetPos.y + 800f);
+                            // 時間差で元の位置へ落とす（timescale=0対応のためSetUpdate(true)）
+                            rt.DOAnchorPosY(targetPos.y, 0.4f).SetEase(Ease.OutCubic).SetDelay(i * 0.15f).SetUpdate(true);
                         }
                     }
                 }
@@ -117,7 +160,26 @@ namespace Alpha.UI
 
         public void Hide()
         {
-            if (panel != null) panel.SetActive(false);
+            StopAllCoroutines();
+            isAnimating = false;
+
+            for (int i = 0; i < choiceButtons.Length; i++)
+            {
+                if (choiceButtons[i] != null)
+                {
+                    RectTransform rt = choiceButtons[i].GetComponent<RectTransform>();
+                    if (rt != null) rt.DOKill();
+                    CanvasGroup cg = choiceButtons[i].GetComponent<CanvasGroup>();
+                    if (cg != null) cg.DOKill();
+                }
+            }
+
+            if (panel != null)
+            {
+                CanvasGroup panelCG = panel.GetComponent<CanvasGroup>();
+                if (panelCG != null) panelCG.DOKill();
+                panel.SetActive(false);
+            }
         }
 
         private void UpdateUI(List<WeaponPartInstance_Alpha> choices)

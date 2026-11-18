@@ -5,7 +5,23 @@ namespace Alpha.Core
 {
     public class JuiceManager_Alpha : MonoBehaviour
     {
-        public static JuiceManager_Alpha Instance { get; private set; }
+        private static JuiceManager_Alpha _instance;
+        public static JuiceManager_Alpha Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = FindObjectOfType<JuiceManager_Alpha>();
+                    if (_instance == null && Application.isPlaying)
+                    {
+                        GameObject go = new GameObject("JuiceManager_Alpha");
+                        _instance = go.AddComponent<JuiceManager_Alpha>();
+                    }
+                }
+                return _instance;
+            }
+        }
 
         private float originalTimeScale = 1f;
         private Coroutine hitStopCoroutine;
@@ -16,15 +32,20 @@ namespace Alpha.Core
 
         private void Awake()
         {
-            if (Instance != null && Instance != this)
+            if (_instance != null && _instance != this)
             {
                 Destroy(gameObject);
                 return;
             }
-            Instance = this;
-            
-            // In case we persist across scenes
-            // DontDestroyOnLoad(gameObject);
+            _instance = this;
+        }
+
+        private void OnDestroy()
+        {
+            if (_instance == this)
+            {
+                _instance = null;
+            }
         }
 
         private void Start()

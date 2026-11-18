@@ -214,14 +214,22 @@ namespace Alpha.UI
             }
         }
 
-        public void Hide()
+        public void Hide(System.Action onClosed = null)
         {
             if (detailPopup != null) detailPopup.gameObject.SetActive(false);
             if (effectDetailPopup != null) effectDetailPopup.Hide();
             if (confirmButton != null) confirmButton.gameObject.SetActive(false);
             if (backButtonForCheck != null) backButtonForCheck.gameObject.SetActive(false);
             if (backToForgeButton != null) backToForgeButton.gameObject.SetActive(false);
-            PlayCloseAnimation(null);
+
+            // すでに非表示または閉じアニメーション中なら二重にアニメーション・ブロックしない
+            if (panel == null || !panel.activeSelf || isCloseAnimating)
+            {
+                onClosed?.Invoke();
+                return;
+            }
+
+            PlayCloseAnimation(onClosed);
         }
 
         private void RefreshUI()
@@ -610,7 +618,6 @@ namespace Alpha.UI
                 selectedIndex = index;
                 Debug.Log($"[InventoryUI] Selected slot {index}");
                 RefreshUI();
-            PlayOpenAnimation();
             }
             else
             {
@@ -627,7 +634,6 @@ namespace Alpha.UI
                     selectedIndex = -1;
                 }
                 RefreshUI();
-            PlayOpenAnimation();
             }
         }
 
@@ -642,7 +648,6 @@ namespace Alpha.UI
             // 繧ゅ＠驕ｸ謚樔ｸｭ縺�縺｣縺溘ｂ縺ｮ縺檎ｧｻ蜍輔＠縺溘ｉ驕ｸ謚櫁ｧ｣髯､縺吶ｋ縺ｪ縺ｩ縺ｮ繧ｱ繧｢
             selectedIndex = -1;
             RefreshUI();
-            PlayOpenAnimation();
         }
 
         private void SwapItems(int index1, int index2)
@@ -726,6 +731,8 @@ namespace Alpha.UI
 
         private void OnConfirmClicked()
         {
+            if (isCloseAnimating) return;
+
             if (openedByEscape)
             {
                 if (PauseMenuManager_Alpha.Instance != null) PauseMenuManager_Alpha.Instance.CloseMenu();
@@ -736,15 +743,17 @@ namespace Alpha.UI
             {
                 // 驕ｸ謚槭く繝｣繝ｳ繧ｻ繝ｫ縺ｨ縺励※謇ｱ縺・
                 currentMode = InventoryUIMode.Normal;
-                Hide();
-                onCancelCallbackForBlacksmith?.Invoke();
+                var cancelCb = onCancelCallbackForBlacksmith;
+                onCancelCallbackForBlacksmith = null;
+                Hide(() => cancelCb?.Invoke());
                 return;
             }
 
             // 譁ｰ隕丞叙蠕励い繧､繝・Β縺ｮ閾ｪ蜍戊ｿｽ蜉�縺ｯRewardSequenceManager蛛ｴ縺ｧ陦後≧縺溘ａ縲√％縺薙〒縺ｯ菴輔ｂ縺励↑縺・
             selectedIndex = -1;
-            Hide(); // UI閾ｪ霄ｫ繧帝國縺・
-            onConfirmCallback?.Invoke();
+            var confirmCb = onConfirmCallback;
+            onConfirmCallback = null;
+            Hide(() => confirmCb?.Invoke());
         }
 
         private bool HasAllEquipableEffect(List<Alpha.Data.WeaponEffectSO_Alpha> effects)
@@ -834,12 +843,15 @@ namespace Alpha.UI
 
             cg.DOKill();
             panel.transform.DOKill();
-            isCloseAnimating = false;
-            UIInputBlocker_Alpha.Unblock();
+            if (isCloseAnimating)
+            {
+                isCloseAnimating = false;
+                UIInputBlocker_Alpha.Unblock();
+            }
 
-            panel.SetActive(true);
             cg.alpha = 0f;
             panel.transform.localScale = panelOriginalScale * 0.85f;
+            panel.SetActive(true);
 
             cg.DOFade(1f, 0.2f).SetEase(Ease.OutCubic).SetUpdate(true);
             panel.transform.DOScale(panelOriginalScale, 0.2f).SetEase(Ease.OutCubic).SetUpdate(true);
@@ -854,6 +866,15 @@ namespace Alpha.UI
                 onComplete?.Invoke();
                 return;
             }
+
+            if (isCloseAnimating)
+            {
+                onComplete?.Invoke();
+                return;
+            }
+
+            cg.DOKill();
+            panel.transform.DOKill();
 
             isCloseAnimating = true;
             UIInputBlocker_Alpha.Block();

@@ -12,6 +12,18 @@ public class Health : _Health_Base
     public GameObject damageTextPrefab; // ダメージ表示用のプレハブ
     public float DamageUIMagnitude = 0.1f;
 
+    public enum MobKillHitStopSize
+    {
+        Auto = 0,
+        Small = 1,
+        Medium = 2,
+        Large = 3
+    }
+
+    [Header("Kill HitStop Settings")]
+    [Tooltip("撃破時のヒットストップサイズ（Auto時は mob1/TutorialFirstEnemy/SwarmMob→小、mob4-6→大、その他→中。インスペクターで個別変更可能）")]
+    public MobKillHitStopSize killHitStopSize = MobKillHitStopSize.Auto;
+
     [Header("Flee Settings")]
     public bool canFlee = true;
     public float fleeTimeLimit = 10f;
@@ -341,11 +353,68 @@ public class Health : _Health_Base
         moneyCount = count;
     }
 
+    /// <summary>
+    /// タイムライン短縮時に、まだ逃亡していない雑魚敵の残留（逃亡）ゲージを巻き戻して延長する
+    /// </summary>
+    public void ExtendFleeTimer(float extraSeconds)
+    {
+        if (!canFlee || isBoss || isMidBoss || isDead || isFleeing) return;
+        if (extraSeconds <= 0f) return;
+
+        currentFleeTime = Mathf.Max(0f, currentFleeTime - extraSeconds);
+        if (fleeSlider != null)
+        {
+            fleeSlider.value = currentFleeTime;
+        }
+    }
+
+    /// <summary>
+    /// 雑魚撃破時のヒットストップサイズ（1=小, 2=中, 3=大）を決定する
+    /// </summary>
+    protected int ResolveKillHitStopLevel()
+    {
+        if (killHitStopSize != MobKillHitStopSize.Auto)
+        {
+            return (int)killHitStopSize;
+        }
+
+        string lowerName = gameObject.name.ToLowerInvariant();
+
+        // 小: mob1, TutorialFirstEnemy, swarmMob系
+        if (lowerName.Contains("mob1") || lowerName.Contains("tutorialfirstenemy") || lowerName.Contains("swarmmob"))
+        {
+            return (int)MobKillHitStopSize.Small;
+        }
+
+        // 大: mob4〜mob6
+        if (lowerName.Contains("mob4") || lowerName.Contains("mob5") || lowerName.Contains("mob6"))
+        {
+            return (int)MobKillHitStopSize.Large;
+        }
+
+        // エネミーラッシュ中の雑魚は基本 小
+        if (Alpha.Flow.StageManager_Alpha.Instance != null &&
+            Alpha.Flow.StageManager_Alpha.Instance.spawnManager != null &&
+            Alpha.Flow.StageManager_Alpha.Instance.spawnManager.IsRushActive())
+        {
+            return (int)MobKillHitStopSize.Small;
+        }
+
+        // その他（mob2, mob3 等）は 中
+        return (int)MobKillHitStopSize.Medium;
+    }
+
     // HPが0になった時の処理
     protected virtual void Die()
     {
         // 共通のドロップ処理（経験値、オーブ、花弁）を呼び出す
         DropEnemyRewards();
+
+        // 雑魚敵撃破時のヒットストップを発動（ボス・中ボスは専用の撃破シネマティックを使用）
+        if (!isBoss && !isMidBoss && Alpha.Core.ProceduralJuiceManager_Alpha.Instance != null)
+        {
+            Alpha.Core.ProceduralJuiceManager_Alpha.Instance.TriggerMobKillHitStop(ResolveKillHitStopLevel());
+        }
 
         // 追従している体力バーCanvasを即座に破棄
         if (canvasInstance != null)

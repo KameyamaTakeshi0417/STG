@@ -82,6 +82,7 @@ namespace Alpha.Flow
 
             // キューから1つ取り出す
             OrbData_Alpha currentOrb = sequenceOrbQueue.Dequeue();
+            Debug.Log($"[RewardSequence] Processing next orb (Rarity: {currentOrb.orbRarity}, Remaining: {sequenceOrbQueue.Count})");
 
             // OrbStackUI の表示を更新（1つ減らす、ハイライトを移すなど）
             if (orbStackUI != null)
@@ -182,6 +183,9 @@ namespace Alpha.Flow
             if (orbStackUI != null) orbStackUI.Hide();
             if (rewardSelectionUI != null) rewardSelectionUI.Hide();
             if (inventoryUI != null) inventoryUI.Hide();
+
+            // 安全弁：UI入力ブロッカーが残らないよう確実に解除
+            UIInputBlocker_Alpha.ForceUnblock();
 
             // ゲーム再開
             Time.timeScale = 1f;

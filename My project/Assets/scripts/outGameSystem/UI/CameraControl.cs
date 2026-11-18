@@ -31,6 +31,7 @@ public class CameraControl : MonoBehaviour
     private float zoomVelocity;
 
     [HideInInspector] public Vector3 shakeOffset = Vector3.zero; // JuiceManager用
+    [HideInInspector] public float zoomOffset = 0f;            // 演出用ズームオフセット（負値でズームイン）
 
 
 
@@ -79,8 +80,9 @@ public class CameraControl : MonoBehaviour
             targetOrthoSize = Mathf.Clamp(targetOrthoSize, minOrthoSize, maxOrthoSize);
         }
 
-        // 実際のカメラサイズを滑らかに追従させる
-        cam.orthographicSize = Mathf.SmoothDamp(cam.orthographicSize, targetOrthoSize, ref zoomVelocity, zoomSmoothTime);
+        // 実際のカメラサイズを滑らかに追従させる（演出用zoomOffsetを含む・スロー中も滑らかに追従）
+        float desiredOrthoSize = Mathf.Max(1.5f, targetOrthoSize + zoomOffset);
+        cam.orthographicSize = Mathf.SmoothDamp(cam.orthographicSize, desiredOrthoSize, ref zoomVelocity, zoomSmoothTime, Mathf.Infinity, Time.unscaledDeltaTime);
     }
 
     void ObeyPlayer(float dt)

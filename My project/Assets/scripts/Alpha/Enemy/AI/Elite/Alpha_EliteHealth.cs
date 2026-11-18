@@ -249,10 +249,14 @@ public class Alpha_EliteHealth : Health
                 }
             }
 
-            // スロー演出をトリガー (エリート・中ボス用)
-            if (Alpha.Flow.StageManager_Alpha.Instance != null)
+            // 中ボス・エリート撃破フル演出（SE・ヒットストップ・深いスロー・白フラッシュ・ビネット・カメラズーム＆シェイク・2重衝撃波・花弁バースト）
+            if (Alpha.Core.ProceduralJuiceManager_Alpha.Instance != null)
             {
-                Alpha.Flow.StageManager_Alpha.Instance.TriggerSlowMotion(0.7f, 3f);
+                Alpha.Core.ProceduralJuiceManager_Alpha.Instance.PlayBossDefeatCinematic(transform.position, isBigBoss: false, slowDuration: 2.2f, manageTimeScale: true);
+            }
+            else if (Alpha.Flow.StageManager_Alpha.Instance != null)
+            {
+                Alpha.Flow.StageManager_Alpha.Instance.TriggerSlowMotion(0.3f, 2.0f);
             }
 
             // エリート（中ボス含む）の場合は通常通り消滅させる
@@ -264,17 +268,17 @@ public class Alpha_EliteHealth : Health
                     Alpha.Flow.RewardManager_Alpha.Instance.DropMidBossReward(transform.position, forceQuality1);
                     if (Alpha.Flow.StageManager_Alpha.Instance != null)
                     {
-                        Alpha.Flow.StageManager_Alpha.Instance.ClearAllEnemyBullets();
+                        Alpha.Flow.StageManager_Alpha.Instance.ClearAllEnemyBulletsWithEffect(transform.position);
                         Alpha.Flow.StageManager_Alpha.Instance.OnBossDefeated();
                     }
                 }
                 else
                 {
                     Alpha.Flow.RewardManager_Alpha.Instance.AddPoints(rewardPoints);
-                    // 通常エリートの場合も弾を消す場合はここに追加
+                    // 通常エリートの場合も衝撃波で敵弾を花弁・光粒に変えて一掃
                     if (Alpha.Flow.StageManager_Alpha.Instance != null)
                     {
-                        Alpha.Flow.StageManager_Alpha.Instance.ClearAllEnemyBullets();
+                        Alpha.Flow.StageManager_Alpha.Instance.ClearAllEnemyBulletsWithEffect(transform.position);
                     }
                 }
             }

@@ -79,6 +79,7 @@ MonoBehaviour:
   bossId: 
   damageTextPrefab: {fileID: 3988437868621658341, guid: 5ccc0cd62017e7542bc9974c88b5c92d, type: 3}
   DamageUIMagnitude: 0.1
+  killHitStopSize: 1
   canFlee: 1
   fleeTimeLimit: 99
 --- !u!114 &4597443262583086499

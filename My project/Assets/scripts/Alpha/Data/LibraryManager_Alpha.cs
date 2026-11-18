@@ -149,6 +149,17 @@ namespace Alpha.Data
 
             tutorialDatabase.Add(new TutorialItemData
             {
+                id = "Tutorial_Orb_AutoEquip",
+                title = "オーブとパーツの自動装備",
+                category = "ゲームシステム",
+                keyboardDesc = "オーブからはパーツが手に入ります！\n発射時効果が変わる雷管\n航行時効果が変わる薬莢\n着弾時効果が変わる弾頭\n最初に手に入れる3つのオーブは自動で開封、装備されます！",
+                gamepadDesc = "オーブからはパーツが手に入ります！\n発射時効果が変わる雷管\n航行時効果が変わる薬莢\n着弾時効果が変わる弾頭\n最初に手に入れる3つのオーブは自動で開封、装備されます！",
+                tips = "ステージ1前半で最初に拾う3つのオーブは、弾頭・薬莢・雷管の順で自動的に装備枠へ装備されます。",
+                shortcutHint = "最初の3個は自動開封＆装備"
+            });
+
+            tutorialDatabase.Add(new TutorialItemData
+            {
                 id = "Tutorial_Orb",
                 title = "オーブドロップ",
                 category = "ゲームシステム",

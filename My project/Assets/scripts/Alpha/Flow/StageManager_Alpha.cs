@@ -52,6 +52,12 @@ namespace Alpha.Flow
         public AudioClip timelineSkipMoveClip;
         [Range(0f, 1f)] public float timelineSkipMoveVolume = 0.8f;
 
+        [Header("Timeline Skip Flee Extension")]
+        [Tooltip("タイムライン短縮時に既存の未逃亡雑魚の残留ゲージを短縮秒数ぶん巻き戻すか（OFF時は固定秒数）")]
+        public bool extendFleeBySkippedTime = true;
+        [Tooltip("タイムライン短縮時の最低延長秒数（extendFleeBySkippedTimeがOFFの場合は固定延長秒数）")]
+        public float minFleeExtendSeconds = 4.0f;
+
         public StageState_Alpha currentState = StageState_Alpha.None;
         public float currentSequenceTime = 0f;
 
@@ -329,7 +335,8 @@ namespace Alpha.Flow
                 }
 
                 {
-                    float skipRatio = activeSequence.duration > 0f ? (targetTime - currentSequenceTime) / activeSequence.duration : 0f;
+                    float skippedSeconds = Mathf.Max(0f, targetTime - currentSequenceTime);
+                    float skipRatio = activeSequence.duration > 0f ? skippedSeconds / activeSequence.duration : 0f;
                     
                     int pointsToGain = 0;
                     if (RewardManager_Alpha.Instance != null)
@@ -337,12 +344,12 @@ namespace Alpha.Flow
                         pointsToGain = Mathf.RoundToInt(RewardManager_Alpha.Instance.targetPoints * skipRatio);
                     }
 
-                    StartCoroutine(WaveSkipSequenceRoutine(targetTime, pointsToGain));
+                    StartCoroutine(WaveSkipSequenceRoutine(targetTime, pointsToGain, skippedSeconds));
                 }
             }
         }
 
-        private System.Collections.IEnumerator WaveSkipSequenceRoutine(float targetTime, int pointsToGain)
+        private System.Collections.IEnumerator WaveSkipSequenceRoutine(float targetTime, int pointsToGain, float skippedSeconds)
         {
             isSequenceAnimating = true;
 
@@ -356,7 +363,10 @@ namespace Alpha.Flow
             currentSequenceTime = targetTime;
             sequenceBarUI.UpdateProgress(endProgress);
 
-            // 2. 謨ｵ縺ｮ繧ｹ繝昴・繝ｳ
+            // 既存の未逃亡雑魚の残留（逃亡）ゲージを延長してから次ウェーブをスポーン
+            ExtendExistingMobsFleeGauge(skippedSeconds);
+
+            // 2. 敵のスポーン
             spawnManager.CheckSpawn(currentSequenceTime);
 
             // 3. 繧ｹ繧ｳ繧｢陦ｨ遉ｺUI縺ｫ繧ｹ繧ｳ繧｢繧貞刈邂・
@@ -366,6 +376,31 @@ namespace Alpha.Flow
             }
 
             isSequenceAnimating = false;
+        }
+
+        private void ExtendExistingMobsFleeGauge(float skippedSeconds)
+        {
+            float extendSec = extendFleeBySkippedTime
+                ? Mathf.Max(minFleeExtendSeconds, skippedSeconds)
+                : minFleeExtendSeconds;
+
+            if (extendSec <= 0f) return;
+
+            Health[] existingMobs = FindObjectsOfType<Health>();
+            int extendedCount = 0;
+            foreach (var mob in existingMobs)
+            {
+                if (mob != null && mob.gameObject.activeInHierarchy)
+                {
+                    mob.ExtendFleeTimer(extendSec);
+                    extendedCount++;
+                }
+            }
+
+            if (extendedCount > 0)
+            {
+                Debug.Log($"[StageManager] Extended flee timer by +{extendSec:F1}s for {extendedCount} existing mob(s).");
+            }
         }
 
         private void PlayTimelineSkipMoveSE()
@@ -436,6 +471,16 @@ namespace Alpha.Flow
             currentSequenceTime = 0f;
             currentTutorialIndex = 0;
 
+            if (WeaponGenerator_Alpha.Instance != null && currentStageData.stageRewardTable != null)
+            {
+                WeaponGenerator_Alpha.Instance.SetRewardTable(currentStageData.stageRewardTable);
+            }
+
+            if (currentStageIndex == 0 && treasureManager_Alpha.Instance != null)
+            {
+                treasureManager_Alpha.Instance.ResetAutoEquipProgress();
+            }
+
             sequenceBarUI.Setup(activeSequence);
             spawnManager.SetupSequence(activeSequence);
             
@@ -477,6 +522,45 @@ namespace Alpha.Flow
                 }
             }
             Debug.Log("[StageManager] Cleared all enemy bullets.");
+        }
+
+        /// <summary>
+        /// 衝撃波の広がりに合わせて、画面内の敵弾を光の粒＆花弁バーストへと変換しながら一掃する
+        /// </summary>
+        public void ClearAllEnemyBulletsWithEffect(Vector3 originPos)
+        {
+            Bullet_Base[] bullets = FindObjectsOfType<Bullet_Base>();
+            var juice = Alpha.Core.ProceduralJuiceManager_Alpha.Instance;
+            const int maxBurstEffects = 45;
+            int burstSpawned = 0;
+
+            foreach (var b in bullets)
+            {
+                if (b != null && b.gameObject.activeInHierarchy && b.isEnemyBullet)
+                {
+                    Vector3 bPos = b.transform.position;
+
+                    // 衝撃波が届いた順（距離に応じた微小遅延）に花弁＆光粒バーストを散らす
+                    if (juice != null && burstSpawned < maxBurstEffects)
+                    {
+                        float dist = Vector2.Distance(originPos, bPos);
+                        float delay = Mathf.Clamp(dist * 0.018f, 0f, 0.30f);
+                        juice.SpawnBulletClearBurst(bPos, delay);
+                        burstSpawned++;
+                    }
+
+                    // 敵弾の当たり判定は即座に消去（演出遅延中の事故被弾を防止）
+                    if (Alpha_ObjectPoolManager.Instance != null && b.sourcePrefab != null)
+                    {
+                        Alpha_ObjectPoolManager.Instance.Return(b.gameObject, b.sourcePrefab);
+                    }
+                    else
+                    {
+                        Destroy(b.gameObject);
+                    }
+                }
+            }
+            Debug.Log($"[StageManager] Cleared all enemy bullets with petal burst ({burstSpawned} bursts).");
         }
 
         public void ClearAllEnemies()

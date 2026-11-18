@@ -1,4 +1,4 @@
-﻿%YAML 1.1
+%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!29 &1
 OcclusionCullingSettings:
@@ -2109,7 +2109,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -381, y: 483.6096}
+  m_AnchoredPosition: {x: -381, y: 483.61}
   m_SizeDelta: {x: 762, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &127728103
@@ -13693,6 +13693,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   onCoolTime: 0
   shootAudioSource: {fileID: 0}
+  shootSEClip: {fileID: 0}
+  shootSEVolume: 1
+  weaponSwitchSEClip: {fileID: 0}
+  weaponSwitchSEVolume: 0.75
   moveRadius: 2
   equippedWeaponData: {fileID: 0}
   shotIntervalSec: 0.05
@@ -13762,6 +13766,10 @@ MonoBehaviour:
   isMidBoss: 0
   isBoss: 0
   bossId: 
+  hitSEClip: {fileID: 0}
+  hitSEVolume: 0.7
+  hitSEPitch: 0.62
+  randomizeHitPitch: 1
   isInvincible: 0
   gaugeCanvas: {fileID: 6355505621524866342}
   circleHPBarManager: {fileID: 0}
@@ -15083,6 +15091,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1061188854}
   - component: {fileID: 1061188855}
+  - component: {fileID: 1061188856}
   m_Layer: 5
   m_Name: PauseMenuContainer
   m_TagString: Untagged
@@ -15125,17 +15134,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
+--- !u!114 &1061188856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1061188853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   m_Padding:
     m_Left: 0
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 4
-  m_Spacing: 16
-  m_ChildForceExpandWidth: 0
-  m_ChildForceExpandHeight: 0
-  m_ChildControlWidth: 1
-  m_ChildControlHeight: 1
+  m_ChildAlignment: 0
+  m_Spacing: 15.25
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
@@ -18818,7 +18847,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.7058824}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -20564,7 +20593,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1923382334}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.9999699
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -21256,7 +21285,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 714729796a13f014f883ab1affaf74b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  customFontAsset: {fileID: 11400000, guid: e04cd4bfd34da784098ac064876225b7, type: 2}
   pauseMenuContainer: {fileID: 1284513170}
   equipmentTabButton: {fileID: 1909231778}
   settingsTabButton: {fileID: 723533326}
@@ -21265,6 +21293,14 @@ MonoBehaviour:
   inventoryUI: {fileID: 971272994}
   settingsPanel: {fileID: 0}
   controlsPanel: {fileID: 0}
+  quitConfirmPanel: {fileID: 0}
+  tabs: []
+  customFontAsset: {fileID: 11400000, guid: e04cd4bfd34da784098ac064876225b7, type: 2}
+  tabSwitchSEClip: {fileID: 0}
+  tabSwitchSEVolume: 0.8
+  activeTabColor: {r: 0.2, g: 0.8, b: 0.3, a: 1}
+  inactiveTabColor: {r: 1, g: 1, b: 1, a: 1}
+  currentTabIndex: 0
 --- !u!114 &1526087927
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22731,6 +22767,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stackDisplayList: 00000000000000000000000000000000
+  enableStage1FirstHalfAutoEquip: 1
+  autoEquipTargetGroup: 1
 --- !u!114 &1634642372
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22755,6 +22793,9 @@ MonoBehaviour:
   stageClearText: {fileID: 1377090149}
   stageTitleText: {fileID: 1627832943}
   midBossAppearEffectUI: {fileID: 1854969913}
+  midBossTransitionBGMFadeDuration: 1.5
+  timelineSkipMoveClip: {fileID: 0}
+  timelineSkipMoveVolume: 0.8
   currentState: 2
   currentSequenceTime: 0
 --- !u!114 &1634642374
@@ -22771,6 +22812,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxRushIndicators: 30
   spawnIndicatorPrefab: {fileID: 7958173418322291145, guid: 3c6c594a59c09454ba77eb9ecdff7589, type: 3}
+  battleStartSEClip: {fileID: 0}
+  battleStartSEVolume: 0.85
 --- !u!114 &1634642375
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22783,6 +22826,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee712153327ea0c41beeb9e48190bd89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentRewardTable: {fileID: 0}
   allSeriesPool:
   - {fileID: 11400000, guid: 06aeb329cbc989a4da0291df5b74ebf2, type: 2}
   - {fileID: 11400000, guid: 9abfac9ced37cd2408a6693961992818, type: 2}
@@ -22894,6 +22938,8 @@ MonoBehaviour:
   targetPoints: 100
   targetQuality: 1
   currentRewardIndex: 1
+  counterTickClip: {fileID: 0}
+  counterTickVolume: 0.65
 --- !u!114 &1634642377
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -36,28 +36,42 @@ namespace Alpha.UI
             }
 
             // 以前のものが残っていれば削除
-            if (currentOrbInstance != null) Destroy(currentOrbInstance);
+            if (currentOrbInstance != null)
+            {
+                currentOrbInstance.transform.DOKill();
+                Destroy(currentOrbInstance);
+            }
+
+            if (!animationContainer.gameObject.activeInHierarchy)
+            {
+                animationContainer.gameObject.SetActive(true);
+            }
 
             // オーブのUIプレハブを生成
-            currentOrbInstance = Instantiate(prefab, animationContainer);
-            currentOrbInstance.transform.localPosition = Vector3.zero;
-            currentOrbInstance.transform.localScale = Vector3.one;
+            GameObject orbObj = Instantiate(prefab, animationContainer);
+            currentOrbInstance = orbObj;
+            orbObj.transform.localPosition = Vector3.zero;
+            orbObj.transform.localScale = Vector3.one;
 
             // アニメーション：グググ(Shake) -> パーン！(Scale)
-            currentOrbInstance.transform.DOShakePosition(1.0f, strength: 30f, vibrato: 30)
+            orbObj.transform.DOShakePosition(1.0f, strength: 30f, vibrato: 30)
                 .SetUpdate(true)
                 .OnComplete(() =>
                 {
-                    currentOrbInstance.transform.DOScale(3f, 0.2f).SetUpdate(true).SetEase(Ease.OutQuad);
-                    
-                    var images = currentOrbInstance.GetComponentsInChildren<Image>();
-                    foreach (var img in images)
+                    if (orbObj != null)
                     {
-                        img.DOFade(0f, 0.2f).SetUpdate(true);
+                        orbObj.transform.DOScale(3f, 0.2f).SetUpdate(true).SetEase(Ease.OutQuad);
+                        
+                        var images = orbObj.GetComponentsInChildren<Image>();
+                        foreach (var img in images)
+                        {
+                            img.DOFade(0f, 0.2f).SetUpdate(true);
+                        }
                     }
 
                     DOVirtual.DelayedCall(0.2f, () => {
-                        Destroy(currentOrbInstance);
+                        if (orbObj != null) Destroy(orbObj);
+                        if (currentOrbInstance == orbObj) currentOrbInstance = null;
                         onComplete?.Invoke();
                     }).SetUpdate(true);
                 });
