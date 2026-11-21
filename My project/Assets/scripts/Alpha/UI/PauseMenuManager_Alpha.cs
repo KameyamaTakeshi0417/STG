@@ -196,6 +196,38 @@ namespace Alpha.UI
                 canvas.sortingOrder = 1010;
                 canvas.planeDistance = 100f;
             }
+
+            // PauseMenuCanvas 直下の透明背景パネルなどの RaycastTarget を false に設定し入力を遮断しない
+            if (pauseMenuContainer != null)
+            {
+                var pImg = pauseMenuContainer.GetComponent<Image>();
+                if (pImg != null) pImg.raycastTarget = false;
+            }
+            var rootImg = GetComponent<Image>();
+            if (rootImg != null) rootImg.raycastTarget = false;
+
+            // タブバー（TabsBar）を確実に全画面パネルの最前面（SystemUI / 1050）に維持
+            Transform tabParent = null;
+            if (equipmentTabButton != null) tabParent = equipmentTabButton.transform.parent;
+            else if (tabs.Count > 0 && tabs[0].tabButton != null) tabParent = tabs[0].tabButton.transform.parent;
+
+            if (tabParent != null)
+            {
+                Canvas tabCanvas = tabParent.GetComponent<Canvas>();
+                if (tabCanvas == null) tabCanvas = tabParent.gameObject.AddComponent<Canvas>();
+                tabCanvas.overrideSorting = true;
+                tabCanvas.sortingLayerName = "SystemUI";
+                tabCanvas.sortingOrder = 1050;
+                tabCanvas.planeDistance = 100f;
+                if (canvas != null && canvas.worldCamera != null)
+                {
+                    tabCanvas.worldCamera = canvas.worldCamera;
+                }
+
+                GraphicRaycaster gr = tabParent.GetComponent<GraphicRaycaster>();
+                if (gr == null) gr = tabParent.gameObject.AddComponent<GraphicRaycaster>();
+                gr.ignoreReversedGraphics = true;
+            }
         }
 
         /// <summary>
@@ -672,7 +704,7 @@ namespace Alpha.UI
         }
 
         /// <summary>
-        /// ライブラリ（チュートリアル反復確認、敵、弾、エフェクト等）のUIパネルをコードから動的生成
+        /// ライブラリ（チュートリアル反復確認、敵、弾、エフェクト等）のUIパネルをコードから動的生成（全画面フルスクリーン）
         /// </summary>
         private GameObject CreateDefaultLibraryPanel(Transform parent)
         {
@@ -680,22 +712,22 @@ namespace Alpha.UI
             panelGO.transform.SetParent(parent, false);
 
             RectTransform rt = panelGO.GetComponent<RectTransform>();
-            rt.anchorMin = new Vector2(0.12f, 0.08f);
-            rt.anchorMax = new Vector2(0.88f, 0.88f);
+            rt.anchorMin = Vector2.zero;
+            rt.anchorMax = Vector2.one;
             rt.offsetMin = Vector2.zero;
             rt.offsetMax = Vector2.zero;
             rt.anchoredPosition = Vector2.zero;
             rt.localScale = Vector3.one;
             rt.localEulerAngles = Vector3.zero;
 
-            // 最前面レイヤー設定 (SystemUI / 1020)
+            // レイヤー設定 (SystemUI / 1005: 最前面タブバー 1050 の背面)
             Canvas rootCanvas = GetComponentInParent<Canvas>();
             if (rootCanvas == null) rootCanvas = GetComponent<Canvas>();
 
             Canvas panelCanvas = panelGO.AddComponent<Canvas>();
             panelCanvas.overrideSorting = true;
             panelCanvas.sortingLayerName = "SystemUI";
-            panelCanvas.sortingOrder = 1020;
+            panelCanvas.sortingOrder = 1005;
             panelCanvas.planeDistance = 100f;
             if (rootCanvas != null && rootCanvas.worldCamera != null)
             {
@@ -708,6 +740,11 @@ namespace Alpha.UI
 
             GraphicRaycaster gr = panelGO.AddComponent<GraphicRaycaster>();
             gr.ignoreReversedGraphics = true;
+
+            // 背景イメージ（深森墨黒・すりガラス調 全画面）
+            Image bg = panelGO.AddComponent<Image>();
+            bg.color = new Color(0.040f, 0.055f, 0.048f, 0.96f);
+            AddCornerAccents(rt, new Color(0.80f, 0.68f, 0.44f, 0.9f), 24f, 1.5f);
 
             LibraryPanelUI_Alpha libUI = panelGO.AddComponent<LibraryPanelUI_Alpha>();
             libUI.customFontAsset = customFontAsset;
@@ -718,7 +755,7 @@ namespace Alpha.UI
         }
 
         /// <summary>
-        /// オプション画面（音量3種、解像度等）のUIパネルをコードから動的生成
+        /// オプション画面（音量3種、画面揺れ・ダメージ表示・VSync等）のUIパネルをコードから動的生成（全画面フルスクリーン）
         /// </summary>
         private GameObject CreateDefaultSettingsPanel(Transform parent)
         {
@@ -726,22 +763,22 @@ namespace Alpha.UI
             panelGO.transform.SetParent(parent, false);
 
             RectTransform rt = panelGO.GetComponent<RectTransform>();
-            rt.anchorMin = new Vector2(0.15f, 0.1f);
-            rt.anchorMax = new Vector2(0.85f, 0.9f);
+            rt.anchorMin = Vector2.zero;
+            rt.anchorMax = Vector2.one;
             rt.offsetMin = Vector2.zero;
             rt.offsetMax = Vector2.zero;
             rt.anchoredPosition = Vector2.zero;
             rt.localScale = Vector3.one;
             rt.localEulerAngles = Vector3.zero;
 
-            // 最前面レイヤー設定 (SystemUI / 1020)
+            // レイヤー設定 (SystemUI / 1005: 最前面タブバー 1050 の背面)
             Canvas rootCanvas = GetComponentInParent<Canvas>();
             if (rootCanvas == null) rootCanvas = GetComponent<Canvas>();
 
             Canvas panelCanvas = panelGO.AddComponent<Canvas>();
             panelCanvas.overrideSorting = true;
             panelCanvas.sortingLayerName = "SystemUI";
-            panelCanvas.sortingOrder = 1020;
+            panelCanvas.sortingOrder = 1005;
             panelCanvas.planeDistance = 100f;
             if (rootCanvas != null && rootCanvas.worldCamera != null)
             {
@@ -755,45 +792,110 @@ namespace Alpha.UI
             GraphicRaycaster gr = panelGO.AddComponent<GraphicRaycaster>();
             gr.ignoreReversedGraphics = true;
 
-            // 背景イメージ（深森墨黒・すりガラス調）
+            // 背景イメージ（深森墨黒・すりガラス調 全画面）
             Image bg = panelGO.AddComponent<Image>();
             bg.color = new Color(0.040f, 0.055f, 0.048f, 0.96f);
-            AddCornerAccents(panelGO.GetComponent<RectTransform>(), new Color(0.55f, 0.46f, 0.32f, 0.65f), 18f, 1.5f);
+            AddCornerAccents(rt, new Color(0.80f, 0.68f, 0.44f, 0.9f), 24f, 1.5f);
 
-            // Vertical Layout Group
-            VerticalLayoutGroup vlg = panelGO.AddComponent<VerticalLayoutGroup>();
-            vlg.padding = new RectOffset(40, 40, 30, 30);
-            vlg.spacing = 15;
-            vlg.childControlWidth = true;
-            vlg.childControlHeight = false;
-            vlg.childForceExpandWidth = true;
-            vlg.childForceExpandHeight = false;
+            // 1. ヘッダー（上部タブバーの下 Y: -65f に配置）
+            GameObject headerGO = new GameObject("Header", typeof(RectTransform));
+            headerGO.transform.SetParent(panelGO.transform, false);
+            RectTransform headerRT = headerGO.GetComponent<RectTransform>();
+            headerRT.anchorMin = new Vector2(0f, 1f);
+            headerRT.anchorMax = new Vector2(1f, 1f);
+            headerRT.pivot = new Vector2(0.5f, 1f);
+            headerRT.sizeDelta = new Vector2(0f, 50f);
+            headerRT.anchoredPosition = new Vector2(0f, -65f);
 
-            // タイトルヘッダー（アンティーク真鍮）
-            CreateTextRow(panelGO.transform, "<size=65%><color=#8c7552>ENVIRONMENT // </color></size>環境調律", 28, FontStyles.Bold, TextAlignmentOptions.Center, 44f);
+            var titleTmp = CreateTextRow(headerGO.transform, "<size=65%><color=#8c7552>ENVIRONMENTAL TUNING // </color></size>環境調律", 24, FontStyles.Bold, TextAlignmentOptions.Center, 40f);
+            titleTmp.color = new Color(0.80f, 0.68f, 0.44f, 1f);
+
+            // 区切り線（細い真鍮ライン ＋ 中央◇ノード）
+            GameObject lineGO = new GameObject("HeaderLine", typeof(RectTransform));
+            lineGO.transform.SetParent(panelGO.transform, false);
+            RectTransform lineRT = lineGO.GetComponent<RectTransform>();
+            lineRT.anchorMin = new Vector2(0f, 1f);
+            lineRT.anchorMax = new Vector2(1f, 1f);
+            lineRT.pivot = new Vector2(0.5f, 1f);
+            lineRT.sizeDelta = new Vector2(-80f, 1.5f);
+            lineRT.anchoredPosition = new Vector2(0f, -115f);
+            Image lineImg = lineGO.AddComponent<Image>();
+            lineImg.color = new Color(0.55f, 0.46f, 0.32f, 0.65f);
+
+            GameObject diamondGO = new GameObject("DiamondNode", typeof(RectTransform));
+            diamondGO.transform.SetParent(lineGO.transform, false);
+            RectTransform dRT = diamondGO.GetComponent<RectTransform>();
+            dRT.sizeDelta = new Vector2(8f, 8f);
+            dRT.anchoredPosition = Vector2.zero;
+            dRT.localRotation = Quaternion.Euler(0, 0, 45f);
+            Image dImg = diamondGO.AddComponent<Image>();
+            dImg.color = new Color(0.80f, 0.68f, 0.44f, 1f);
+
+            // 2. 中央カードコンテナ（幅: 1040px, 高さ: 580px）
+            GameObject cardGO = new GameObject("SettingsCard", typeof(RectTransform));
+            cardGO.transform.SetParent(panelGO.transform, false);
+            RectTransform cardRT = cardGO.GetComponent<RectTransform>();
+            cardRT.anchorMin = new Vector2(0.5f, 0.5f);
+            cardRT.anchorMax = new Vector2(0.5f, 0.5f);
+            cardRT.pivot = new Vector2(0.5f, 0.5f);
+            cardRT.sizeDelta = new Vector2(1040f, 580f);
+            cardRT.anchoredPosition = new Vector2(0f, -30f);
+
+            Image cardBg = cardGO.AddComponent<Image>();
+            cardBg.color = new Color(0.055f, 0.080f, 0.068f, 0.94f);
+            AddCornerAccents(cardRT, new Color(0.55f, 0.46f, 0.32f, 0.65f), 18f, 1.5f);
+
+            // 左右分割 HorizontalLayoutGroup
+            HorizontalLayoutGroup cardHlg = cardGO.AddComponent<HorizontalLayoutGroup>();
+            cardHlg.padding = new RectOffset(45, 45, 40, 40);
+            cardHlg.spacing = 50;
+            cardHlg.childControlWidth = true;
+            cardHlg.childControlHeight = true;
+            cardHlg.childForceExpandWidth = true;
+            cardHlg.childForceExpandHeight = true;
 
             // OptionsUI_Alpha コンポーネントをアタッチ
             OptionsUI_Alpha optionsUI = panelGO.AddComponent<OptionsUI_Alpha>();
             optionsUI.optionsPanel = panelGO;
 
-            // 音量スライダー群の生成
-            optionsUI.masterVolumeSlider = CreateSliderRow(panelGO.transform, "Master Volume", out optionsUI.masterVolumeText);
-            optionsUI.bgmVolumeSlider = CreateSliderRow(panelGO.transform, "BGM Volume", out optionsUI.bgmVolumeText);
-            optionsUI.seVolumeSlider = CreateSliderRow(panelGO.transform, "SE Volume", out optionsUI.seVolumeText);
+            // --- 左カラム: 音響調律 ---
+            GameObject leftCol = new GameObject("AudioColumn", typeof(RectTransform));
+            leftCol.transform.SetParent(cardGO.transform, false);
+            VerticalLayoutGroup leftVlg = leftCol.AddComponent<VerticalLayoutGroup>();
+            leftVlg.spacing = 22;
+            leftVlg.childControlWidth = true;
+            leftVlg.childControlHeight = false;
+            leftVlg.childForceExpandWidth = true;
+            leftVlg.childForceExpandHeight = false;
 
-            // トグル群
-            optionsUI.screenShakeToggle = CreateToggleRow(panelGO.transform, "Screen Shake (画面揺れ)");
-            optionsUI.damageNumbersToggle = CreateToggleRow(panelGO.transform, "Damage Numbers (ダメージ表示)");
-            optionsUI.vSyncToggle = CreateToggleRow(panelGO.transform, "VSync (垂直同期)");
+            CreateTextRow(leftCol.transform, "<color=#ccad70>◆ 音響条項 (Sound Calibration)</color>", 19, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, 34f);
+            optionsUI.masterVolumeSlider = CreateSliderRow(leftCol.transform, "主音量 (Master)", out optionsUI.masterVolumeText);
+            optionsUI.bgmVolumeSlider = CreateSliderRow(leftCol.transform, "奏楽 (BGM)", out optionsUI.bgmVolumeText);
+            optionsUI.seVolumeSlider = CreateSliderRow(leftCol.transform, "効果音 (SE)", out optionsUI.seVolumeText);
+
+            // --- 右カラム: 演出・画面条項 ---
+            GameObject rightCol = new GameObject("VisualColumn", typeof(RectTransform));
+            rightCol.transform.SetParent(cardGO.transform, false);
+            VerticalLayoutGroup rightVlg = rightCol.AddComponent<VerticalLayoutGroup>();
+            rightVlg.spacing = 22;
+            rightVlg.childControlWidth = true;
+            rightVlg.childControlHeight = false;
+            rightVlg.childForceExpandWidth = true;
+            rightVlg.childForceExpandHeight = false;
+
+            CreateTextRow(rightCol.transform, "<color=#ccad70>◆ 演出・画面条項 (Visual Calibration)</color>", 19, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, 34f);
+            optionsUI.screenShakeToggle = CreateToggleRow(rightCol.transform, "画面揺れ (Screen Shake)");
+            optionsUI.damageNumbersToggle = CreateToggleRow(rightCol.transform, "被弾数値 (Damage Numbers)");
+            optionsUI.vSyncToggle = CreateToggleRow(rightCol.transform, "垂直同期 (VSync)");
 
             SetLayerRecursively(panelGO, 5); // 5: UI
             panelGO.SetActive(false);
-            Debug.Log("[PauseMenuManager] Created default Options panel successfully.");
+            Debug.Log("[PauseMenuManager] Created fullscreen Options panel successfully.");
             return panelGO;
         }
 
         /// <summary>
-        /// タイトルに戻る確認パネルをコードから動的生成
+        /// タイトルに戻る確認パネルをコードから動的生成（全画面フルスクリーン）
         /// </summary>
         private GameObject CreateDefaultQuitConfirmPanel(Transform parent)
         {
@@ -801,22 +903,22 @@ namespace Alpha.UI
             panelGO.transform.SetParent(parent, false);
 
             RectTransform rt = panelGO.GetComponent<RectTransform>();
-            rt.anchorMin = new Vector2(0.25f, 0.3f);
-            rt.anchorMax = new Vector2(0.75f, 0.7f);
+            rt.anchorMin = Vector2.zero;
+            rt.anchorMax = Vector2.one;
             rt.offsetMin = Vector2.zero;
             rt.offsetMax = Vector2.zero;
             rt.anchoredPosition = Vector2.zero;
             rt.localScale = Vector3.one;
             rt.localEulerAngles = Vector3.zero;
 
-            // 最前面レイヤー設定 (SystemUI / 1030)
+            // レイヤー設定 (SystemUI / 1005: 最前面タブバー 1050 の背面)
             Canvas rootCanvas = GetComponentInParent<Canvas>();
             if (rootCanvas == null) rootCanvas = GetComponent<Canvas>();
 
             Canvas panelCanvas = panelGO.AddComponent<Canvas>();
             panelCanvas.overrideSorting = true;
             panelCanvas.sortingLayerName = "SystemUI";
-            panelCanvas.sortingOrder = 1030;
+            panelCanvas.sortingOrder = 1005;
             panelCanvas.planeDistance = 100f;
             if (rootCanvas != null && rootCanvas.worldCamera != null)
             {
@@ -830,31 +932,84 @@ namespace Alpha.UI
             GraphicRaycaster gr = panelGO.AddComponent<GraphicRaycaster>();
             gr.ignoreReversedGraphics = true;
 
+            // 全画面背景（深森墨黒・すりガラス調）
             Image bg = panelGO.AddComponent<Image>();
-            bg.color = new Color(0.05f, 0.04f, 0.04f, 0.97f);
-            AddCornerAccents(rt, new Color(0.72f, 0.22f, 0.24f, 0.8f), 16f, 1.5f);
+            bg.color = new Color(0.040f, 0.055f, 0.048f, 0.96f);
+            AddCornerAccents(rt, new Color(0.80f, 0.68f, 0.44f, 0.9f), 24f, 1.5f);
 
-            VerticalLayoutGroup vlg = panelGO.AddComponent<VerticalLayoutGroup>();
-            vlg.padding = new RectOffset(30, 30, 30, 30);
-            vlg.spacing = 20;
+            // 1. ヘッダー（上部タブバーの下 Y: -65f に配置）
+            GameObject headerGO = new GameObject("Header", typeof(RectTransform));
+            headerGO.transform.SetParent(panelGO.transform, false);
+            RectTransform headerRT = headerGO.GetComponent<RectTransform>();
+            headerRT.anchorMin = new Vector2(0f, 1f);
+            headerRT.anchorMax = new Vector2(1f, 1f);
+            headerRT.pivot = new Vector2(0.5f, 1f);
+            headerRT.sizeDelta = new Vector2(0f, 50f);
+            headerRT.anchoredPosition = new Vector2(0f, -65f);
+
+            var titleTmp = CreateTextRow(headerGO.transform, "<size=65%><color=#8c7552>SANCTUARY RETURN // </color></size>拠点帰還", 24, FontStyles.Bold, TextAlignmentOptions.Center, 40f);
+            titleTmp.color = new Color(0.80f, 0.68f, 0.44f, 1f);
+
+            // 区切り線（細い真鍮ライン ＋ 中央ノード）
+            GameObject lineGO = new GameObject("HeaderLine", typeof(RectTransform));
+            lineGO.transform.SetParent(panelGO.transform, false);
+            RectTransform lineRT = lineGO.GetComponent<RectTransform>();
+            lineRT.anchorMin = new Vector2(0f, 1f);
+            lineRT.anchorMax = new Vector2(1f, 1f);
+            lineRT.pivot = new Vector2(0.5f, 1f);
+            lineRT.sizeDelta = new Vector2(-80f, 1.5f);
+            lineRT.anchoredPosition = new Vector2(0f, -115f);
+            Image lineImg = lineGO.AddComponent<Image>();
+            lineImg.color = new Color(0.55f, 0.46f, 0.32f, 0.65f);
+
+            GameObject diamondGO = new GameObject("DiamondNode", typeof(RectTransform));
+            diamondGO.transform.SetParent(lineGO.transform, false);
+            RectTransform dRT = diamondGO.GetComponent<RectTransform>();
+            dRT.sizeDelta = new Vector2(8f, 8f);
+            dRT.anchoredPosition = Vector2.zero;
+            dRT.localRotation = Quaternion.Euler(0, 0, 45f);
+            Image dImg = diamondGO.AddComponent<Image>();
+            dImg.color = new Color(0.80f, 0.68f, 0.44f, 1f);
+
+            // 2. 中央確認ダイアログカード（幅: 760px, 高さ: 360px）
+            GameObject cardGO = new GameObject("QuitDialogCard", typeof(RectTransform));
+            cardGO.transform.SetParent(panelGO.transform, false);
+            RectTransform cardRT = cardGO.GetComponent<RectTransform>();
+            cardRT.anchorMin = new Vector2(0.5f, 0.5f);
+            cardRT.anchorMax = new Vector2(0.5f, 0.5f);
+            cardRT.pivot = new Vector2(0.5f, 0.5f);
+            cardRT.sizeDelta = new Vector2(760f, 360f);
+            cardRT.anchoredPosition = new Vector2(0f, -30f);
+
+            Image cardBg = cardGO.AddComponent<Image>();
+            cardBg.color = new Color(0.055f, 0.080f, 0.068f, 0.95f);
+            // 椿色（深紅）の四隅アクセント
+            AddCornerAccents(cardRT, new Color(0.72f, 0.22f, 0.24f, 0.85f), 18f, 1.5f);
+
+            VerticalLayoutGroup vlg = cardGO.AddComponent<VerticalLayoutGroup>();
+            vlg.padding = new RectOffset(40, 40, 45, 45);
+            vlg.spacing = 25;
             vlg.childControlWidth = true;
             vlg.childControlHeight = false;
             vlg.childForceExpandWidth = true;
             vlg.childForceExpandHeight = false;
 
-            CreateTextRow(panelGO.transform, "タイトル（拠点）へ帰還しますか？", 24, FontStyles.Bold, TextAlignmentOptions.Center, 36f);
-            CreateTextRow(panelGO.transform, "※オートセーブされた直近の記録条項まで戻ります", 15, FontStyles.Normal, TextAlignmentOptions.Center, 24f);
+            var msgTitle = CreateTextRow(cardGO.transform, "タイトル（拠点）へ帰還しますか？", 26, FontStyles.Bold, TextAlignmentOptions.Center, 38f);
+            msgTitle.color = new Color(0.93f, 0.91f, 0.86f, 1f);
+
+            var msgSub = CreateTextRow(cardGO.transform, "※オートセーブされた直近の記録条項まで戻ります", 16, FontStyles.Normal, TextAlignmentOptions.Center, 28f);
+            msgSub.color = new Color(0.68f, 0.68f, 0.64f, 0.85f);
 
             // ボタン配置用 HorizontalLayout
             GameObject btnRow = new GameObject("Buttons", typeof(RectTransform));
-            btnRow.transform.SetParent(panelGO.transform, false);
+            btnRow.transform.SetParent(cardGO.transform, false);
             btnRow.layer = 5;
             LayoutElement btnRowLE = btnRow.AddComponent<LayoutElement>();
-            btnRowLE.minHeight = 45f;
-            btnRowLE.preferredHeight = 45f;
+            btnRowLE.minHeight = 52f;
+            btnRowLE.preferredHeight = 52f;
 
             HorizontalLayoutGroup hlg = btnRow.AddComponent<HorizontalLayoutGroup>();
-            hlg.spacing = 20;
+            hlg.spacing = 30;
             hlg.childControlWidth = true;
             hlg.childControlHeight = true;
             hlg.childForceExpandWidth = true;
@@ -914,15 +1069,15 @@ namespace Alpha.UI
             hlg.childControlHeight = true;
             hlg.childForceExpandWidth = false;
 
-            var labelTmp = CreateTextRow(row.transform, label, 18, FontStyles.Normal, TextAlignmentOptions.MidlineLeft);
-            labelTmp.rectTransform.sizeDelta = new Vector2(220, 30);
+            var labelTmp = CreateTextRow(row.transform, label, 17, FontStyles.Normal, TextAlignmentOptions.MidlineLeft);
+            labelTmp.rectTransform.sizeDelta = new Vector2(160, 30);
 
-            // スライダー本体 (260 x 24)
+            // スライダー本体 (190 x 24)
             GameObject sliderGO = new GameObject("Slider", typeof(RectTransform));
             sliderGO.transform.SetParent(row.transform, false);
             sliderGO.layer = 5;
             RectTransform sliderRT = sliderGO.GetComponent<RectTransform>();
-            sliderRT.sizeDelta = new Vector2(260, 24);
+            sliderRT.sizeDelta = new Vector2(190, 24);
 
             Slider slider = sliderGO.AddComponent<Slider>();
             slider.direction = Slider.Direction.LeftToRight;
@@ -987,7 +1142,7 @@ namespace Alpha.UI
             // パーセント表示テキスト（真鍮ゴールド）
             valText = CreateTextRow(row.transform, "100%", 17, FontStyles.Bold, TextAlignmentOptions.MidlineLeft);
             valText.color = new Color(0.80f, 0.68f, 0.44f, 1.0f);
-            valText.rectTransform.sizeDelta = new Vector2(60, 30);
+            valText.rectTransform.sizeDelta = new Vector2(55, 30);
 
             return slider;
         }

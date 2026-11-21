@@ -52,8 +52,7 @@ namespace Alpha.UI
                 {
                     choiceButtons[index].onClick.AddListener(() => OnButtonClicked(index));
                     
-                    var rcd = choiceButtons[index].gameObject.AddComponent<RightClickDetector_Alpha>();
-                    rcd.onRightClick = (eventData) => OnChoiceRightClicked(index, eventData);
+                    RightClickDetector_Alpha.Attach(choiceButtons[index].gameObject, (eventData) => OnChoiceRightClicked(index, eventData));
                 }
             }
 
@@ -79,6 +78,7 @@ namespace Alpha.UI
         {
             StopAllCoroutines();
             isAnimating = false;
+            UIInputBlocker_Alpha.ForceUnblock();
             onChoiceSelected = callback;
             
             if (WeaponGenerator_Alpha.Instance != null)
@@ -270,6 +270,7 @@ namespace Alpha.UI
                         }
                         if (isAllEquipable) partStr += " (どこでも装備可能)";
 
+                        choiceTexts[i].raycastTarget = false;
                         choiceTexts[i].text = $"Series: {(choice.series != null ? choice.series.seriesName : "Unknown")}\n" +
                                               $"部位: {partStr}\n" +
                                               $"Quality: {choice.quality}{effectText}";
@@ -288,6 +289,7 @@ namespace Alpha.UI
 
                     if (iconImg != null)
                     {
+                        iconImg.raycastTarget = false;
                         if (choice.series != null)
                         {
                             Sprite targetSprite = null;
@@ -361,6 +363,10 @@ namespace Alpha.UI
                                     if (img != null)
                                     {
                                         img.sprite = eff.effectIcon;
+                                    }
+                                    foreach (var g in iconObj.GetComponentsInChildren<Graphic>(true))
+                                    {
+                                        g.raycastTarget = false;
                                     }
                                     spawnedAny = true;
                                 }

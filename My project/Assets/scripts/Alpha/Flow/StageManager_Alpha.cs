@@ -776,6 +776,12 @@ namespace Alpha.Flow
 
         public void StartPreBossADVAndFight()
         {
+            if (Alpha.UI.TutorialManager_Alpha.Instance != null)
+            {
+                Alpha.UI.TutorialManager_Alpha.Instance.isQueuePaused = true;
+                Alpha.UI.TutorialManager_Alpha.Instance.ForceCloseCurrentTutorial();
+            }
+
             if (currentStageData.preBossADV != null && ADVManager_Alpha.Instance != null && currentStageData.preBossADV.pages != null && currentStageData.preBossADV.pages.Count > 0)
             {
                 fadeController.FadeOut(() => {

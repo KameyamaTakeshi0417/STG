@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -154,8 +154,8 @@ namespace Alpha.UI
             RectTransform bodyRT = bodyGO.GetComponent<RectTransform>();
             bodyRT.anchorMin = new Vector2(0f, 0f);
             bodyRT.anchorMax = new Vector2(1f, 1f);
-            bodyRT.offsetMin = new Vector2(25f, 25f);
-            bodyRT.offsetMax = new Vector2(-25f, -65f); // ヘッダー分空ける
+            bodyRT.offsetMin = new Vector2(30f, 25f);
+            bodyRT.offsetMax = new Vector2(-30f, -125f); // 上部タブバーおよびヘッダー分空ける
 
             // 4. 左側サブタブコンテナ（幅: 195px）
             GameObject subTabGO = new GameObject("SubTabContainer", typeof(RectTransform));
@@ -164,7 +164,7 @@ namespace Alpha.UI
             subTabContainer.anchorMin = new Vector2(0f, 0f);
             subTabContainer.anchorMax = new Vector2(0f, 1f);
             subTabContainer.pivot = new Vector2(0f, 0.5f);
-            subTabContainer.sizeDelta = new Vector2(195f, 0f);
+            subTabContainer.sizeDelta = new Vector2(210f, 0f);
             subTabContainer.anchoredPosition = Vector2.zero;
 
             VerticalLayoutGroup subVlg = subTabGO.AddComponent<VerticalLayoutGroup>();
@@ -186,7 +186,7 @@ namespace Alpha.UI
             RectTransform contentAreaRT = contentAreaGO.GetComponent<RectTransform>();
             contentAreaRT.anchorMin = new Vector2(0f, 0f);
             contentAreaRT.anchorMax = new Vector2(1f, 1f);
-            contentAreaRT.offsetMin = new Vector2(215f, 0f);
+            contentAreaRT.offsetMin = new Vector2(235f, 0f);
             contentAreaRT.offsetMax = Vector2.zero;
 
             // 5-A. チュートリアル専用ビュー（2カラム構造）
@@ -206,8 +206,8 @@ namespace Alpha.UI
             headerRT.anchorMin = new Vector2(0f, 1f);
             headerRT.anchorMax = new Vector2(1f, 1f);
             headerRT.pivot = new Vector2(0.5f, 1f);
-            headerRT.sizeDelta = new Vector2(0f, 55f);
-            headerRT.anchoredPosition = new Vector2(0f, -10f);
+            headerRT.sizeDelta = new Vector2(0f, 50f);
+            headerRT.anchoredPosition = new Vector2(0f, -65f);
 
             // タイトル（装甲明朝 ＋ アンティーク真鍮）
             GameObject titleGO = new GameObject("TitleText", typeof(RectTransform));
@@ -245,8 +245,8 @@ namespace Alpha.UI
             lineRT.anchorMin = new Vector2(0f, 1f);
             lineRT.anchorMax = new Vector2(1f, 1f);
             lineRT.pivot = new Vector2(0.5f, 1f);
-            lineRT.sizeDelta = new Vector2(-50f, 1.5f);
-            lineRT.anchoredPosition = new Vector2(0f, -60f);
+            lineRT.sizeDelta = new Vector2(-60f, 1.5f);
+            lineRT.anchoredPosition = new Vector2(0f, -115f);
             Image lineImg = lineGO.AddComponent<Image>();
             lineImg.color = ColorBrassMuted;
 

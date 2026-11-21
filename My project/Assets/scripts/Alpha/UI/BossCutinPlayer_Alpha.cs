@@ -97,6 +97,14 @@ namespace Alpha.UI
         public void PlayCutin(System.Action onMidPoint = null, System.Action onComplete = null)
         {
             Debug.Log("[BossCutin] PlayCutin called");
+
+            // 演出とチュートリアルポップアップの競合を防止：表示中のチュートリアルを閉じ、キューを一時停止する
+            if (TutorialManager_Alpha.Instance != null)
+            {
+                TutorialManager_Alpha.Instance.isQueuePaused = true;
+                TutorialManager_Alpha.Instance.ForceCloseCurrentTutorial();
+            }
+
             StartCoroutine(CutinSequence(onMidPoint, onComplete));
         }
 
@@ -174,6 +182,12 @@ namespace Alpha.UI
             SetCutinVisible(false);
             IsCutinPlaying = false;
             Debug.Log("[BossCutin] Cutin COMPLETE");
+
+            // カットイン完了に伴い、保留されていたチュートリアルキューを再開
+            if (TutorialManager_Alpha.Instance != null)
+            {
+                TutorialManager_Alpha.Instance.ResumeQueue();
+            }
 
             if (onComplete != null) onComplete.Invoke();
         }

@@ -170,6 +170,18 @@ namespace Alpha.UI
                 if (hasSeen) return;
             }
 
+            // ボス戦カットイン演出中、またはキュー一時停止中の場合、即座に表示せずキューに保留する
+            if (BossCutinPlayer_Alpha.IsCutinPlaying || isQueuePaused)
+            {
+                bool contains = false;
+                foreach (var t in tutorialQueue) if (t.tutorialId == tutorialId) contains = true;
+                if (!contains)
+                {
+                    tutorialQueue.Enqueue(new TutorialRequest { tutorialId = tutorialId, useFadeMode = useFadeMode, displayDuration = displayDuration, pauseTimeline = pauseTimeline });
+                }
+                return;
+            }
+
             if (isShowing)
             {
                 // フェード表示中にポーズ型のチュートリアルが来た場合はフェードを中断する
@@ -209,27 +221,31 @@ namespace Alpha.UI
         private System.Collections.IEnumerator FadeTutorialCoroutine(string tutorialId, float duration)
         {
             ShowTutorialInternal(tutorialId, false);
-            fadeCanvasGroup.alpha = 0f;
+            if (fadeCanvasGroup != null)
+            {
+                fadeCanvasGroup.alpha = 0f;
+                fadeCanvasGroup.blocksRaycasts = false;
+            }
             
             float elapsed = 0f;
             while (elapsed < 0.5f)
             {
-                elapsed += Time.deltaTime;
-                fadeCanvasGroup.alpha = Mathf.Clamp01(elapsed / 0.5f);
+                elapsed += Time.unscaledDeltaTime;
+                if (fadeCanvasGroup != null) fadeCanvasGroup.alpha = Mathf.Clamp01(elapsed / 0.5f);
                 yield return null;
             }
-            fadeCanvasGroup.alpha = 1f;
+            if (fadeCanvasGroup != null) fadeCanvasGroup.alpha = 1f;
 
-            yield return new WaitForSeconds(duration);
+            yield return new WaitForSecondsRealtime(duration);
 
             elapsed = 0f;
             while (elapsed < 0.5f)
             {
-                elapsed += Time.deltaTime;
-                fadeCanvasGroup.alpha = 1f - Mathf.Clamp01(elapsed / 0.5f);
+                elapsed += Time.unscaledDeltaTime;
+                if (fadeCanvasGroup != null) fadeCanvasGroup.alpha = 1f - Mathf.Clamp01(elapsed / 0.5f);
                 yield return null;
             }
-            fadeCanvasGroup.alpha = 0f;
+            if (fadeCanvasGroup != null) fadeCanvasGroup.alpha = 0f;
 
             CloseTutorialInstantly();
         }
@@ -308,7 +324,11 @@ namespace Alpha.UI
 
             // UIの表示
             tutorialCanvas.SetActive(true);
-            if (fadeCanvasGroup != null) fadeCanvasGroup.alpha = 1f;
+            if (fadeCanvasGroup != null)
+            {
+                fadeCanvasGroup.alpha = 1f;
+                fadeCanvasGroup.blocksRaycasts = showBackground;
+            }
             if (backgroundPanel != null) backgroundPanel.SetActive(showBackground);
             
             // 背景パネル以外の直下のオブジェクトを一旦すべて非表示にする
@@ -477,6 +497,12 @@ namespace Alpha.UI
             isShowing = false;
             IsPausingTimeline = false;
 
+            CheckQueue();
+        }
+
+        public void ResumeQueue()
+        {
+            isQueuePaused = false;
             CheckQueue();
         }
 

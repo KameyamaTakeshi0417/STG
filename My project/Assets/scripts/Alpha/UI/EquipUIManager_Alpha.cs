@@ -4,10 +4,38 @@ using UnityEngine;
 using UnityEngine.UI;
 using Alpha.Data;
 using Alpha.UI;
+using DG.Tweening;
 
 public class EquipUIManager_Alpha : MonoBehaviour
 {
+    public static EquipUIManager_Alpha Instance { get; private set; }
+
     public InventoryManager_Alpha inventoryManager;
+
+    [Header("Auto Equip Ripple Settings")]
+    [Tooltip("自動装備時に枠から発生する波紋の色（真鍮ゴールド）")]
+    public Color autoEquipRippleColor = new Color(0.92f, 0.78f, 0.42f, 0.90f);
+    [Tooltip("自動装備完了時（3パーツ完成時）の波紋の色（翡翠グリーン）")]
+    public Color autoEquipCompleteColor = new Color(0.46f, 0.88f, 0.65f, 0.95f);
+    [Tooltip("波紋の最大スケール倍率")]
+    public float rippleMaxScale = 2.8f;
+    [Tooltip("波紋の持続時間（秒）")]
+    public float rippleDuration = 0.65f;
+    [Tooltip("自動装備時の効果音（未設定時は Resources/SE から自動取得）")]
+    public AudioClip autoEquipSEClip;
+    [Range(0f, 1f)] public float autoEquipSEVolume = 0.5f;
+
+    private static Sprite cachedRippleSprite;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
     
     [Header("Highlight Settings")]
     [Tooltip("アクティブな武器スロットを強調する色")]
@@ -362,6 +390,147 @@ public class EquipUIManager_Alpha : MonoBehaviour
             Quaternion currentRot = setTransforms[i].localRotation;
             Quaternion targetRot = Quaternion.Euler(0f, 0f, targetAngle);
             setTransforms[i].localRotation = Quaternion.Lerp(currentRot, targetRot, Time.deltaTime * lerpSpeed);
+        }
+    }
+
+    /// <summary>
+    /// 初期3つ装備（ステージ1前半自動装備）が更新された際に、該当枠から波紋エフェクトを発生させる
+    /// 装備切り替えによって枠がスライド・回転しても、中心位置にリアルタイム追従します
+    /// </summary>
+    /// <param name="groupIndex">対象の武器グループ（通常0）</param>
+    /// <param name="step">0:弾頭, 1:薬莢, 2:雷管(完成)</param>
+    public void PlayAutoEquipRipple(int groupIndex, int step)
+    {
+        if (setTransforms == null || groupIndex < 0 || groupIndex >= setTransforms.Length) return;
+        RectTransform targetSlot = setTransforms[groupIndex];
+        if (targetSlot == null) return;
+
+        bool isFinalStep = (step >= 2);
+        int ringCount = isFinalStep ? 3 : 2;
+        Color baseCol = isFinalStep ? autoEquipCompleteColor : autoEquipRippleColor;
+
+        StartCoroutine(SpawnMultipleRipples(targetSlot, ringCount, baseCol, isFinalStep));
+        PlayAutoEquipSE(isFinalStep);
+    }
+
+    private IEnumerator SpawnMultipleRipples(RectTransform targetSlot, int count, Color col, bool isFinalStep)
+    {
+        // 枠自体のポップバウンス（軽く弾む）
+        if (targetSlot != null)
+        {
+            targetSlot.DOKill();
+            float punch = isFinalStep ? 0.12f : 0.07f;
+            targetSlot.DOPunchScale(new Vector3(punch, punch, 0f), 0.35f, 8, 0.6f).SetUpdate(true);
+        }
+
+        for (int i = 0; i < count; i++)
+        {
+            if (targetSlot == null) yield break;
+            SpawnSingleRipple(targetSlot, col, rippleMaxScale + (i * 0.4f), rippleDuration);
+            yield return new WaitForSecondsRealtime(0.12f);
+        }
+    }
+
+    private void SpawnSingleRipple(RectTransform targetSlot, Color col, float maxScale, float duration)
+    {
+        if (targetSlot == null || targetSlot.parent == null) return;
+
+        // Maskの外側（親Transform）に生成してクリッピング（枠外の切り捨て）を回避
+        GameObject rippleObj = new GameObject("EquipSlotRipple", typeof(RectTransform));
+        rippleObj.transform.SetParent(targetSlot.parent, false);
+
+        RectTransform rippleRT = rippleObj.GetComponent<RectTransform>();
+        rippleRT.pivot = new Vector2(0.5f, 0.5f);
+        rippleRT.anchorMin = targetSlot.anchorMin;
+        rippleRT.anchorMax = targetSlot.anchorMax;
+
+        // 枠のサイズに合わせた初期サイズ
+        float baseSize = Mathf.Max(targetSlot.rect.width, targetSlot.rect.height);
+        if (baseSize < 50f) baseSize = 120f;
+        rippleRT.sizeDelta = new Vector2(baseSize, baseSize);
+
+        // 初期位置と回転を中心へ合わせる（TransformPointで幾何学的中心を取得）
+        rippleRT.position = targetSlot.TransformPoint(targetSlot.rect.center);
+        rippleRT.rotation = targetSlot.rotation;
+
+        Image img = rippleObj.AddComponent<Image>();
+        img.sprite = GetRippleSprite();
+        img.color = col;
+        img.raycastTarget = false;
+
+        // アニメーション：スケール拡大＋フェードアウトで自動削除
+        rippleRT.localScale = Vector3.one * 0.5f;
+        rippleRT.DOScale(Vector3.one * maxScale, duration).SetEase(Ease.OutQuad).SetUpdate(true);
+        img.DOFade(0f, duration).SetEase(Ease.OutQuad).SetUpdate(true).OnComplete(() =>
+        {
+            if (rippleObj != null) Destroy(rippleObj);
+        });
+
+        // 装備切り替えによる枠の位置・回転移動に毎フレーム追従するコルーチンを開始
+        StartCoroutine(RippleFollowTarget(rippleRT, targetSlot, duration));
+    }
+
+    private IEnumerator RippleFollowTarget(RectTransform rippleRT, RectTransform targetSlot, float duration)
+    {
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            if (rippleRT != null && targetSlot != null)
+            {
+                // 枠の幾何学的中心（rect.center）のワールド座標および回転角に毎フレーム同期
+                rippleRT.position = targetSlot.TransformPoint(targetSlot.rect.center);
+                rippleRT.rotation = targetSlot.rotation;
+            }
+            yield return null;
+        }
+    }
+
+    private static Sprite GetRippleSprite()
+    {
+        if (cachedRippleSprite != null) return cachedRippleSprite;
+
+        int size = 128;
+        Texture2D tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+        tex.filterMode = FilterMode.Bilinear;
+        tex.wrapMode = TextureWrapMode.Clamp;
+
+        Vector2 center = new Vector2(size / 2f, size / 2f);
+        float outerRadius = size / 2f - 2f;
+        float innerRadius = outerRadius - 4.5f;
+
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                float dist = Vector2.Distance(new Vector2(x + 0.5f, y + 0.5f), center);
+                float alpha = 0f;
+                if (dist <= outerRadius + 1f && dist >= innerRadius - 1f)
+                {
+                    float dOuter = outerRadius - dist;
+                    float dInner = dist - innerRadius;
+                    float edge = Mathf.Min(dOuter, dInner);
+                    alpha = Mathf.Clamp01(edge + 0.5f);
+                }
+                tex.SetPixel(x, y, new Color(1f, 1f, 1f, alpha));
+            }
+        }
+        tex.Apply();
+        cachedRippleSprite = Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f));
+        return cachedRippleSprite;
+    }
+
+    private void PlayAutoEquipSE(bool isFinalStep)
+    {
+        if (autoEquipSEClip == null)
+        {
+            autoEquipSEClip = Resources.Load<AudioClip>(isFinalStep ? "SE/SE_GetExp_02_Ting" : "SE/SE_GetExp_01_Pik");
+            if (autoEquipSEClip == null) autoEquipSEClip = Resources.Load<AudioClip>("SE/決定音_1");
+        }
+
+        if (autoEquipSEClip != null && Alpha.Audio.SoundManager_Alpha.Instance != null)
+        {
+            Alpha.Audio.SoundManager_Alpha.Instance.PlaySE(autoEquipSEClip, autoEquipSEVolume);
         }
     }
 }

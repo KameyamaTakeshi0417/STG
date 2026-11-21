@@ -52,9 +52,20 @@ namespace Alpha.Flow
             activeIndicatorCount = 0;
             activeMobs.Clear();
             activeRushes.Clear();
+            if (Alpha.UI.MobRushSequenceBarUI_Alpha.Instance != null)
+            {
+                Alpha.UI.MobRushSequenceBarUI_Alpha.Instance.Hide();
+            }
         }
 
-        public void ClearActiveRushes() { activeRushes.Clear(); }
+        public void ClearActiveRushes() 
+        { 
+            activeRushes.Clear(); 
+            if (Alpha.UI.MobRushSequenceBarUI_Alpha.Instance != null)
+            {
+                Alpha.UI.MobRushSequenceBarUI_Alpha.Instance.Hide();
+            }
+        }
 
         public void CheckSpawn(float currentTime)
         {
@@ -74,9 +85,17 @@ namespace Alpha.Flow
                 while (currentRushIndex < currentSequence.enemyRushes.Count && 
                        currentTime >= currentSequence.enemyRushes[currentRushIndex].startTime)
                 {
-                    var rushState = new EnemyRushState(currentSequence.enemyRushes[currentRushIndex]);
+                    var rushData = currentSequence.enemyRushes[currentRushIndex];
+                    var rushState = new EnemyRushState(rushData);
                     activeRushes.Add(rushState);
                     currentRushIndex++;
+
+                    // 雑魚ラッシュ専用タイムラインゲージを表示（通常バーと自動スワップ）
+                    float rushDuration = Mathf.Max(0.1f, rushData.endTime - rushData.startTime);
+                    if (Alpha.UI.MobRushSequenceBarUI_Alpha.Instance != null)
+                    {
+                        Alpha.UI.MobRushSequenceBarUI_Alpha.Instance.Show(rushDuration);
+                    }
 
                     // ラッシュ開始と同時に即座に第1波をスポーン（開始直後の空白時間を解消）
                     SpawnRushEnemy(rushState, instantSpawn: true);
@@ -90,6 +109,7 @@ namespace Alpha.Flow
             }
 
             // アクティブラッシュの更新処理
+            bool wasRushActive = activeRushes.Count > 0;
             for (int i = activeRushes.Count - 1; i >= 0; i--)
             {
                 var rush = activeRushes[i];
@@ -103,6 +123,26 @@ namespace Alpha.Flow
                 {
                     SpawnRushEnemy(rush);
                     rush.nextSpawnTime += Mathf.Max(0.01f, rush.data.spawnInterval); // 0除算や無限ループ防止
+                }
+            }
+
+            // 雑魚ラッシュUIのリアルタイム更新
+            if (activeRushes.Count > 0)
+            {
+                var currentRush = activeRushes[0];
+                float remaining = Mathf.Max(0f, currentRush.data.endTime - currentTime);
+                float total = Mathf.Max(0.1f, currentRush.data.endTime - currentRush.data.startTime);
+                if (Alpha.UI.MobRushSequenceBarUI_Alpha.Instance != null)
+                {
+                    Alpha.UI.MobRushSequenceBarUI_Alpha.Instance.UpdateProgress(remaining, total);
+                }
+            }
+            else if (wasRushActive)
+            {
+                // ラッシュ終了で専用UIを閉じて通常タイムラインに復帰
+                if (Alpha.UI.MobRushSequenceBarUI_Alpha.Instance != null)
+                {
+                    Alpha.UI.MobRushSequenceBarUI_Alpha.Instance.Hide();
                 }
             }
         }

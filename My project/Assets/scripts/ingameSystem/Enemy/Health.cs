@@ -461,6 +461,12 @@ public class Health : _Health_Base
         // 雑魚敵撃破時の重めSE＆ヒットストップを発動（ボス・中ボスは専用の撃破シネマティックを使用）
         if (!isBoss && !isMidBoss)
         {
+            // ラッシュ中であればラッシュ専用UIの撃破数をカウントアップ
+            if (Alpha.UI.MobRushSequenceBarUI_Alpha.Instance != null && Alpha.UI.MobRushSequenceBarUI_Alpha.Instance.IsRushActive)
+            {
+                Alpha.UI.MobRushSequenceBarUI_Alpha.Instance.IncrementDefeatCount();
+            }
+
             int hitStopLevel = ResolveKillHitStopLevel();
             PlayMobDefeatSound(hitStopLevel);
 

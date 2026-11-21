@@ -160,14 +160,13 @@ namespace Alpha.UI
                 {
                     btn.onClick.AddListener(() => OnSkillButtonClicked(effectSO, obj));
                     
-                    var rcd = btn.gameObject.AddComponent<RightClickDetector_Alpha>();
-                    rcd.onRightClick = (eventData) =>
+                    RightClickDetector_Alpha.Attach(btn.gameObject, (eventData) =>
                     {
                         if (detailPopup != null)
                         {
                             detailPopup.SetupForSkill(effectSO, eventData.position);
                         }
-                    };
+                    });
                 }
             }
         }
@@ -246,14 +245,13 @@ namespace Alpha.UI
                 {
                     btn.onClick.AddListener(() => OnPartButtonClicked(partInstance, price, obj));
                     
-                    var rcd = btn.gameObject.AddComponent<RightClickDetector_Alpha>();
-                    rcd.onRightClick = (eventData) =>
+                    RightClickDetector_Alpha.Attach(btn.gameObject, (eventData) =>
                     {
                         if (detailPopup != null)
                         {
                             detailPopup.Setup(partInstance.series, partInstance.partType, partInstance.quality, partInstance.currentEffects, eventData.position, partInstance.setBonusEffect);
                         }
-                    };
+                    });
                 }
             }
         }

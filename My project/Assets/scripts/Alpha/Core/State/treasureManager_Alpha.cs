@@ -16,10 +16,10 @@ public class treasureManager_Alpha : MonoBehaviour
     [Header("Stage 1 First Half Auto-Equip")]
     [Tooltip("ステージ1前半で最初に取得する3つのオーブを自動で開封・装備（消費扱い）するか")]
     public bool enableStage1FirstHalfAutoEquip = true;
-    [Tooltip("自動装備する対象の武器グループ（0=枠0-2, 1=枠3-5, 2=枠6-8）。デフォルトは枠3-5")]
-    public int autoEquipTargetGroup = 1;
+    [Tooltip("自動装備する対象の武器グループ（0=枠0-2, 1=枠3-5, 2=枠6-8）。デフォルトは枠0-2")]
+    public int autoEquipTargetGroup = 0;
 
-    // 1個目:弾頭(Bullet/枠5) → 2個目:薬莢(Casing/枠4) → 3個目:雷管(Primer/枠3)
+    // 1個目:弾頭(Bullet/枠2) → 2個目:薬莢(Casing/枠1) → 3個目:雷管(Primer/枠0)
     private const int AutoEquipMaxOrbCount = 3;
     private int autoEquipCursor = 0;
 
@@ -147,6 +147,12 @@ public class treasureManager_Alpha : MonoBehaviour
 
         inv.SetByIndex(slotIndex, newEquip);
         ApplyAutoEquipHPGaugePlusIfNeeded(newEquip);
+
+        // 初期3つ装備枠の更新波紋エフェクト（装備切り替え追従）を再生
+        if (EquipUIManager_Alpha.Instance != null)
+        {
+            EquipUIManager_Alpha.Instance.PlayAutoEquipRipple(targetGroup, autoEquipCursor);
+        }
 
         bool isFirstOrb = (autoEquipCursor == 0);
         autoEquipCursor++;

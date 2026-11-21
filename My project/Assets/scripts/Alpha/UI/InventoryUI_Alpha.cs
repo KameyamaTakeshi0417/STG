@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,6 +13,23 @@ namespace Alpha.UI
         [Header("UI References")]
         public GameObject panel;
         
+        [Header("Font Settings")]
+        public TMP_FontAsset customFontAsset;
+
+        [Header("Modern Botanical Palette")]
+        public static readonly Color ColorBaseInk = new Color(0.040f, 0.055f, 0.048f, 0.96f);
+        public static readonly Color ColorBasePlate = new Color(0.055f, 0.080f, 0.068f, 0.94f);
+        public static readonly Color ColorBrassGold = new Color(0.80f, 0.68f, 0.44f, 1.0f);
+        public static readonly Color ColorBrassMuted = new Color(0.55f, 0.46f, 0.32f, 0.65f);
+        public static readonly Color ColorIvoryWhite = new Color(0.93f, 0.91f, 0.86f, 1.0f);
+        public static readonly Color ColorIvoryMuted = new Color(0.68f, 0.68f, 0.64f, 0.85f);
+        public static readonly Color ColorMossSlate = new Color(0.14f, 0.21f, 0.17f, 0.95f);
+        public static readonly Color ColorDarkMoss = new Color(0.08f, 0.12f, 0.10f, 0.85f);
+        public static readonly Color ColorLotusJade = new Color(0.32f, 0.72f, 0.53f, 1.0f);
+        public static readonly Color ColorCamelliaCrimson = new Color(0.72f, 0.22f, 0.24f, 1.0f);
+        public static readonly Color ColorWisteriaPurple = new Color(0.48f, 0.38f, 0.60f, 1.0f);
+        public static readonly Color ColorSunflowerGold = new Color(0.92f, 0.75f, 0.32f, 1.0f);
+
         [Header("Detail Popup")]
         public EquipDetailPopupUI_Alpha detailPopup;
         
@@ -67,6 +84,9 @@ namespace Alpha.UI
 
         private void Awake()
         {
+            LoadFontAssetIfNeeded();
+            ApplyBotanicalStyle();
+
             if (detailPopup != null) detailPopup.gameObject.SetActive(false);
             
             if (panel != null) panel.SetActive(false);
@@ -79,7 +99,7 @@ namespace Alpha.UI
             }
             if (backButtonForCheck != null)
             {
-                // 謌ｻ繧九・繧ｿ繝ｳ縺ｮ謖吝虚縺ｯConfirm縺ｨ蜷後§・・I繧帝哩縺倥※繧ｳ繝ｼ繝ｫ繝舌ャ繧ｯ繧貞ｮ溯｡鯉ｼ・
+                // 戻るボタンの挙動はConfirmと同じ（UIを閉じてコールバックを実行）
                 backButtonForCheck.onClick.AddListener(OnConfirmClicked);
             }
             if (backToForgeButton != null)
@@ -87,7 +107,7 @@ namespace Alpha.UI
                 backToForgeButton.onClick.AddListener(OnConfirmClicked);
             }
             
-            // 繧ｹ繝ｭ繝・ヨ繧ｯ繝ｪ繝・け譎ゅ・莉ｮ螳溯｣・
+            // スロットクリック時の仮実装
             for (int i = 0; i < gridSlots.Length; i++)
             {
                 int index = i;
@@ -95,8 +115,7 @@ namespace Alpha.UI
                 {
                     gridSlots[index].onClick.AddListener(() => OnGridSlotClicked(index));
                     
-                    var rcd = gridSlots[index].gameObject.AddComponent<RightClickDetector_Alpha>();
-                    rcd.onRightClick = (eventData) => OnSlotRightClicked(index, eventData);
+                    RightClickDetector_Alpha.Attach(gridSlots[index].gameObject, (eventData) => OnSlotRightClicked(index, eventData));
 
                     var dragHandler = gridSlots[index].gameObject.AddComponent<InventorySlotDragHandler_Alpha>();
                     dragHandler.slotIndex = index;
@@ -274,8 +293,7 @@ namespace Alpha.UI
                         int slotIndex = 9 + currentListCount;
                         btn.onClick.AddListener(() => OnGridSlotClicked(slotIndex));
                         
-                        var rcd = btn.gameObject.AddComponent<RightClickDetector_Alpha>();
-                        rcd.onRightClick = (eventData) => OnSlotRightClicked(slotIndex, eventData);
+                        RightClickDetector_Alpha.Attach(btn.gameObject, (eventData) => OnSlotRightClicked(slotIndex, eventData));
 
                         var dragHandler = btn.gameObject.AddComponent<InventorySlotDragHandler_Alpha>();
                         dragHandler.slotIndex = slotIndex;
@@ -310,79 +328,80 @@ namespace Alpha.UI
             if (statusText == null || playerStatusManager_Alpha.Instance == null) return;
 
             var stats = playerStatusManager_Alpha.Instance;
+            if (customFontAsset != null) statusText.font = customFontAsset;
             
-            // HP
-            string hpStr = $"HP: {Mathf.FloorToInt(stats.currentHP)} / {Mathf.FloorToInt(stats.HP)}";
-            if (stats.HPGauge > 1) hpStr += $" (x{stats.HPGauge} Gauges)";
+            // HP (生命力)
+            string hpStr = $"生命力 (Vitality) : <color=#ece8dc>{Mathf.FloorToInt(stats.currentHP)}</color> / <color=#ece8dc>{Mathf.FloorToInt(stats.HP)}</color>";
+            if (stats.HPGauge > 1) hpStr += $" <color=#8c7552>(x{stats.HPGauge} 層)</color>";
 
-            // ATK
+            // ATK (攻撃威力)
             float baseAtk = stats.pow;
             float totalAtk = stats.pow + stats.DamageAdd;
             if (totalAtk < 0) totalAtk = 1;
             if (stats.DamageMag > 0) totalAtk *= (stats.DamageMag / 100f);
             float atkDiff = totalAtk - baseAtk;
-            string atkStr = $"ATK: {totalAtk:F1}";
+            string atkStr = $"攻撃威力 (Power)   : <color=#ece8dc>{totalAtk:F1}</color>";
             if (Mathf.Abs(atkDiff) > 0.1f)
             {
-                string color = atkDiff > 0 ? "#00FF00" : "#FF0000";
+                string color = atkDiff > 0 ? "#52b788" : "#b8383d";
                 string sign = atkDiff > 0 ? "+" : "";
                 atkStr += $" <color={color}>({sign}{atkDiff:F1})</color>";
             }
 
-            // Stamina
+            // Stamina (霊力持久)
             float baseStamRec = 10f; // Default base stamina recovery
             float totalStamRec = stats.staminaRecoveryRate;
             float stamRecDiff = totalStamRec - baseStamRec;
-            string stamStr = $"Stamina: {Mathf.FloorToInt(stats.maxStamina)} (Rec: {totalStamRec:F1}/s)";
+            string stamStr = $"霊力持久 (Stamina) : <color=#ece8dc>{Mathf.FloorToInt(stats.maxStamina)}</color> <size=85%><color=#8c7552>(回復: {totalStamRec:F1}/s)</color></size>";
             if (Mathf.Abs(stamRecDiff) > 0.1f)
             {
-                string color = stamRecDiff > 0 ? "#00FF00" : "#FF0000";
+                string color = stamRecDiff > 0 ? "#52b788" : "#b8383d";
                 string sign = stamRecDiff > 0 ? "+" : "";
                 stamStr += $" <color={color}>({sign}{stamRecDiff:F1}/s)</color>";
             }
 
-            // Fire Rate (Span Mag)
+            // Fire Rate (掃射間隔)
             float baseSpan = stats.BaseBulletSpanMag; 
             float totalSpan = stats.BulletSpanMag;
             float spanDiff = totalSpan - baseSpan;
             // Lower span is faster (better), so inverted color logic
-            string spanStr = $"Fire Rate: {totalSpan:F2}x";
+            string spanStr = $"掃射間隔 (Fire Rate): <color=#ece8dc>{totalSpan:F2}x</color>";
             if (Mathf.Abs(spanDiff) > 0.05f)
             {
-                string color = spanDiff < 0 ? "#00FF00" : "#FF0000";
+                string color = spanDiff < 0 ? "#52b788" : "#b8383d";
                 string sign = spanDiff > 0 ? "+" : "";
                 spanStr += $" <color={color}>({sign}{spanDiff:F2})</color>";
             }
 
-            // Bullet Speed
+            // Bullet Speed (弾道速度)
             float baseBulSpd = stats.BaseBulletSpeedMag;
             float totalBulSpd = stats.bulletSpeedMag;
             float bulSpdDiff = totalBulSpd - baseBulSpd;
-            string bulSpdStr = $"Bullet Spd: {totalBulSpd:F2}x";
+            string bulSpdStr = $"弾道速度 (Bullet Spd): <color=#ece8dc>{totalBulSpd:F2}x</color>";
             if (Mathf.Abs(bulSpdDiff) > 0.05f)
             {
-                string color = bulSpdDiff > 0 ? "#00FF00" : "#FF0000";
+                string color = bulSpdDiff > 0 ? "#52b788" : "#b8383d";
                 string sign = bulSpdDiff > 0 ? "+" : "";
                 bulSpdStr += $" <color={color}>({sign}{bulSpdDiff:F2})</color>";
             }
 
-            // Bullet Size
+            // Bullet Size (弾塊規模)
             float baseBulSize = stats.BaseBulletSizeMag;
             float totalBulSize = stats.bulletSizeMag;
             float bulSizeDiff = totalBulSize - baseBulSize;
-            string bulSizeStr = $"Bullet Size: {totalBulSize:F2}x";
+            string bulSizeStr = $"弾塊規模 (Bullet Size): <color=#ece8dc>{totalBulSize:F2}x</color>";
             if (Mathf.Abs(bulSizeDiff) > 0.01f)
             {
-                string color = bulSizeDiff > 0 ? "#00FF00" : "#FF0000";
+                string color = bulSizeDiff > 0 ? "#52b788" : "#b8383d";
                 string sign = bulSizeDiff > 0 ? "+" : "";
                 bulSizeStr += $" <color={color}>({sign}{bulSizeDiff:F2})</color>";
             }
 
-            // Move Speed (Not affected by equipment, so diff is always 0 for this UI)
+            // Move Speed (巡航速度)
             float totalMovSpd = stats.moveSpeedMag;
-            string movSpdStr = $"Move Spd: {totalMovSpd:F2}x";
+            string movSpdStr = $"巡航速度 (Move Spd)  : <color=#ece8dc>{totalMovSpd:F2}x</color>";
 
-            statusText.text = $"<size=110%><b>Player Status</b></size>\n\n" +
+            statusText.text = $"<size=75%><color=#8c7552>SPECIMEN POTENTIAL // </color></size><size=105%><b>神格適性・機体諸元</b></size>\n\n" +
                               $"{hpStr}\n" +
                               $"{atkStr}\n" +
                               $"{stamStr}\n" +
@@ -437,25 +456,26 @@ namespace Alpha.UI
                 TextMeshProUGUI text = go.GetComponentInChildren<TextMeshProUGUI>();
                 if (text != null)
                 {
-                    string colorTag = "";
-                    string colorEnd = "";
+                    if (customFontAsset != null) text.font = customFontAsset;
+                    string colorTag = "<color=#ece8dc>";
+                    string colorEnd = "</color>";
                     
                     if (effect.effectType == Alpha.Data.WeaponEffectType_Alpha.DivineExecutioner)
                     {
                         bool isBoss = Alpha.Flow.StageManager_Alpha.Instance != null && Alpha.Flow.StageManager_Alpha.Instance.IsBossBattleActive;
                         if (isBoss)
                         {
-                            colorTag = "<color=#FF4444>"; 
+                            colorTag = "<color=#b8383d>"; 
                             colorEnd = "</color>";
                         }
                         else
                         {
-                            colorTag = "<color=#808080>"; 
+                            colorTag = "<color=#6f7a73>"; 
                             colorEnd = "</color>";
                         }
                     }
 
-                    text.text = $"・{colorTag}{count} \"{effect.effectName}\"{colorEnd}";
+                    text.text = $"<color=#ccad70>◆</color> {colorTag}{count} \"{effect.effectName}\"{colorEnd}";
                 }
 
                 Image iconImg = null;
@@ -486,14 +506,21 @@ namespace Alpha.UI
                     }
                 }
 
-                var rcd = go.AddComponent<RightClickDetector_Alpha>();
-                rcd.onRightClick = (eventData) => 
+                var rootImg = go.GetComponent<Image>();
+                if (rootImg == null)
+                {
+                    rootImg = go.AddComponent<Image>();
+                    rootImg.color = Color.clear;
+                }
+                rootImg.raycastTarget = true;
+
+                RightClickDetector_Alpha.Attach(go, (eventData) => 
                 {
                     if (effectDetailPopup != null)
                     {
                         effectDetailPopup.Setup(effect, count, flatValue, eventData.position);
                     }
-                };
+                });
             }
 
             Canvas.ForceUpdateCanvases();
@@ -514,40 +541,39 @@ namespace Alpha.UI
             // 閭梧勹譫�縺ｮ蜿門ｾ励→濶ｲ險ｭ螳・
             Image bg = btn.targetGraphic as Image;
             
-            // 縲蝉ｸ榊・蜷亥ｯｾ遲悶繕nity繧､繝ｳ繧ｹ繝壹け繧ｿ荳翫〒繝懊ち繝ｳ閾ｪ菴薙・濶ｲ縺瑚幻濶ｲ縺ｫ險ｭ螳壹＆繧後※縺・ｋ縺ｨ縲・
-            // 繧ｹ繧ｯ繝ｪ繝励ヨ縺ｧ菴戊牡繧呈欠螳壹＠縺ｦ繧り幻濶ｲ縺ｫ荳雁｡励ｊ・井ｹ礼ｮ暦ｼ峨＆繧後※縺励∪縺・◆繧√∝ｼｷ蛻ｶ逧・↓繝懊ち繝ｳ閾ｪ菴薙ｒ逵溘▲逋ｽ縺ｫ繝ｪ繧ｻ繝・ヨ縺励∪縺吶・
             ColorBlock cb = btn.colors;
             cb.normalColor = Color.white;
-            cb.selectedColor = Color.yellow; // 繧､繝ｳ繝吶Φ繝医Μ縺ｮ驕ｸ謚櫁牡縺ｯ鮟・牡縺ｫ縺吶ｋ
+            cb.selectedColor = ColorBrassGold;
+            cb.highlightedColor = new Color(1.08f, 1.08f, 1.05f, 1f);
             btn.colors = cb;
 
             if (bg != null)
             {
                 if (isSelected)
                 {
-                    bg.color = Color.yellow; // 驕ｸ謚樔ｸｭ縺ｯ譛蜆ｪ蜈・
+                    bg.color = ColorBrassGold; // 選択スロット: 輝く真鍮ゴールド
                 }
                 else if (slotIndex >= 9 && !isTempSlot)
                 {
-                    // EX・・ree・峨せ繝ｭ繝・ヨ縺ｯ蟶ｸ縺ｫ邏ｫ濶ｲ
-                    bg.color = new Color32(180, 100, 255, 255);
+                    // EX（Free）枠: 落ち着いた深藤紫
+                    bg.color = new Color32(48, 38, 64, 235);
                 }
                 else if (item.series != null)
                 {
-                    // 荳ｭ霄ｫ縺後≠繧句�ｴ蜷医・繝ｬ繧｢繝ｪ繝・ぅ縺ｫ蠢懊§縺溯牡繧定ｨｭ螳・
+                    // 装備中アイテム: 植物標本・プレパラート調の落ち着いた階層色
                     switch (item.rarity)
                     {
-                        case 1: bg.color = new Color32(128, 38, 5, 255); break;
-                        case 2: bg.color = new Color32(136, 136, 136, 255); break;
-                        case 3: bg.color = new Color32(238, 156, 23, 255); break;
-                        case 4: bg.color = new Color32(1, 240, 91, 255); break;
-                        default: bg.color = Color.white; break;
+                        case 1: bg.color = new Color32(30, 44, 36, 245); break;  // 苔暗緑・深石色
+                        case 2: bg.color = new Color32(42, 75, 58, 250); break;  // 蓮・翡翠
+                        case 3: bg.color = new Color32(72, 52, 92, 250); break;  // 藤・藤紫
+                        case 4: bg.color = new Color32(115, 88, 38, 255); break; // アンティーク真鍮黄金
+                        default: bg.color = new Color32(40, 50, 45, 240); break;
                     }
                 }
                 else
                 {
-                    // 遨ｺ譫�縺ｮ蝣ｴ蜷・
-                    bg.color = isTempSlot ? new Color(0.8f, 0.9f, 1f, 1f) : Color.white;
+                    // 空枠
+                    bg.color = isTempSlot ? new Color(0.08f, 0.12f, 0.10f, 0.80f) : new Color(0.05f, 0.08f, 0.07f, 0.85f);
                 }
             }
             // "Icon" 縺ｨ縺・≧蜷榊燕縺ｮ蟄舌が繝悶ず繧ｧ繧ｯ繝医ｒ謗｢縺・
@@ -904,9 +930,144 @@ namespace Alpha.UI
                     onComplete?.Invoke();
                 });
         }
+
+        // --- Modern Botanical UI Helpers ---
+        private void LoadFontAssetIfNeeded()
+        {
+            if (customFontAsset != null) return;
+
+#if UNITY_EDITOR
+            string[] guids = UnityEditor.AssetDatabase.FindAssets("SoukouMincho SDF t:TMP_FontAsset");
+            if (guids != null && guids.Length > 0)
+            {
+                string p = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[0]);
+                customFontAsset = UnityEditor.AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(p);
+            }
+#endif
+            if (customFontAsset == null)
+            {
+                customFontAsset = Resources.Load<TMP_FontAsset>("Fonts/SoukouMincho SDF");
+            }
+            if (customFontAsset == null)
+            {
+                customFontAsset = Resources.Load<TMP_FontAsset>("Fonts & Materials/SoukouMincho SDF");
+            }
+        }
+
+        public void ApplyBotanicalStyle()
+        {
+            LoadFontAssetIfNeeded();
+
+            // 1. パネル全体の背景を深森墨黒すりガラス調に設定
+            if (panel != null)
+            {
+                var panelImg = panel.GetComponent<Image>();
+                if (panelImg != null)
+                {
+                    panelImg.color = ColorBaseInk;
+                }
+                AddCornerAccents(panel.transform as RectTransform, ColorBrassGold, 28f, 2f);
+            }
+
+            // 2. ボタン類のボタニカル化
+            SetupBotanicalButton(confirmButton, "条項承認 [ 確定 ]");
+            SetupBotanicalButton(backButtonForCheck, "戻る [ 閉じる ]");
+            SetupBotanicalButton(backToForgeButton, "鍛冶台へ帰還");
+
+            // 3. テキスト全体のフォント適用
+            if (panel != null && customFontAsset != null)
+            {
+                var texts = panel.GetComponentsInChildren<TextMeshProUGUI>(true);
+                foreach (var t in texts)
+                {
+                    if (t != null) t.font = customFontAsset;
+                }
+            }
+        }
+
+        private void SetupBotanicalButton(Button btn, string defaultText = null)
+        {
+            if (btn == null) return;
+            var img = btn.GetComponent<Image>();
+            if (img != null)
+            {
+                img.color = ColorMossSlate;
+            }
+
+            ColorBlock cb = btn.colors;
+            cb.normalColor = Color.white;
+            cb.highlightedColor = new Color(1.15f, 1.15f, 1.1f, 1f);
+            cb.pressedColor = new Color(0.8f, 0.8f, 0.8f, 1f);
+            cb.selectedColor = Color.white;
+            btn.colors = cb;
+
+            var txt = btn.GetComponentInChildren<TextMeshProUGUI>(true);
+            if (txt != null)
+            {
+                if (customFontAsset != null) txt.font = customFontAsset;
+                txt.color = ColorIvoryWhite;
+                if (!string.IsNullOrEmpty(defaultText) && string.IsNullOrEmpty(txt.text))
+                {
+                    txt.text = defaultText;
+                }
+            }
+
+            AddCornerAccents(btn.transform as RectTransform, ColorBrassMuted, 8f, 1.5f);
+        }
+
+        private static void AddCornerAccents(RectTransform targetParent, Color color, float size = 16f, float thickness = 1.5f)
+        {
+            if (targetParent == null) return;
+
+            for (int i = targetParent.childCount - 1; i >= 0; i--)
+            {
+                var c = targetParent.GetChild(i);
+                if (c.name.StartsWith("Corner_"))
+                {
+                    Destroy(c.gameObject);
+                }
+            }
+
+            CreateSingleCorner(targetParent, "Corner_TL", new Vector2(0f, 1f), color, size, thickness);
+            CreateSingleCorner(targetParent, "Corner_TR", new Vector2(1f, 1f), color, size, thickness);
+            CreateSingleCorner(targetParent, "Corner_BL", new Vector2(0f, 0f), color, size, thickness);
+            CreateSingleCorner(targetParent, "Corner_BR", new Vector2(1f, 0f), color, size, thickness);
+        }
+
+        private static void CreateSingleCorner(RectTransform parent, string name, Vector2 anchor, Color color, float size, float thickness)
+        {
+            GameObject cornerGO = new GameObject(name, typeof(RectTransform));
+            cornerGO.transform.SetParent(parent, false);
+            RectTransform crt = cornerGO.GetComponent<RectTransform>();
+            crt.anchorMin = anchor;
+            crt.anchorMax = anchor;
+            crt.pivot = anchor;
+            crt.sizeDelta = new Vector2(size, size);
+            crt.anchoredPosition = Vector2.zero;
+
+            GameObject hGO = new GameObject("H", typeof(RectTransform));
+            hGO.transform.SetParent(cornerGO.transform, false);
+            RectTransform hrt = hGO.GetComponent<RectTransform>();
+            hrt.anchorMin = anchor;
+            hrt.anchorMax = anchor;
+            hrt.pivot = anchor;
+            hrt.sizeDelta = new Vector2(size, thickness);
+            hrt.anchoredPosition = Vector2.zero;
+            Image hImg = hGO.AddComponent<Image>();
+            hImg.color = color;
+            hImg.raycastTarget = false;
+
+            GameObject vGO = new GameObject("V", typeof(RectTransform));
+            vGO.transform.SetParent(cornerGO.transform, false);
+            RectTransform vrt = vGO.GetComponent<RectTransform>();
+            vrt.anchorMin = anchor;
+            vrt.anchorMax = anchor;
+            vrt.pivot = anchor;
+            vrt.sizeDelta = new Vector2(thickness, size);
+            vrt.anchoredPosition = Vector2.zero;
+            Image vImg = vGO.AddComponent<Image>();
+            vImg.color = color;
+            vImg.raycastTarget = false;
+        }
     }
 }
-
-
-
-
