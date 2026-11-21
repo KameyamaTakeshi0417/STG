@@ -105,6 +105,11 @@ namespace Alpha.Flow
 
         private void ShowRewardSelection(OrbData_Alpha orb)
         {
+            if (Alpha.Result.RunStatsTracker_Alpha.Instance != null)
+            {
+                Alpha.Result.RunStatsTracker_Alpha.Instance.RecordOrbOpened();
+            }
+
             if (rewardSelectionUI != null)
             {
                 // 3択を生成してパネルを表示

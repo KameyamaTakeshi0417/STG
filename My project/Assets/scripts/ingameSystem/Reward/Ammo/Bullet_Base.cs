@@ -101,11 +101,45 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
     // Bomb destruction flag
     public bool canDestructByBomb { get; set; } = true;
 
+    protected Vector3 basePrefabScale = Vector3.one; // 本来のプレハブのスケール（プール再利用時の基準）
+    protected bool hasCachedBaseScale = false;
+    protected float currentSizeMultiplier = 1.0f;
+
+    public const float MinBulletSizeMultiplier = 0.5f;   // 下限 -50% (0.5倍)
+    public const float MaxBulletSizeMultiplier = 6.0f;   // 上限 +500% (6.0倍)
+    public const float SizeDamageBonusCoeff = 0.6f;      // 案C: 1 + (S - 1) * 0.6 -> 最大(6.0倍)時に4.0倍
+    public const float MaxSizeDamageMultiplier = 4.0f;
+
     protected virtual void Awake()
     {
         basePrefabSpeed = Speed;
         if (basePrefabSpeed <= 0f) basePrefabSpeed = 1f; // ゼロ除算防止
+
+        if (!hasCachedBaseScale)
+        {
+            basePrefabScale = transform.localScale;
+            if (basePrefabScale.sqrMagnitude < 0.0001f) basePrefabScale = Vector3.one;
+            hasCachedBaseScale = true;
+        }
     }
+
+    /// <summary>
+    /// 弾のサイズ倍率を適用する（下限0.5倍〜上限6.0倍）。プレハブ基準スケールから計算するためプール再利用時も安全。
+    /// </summary>
+    public void SetBulletScaleMultiplier(float sizeMultiplier)
+    {
+        if (!hasCachedBaseScale)
+        {
+            basePrefabScale = transform.localScale;
+            if (basePrefabScale.sqrMagnitude < 0.0001f) basePrefabScale = Vector3.one;
+            hasCachedBaseScale = true;
+        }
+
+        currentSizeMultiplier = UnityEngine.Mathf.Clamp(sizeMultiplier, MinBulletSizeMultiplier, MaxBulletSizeMultiplier);
+        transform.localScale = basePrefabScale * currentSizeMultiplier;
+    }
+
+    public float GetCurrentSizeMultiplier() => currentSizeMultiplier;
 
     // Start is called before the first frame update
     void Start() { }
@@ -371,6 +405,19 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
                 var eff = soEffects[i];
                 eff.effectSO.OnFlight(this, eff.rarity, ref eff.genericTimer, 0.01f);
 
+                if (eff.effectSO.effectType == Alpha.Data.WeaponEffectType_Alpha.SniperSpeedBoost)
+                {
+                    eff.genericTimer += 0.01f;
+                    if (eff.genericTimer >= 0.045f)
+                    {
+                        eff.genericTimer = 0f;
+                        if (Alpha.Core.ProceduralJuiceManager_Alpha.Instance != null)
+                        {
+                            Vector3 forwardDir = (rb != null && rb.velocity.sqrMagnitude > 0.01f) ? (Vector3)rb.velocity.normalized : transform.right;
+                            Alpha.Core.ProceduralJuiceManager_Alpha.Instance.SpawnSonicVapor(transform.position, forwardDir, currentSizeMultiplier * 0.75f);
+                        }
+                    }
+                }
                 if (eff.effectSO.effectType == Alpha.Data.WeaponEffectType_Alpha.Explosion_OnFlight)
                 {
                     eff.genericTimer += 0.01f;
@@ -516,16 +563,32 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
                 for (int i = 0; i < actualHits; i++)
                 {
                     // 速度倍率によるダメージスケーリングを適用 (最大5.0倍)
-                    float damageMultiplier = 1.0f;
+                    float speedDamageMultiplier = 1.0f;
+                    float sizeDamageMultiplier = 1.0f;
                     if (!isEnemyBullet)
                     {
                         float velocityRatio = Speed / basePrefabSpeed;
-                        damageMultiplier = UnityEngine.Mathf.Clamp(velocityRatio, 0.1f, 5.0f);
+                        speedDamageMultiplier = UnityEngine.Mathf.Clamp(velocityRatio, 0.1f, 5.0f);
+
+                        // 弾サイズによるダメージ上昇（案C: 基本サイズ1.0倍より大きい場合のみ適用。上限6.0倍時に最大4.0倍）
+                        if (currentSizeMultiplier > 1.0f)
+                        {
+                            sizeDamageMultiplier = UnityEngine.Mathf.Clamp(
+                                1.0f + (currentSizeMultiplier - 1.0f) * SizeDamageBonusCoeff,
+                                1.0f,
+                                MaxSizeDamageMultiplier
+                            );
+                        }
                     }
 
-                    float finalImpactDamage = dmg * damageMultiplier;
+                    // 弾速倍率と弾サイズ倍率を乗算
+                    float finalImpactDamage = dmg * speedDamageMultiplier * sizeDamageMultiplier;
 
                     // HP繧呈ｸ帙ｉ縺吶€・蝗樒岼縺ｯ莉翫・dmg縲・蝗樒岼莉･髯阪・縺輔▲縺肴ｸ幄｡ｰ縺輔ｌ縺歸mg繧剃ｽｿ縺・€・
+                    if (!isEnemyBullet && Alpha.Result.RunStatsTracker_Alpha.Instance != null)
+                    {
+                        Alpha.Result.RunStatsTracker_Alpha.Instance.RecordDamageDealt(finalImpactDamage);
+                    }
                     health.ApplyDamage(finalImpactDamage, this);
                     hitCountsPerEnemy[targetObj]++;
 

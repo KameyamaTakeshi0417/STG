@@ -87,11 +87,12 @@ namespace Alpha.UI
                 if (remaining <= 10f)
                 {
                     float colorT = 1f - (remaining / 10f); // 10秒=0, 0秒=1
-                    timeText.color = Color.Lerp(Color.yellow, Color.red, colorT);
+                    // 向日葵ゴールドから椿の深紅へ遷移（Modern Botanical Warning）
+                    timeText.color = Color.Lerp(new Color(0.92f, 0.75f, 0.32f, 1f), new Color(0.72f, 0.22f, 0.24f, 1f), colorT);
                 }
                 else
                 {
-                    timeText.color = Color.white;
+                    timeText.color = new Color(0.93f, 0.91f, 0.86f, 1f); // 生成り白
                 }
 
                 // 1秒ごとにブルンとアニメーション

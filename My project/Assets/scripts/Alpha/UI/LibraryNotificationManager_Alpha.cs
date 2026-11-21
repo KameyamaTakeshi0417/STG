@@ -165,21 +165,22 @@ namespace Alpha.UI
             popupCanvasGroup = panelGO.AddComponent<CanvasGroup>();
             popupCanvasGroup.alpha = 1f;
 
-            // 背景イメージ（ダークサイバー／半透明）
+            // 背景イメージ（深森墨黒・すりガラス調）
             Image bg = panelGO.AddComponent<Image>();
-            bg.color = new Color(0.06f, 0.08f, 0.12f, 0.94f);
+            bg.color = new Color(0.040f, 0.055f, 0.048f, 0.96f);
+            AddCornerAccents(popupPanelRect, new Color(0.80f, 0.68f, 0.44f, 0.85f), 12f, 1.5f);
 
-            // 左端アクセントカラー帯（エメラルド/シアン）
+            // 左端アクセントカラー帯（アンティーク真鍮）
             GameObject barGO = new GameObject("AccentBar", typeof(RectTransform));
             barGO.transform.SetParent(panelGO.transform, false);
             RectTransform barRT = barGO.GetComponent<RectTransform>();
             barRT.anchorMin = new Vector2(0f, 0f);
             barRT.anchorMax = new Vector2(0f, 1f);
             barRT.pivot = new Vector2(0f, 0.5f);
-            barRT.sizeDelta = new Vector2(5f, 0f);
+            barRT.sizeDelta = new Vector2(4f, 0f);
             barRT.anchoredPosition = Vector2.zero;
             Image barImg = barGO.AddComponent<Image>();
-            barImg.color = new Color(0.2f, 0.85f, 0.8f, 1f);
+            barImg.color = new Color(0.80f, 0.68f, 0.44f, 1.0f);
 
             // 上下レイアウトコンテナ
             GameObject contentGO = new GameObject("Content", typeof(RectTransform));
@@ -197,28 +198,27 @@ namespace Alpha.UI
             vlg.childForceExpandHeight = false;
             vlg.spacing = 3f;
 
-            // カテゴリテキスト（上段）
+            // カテゴリテキスト（上段: 蓮・翡翠色）
             GameObject catGO = new GameObject("CategoryText", typeof(RectTransform));
             catGO.transform.SetParent(contentGO.transform, false);
             categoryText = catGO.AddComponent<TextMeshProUGUI>();
             if (customFontAsset != null) categoryText.font = customFontAsset;
-            categoryText.fontSize = 13f;
-            categoryText.fontStyle = FontStyles.Bold;
-            categoryText.color = new Color(0.35f, 0.9f, 0.85f, 0.95f);
+            categoryText.fontSize = 12f;
+            categoryText.color = new Color(0.32f, 0.72f, 0.53f, 1.0f);
             categoryText.alignment = TextAlignmentOptions.Left;
-            categoryText.text = "◆ LIBRARY UPDATED ◆";
+            categoryText.text = "◆ 草花条項目録 更新 ◆";
 
-            // メインメッセージテキスト（下段: xxxにyyyが追加されました！）
+            // メインメッセージテキスト（下段: 生成り白）
             GameObject msgGO = new GameObject("MessageText", typeof(RectTransform));
             msgGO.transform.SetParent(contentGO.transform, false);
             messageText = msgGO.AddComponent<TextMeshProUGUI>();
             if (customFontAsset != null) messageText.font = customFontAsset;
-            messageText.fontSize = 17f;
-            messageText.color = Color.white;
+            messageText.fontSize = 16f;
+            messageText.color = new Color(0.93f, 0.91f, 0.86f, 1.0f);
             messageText.alignment = TextAlignmentOptions.Left;
             messageText.enableWordWrapping = false;
             messageText.overflowMode = TextOverflowModes.Ellipsis;
-            messageText.text = "ライブラリに新しい項目が追加されました！";
+            messageText.text = "新たな神格条項が目録に記録されました。";
 
             panelGO.SetActive(false);
         }
@@ -356,5 +356,53 @@ namespace Alpha.UI
             EnqueueNotification("チュートリアル", "エネミーラッシュ");
         }
 #endif
+
+        private static void AddCornerAccents(RectTransform targetParent, Color color, float size = 12f, float thickness = 1.5f)
+        {
+            if (targetParent == null) return;
+            CreateSingleCorner(targetParent, "Corner_TL", new Vector2(0f, 1f), color, size, thickness);
+            CreateSingleCorner(targetParent, "Corner_TR", new Vector2(1f, 1f), color, size, thickness);
+            CreateSingleCorner(targetParent, "Corner_BL", new Vector2(0f, 0f), color, size, thickness);
+            CreateSingleCorner(targetParent, "Corner_BR", new Vector2(1f, 0f), color, size, thickness);
+        }
+
+        private static void CreateSingleCorner(RectTransform parent, string name, Vector2 anchor, Color color, float size, float thickness)
+        {
+            GameObject cornerGO = new GameObject(name, typeof(RectTransform));
+            cornerGO.transform.SetParent(parent, false);
+            cornerGO.layer = 5;
+            RectTransform crt = cornerGO.GetComponent<RectTransform>();
+            crt.anchorMin = anchor;
+            crt.anchorMax = anchor;
+            crt.pivot = anchor;
+            crt.sizeDelta = new Vector2(size, size);
+            crt.anchoredPosition = Vector2.zero;
+
+            GameObject hGO = new GameObject("H", typeof(RectTransform));
+            hGO.transform.SetParent(cornerGO.transform, false);
+            hGO.layer = 5;
+            RectTransform hrt = hGO.GetComponent<RectTransform>();
+            hrt.anchorMin = anchor;
+            hrt.anchorMax = anchor;
+            hrt.pivot = anchor;
+            hrt.sizeDelta = new Vector2(size, thickness);
+            hrt.anchoredPosition = Vector2.zero;
+            Image hImg = hGO.AddComponent<Image>();
+            hImg.color = color;
+            hImg.raycastTarget = false;
+
+            GameObject vGO = new GameObject("V", typeof(RectTransform));
+            vGO.transform.SetParent(cornerGO.transform, false);
+            vGO.layer = 5;
+            RectTransform vrt = vGO.GetComponent<RectTransform>();
+            vrt.anchorMin = anchor;
+            vrt.anchorMax = anchor;
+            vrt.pivot = anchor;
+            vrt.sizeDelta = new Vector2(thickness, size);
+            vrt.anchoredPosition = Vector2.zero;
+            Image vImg = vGO.AddComponent<Image>();
+            vImg.color = color;
+            vImg.raycastTarget = false;
+        }
     }
 }

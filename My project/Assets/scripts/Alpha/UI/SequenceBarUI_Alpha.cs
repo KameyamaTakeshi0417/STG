@@ -94,7 +94,7 @@ namespace Alpha.UI
                         blockObj = new GameObject("RushBlock");
                         blockObj.transform.SetParent(markerContainer, false);
                         Image img = blockObj.AddComponent<Image>();
-                        img.color = new Color(0.5f, 0f, 0.5f, 0.5f); // 半透明の紫
+                        img.color = new Color(0.72f, 0.22f, 0.24f, 0.55f); // 椿の深紅（ラッシュ警告帯） // 半透明の紫
                     }
                     
                     RectTransform rt = blockObj.GetComponent<RectTransform>();

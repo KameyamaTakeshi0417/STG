@@ -64,20 +64,25 @@ namespace Alpha.Effect
         {
             rectTransform = GetComponent<RectTransform>();
             targetGraphic = GetComponent<Graphic>();
-            if (targetGraphic != null)
-            {
-                baseGraphicColor = targetGraphic.color;
-                if (targetGraphic.material != null)
-                {
-                    effectMat = Instantiate(targetGraphic.material);
-                    targetGraphic.material = effectMat;
-                }
-            }
+            HideLegacyPanelGraphics();
 
             LoadAssetsIfNeeded();
 
             // 初動で非アクティブにしておく
             gameObject.SetActive(false);
+        }
+
+        private void HideLegacyPanelGraphics()
+        {
+            // 旧・収縮パネル（Image / RawImage 等）の描画を完全に無効化
+            Graphic[] graphics = GetComponentsInChildren<Graphic>(true);
+            foreach (var g in graphics)
+            {
+                if (g != null)
+                {
+                    g.enabled = false;
+                }
+            }
         }
 
         private void LoadAssetsIfNeeded()
@@ -229,6 +234,7 @@ namespace Alpha.Effect
         /// </summary>
         public void PlayEffect(System.Action onComplete)
         {
+            HideLegacyPanelGraphics();
             LoadAssetsIfNeeded();
             EnsureOverlayUI();
             gameObject.SetActive(true);
@@ -274,13 +280,9 @@ namespace Alpha.Effect
                 if (warningBannerCG != null) warningBannerCG.alpha = 0f;
             }
 
-            // 4. 渦巻きパネル初期状態
-            SetPanelScale(startScale);
-            SetPanelAlpha(0f);
-
             CameraControl camCtrl = Camera.main != null ? Camera.main.GetComponent<CameraControl>() : null;
 
-            // --- Phase 1: 空間収束 ＋ シックWARNING帯 ＋ 緩やかなズーム＆地鳴り ---
+            // --- Phase 1: 空間収束（花弁吸引） ＋ シックWARNING帯 ＋ 緩やかなズーム＆地鳴り ---
             float elapsed = 0f;
             float rumbleTimer = 0f;
 
@@ -289,27 +291,7 @@ namespace Alpha.Effect
                 elapsed += Time.unscaledDeltaTime;
                 float t = Mathf.Clamp01(elapsed / activeConvergeDur);
 
-                // (a) 渦巻きパネル：ふわっと現れてから easeInCubic で急収束
-                float fadeIn = Mathf.Clamp01(elapsed / 0.25f);
-                SetPanelAlpha(baseGraphicColor.a * fadeIn);
-
-                float easeIn = t * t * t;
-                float curScale = Mathf.Lerp(startScale, 0.22f, easeIn);
-                SetPanelScale(curScale);
-
-                if (effectMat != null)
-                {
-                    if (effectMat.HasProperty("_VortexSpeed"))
-                    {
-                        effectMat.SetFloat("_VortexSpeed", Mathf.Lerp(-2f, -28f, t * t));
-                    }
-                    if (effectMat.HasProperty("_TwistAmount"))
-                    {
-                        effectMat.SetFloat("_TwistAmount", Mathf.Lerp(3f, 18f, t * t));
-                    }
-                }
-
-                // (b) 上下シネマティック黒帯：最初の0.28秒でスッと入り、最後0.18秒前まで維持
+                // (a) 上下シネマティック黒帯：最初の0.28秒でスッと入り、最後0.18秒前まで維持
                 float barInT = 1f - Mathf.Pow(1f - Mathf.Clamp01(elapsed / 0.28f), 3f);
                 if (topBarRT != null) topBarRT.anchoredPosition = new Vector2(0f, Mathf.Lerp(68f, 0f, barInT));
                 if (bottomBarRT != null) bottomBarRT.anchoredPosition = new Vector2(0f, Mathf.Lerp(-68f, 0f, barInT));
@@ -374,8 +356,7 @@ namespace Alpha.Effect
                 yield return null;
             }
 
-            // --- Phase 2: 極小圧縮の一瞬の「タメ」（静寂と緊張の頂点） ---
-            SetPanelScale(0.12f);
+            // --- Phase 2: 一瞬の「タメ」（静寂と緊張の頂点） ---
             if (warningBannerRT != null) warningBannerRT.localScale = new Vector3(1f, 0f, 1f);
             if (warningBannerCG != null) warningBannerCG.alpha = 0f;
             if (holdCompressionDuration > 0f)
@@ -384,8 +365,6 @@ namespace Alpha.Effect
             }
 
             // --- Phase 3: 解放・中ボス降臨インパクト！ ---
-            SetPanelScale(0f);
-            SetPanelAlpha(baseGraphicColor.a);
 
             // (a) 降臨インパクトSE
             if (appearImpactSEClip != null && Alpha.Audio.SoundManager_Alpha.Instance != null)

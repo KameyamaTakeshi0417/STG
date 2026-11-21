@@ -110,6 +110,10 @@ public class Player_Control_Alpha : MonoBehaviour
                     {
                         myStatus.currentStamina = 0;
                         myStatus.isStaminaExhausted = true;
+                        if (Alpha.Result.RunStatsTracker_Alpha.Instance != null)
+                        {
+                            Alpha.Result.RunStatsTracker_Alpha.Instance.RecordStaminaExhaustion();
+                        }
                         isFocusMode = false;
                         if (playerCollider != null) playerCollider.size = normalColliderSize;
                         if (hitboxImage != null) hitboxImage.SetActive(false);
@@ -176,6 +180,10 @@ public class Player_Control_Alpha : MonoBehaviour
             {
                 myStatus.currentStamina = 0;
                 myStatus.isStaminaExhausted = true;
+                if (Alpha.Result.RunStatsTracker_Alpha.Instance != null)
+                {
+                    Alpha.Result.RunStatsTracker_Alpha.Instance.RecordStaminaExhaustion();
+                }
             }
             
             if (moveInput == Vector2.zero)

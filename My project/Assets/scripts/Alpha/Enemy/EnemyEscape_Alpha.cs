@@ -19,6 +19,19 @@ namespace Alpha.Enemy
         private float timer;
         private bool isEscaping;
 
+        /// <summary>
+        /// 逃走寸前（残り30%以下、または残り3秒以内）かどうか
+        /// </summary>
+        public bool IsNearEscape => (escapeTime - timer) <= Mathf.Max(3.0f, escapeTime * 0.3f);
+
+        /// <summary>
+        /// 残り逃走時間の割合 (1.0 -> 0.0)
+        /// </summary>
+        public float EscapeRemainingRatio => Mathf.Clamp01((escapeTime - timer) / escapeTime);
+
+        public float CurrentTimer => timer;
+        public float EscapeTime => escapeTime;
+
         void Update()
         {
             if (isEscaping) return;

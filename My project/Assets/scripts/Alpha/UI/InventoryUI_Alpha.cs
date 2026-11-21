@@ -366,6 +366,18 @@ namespace Alpha.UI
                 bulSpdStr += $" <color={color}>({sign}{bulSpdDiff:F2})</color>";
             }
 
+            // Bullet Size
+            float baseBulSize = stats.BaseBulletSizeMag;
+            float totalBulSize = stats.bulletSizeMag;
+            float bulSizeDiff = totalBulSize - baseBulSize;
+            string bulSizeStr = $"Bullet Size: {totalBulSize:F2}x";
+            if (Mathf.Abs(bulSizeDiff) > 0.01f)
+            {
+                string color = bulSizeDiff > 0 ? "#00FF00" : "#FF0000";
+                string sign = bulSizeDiff > 0 ? "+" : "";
+                bulSizeStr += $" <color={color}>({sign}{bulSizeDiff:F2})</color>";
+            }
+
             // Move Speed (Not affected by equipment, so diff is always 0 for this UI)
             float totalMovSpd = stats.moveSpeedMag;
             string movSpdStr = $"Move Spd: {totalMovSpd:F2}x";
@@ -376,6 +388,7 @@ namespace Alpha.UI
                               $"{stamStr}\n" +
                               $"{spanStr}\n" +
                               $"{bulSpdStr}\n" +
+                              $"{bulSizeStr}\n" +
                               $"{movSpdStr}";
         }
 

@@ -225,6 +225,10 @@ namespace Alpha.Flow
                                 midBossAppearEffectUI.PlayEffect(() => {
                                     spawnManager.SpawnBoss(activeSequence.bossPrefab);
                                     SetState(StageState_Alpha.MidBossFight);
+                                    if (Alpha.Result.RunStatsTracker_Alpha.Instance != null)
+                                    {
+                                        Alpha.Result.RunStatsTracker_Alpha.Instance.SetMidBossState(true);
+                                    }
                                     if (Alpha.Audio.SoundManager_Alpha.Instance != null && currentStageData.midBossBGM != null)
                                     {
                                         Alpha.Audio.SoundManager_Alpha.Instance.PlayBGM(currentStageData.midBossBGM, 0.5f);
@@ -235,6 +239,10 @@ namespace Alpha.Flow
                             {
                                 spawnManager.SpawnBoss(activeSequence.bossPrefab);
                                 SetState(StageState_Alpha.MidBossFight);
+                                if (Alpha.Result.RunStatsTracker_Alpha.Instance != null)
+                                {
+                                    Alpha.Result.RunStatsTracker_Alpha.Instance.SetMidBossState(true);
+                                }
                                 if (Alpha.Audio.SoundManager_Alpha.Instance != null && currentStageData.midBossBGM != null)
                                 {
                                     Alpha.Audio.SoundManager_Alpha.Instance.PlayBGM(currentStageData.midBossBGM, 0.5f);
@@ -471,6 +479,27 @@ namespace Alpha.Flow
             currentSequenceTime = 0f;
             currentTutorialIndex = 0;
 
+            // ゲーム開始時（Stage 0）のみ実績トラッカーを全リセットし、3x3マトリクス盤面を新規生成
+            // （以降のステージでは盤面・累積実績を保持し、通算でパネルを開けていく）
+            if (currentStageIndex == 0)
+            {
+                if (Alpha.Result.RunStatsTracker_Alpha.Instance != null)
+                {
+                    Alpha.Result.RunStatsTracker_Alpha.Instance.ResetForNewRun();
+                }
+                if (Alpha.Result.ResultMatrixManager_Alpha.Instance != null)
+                {
+                    Alpha.Result.ResultMatrixManager_Alpha.Instance.InitializeGrid(3);
+                }
+            }
+            else
+            {
+                if (Alpha.Result.RunStatsTracker_Alpha.Instance != null)
+                {
+                    Alpha.Result.RunStatsTracker_Alpha.Instance.ResetForNewStage();
+                }
+            }
+
             if (WeaponGenerator_Alpha.Instance != null && currentStageData.stageRewardTable != null)
             {
                 WeaponGenerator_Alpha.Instance.SetRewardTable(currentStageData.stageRewardTable);
@@ -590,6 +619,10 @@ namespace Alpha.Flow
             
             if (currentState == StageState_Alpha.MidBossFight)
             {
+                if (Alpha.Result.RunStatsTracker_Alpha.Instance != null)
+                {
+                    Alpha.Result.RunStatsTracker_Alpha.Instance.SetMidBossDefeated();
+                }
                 SetState(StageState_Alpha.Transition);
                 
                 StartCoroutine(WaitUntilAllOrbsCollected(() => 
@@ -639,6 +672,11 @@ namespace Alpha.Flow
             }
             else if (currentState == StageState_Alpha.BossFight)
             {
+                if (Alpha.Result.RunStatsTracker_Alpha.Instance != null)
+                {
+                    bool isFinal = (stageList != null && currentStageIndex >= stageList.Length - 1);
+                    Alpha.Result.RunStatsTracker_Alpha.Instance.SetStageBossDefeated(isFinal);
+                }
                 SetState(StageState_Alpha.Transition);
                 StartCoroutine(WaitUntilAllOrbsCollected(() => 
                 {
@@ -713,6 +751,20 @@ namespace Alpha.Flow
             if (RewardSequenceManager_Alpha.Instance != null)
             {
                 RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
+                    TriggerStageResultAndProceed();
+                });
+            }
+            else
+            {
+                TriggerStageResultAndProceed();
+            }
+        }
+
+        private void TriggerStageResultAndProceed()
+        {
+            if (Alpha.Result.ResultMatrixUI_Alpha.Instance != null)
+            {
+                Alpha.Result.ResultMatrixUI_Alpha.Instance.ShowResultSequence(() => {
                     ExecuteStageClearBackEnd();
                 });
             }

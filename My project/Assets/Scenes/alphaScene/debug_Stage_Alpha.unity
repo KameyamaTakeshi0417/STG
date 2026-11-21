@@ -16550,7 +16550,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: cd5e7962845fbd24b934d90a1610eed7, type: 2}
   - {fileID: 11400000, guid: 6ec674352559d394b940f0d44b649d34, type: 2}
   - {fileID: 11400000, guid: c54a498fc0fe4a04f9ccd2ad6f3be32b, type: 2}
-  globalDebuffEffects: []
+  - {fileID: 11400000, guid: 4c2d91adbc2bb21499c1b1b8d706847a, type: 2}
+  - {fileID: 11400000, guid: 3b047e9b494a4e779f8ee36505667ddc, type: 2}
+  - {fileID: 11400000, guid: f92e69226e17411faaa6db6b8b71d832, type: 2}
+  globalDebuffEffects:
+  - {fileID: 11400000, guid: f684cfa8a3a94a846bb47fda9a90e251, type: 2}
 --- !u!114 &1805315615
 MonoBehaviour:
   m_ObjectHideFlags: 0

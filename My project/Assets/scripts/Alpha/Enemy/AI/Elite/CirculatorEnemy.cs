@@ -14,6 +14,20 @@ public class CirculatorEnemy : _Health_Base, IAlphaPoolable
     public float moveDistance = 5f;
     public float moveSpeed = 3f;
 
+    [Header("Screen Side Vertical Patrol")]
+    [Tooltip("ONにするとカメラの左端または右端に沿って上下に往復し続けます")]
+    public bool useScreenSideVerticalPatrol = false;
+    [Tooltip("配置する画面端（-1: 左端, +1: 右端）")]
+    public int screenSide = -1;
+    [Tooltip("左右の画面端からの内側マージン（Viewport比率 0.0〜0.5）")]
+    public float screenEdgeMarginX = 0.08f;
+    [Tooltip("上下の画面端からの内側マージン（Viewport比率 0.0〜0.45）")]
+    public float screenEdgeMarginY = 0.15f;
+    [Tooltip("画面端パトロール時の初期Y進行度（0=下端, 0.5=中央, 1=上端）")]
+    [Range(0f, 1f)] public float initialVerticalProgress = 0.5f;
+    [Tooltip("画面端パトロール時の初期移動方向（true=上方向へ, false=下方向へ）")]
+    public bool startMovingUp = true;
+
     [Header("Rotation Settings")]
     public bool rotationEnabled = true;
     public float angularSpeed = 180f; // 1秒あたりの回転角度
@@ -44,7 +58,26 @@ public class CirculatorEnemy : _Health_Base, IAlphaPoolable
     private bool movingToEnd = true;
     private float moveProgress = 0f;
 
+    private float verticalPatrolProgress = 0.5f;
+    private bool movingUp = true;
+
     private float attackTimer = 0f;
+
+    /// <summary>
+    /// 画面の左端または右端に沿って上下に往復し続けるモードを設定する
+    /// </summary>
+    public void ConfigureScreenSidePatrol(int side, float marginX, float marginY, float speed, float initProgress, bool moveUp)
+    {
+        useScreenSideVerticalPatrol = true;
+        screenSide = side < 0 ? -1 : 1;
+        screenEdgeMarginX = Mathf.Clamp(marginX, 0.02f, 0.45f);
+        screenEdgeMarginY = Mathf.Clamp(marginY, 0.02f, 0.45f);
+        if (speed > 0f) moveSpeed = speed;
+        initialVerticalProgress = Mathf.Clamp01(initProgress);
+        startMovingUp = moveUp;
+
+        InitializePosition();
+    }
 
     protected override void Awake()
     {
@@ -68,15 +101,8 @@ public class CirculatorEnemy : _Health_Base, IAlphaPoolable
         }
     }
 
-    public void InitializePosition()
+    private void EnsureDirectionLine()
     {
-        startPos = transform.position;
-        // moveDirectionを正規化して使用
-        endPos = startPos + (moveDirection.normalized * moveDistance);
-        movingToEnd = true;
-        moveProgress = 0f;
-
-        // ディレクションラインの表示
         if (showDirectionLine)
         {
             if (directionLine == null)
@@ -92,12 +118,63 @@ public class CirculatorEnemy : _Health_Base, IAlphaPoolable
                 directionLine.sortingOrder = -10; // 後ろに描画
             }
             directionLine.enabled = true;
-            directionLine.SetPosition(0, startPos);
-            directionLine.SetPosition(1, endPos);
         }
         else if (directionLine != null)
         {
             directionLine.enabled = false;
+        }
+    }
+
+    private bool TryGetScreenSideEndpoints(out Vector3 bottomWorld, out Vector3 topWorld)
+    {
+        Camera cam = Camera.main;
+        if (cam == null)
+        {
+            bottomWorld = transform.position + Vector3.down * 8f;
+            topWorld = transform.position + Vector3.up * 8f;
+            return false;
+        }
+
+        float vx = (screenSide < 0) ? screenEdgeMarginX : (1f - screenEdgeMarginX);
+        float zDist = Mathf.Abs(cam.transform.position.z);
+
+        bottomWorld = cam.ViewportToWorldPoint(new Vector3(vx, screenEdgeMarginY, zDist));
+        topWorld = cam.ViewportToWorldPoint(new Vector3(vx, 1f - screenEdgeMarginY, zDist));
+        bottomWorld.z = 0f;
+        topWorld.z = 0f;
+        return true;
+    }
+
+    public void InitializePosition()
+    {
+        EnsureDirectionLine();
+
+        if (useScreenSideVerticalPatrol)
+        {
+            verticalPatrolProgress = Mathf.Clamp01(initialVerticalProgress);
+            movingUp = startMovingUp;
+
+            TryGetScreenSideEndpoints(out Vector3 bottomWorld, out Vector3 topWorld);
+            transform.position = Vector3.Lerp(bottomWorld, topWorld, verticalPatrolProgress);
+
+            if (directionLine != null && directionLine.enabled)
+            {
+                directionLine.SetPosition(0, bottomWorld);
+                directionLine.SetPosition(1, topWorld);
+            }
+            return;
+        }
+
+        startPos = transform.position;
+        // moveDirectionを正規化して使用
+        endPos = startPos + (moveDirection.normalized * moveDistance);
+        movingToEnd = true;
+        moveProgress = 0f;
+
+        if (directionLine != null && directionLine.enabled)
+        {
+            directionLine.SetPosition(0, startPos);
+            directionLine.SetPosition(1, endPos);
         }
     }
 
@@ -133,6 +210,44 @@ public class CirculatorEnemy : _Health_Base, IAlphaPoolable
 
     private void HandleMovement()
     {
+        if (useScreenSideVerticalPatrol)
+        {
+            if (moveSpeed <= 0f) return;
+
+            TryGetScreenSideEndpoints(out Vector3 bottomWorld, out Vector3 topWorld);
+            float span = Mathf.Max(0.1f, Vector2.Distance(bottomWorld, topWorld));
+            float deltaProgress = (moveSpeed * Time.deltaTime) / span;
+
+            if (movingUp)
+            {
+                verticalPatrolProgress += deltaProgress;
+                if (verticalPatrolProgress >= 1f)
+                {
+                    verticalPatrolProgress = 1f - (verticalPatrolProgress - 1f);
+                    movingUp = false;
+                }
+            }
+            else
+            {
+                verticalPatrolProgress -= deltaProgress;
+                if (verticalPatrolProgress <= 0f)
+                {
+                    verticalPatrolProgress = -verticalPatrolProgress;
+                    movingUp = true;
+                }
+            }
+
+            verticalPatrolProgress = Mathf.Clamp01(verticalPatrolProgress);
+            transform.position = Vector3.Lerp(bottomWorld, topWorld, verticalPatrolProgress);
+
+            if (directionLine != null && directionLine.enabled)
+            {
+                directionLine.SetPosition(0, bottomWorld);
+                directionLine.SetPosition(1, topWorld);
+            }
+            return;
+        }
+
         if (moveDistance <= 0 || moveSpeed <= 0) return;
 
         // Ping-Pong移動の進行度を更新

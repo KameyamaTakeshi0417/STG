@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -35,11 +35,12 @@ namespace Alpha.UI
                 if (val < 0)
                 {
                     prefix = ""; // マイナスの場合はval自身に「-」がつくためプレフィックスを消す
-                    tmp.color = Color.red;
+                    tmp.color = new Color(0.72f, 0.22f, 0.24f, 1f); // 椿の深紅（被ダメージ）
                 }
                 else
                 {
                     prefix = "+";
+                    tmp.color = new Color(0.32f, 0.72f, 0.53f, 1f); // 蓮の翡翠色（回復・増加）
                 }
             }
         }

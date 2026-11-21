@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
@@ -159,8 +159,9 @@ namespace Alpha.UI.ADV
             dialogBoxPanel = new GameObject("DialogBox");
             dialogBoxPanel.transform.SetParent(canvasObj.transform, false);
             Image dialogImage = dialogBoxPanel.AddComponent<Image>();
-            dialogImage.color = new Color(0, 0, 0, 0.8f);
+            dialogImage.color = new Color(0.040f, 0.055f, 0.048f, 0.94f);
             RectTransform dialogRect = dialogBoxPanel.GetComponent<RectTransform>();
+            AddCornerAccents(dialogRect, new Color(0.80f, 0.68f, 0.44f, 0.85f), 18f, 1.5f);
             dialogRect.anchorMin = new Vector2(0.1f, 0.05f);
             dialogRect.anchorMax = new Vector2(0.9f, 0.3f);
             dialogRect.pivot = new Vector2(0.5f, 0);
@@ -172,8 +173,8 @@ namespace Alpha.UI.ADV
             nameObj.transform.SetParent(dialogBoxPanel.transform, false);
             nameText = nameObj.AddComponent<TextMeshProUGUI>();
             if (advFontAsset != null) nameText.font = advFontAsset;
-            nameText.fontSize = 48;
-            nameText.color = Color.yellow;
+            nameText.fontSize = 38;
+            nameText.color = new Color(0.80f, 0.68f, 0.44f, 1.0f);
             nameText.fontStyle = FontStyles.Bold;
             nameText.overflowMode = TextOverflowModes.Overflow;
             RectTransform nameRect = nameObj.GetComponent<RectTransform>();
@@ -187,8 +188,9 @@ namespace Alpha.UI.ADV
             textObj.transform.SetParent(dialogBoxPanel.transform, false);
             dialogText = textObj.AddComponent<TextMeshProUGUI>();
             if (advFontAsset != null) dialogText.font = advFontAsset;
-            dialogText.fontSize = 36;
-            dialogText.color = Color.white;
+            dialogText.fontSize = 30;
+            dialogText.lineSpacing = 14f;
+            dialogText.color = new Color(0.93f, 0.91f, 0.86f, 1.0f);
             dialogText.overflowMode = TextOverflowModes.Overflow;
             RectTransform textRect = textObj.GetComponent<RectTransform>();
             textRect.anchorMin = new Vector2(0.05f, 0.1f);
@@ -200,7 +202,8 @@ namespace Alpha.UI.ADV
             GameObject skipObj = new GameObject("SkipButton");
             skipObj.transform.SetParent(canvasObj.transform, false);
             Image skipBg = skipObj.AddComponent<Image>();
-            skipBg.color = new Color(0.2f, 0.2f, 0.2f, 0.8f);
+            skipBg.color = new Color(0.08f, 0.12f, 0.10f, 0.85f);
+            AddCornerAccents(skipObj.GetComponent<RectTransform>(), new Color(0.55f, 0.46f, 0.32f, 0.7f), 10f, 1f);
             skipButton = skipObj.AddComponent<Button>();
             skipButton.onClick.AddListener(SkipADV);
             
@@ -208,7 +211,8 @@ namespace Alpha.UI.ADV
             skipTextObj.transform.SetParent(skipObj.transform, false);
             TextMeshProUGUI skipTxt = skipTextObj.AddComponent<TextMeshProUGUI>();
             if (advFontAsset != null) skipTxt.font = advFontAsset;
-            skipTxt.text = "Skip";
+            skipTxt.text = "Skip ▶";
+            skipTxt.color = new Color(0.93f, 0.91f, 0.86f, 1.0f);
             skipTxt.fontSize = skipButtonFontSize;
             skipTxt.alignment = TextAlignmentOptions.Center;
             skipTxt.color = Color.white;
@@ -506,6 +510,54 @@ namespace Alpha.UI.ADV
             var callback = onCompleteCallback;
             onCompleteCallback = null;
             callback?.Invoke();
+        }
+
+        private static void AddCornerAccents(RectTransform targetParent, Color color, float size = 14f, float thickness = 1.5f)
+        {
+            if (targetParent == null) return;
+            CreateSingleCorner(targetParent, "Corner_TL", new Vector2(0f, 1f), color, size, thickness);
+            CreateSingleCorner(targetParent, "Corner_TR", new Vector2(1f, 1f), color, size, thickness);
+            CreateSingleCorner(targetParent, "Corner_BL", new Vector2(0f, 0f), color, size, thickness);
+            CreateSingleCorner(targetParent, "Corner_BR", new Vector2(1f, 0f), color, size, thickness);
+        }
+
+        private static void CreateSingleCorner(RectTransform parent, string name, Vector2 anchor, Color color, float size, float thickness)
+        {
+            GameObject cornerGO = new GameObject(name, typeof(RectTransform));
+            cornerGO.transform.SetParent(parent, false);
+            cornerGO.layer = 5;
+            RectTransform crt = cornerGO.GetComponent<RectTransform>();
+            crt.anchorMin = anchor;
+            crt.anchorMax = anchor;
+            crt.pivot = anchor;
+            crt.sizeDelta = new Vector2(size, size);
+            crt.anchoredPosition = Vector2.zero;
+
+            GameObject hGO = new GameObject("H", typeof(RectTransform));
+            hGO.transform.SetParent(cornerGO.transform, false);
+            hGO.layer = 5;
+            RectTransform hrt = hGO.GetComponent<RectTransform>();
+            hrt.anchorMin = anchor;
+            hrt.anchorMax = anchor;
+            hrt.pivot = anchor;
+            hrt.sizeDelta = new Vector2(size, thickness);
+            hrt.anchoredPosition = Vector2.zero;
+            Image hImg = hGO.AddComponent<Image>();
+            hImg.color = color;
+            hImg.raycastTarget = false;
+
+            GameObject vGO = new GameObject("V", typeof(RectTransform));
+            vGO.transform.SetParent(cornerGO.transform, false);
+            vGO.layer = 5;
+            RectTransform vrt = vGO.GetComponent<RectTransform>();
+            vrt.anchorMin = anchor;
+            vrt.anchorMax = anchor;
+            vrt.pivot = anchor;
+            vrt.sizeDelta = new Vector2(thickness, size);
+            vrt.anchoredPosition = Vector2.zero;
+            Image vImg = vGO.AddComponent<Image>();
+            vImg.color = color;
+            vImg.raycastTarget = false;
         }
     }
 }

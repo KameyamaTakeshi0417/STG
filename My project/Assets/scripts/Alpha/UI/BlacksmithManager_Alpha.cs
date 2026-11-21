@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -153,7 +153,7 @@ namespace Alpha.UI
                 spawnedSkillButtons.Add(obj);
 
                 var texts = obj.GetComponentsInChildren<TextMeshProUGUI>();
-                if (texts.Length > 0) texts[0].text = effectSO.effectName + "\n<color=#FFD700>Cost: " + effectSO.price + " エーテル</color>";
+                if (texts.Length > 0) texts[0].text = effectSO.effectName + "\n<color=#ccad70>Cost: " + effectSO.price + " エーテル</color>";
 
                 Button btn = obj.GetComponent<Button>();
                 if (btn != null)
@@ -199,7 +199,7 @@ namespace Alpha.UI
                 spawnedPartButtons.Add(obj);
 
                 var texts = obj.GetComponentsInChildren<TextMeshProUGUI>();
-                if (texts.Length > 0) texts[0].text = partInstance.series.seriesName + " (" + partInstance.partType.ToString() + ")\n<size=80%>Quality: " + partInstance.quality + "</size>\n<color=#FFD700>Cost: " + price + " エーテル</color>";
+                if (texts.Length > 0) texts[0].text = partInstance.series.seriesName + " (" + partInstance.partType.ToString() + ")\n<size=80%>Quality: " + partInstance.quality + "</size>\n<color=#ccad70>Cost: " + price + " エーテル</color>";
 
                 Image iconImg = null;
                 foreach (var img in obj.GetComponentsInChildren<Image>(true))

@@ -85,7 +85,15 @@ namespace Alpha.Data
         // --- 追加爆発エフェクト ---
         Explosion_OnFire,          // 発射時前方爆発
         Explosion_OnFlight,        // 航行時定期爆発
-        Explosion_OnHit            // 着弾時巨大爆発
+        Explosion_OnHit,           // 着弾時巨大爆発
+
+        // --- 弾サイズ ---
+        BulletSize,                // 弾サイズ拡大
+        BulletSizeDebuff,          // 弾サイズ縮小（デバフ）
+        
+        // --- 特殊シナジー（サイズ連動） ---
+        SnowballSizeToSpeed,       // スノーボール：弾の大きさがわずかに弾速にも影響する
+        SniperSpeedBoost           // スナイパー：弾が小さいほど弾速が上がる（音速ヴェイパー軌道）
     }
 
     [CreateAssetMenu(fileName = "NewWeaponEffect", menuName = "Alpha/Weapon Effect")]
@@ -145,6 +153,7 @@ namespace Alpha.Data
                    effectType == WeaponEffectType_Alpha.DefenseMultiplierMinus ||
                    effectType == WeaponEffectType_Alpha.BulletSpeedDebuff ||
                    effectType == WeaponEffectType_Alpha.BulletLifeDebuff ||
+                   effectType == WeaponEffectType_Alpha.BulletSizeDebuff ||
                    effectType == WeaponEffectType_Alpha.ReloadSpeedMinus;
         }
 

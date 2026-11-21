@@ -19,6 +19,22 @@ public class SummonPointData
 
     [Tooltip("サーキュレーターの移動距離(PingPongの幅)を、エネミーからプレイヤーまでの距離と同じにするか")]
     public bool matchPlayerDistance = true;
+
+    [Header("Screen Side Vertical Patrol")]
+    [Tooltip("ONにすると画面の左端または右端に沿って上下に動き続けます")]
+    public bool useScreenSideVerticalPatrol = false;
+    [Tooltip("配置する画面端（-1: 左端, +1: 右端）")]
+    public int screenSide = -1;
+    [Tooltip("左右の画面端からの内側マージン（Viewport比率）")]
+    public float screenEdgeMarginX = 0.08f;
+    [Tooltip("上下の画面端からの内側マージン（Viewport比率）")]
+    public float screenEdgeMarginY = 0.15f;
+    [Tooltip("上下往復時の移動速度（0以下でプレハブのmoveSpeedを使用）")]
+    public float screenPatrolSpeed = 8f;
+    [Tooltip("初期Y進行度（0=下端, 0.5=中央, 1=上端）")]
+    [Range(0f, 1f)] public float initialVerticalProgress = 0.5f;
+    [Tooltip("初期の移動方向（true=上方向へ, false=下方向へ）")]
+    public bool startMovingUp = true;
 }
 
 [CreateAssetMenu(fileName = "New Summon Behavior", menuName = "EnemyAI/Behaviors/Summon")]
@@ -87,19 +103,36 @@ public class Behavior_Summon : EnemyBehaviorData_Base
                     {
                         // 常に絶対値に符号を掛けることで確実に向きを設定
                         circulator.angularSpeed = Mathf.Abs(circulator.angularSpeed) * Mathf.Sign(point.rotationDirection == 0 ? 1 : point.rotationDirection);
-                        
-                        // 移動方向をプレイヤーとのベクトルに平行にする
-                        if (point.moveParallelToPlayerVector)
-                        {
-                            circulator.moveDirection = toPlayer;
-                            
-                            // プレイヤーまでの距離を取得して移動距離を上書きする
-                            if (point.matchPlayerDistance)
-                            {
-                                circulator.moveDistance = Vector3.Distance(ai.transform.position, playerPos);
-                            }
 
-                            circulator.InitializePosition(); // 方向や距離を変えたので再計算させる
+                        if (point.useScreenSideVerticalPatrol)
+                        {
+                            // 画面の左端または右端に沿って上下に動き続けるモードを設定
+                            circulator.ConfigureScreenSidePatrol(
+                                point.screenSide,
+                                point.screenEdgeMarginX,
+                                point.screenEdgeMarginY,
+                                point.screenPatrolSpeed,
+                                point.initialVerticalProgress,
+                                point.startMovingUp
+                            );
+                        }
+                        else
+                        {
+                            circulator.useScreenSideVerticalPatrol = false;
+
+                            // 移動方向をプレイヤーとのベクトルに平行にする
+                            if (point.moveParallelToPlayerVector)
+                            {
+                                circulator.moveDirection = toPlayer;
+                                
+                                // プレイヤーまでの距離を取得して移動距離を上書きする
+                                if (point.matchPlayerDistance)
+                                {
+                                    circulator.moveDistance = Vector3.Distance(ai.transform.position, playerPos);
+                                }
+
+                                circulator.InitializePosition(); // 方向や距離を変えたので再計算させる
+                            }
                         }
                     }
                 }

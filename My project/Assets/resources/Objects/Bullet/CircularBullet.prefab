@@ -56,8 +56,8 @@ MonoBehaviour:
   lockedTarget: {fileID: 0}
   Objname: CircularBullet
   dmg: 0
-  Speed: 10
-  DestroyTime: 300
+  Speed: 50
+  DestroyTime: 10
   bullettype: 0
   rotate: {x: 0, y: 0, z: 0}
   rarelity: 0
@@ -70,6 +70,7 @@ MonoBehaviour:
   preventAutoDestroy: 0
   localPierceDamageReductionRate: -1
   canUseAllEffects: 0
+  soEffects: []
   AddDamageRatio: 0.3
 --- !u!212 &1074022942457827577
 SpriteRenderer:

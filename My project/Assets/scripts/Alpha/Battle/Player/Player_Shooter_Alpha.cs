@@ -41,6 +41,10 @@ public class Player_Shooter_Alpha : MonoBehaviour
     [Header("Weapon Groups")]
     public int currentWeaponGroup = 0; // 0, 1, 2 (rows in inventory)
 
+    [Header("Quick Reload Settings")]
+    public bool isQuickReloadBuffActive = false;
+    private Coroutine activeShootCoroutine = null;
+
     void Awake()
     {
         playerTransform = GameObject.FindWithTag("Player").transform;
@@ -64,22 +68,30 @@ public class Player_Shooter_Alpha : MonoBehaviour
         if (Time.timeScale == 0f || isPaused || (Alpha.UI.PauseMenuManager_Alpha.Instance != null && Alpha.UI.PauseMenuManager_Alpha.Instance.IsPaused))
             return;
 
-        // 豁ｦ蝎ｨ繧ｰ繝ｫ繝ｼ繝励・繝ｫ繝ｼ繝怜・繧頑崛縺・
-        if (Alpha.Managers.PlayerInputManager_Alpha.Instance.WasWeaponPrevPressed || Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
+        // 武器グループ切り替え（1, 2, 3キー直接指定、および Prev / Next 入力）
+        if (Alpha.Managers.PlayerInputManager_Alpha.Instance.WasWeaponPrevPressed)
         {
-            currentWeaponGroup--;
-            if (currentWeaponGroup < 0) currentWeaponGroup = 2;
-            Debug.Log("Switched weapon group.");
-            if (playerStatusScript != null) playerStatusScript.UpdateEquipmentBuffs();
-            PlayWeaponSwitchSE();
+            int prevGroup = currentWeaponGroup - 1;
+            if (prevGroup < 0) prevGroup = 2;
+            TriggerWeaponSwitch(prevGroup);
         }
-        else if (Alpha.Managers.PlayerInputManager_Alpha.Instance.WasWeaponNextPressed || Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3))
+        else if (Alpha.Managers.PlayerInputManager_Alpha.Instance.WasWeaponNextPressed)
         {
-            currentWeaponGroup++;
-            if (currentWeaponGroup > 2) currentWeaponGroup = 0;
-            Debug.Log("Switched weapon group.");
-            if (playerStatusScript != null) playerStatusScript.UpdateEquipmentBuffs();
-            PlayWeaponSwitchSE();
+            int nextGroup = currentWeaponGroup + 1;
+            if (nextGroup > 2) nextGroup = 0;
+            TriggerWeaponSwitch(nextGroup);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
+        {
+            TriggerWeaponSwitch(0);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2))
+        {
+            TriggerWeaponSwitch(1);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3))
+        {
+            TriggerWeaponSwitch(2);
         }
 
         // --- アクティブスキルの発動判定 ---
@@ -121,19 +133,50 @@ public class Player_Shooter_Alpha : MonoBehaviour
         watch = direction;
         float angle = Mathf.Atan2(watch.y, watch.x) * Mathf.Rad2Deg;
 
-        // 蠑ｾ縺ｮ逋ｺ蟆・愛螳・
+        // 弾の発射判定
         if (Time.timeScale != 0f && (Alpha.Managers.PlayerInputManager_Alpha.Instance.IsFiring && !onCoolTime))
         {
             onCoolTime = true;
-            StartCoroutine(ShootAndCooldownRoutine());
+            activeShootCoroutine = StartCoroutine(ShootAndCooldownRoutine());
         }
+    }
+
+    private void TriggerWeaponSwitch(int newGroup)
+    {
+        currentWeaponGroup = newGroup;
+        if (playerStatusScript != null) playerStatusScript.UpdateEquipmentBuffs();
+
+        // クイックリロード発動：クールタイムを即座にリセットし、次バーストの初弾を1.5倍に強化
+        if (activeShootCoroutine != null)
+        {
+            StopCoroutine(activeShootCoroutine);
+            activeShootCoroutine = null;
+        }
+        onCoolTime = false;
+        isQuickReloadBuffActive = true;
+
+        PlayWeaponSwitchSE();
+
+        // クイックリロード発動演出（プレイヤー位置に光粒スパーク）
+        if (Alpha.Core.ProceduralJuiceManager_Alpha.Instance != null && playerTransform != null)
+        {
+            Alpha.Core.ProceduralJuiceManager_Alpha.Instance.SpawnHitSparks(playerTransform.position, new Color(0.3f, 0.95f, 1f), 6);
+        }
+
+        // 統計記録
+        if (Alpha.Result.RunStatsTracker_Alpha.Instance != null)
+        {
+            Alpha.Result.RunStatsTracker_Alpha.Instance.RecordQuickReload();
+        }
+
+        Debug.Log($"[Quick Reload] Switched to weapon group {currentWeaponGroup}. Cooltime reset & Next burst 1.5x!");
     }
 
     private IEnumerator ShootAndCooldownRoutine()
     {
         if (playerStatusScript == null) playerStatusScript = playerStatusManager_Alpha.Instance;
         int burstCount = playerStatusScript != null ? Mathf.Max(1, playerStatusScript.burstCount) : 1;
-        float burstInterval = 0.05f; // 郢晢ｽｦ郢晢ｽｼ郢ｧ・ｶ郢晢ｽｼ髫補扱謔咲ｸｺ・ｫ郢ｧ蛹ｻ・・.1驕伜・竏ｪ邵ｺ貅倥・2-3郢晁ｼ釆樒ｹ晢ｽｼ郢晢ｿｽ驕槫唱・ｺ・ｦ邵ｺ・ｮ驕擾ｽｭ邵ｺ繝ｻ菫｣鬮ｫ繝ｻ
+        float burstInterval = 0.05f;
 
         for (int i = 0; i < burstCount; i++)
         {
@@ -145,14 +188,15 @@ public class Player_Shooter_Alpha : MonoBehaviour
             }
         }
 
-        // 郢晁・繝ｻ郢ｧ・ｹ郢晁ご蛹ｱ陝・・・ｵ繧・ｽｺ繝ｻ・ｾ蠕娯・郢ｧ・ｯ郢晢ｽｼ郢晢ｽｫ郢ｧ・ｿ郢ｧ・､郢晢ｿｽ繝ｻ蛹ｻﾎ懃ｹ晢ｽｭ郢晢ｽｼ郢昜ｼ夲ｽｼ蟲ｨ・帝ｫ｢蜿･・ｧ荵昶・郢ｧ繝ｻ
-        // 陜難ｽｺ雋・じ繝ｻ騾具ｽｺ陝・・菫｣鬮ｫ譁撰ｽ・.8驕伜・竊馴坎・ｭ陞ｳ繝ｻ
+        // 1バーストの発射が完了したらクイックリロードバフを終了
+        isQuickReloadBuffActive = false;
+
         float baseInterval = 0.8f;
-        // 鬮｢・｢隰ｨ・ｰ邵ｺ・ｮ陋溷調邏ｫ郢ｧ蟶昶・騾包ｽｨ (關薙・ BulletSpanMag邵ｺ繝ｻ00邵ｺ・ｮ陜｣・ｴ陷ｷ蛹ｻ繝ｻ1陋滄亂ﾂ€繝ｻ0邵ｺ・ｮ陜｣・ｴ陷ｷ蛹ｻ繝ｻ0.5陋溘・
         float targetInterval = baseInterval * (playerStatusScript != null ? playerStatusScript.BulletSpanMag * 0.01f : 1f);
         
         yield return new WaitForSecondsRealtime(targetInterval);
         onCoolTime = false;
+        activeShootCoroutine = null;
     }
 
     public void SetPaused(bool paused)
@@ -761,7 +805,24 @@ public class Player_Shooter_Alpha : MonoBehaviour
             float baseBulletSpeed = playerStatusScript.bulletSpeed * playerStatusScript.bulletSpeedMag * 1.5f * (originalSpeed * 0.01f);
             baseBulletSpeed *= (1f + bulletChangeMultiplier);
             
-            bulletScript.setStatus(spawnDir, baseBulletSpeed, finalDamage);
+            float finalDmgToUse = finalDamage;
+            float bulletSpeedToUse = baseBulletSpeed;
+            float bulletSizeToUse = playerStatusScript != null ? playerStatusScript.bulletSizeMag : 1.0f;
+
+            // クイックリロード（アクティブ武器切替直後）：威力1.5倍、弾速1.5倍、サイズ1.5倍
+            if (isQuickReloadBuffActive)
+            {
+                finalDmgToUse *= 1.5f;
+                bulletSpeedToUse *= 1.5f;
+                bulletSizeToUse = Mathf.Min(6.0f, bulletSizeToUse * 1.5f);
+            }
+
+            bulletScript.setStatus(spawnDir, bulletSpeedToUse, finalDmgToUse);
+            bulletScript.SetBulletScaleMultiplier(bulletSizeToUse);
+            if (Alpha.Result.RunStatsTracker_Alpha.Instance != null)
+            {
+                Alpha.Result.RunStatsTracker_Alpha.Instance.RecordBulletSize(bulletSizeToUse);
+            }
             bulletScript.DestroyTime = originalDestroyTime * playerStatusScript.bulletLifeMag * (1f + bulletChangeMultiplier);
 
             if (playerStatusScript != null && playerStatusScript.ignorePierceDecay)

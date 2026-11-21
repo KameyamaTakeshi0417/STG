@@ -24,6 +24,16 @@ public class Health : _Health_Base
     [Tooltip("撃破時のヒットストップサイズ（Auto時は mob1/TutorialFirstEnemy/SwarmMob→小、mob4-6→大、その他→中。インスペクターで個別変更可能）")]
     public MobKillHitStopSize killHitStopSize = MobKillHitStopSize.Auto;
 
+    [Header("Defeat Audio Settings")]
+    [Tooltip("雑魚敵撃破時のSE（未設定時は重め・大きめデフォルトの Resources/SE/SE_Mob_Defeat_Heavy を使用）")]
+    public AudioClip defeatSEClip;
+    [Range(0f, 1.5f)]
+    public float defeatSEVolume = 1.0f;
+
+    private static float lastGlobalDefeatSoundTime = -1f;
+    private const float MinGlobalDefeatSoundInterval = 0.035f;
+    private static AudioClip cachedMobDefeatSEClip = null;
+
     [Header("Flee Settings")]
     public bool canFlee = true;
     public float fleeTimeLimit = 10f;
@@ -404,16 +414,60 @@ public class Health : _Health_Base
         return (int)MobKillHitStopSize.Medium;
     }
 
+    protected void PlayMobDefeatSound(int hitStopLevel)
+    {
+        if (Time.unscaledTime - lastGlobalDefeatSoundTime < MinGlobalDefeatSoundInterval) return;
+        lastGlobalDefeatSoundTime = Time.unscaledTime;
+
+        AudioClip clip = defeatSEClip;
+        if (clip == null)
+        {
+            if (cachedMobDefeatSEClip == null)
+            {
+                cachedMobDefeatSEClip = Resources.Load<AudioClip>("SE/SE_Mob_Defeat_Heavy");
+            }
+            clip = cachedMobDefeatSEClip;
+        }
+
+        if (clip != null && Alpha.Audio.SoundManager_Alpha.Instance != null)
+        {
+            float pitch;
+            float volMult;
+            switch (hitStopLevel)
+            {
+                case 1: // Small (mob1, TutorialFirstEnemy, SwarmMob)
+                    pitch = Random.Range(1.02f, 1.12f);
+                    volMult = 0.88f;
+                    break;
+                case 3: // Large (mob4-6 強敵)
+                    pitch = Random.Range(0.76f, 0.85f);
+                    volMult = 1.18f;
+                    break;
+                default: // Medium (mob2, mob3 標準の重め＆大きめ)
+                    pitch = Random.Range(0.92f, 1.02f);
+                    volMult = 1.0f;
+                    break;
+            }
+            Alpha.Audio.SoundManager_Alpha.Instance.PlaySE(clip, defeatSEVolume * volMult, pitch);
+        }
+    }
+
     // HPが0になった時の処理
     protected virtual void Die()
     {
         // 共通のドロップ処理（経験値、オーブ、花弁）を呼び出す
         DropEnemyRewards();
 
-        // 雑魚敵撃破時のヒットストップを発動（ボス・中ボスは専用の撃破シネマティックを使用）
-        if (!isBoss && !isMidBoss && Alpha.Core.ProceduralJuiceManager_Alpha.Instance != null)
+        // 雑魚敵撃破時の重めSE＆ヒットストップを発動（ボス・中ボスは専用の撃破シネマティックを使用）
+        if (!isBoss && !isMidBoss)
         {
-            Alpha.Core.ProceduralJuiceManager_Alpha.Instance.TriggerMobKillHitStop(ResolveKillHitStopLevel());
+            int hitStopLevel = ResolveKillHitStopLevel();
+            PlayMobDefeatSound(hitStopLevel);
+
+            if (Alpha.Core.ProceduralJuiceManager_Alpha.Instance != null)
+            {
+                Alpha.Core.ProceduralJuiceManager_Alpha.Instance.TriggerMobKillHitStop(hitStopLevel);
+            }
         }
 
         // 追従している体力バーCanvasを即座に破棄
@@ -465,7 +519,24 @@ public class Health : _Health_Base
             }
             else
             {
-                Alpha.Flow.RewardManager_Alpha.Instance.AddPoints(rewardPoints);
+                int pointsToGive = rewardPoints;
+                var escapeComp = GetComponent<Alpha.Enemy.EnemyEscape_Alpha>();
+                if (escapeComp != null && escapeComp.IsNearEscape)
+                {
+                    pointsToGive = Mathf.RoundToInt(rewardPoints * 1.5f);
+                    Debug.Log($"[Escape Bonus] Just kill before escape! Points: {rewardPoints} -> {pointsToGive} (1.5x)");
+                    if (Alpha.Core.ProceduralJuiceManager_Alpha.Instance != null)
+                    {
+                        Alpha.Core.ProceduralJuiceManager_Alpha.Instance.SpawnHitSparks(transform.position, new Color(1f, 0.85f, 0.2f), 8);
+                    }
+                }
+                Alpha.Flow.RewardManager_Alpha.Instance.AddPoints(pointsToGive);
+                
+                if (Alpha.Result.RunStatsTracker_Alpha.Instance != null)
+                {
+                    bool isNear = escapeComp != null && escapeComp.IsNearEscape;
+                    Alpha.Result.RunStatsTracker_Alpha.Instance.RecordMobKill(isNear);
+                }
             }
         }
 

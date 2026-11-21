@@ -166,6 +166,77 @@ namespace Alpha.Core
             Destroy(ripple);
         }
 
+        // 1b-2. Sonic Vapor Cone (音速突破時のヴェイパーコーン／衝撃波リング演出)
+        private static Sprite cachedVaporSprite = null;
+
+        public void SpawnSonicVapor(Vector3 pos, Vector3 forwardDir, float scale = 0.6f)
+        {
+            StartCoroutine(SonicVaporRoutine(pos, forwardDir, scale));
+        }
+
+        private IEnumerator SonicVaporRoutine(Vector3 pos, Vector3 forwardDir, float scale)
+        {
+            if (cachedVaporSprite == null)
+            {
+                int size = 64;
+                Texture2D tex = new Texture2D(size, size);
+                Color[] pixels = new Color[size * size];
+                Vector2 center = new Vector2(size / 2f, size / 2f);
+                float radius = size / 2f - 2f;
+                float thickness = 4f;
+
+                for (int y = 0; y < size; y++)
+                {
+                    for (int x = 0; x < size; x++)
+                    {
+                        float dist = Vector2.Distance(new Vector2(x, y), center);
+                        if (dist <= radius && dist >= radius - thickness)
+                        {
+                            float factor = 1f - Mathf.Abs(dist - (radius - thickness * 0.5f)) / (thickness * 0.5f);
+                            pixels[y * size + x] = new Color(1f, 1f, 1f, factor);
+                        }
+                        else
+                        {
+                            pixels[y * size + x] = Color.clear;
+                        }
+                    }
+                }
+                tex.SetPixels(pixels);
+                tex.Apply();
+                cachedVaporSprite = Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), 100f);
+            }
+
+            GameObject vapor = new GameObject("SonicVapor");
+            vapor.transform.position = pos;
+            float angle = Mathf.Atan2(forwardDir.y, forwardDir.x) * Mathf.Rad2Deg;
+            vapor.transform.rotation = Quaternion.Euler(0, 0, angle + 90f);
+            vapor.transform.localScale = new Vector3(scale * 0.4f, scale * 1.0f, 1f);
+
+            SpriteRenderer sr = vapor.AddComponent<SpriteRenderer>();
+            sr.material = defaultSpriteMaterial;
+            sr.sprite = cachedVaporSprite;
+            sr.color = new Color(0.9f, 0.98f, 1f, 0.85f);
+            sr.sortingOrder = 95;
+
+            float duration = 0.16f;
+            float elapsed = 0f;
+            Vector3 startScale = vapor.transform.localScale;
+            Vector3 endScale = new Vector3(scale * 1.8f, scale * 2.5f, 1f);
+
+            while (elapsed < duration)
+            {
+                elapsed += Time.deltaTime;
+                float t = elapsed / duration;
+                if (vapor == null) yield break;
+
+                vapor.transform.localScale = Vector3.Lerp(startScale, endScale, t);
+                sr.color = new Color(0.85f, 0.95f, 1f, Mathf.Lerp(0.85f, 0f, t * t));
+                yield return null;
+            }
+
+            if (vapor != null) Destroy(vapor);
+        }
+
         // 1c. Boss Explosion Sequence
         public void SpawnBossExplosionSequence(Vector3 bossCenter, float radius, float duration)
         {

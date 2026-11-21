@@ -74,8 +74,8 @@ namespace Alpha.UI
         [Range(0f, 1f)] public float tabSwitchSEVolume = 0.8f;
 
         [Header("Tab Visual Settings")]
-        public Color activeTabColor = new Color(0.2f, 0.8f, 0.3f, 1.0f);
-        public Color inactiveTabColor = Color.white;
+        public Color activeTabColor = new Color(0.80f, 0.68f, 0.44f, 1.0f);   // アンティーク真鍮
+        public Color inactiveTabColor = new Color(0.68f, 0.68f, 0.64f, 0.85f); // 淡い象牙色
 
         [Header("State (Read Only)")]
         public int currentTabIndex = 0;
@@ -219,7 +219,7 @@ namespace Alpha.UI
                 tabs.Add(new PauseTabEntry
                 {
                     tabType = TabType.Settings,
-                    tabName = "設定 (Settings)",
+                    tabName = "環境調律 (Settings)",
                     tabButton = settingsTabButton,
                     tabContentPanel = settingsPanel,
                     directShortcutKey = KeyCode.Alpha2
@@ -231,7 +231,7 @@ namespace Alpha.UI
                     tabs.Add(new PauseTabEntry
                     {
                         tabType = TabType.Controls,
-                        tabName = "ライブラリ (Library)",
+                        tabName = "神格目録 (Library)",
                         tabButton = controlsTabButton,
                         tabContentPanel = controlsPanel,
                         directShortcutKey = KeyCode.Alpha3
@@ -242,7 +242,7 @@ namespace Alpha.UI
                 tabs.Add(new PauseTabEntry
                 {
                     tabType = TabType.QuitToTitle,
-                    tabName = "タイトルへ (Title)",
+                    tabName = "帰還 (Title)",
                     tabButton = quitTabButton,
                     tabContentPanel = quitConfirmPanel,
                     directShortcutKey = KeyCode.Alpha4
@@ -255,7 +255,7 @@ namespace Alpha.UI
                 int index = i;
                 if (tabs[index].tabType == TabType.Controls)
                 {
-                    tabs[index].tabName = "ライブラリ (Library)";
+                    tabs[index].tabName = "神格目録 (Library)";
                 }
 
                 if (tabs[index].tabButton != null)
@@ -755,9 +755,10 @@ namespace Alpha.UI
             GraphicRaycaster gr = panelGO.AddComponent<GraphicRaycaster>();
             gr.ignoreReversedGraphics = true;
 
-            // 背景イメージ
+            // 背景イメージ（深森墨黒・すりガラス調）
             Image bg = panelGO.AddComponent<Image>();
-            bg.color = new Color(0.08f, 0.08f, 0.12f, 0.96f);
+            bg.color = new Color(0.040f, 0.055f, 0.048f, 0.96f);
+            AddCornerAccents(panelGO.GetComponent<RectTransform>(), new Color(0.55f, 0.46f, 0.32f, 0.65f), 18f, 1.5f);
 
             // Vertical Layout Group
             VerticalLayoutGroup vlg = panelGO.AddComponent<VerticalLayoutGroup>();
@@ -768,8 +769,8 @@ namespace Alpha.UI
             vlg.childForceExpandWidth = true;
             vlg.childForceExpandHeight = false;
 
-            // タイトルヘッダー
-            CreateTextRow(panelGO.transform, "SETTINGS", 32, FontStyles.Bold, TextAlignmentOptions.Center, 44f);
+            // タイトルヘッダー（アンティーク真鍮）
+            CreateTextRow(panelGO.transform, "<size=65%><color=#8c7552>ENVIRONMENT // </color></size>環境調律", 28, FontStyles.Bold, TextAlignmentOptions.Center, 44f);
 
             // OptionsUI_Alpha コンポーネントをアタッチ
             OptionsUI_Alpha optionsUI = panelGO.AddComponent<OptionsUI_Alpha>();
@@ -830,7 +831,8 @@ namespace Alpha.UI
             gr.ignoreReversedGraphics = true;
 
             Image bg = panelGO.AddComponent<Image>();
-            bg.color = new Color(0.12f, 0.08f, 0.08f, 0.96f);
+            bg.color = new Color(0.05f, 0.04f, 0.04f, 0.97f);
+            AddCornerAccents(rt, new Color(0.72f, 0.22f, 0.24f, 0.8f), 16f, 1.5f);
 
             VerticalLayoutGroup vlg = panelGO.AddComponent<VerticalLayoutGroup>();
             vlg.padding = new RectOffset(30, 30, 30, 30);
@@ -840,8 +842,8 @@ namespace Alpha.UI
             vlg.childForceExpandWidth = true;
             vlg.childForceExpandHeight = false;
 
-            CreateTextRow(panelGO.transform, "タイトルに戻りますか？", 26, FontStyles.Bold, TextAlignmentOptions.Center, 36f);
-            CreateTextRow(panelGO.transform, "※オートセーブされた直近のチェックポイントまで戻ります", 16, FontStyles.Normal, TextAlignmentOptions.Center, 24f);
+            CreateTextRow(panelGO.transform, "タイトル（拠点）へ帰還しますか？", 24, FontStyles.Bold, TextAlignmentOptions.Center, 36f);
+            CreateTextRow(panelGO.transform, "※オートセーブされた直近の記録条項まで戻ります", 15, FontStyles.Normal, TextAlignmentOptions.Center, 24f);
 
             // ボタン配置用 HorizontalLayout
             GameObject btnRow = new GameObject("Buttons", typeof(RectTransform));
@@ -858,10 +860,10 @@ namespace Alpha.UI
             hlg.childForceExpandWidth = true;
             hlg.childForceExpandHeight = true;
 
-            var yesBtn = CreateSimpleButton(btnRow.transform, "タイトルへ戻る", new Color(0.7f, 0.2f, 0.2f, 1f));
+            var yesBtn = CreateSimpleButton(btnRow.transform, "タイトルへ帰還", new Color(0.72f, 0.22f, 0.24f, 1f));
             yesBtn.onClick.AddListener(OnQuitToTitleDirect);
 
-            var noBtn = CreateSimpleButton(btnRow.transform, "キャンセル", new Color(0.3f, 0.3f, 0.35f, 1f));
+            var noBtn = CreateSimpleButton(btnRow.transform, "交戦を継続", new Color(0.14f, 0.21f, 0.17f, 0.95f));
             noBtn.onClick.AddListener(() => SwitchTab(0)); // 装備タブへ戻る
 
             SetLayerRecursively(panelGO, 5); // 5: UI
@@ -927,19 +929,19 @@ namespace Alpha.UI
             slider.minValue = 0f;
             slider.maxValue = 1f;
 
-            // 1. スライダー背景トラック
+            // 1. スライダー背景トラック（深森苔色）
             GameObject bgGO = new GameObject("Background", typeof(RectTransform));
             bgGO.transform.SetParent(sliderGO.transform, false);
             bgGO.layer = 5;
             Image bgImg = bgGO.AddComponent<Image>();
-            bgImg.color = new Color(0.18f, 0.20f, 0.25f, 1f);
+            bgImg.color = new Color(0.08f, 0.12f, 0.10f, 0.90f);
             RectTransform bgRT = bgGO.GetComponent<RectTransform>();
             bgRT.anchorMin = new Vector2(0f, 0.25f);
             bgRT.anchorMax = new Vector2(1f, 0.75f);
             bgRT.offsetMin = Vector2.zero;
             bgRT.offsetMax = Vector2.zero;
 
-            // 2. Fill Area & Fill (ゲージ満ち引き部分)
+            // 2. Fill Area & Fill (蓮の翡翠色ゲージ)
             GameObject fillAreaGO = new GameObject("Fill Area", typeof(RectTransform));
             fillAreaGO.transform.SetParent(sliderGO.transform, false);
             fillAreaGO.layer = 5;
@@ -953,7 +955,7 @@ namespace Alpha.UI
             fillGO.transform.SetParent(fillAreaGO.transform, false);
             fillGO.layer = 5;
             Image fillImg = fillGO.AddComponent<Image>();
-            fillImg.color = new Color(0.25f, 0.65f, 1.0f, 1f);
+            fillImg.color = new Color(0.32f, 0.72f, 0.53f, 1.0f);
             RectTransform fillRT = fillGO.GetComponent<RectTransform>();
             fillRT.anchorMin = Vector2.zero;
             fillRT.anchorMax = Vector2.one;
@@ -961,7 +963,7 @@ namespace Alpha.UI
 
             slider.fillRect = fillRT;
 
-            // 3. Handle Slide Area & Handle (操作つまみ)
+            // 3. Handle Slide Area & Handle (真鍮ゴールド操作つまみ)
             GameObject handleAreaGO = new GameObject("Handle Slide Area", typeof(RectTransform));
             handleAreaGO.transform.SetParent(sliderGO.transform, false);
             handleAreaGO.layer = 5;
@@ -975,15 +977,16 @@ namespace Alpha.UI
             handleGO.transform.SetParent(handleAreaGO.transform, false);
             handleGO.layer = 5;
             Image handleImg = handleGO.AddComponent<Image>();
-            handleImg.color = new Color(0.95f, 0.95f, 1.0f, 1f);
+            handleImg.color = new Color(0.80f, 0.68f, 0.44f, 1.0f);
             RectTransform handleRT = handleGO.GetComponent<RectTransform>();
-            handleRT.sizeDelta = new Vector2(20f, 24f);
+            handleRT.sizeDelta = new Vector2(18f, 22f);
 
             slider.handleRect = handleRT;
             slider.targetGraphic = handleImg;
 
-            // パーセント表示テキスト
-            valText = CreateTextRow(row.transform, "100%", 18, FontStyles.Bold, TextAlignmentOptions.MidlineLeft);
+            // パーセント表示テキスト（真鍮ゴールド）
+            valText = CreateTextRow(row.transform, "100%", 17, FontStyles.Bold, TextAlignmentOptions.MidlineLeft);
+            valText.color = new Color(0.80f, 0.68f, 0.44f, 1.0f);
             valText.rectTransform.sizeDelta = new Vector2(60, 30);
 
             return slider;
@@ -1006,17 +1009,18 @@ namespace Alpha.UI
             toggleGO.GetComponent<RectTransform>().sizeDelta = new Vector2(24, 24);
 
             Image bg = toggleGO.AddComponent<Image>();
-            bg.color = new Color(0.25f, 0.25f, 0.3f, 1f);
+            bg.color = new Color(0.08f, 0.12f, 0.10f, 0.90f);
 
             GameObject checkGO = new GameObject("Checkmark", typeof(RectTransform));
             checkGO.transform.SetParent(toggleGO.transform, false);
             checkGO.layer = 5;
             Image checkImg = checkGO.AddComponent<Image>();
-            checkImg.color = new Color(0.3f, 0.9f, 0.4f, 1f);
+            checkImg.color = new Color(0.32f, 0.72f, 0.53f, 1.0f);
             toggle.graphic = checkImg;
             checkGO.GetComponent<RectTransform>().sizeDelta = new Vector2(16, 16);
 
-            var labelTmp = CreateTextRow(row.transform, label, 18, FontStyles.Normal, TextAlignmentOptions.MidlineLeft);
+            var labelTmp = CreateTextRow(row.transform, label, 17, FontStyles.Normal, TextAlignmentOptions.MidlineLeft);
+            labelTmp.color = new Color(0.93f, 0.91f, 0.86f, 1.0f);
             labelTmp.rectTransform.sizeDelta = new Vector2(300, 30);
 
             return toggle;
@@ -1039,7 +1043,8 @@ namespace Alpha.UI
             colors.pressedColor = color * 0.8f;
             btn.colors = colors;
 
-            var txt = CreateTextRow(btnGO.transform, text, 18, FontStyles.Bold, TextAlignmentOptions.Center);
+            var txt = CreateTextRow(btnGO.transform, text, 17, FontStyles.Bold, TextAlignmentOptions.Center);
+            txt.color = new Color(0.93f, 0.91f, 0.86f, 1.0f);
             txt.rectTransform.anchorMin = Vector2.zero;
             txt.rectTransform.anchorMax = Vector2.one;
             txt.rectTransform.sizeDelta = Vector2.zero;
@@ -1059,6 +1064,64 @@ namespace Alpha.UI
                 GameSettingsManager_Alpha.Instance.SaveSettings();
             }
             SceneManager.LoadScene("Title_Alpha");
+        }
+
+        private static void AddCornerAccents(RectTransform targetParent, Color color, float size = 14f, float thickness = 1.5f)
+        {
+            if (targetParent == null) return;
+
+            for (int i = targetParent.childCount - 1; i >= 0; i--)
+            {
+                var c = targetParent.GetChild(i);
+                if (c.name.StartsWith("Corner_"))
+                {
+                    Destroy(c.gameObject);
+                }
+            }
+
+            CreateSingleCorner(targetParent, "Corner_TL", new Vector2(0f, 1f), color, size, thickness);
+            CreateSingleCorner(targetParent, "Corner_TR", new Vector2(1f, 1f), color, size, thickness);
+            CreateSingleCorner(targetParent, "Corner_BL", new Vector2(0f, 0f), color, size, thickness);
+            CreateSingleCorner(targetParent, "Corner_BR", new Vector2(1f, 0f), color, size, thickness);
+        }
+
+        private static void CreateSingleCorner(RectTransform parent, string name, Vector2 anchor, Color color, float size, float thickness)
+        {
+            GameObject cornerGO = new GameObject(name, typeof(RectTransform));
+            cornerGO.transform.SetParent(parent, false);
+            cornerGO.layer = 5;
+            RectTransform crt = cornerGO.GetComponent<RectTransform>();
+            crt.anchorMin = anchor;
+            crt.anchorMax = anchor;
+            crt.pivot = anchor;
+            crt.sizeDelta = new Vector2(size, size);
+            crt.anchoredPosition = Vector2.zero;
+
+            GameObject hGO = new GameObject("H", typeof(RectTransform));
+            hGO.transform.SetParent(cornerGO.transform, false);
+            hGO.layer = 5;
+            RectTransform hrt = hGO.GetComponent<RectTransform>();
+            hrt.anchorMin = anchor;
+            hrt.anchorMax = anchor;
+            hrt.pivot = anchor;
+            hrt.sizeDelta = new Vector2(size, thickness);
+            hrt.anchoredPosition = Vector2.zero;
+            Image hImg = hGO.AddComponent<Image>();
+            hImg.color = color;
+            hImg.raycastTarget = false;
+
+            GameObject vGO = new GameObject("V", typeof(RectTransform));
+            vGO.transform.SetParent(cornerGO.transform, false);
+            vGO.layer = 5;
+            RectTransform vrt = vGO.GetComponent<RectTransform>();
+            vrt.anchorMin = anchor;
+            vrt.anchorMax = anchor;
+            vrt.pivot = anchor;
+            vrt.sizeDelta = new Vector2(thickness, size);
+            vrt.anchoredPosition = Vector2.zero;
+            Image vImg = vGO.AddComponent<Image>();
+            vImg.color = color;
+            vImg.raycastTarget = false;
         }
     }
 }

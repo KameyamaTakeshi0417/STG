@@ -35,6 +35,15 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
     [Header("New Status Fields")]
     public float bulletLifeMag = 1.0f;
     private float baseBulletLifeMag = 1.0f;
+
+    [Tooltip("弾サイズ倍率（下限0.5倍[-50%]〜上限6.0倍[+500%]）")]
+    public float bulletSizeMag = 1.0f;
+    public float BaseBulletSizeMag => baseBulletSizeMag;
+    private float baseBulletSizeMag = 1.0f;
+
+    [Header("Size Synergy Status")]
+    public bool hasSnowballEffect = false;
+    public bool hasSniperEffect = false;
     
     public bool ignorePierceDecay = false;
     [HideInInspector] public float staminaExhaustionRecoveryBoost = 0f;
@@ -93,6 +102,8 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         baseBulletSpeedMag = bulletSpeedMag;
         baseBulletSpanMag = BulletSpanMag;
         baseBulletLifeMag = bulletLifeMag;
+        baseBulletSizeMag = bulletSizeMag > 0f ? bulletSizeMag : 1.0f;
+        bulletSizeMag = baseBulletSizeMag;
         baseExtraPierceCount = extraPierceCount;
         baseExtraShotCount = extraShotCount;
 
@@ -180,6 +191,9 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         bulletSpeedMag = baseBulletSpeedMag;
         BulletSpanMag = baseBulletSpanMag;
         bulletLifeMag = baseBulletLifeMag;
+        bulletSizeMag = baseBulletSizeMag;
+        hasSnowballEffect = false;
+        hasSniperEffect = false;
         extraPierceCount = baseExtraPierceCount;
         extraShotCount = baseExtraShotCount;
         burstCount = baseBurstCount;
@@ -212,6 +226,9 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
 
         bulletLifeMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletLife, groupToPass);
         bulletLifeMag -= inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletLifeDebuff, groupToPass);
+
+        bulletSizeMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletSize, groupToPass);
+        bulletSizeMag -= inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.BulletSizeDebuff, groupToPass);
         
         // 部位ごとの基礎バフを加算
         float additionalPower = 0f;
@@ -235,8 +252,27 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         // survivalTimeBonus は秒数加算。基本を2秒として倍率に変換 (0.5 = 25% = 0.25f)
         bulletLifeMag += (additionalSurvivalTime / 2.0f);
 
+        bulletSizeMag = Mathf.Clamp(bulletSizeMag, 0.5f, 6.0f); // 下限50%(-50%)〜上限600%(+500%)
+
+        // スノーボール効果：弾の大きさがわずかに弾速にも影響する（サイズ大 -> 弾速微増）
+        hasSnowballEffect = inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.SnowballSizeToSpeed, groupToPass) > 0f;
+        if (hasSnowballEffect && bulletSizeMag > 1.0f)
+        {
+            float sizeToSpeedBonus = (bulletSizeMag - 1.0f) * 0.2f;
+            bulletSpeedMag += sizeToSpeedBonus;
+            Debug.Log($"[Snowball Effect] Bullet size {bulletSizeMag:F2}x granted +{sizeToSpeedBonus * 100f:F1}% bullet speed!");
+        }
+
+        // スナイパー効果：弾が小さいほど弾速が上がる（サイズ小 -> 弾速大幅UP）
+        hasSniperEffect = inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.SniperSpeedBoost, groupToPass) > 0f;
+        if (hasSniperEffect && bulletSizeMag < 1.0f)
+        {
+            float smallSizeSpeedBonus = (1.0f - bulletSizeMag) * 2.0f; // 0.5倍時 +100% (2倍速)
+            bulletSpeedMag += smallSizeSpeedBonus;
+            Debug.Log($"[Sniper Effect] Small size {bulletSizeMag:F2}x granted +{smallSizeSpeedBonus * 100f:F1}% supersonic bullet speed!");
+        }
+
         bulletSpeedMag = Mathf.Max(bulletSpeedMag, 0.2f); // 下限20%
-        bulletLifeMag = Mathf.Max(bulletLifeMag, 0.5f); // 下限50%
 
 
         bool isBoss = Alpha.Flow.StageManager_Alpha.Instance != null && Alpha.Flow.StageManager_Alpha.Instance.IsBossBattleActive;
