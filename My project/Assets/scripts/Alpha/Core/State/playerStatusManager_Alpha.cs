@@ -212,8 +212,17 @@ public class playerStatusManager_Alpha : ObjectStatus_Alpha
         staminaRecoveryRate += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.StaminaRecoverySpeed, groupToPass);
         DamageAdd += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.AttackFlatPlus, groupToPass);
         DamageAdd -= inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.AttackFlatMinus, groupToPass);
-        DamageMag += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.AttackMultiplierPlus, groupToPass);
-        DamageMag -= inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.AttackMultiplierMinus, groupToPass);
+
+        float atkMultPlus = inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.AttackMultiplierPlus, groupToPass);
+        float atkMultMinus = inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.AttackMultiplierMinus, groupToPass);
+
+        // qualityValues が 0.05〜0.70 等の小数比率で定義されている場合、パーセント値（5%〜70%）に換算
+        if (atkMultPlus > 0f && atkMultPlus <= 2.0f) atkMultPlus *= 100f;
+        if (atkMultMinus > 0f && atkMultMinus <= 2.0f) atkMultMinus *= 100f;
+
+        DamageMag += atkMultPlus;
+        DamageMag -= atkMultMinus;
+        DamageMag = Mathf.Max(10f, DamageMag); // 火力倍率の下限は10%
 
         BlockDmg += inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.DefenseFlat, groupToPass);
         BlockDmg -= inv.GetTotalEffectValue(Alpha.Data.WeaponEffectType_Alpha.DefenseFlatMinus, groupToPass);

@@ -13,7 +13,7 @@ public class Behavior_ZigZagMove : EnemyBehaviorData_Base
     public Vector2 areaSize = new Vector2(10f, 10f);
 
     [Tooltip("移動可能領域のサイズの最低値")]
-    public Vector2 areaMinimumSize =new Vector2(0f,0f);
+    public Vector2 areaMinimumSize = new Vector2(0f, 0f);
     [Tooltip("trueの場合、エネミーが生成された位置（InitialPosition）を基準に移動領域を計算します")]
     public bool useRelativeArea = true;
 
@@ -41,7 +41,7 @@ public class Behavior_ZigZagMove : EnemyBehaviorData_Base
         Vector2 minBounds = basePosition + areaCenter - (areaSize / 2f);
         Vector2 maxBounds = basePosition + areaCenter + (areaSize / 2f);
 
-        Vector2 currentTarget = GetRandomPositionInBounds(minBounds+areaMinimumSize, maxBounds);
+        Vector2 currentTarget = GetClampedTarget(ai, minBounds + areaMinimumSize, maxBounds);
         bool isWaiting = true;
         float timer = waitTimeAtTarget;
 
@@ -65,7 +65,7 @@ public class Behavior_ZigZagMove : EnemyBehaviorData_Base
                     lr.endColor = lineColor;
                     lr.positionCount = 2;
                     lr.useWorldSpace = true;
-                    lr.sortingOrder = -10;
+                    lr.sortingOrder = 5;
                     lr.enabled = false;
 
                     // フェーズ終了時等に安全に破棄されるようリストに追加
@@ -75,16 +75,15 @@ public class Behavior_ZigZagMove : EnemyBehaviorData_Base
                     }
                 }
 
-                Vector2 currentPos = ai.transform.position;
+                Vector2 currentPos = ai.Rb != null ? ai.Rb.position : (Vector2)ai.transform.position;
                 Vector2 toTarget = currentTarget - currentPos;
 
                 if (isWaiting)
                 {
-
                     if (ai.Rb != null)
                     {
                         ai.Rb.velocity = Vector2.zero;
-                        ai.Rb.angularVelocity = 0f; // 回転も止めたいなら
+                        ai.Rb.angularVelocity = 0f;
                     }
                     timer -= Time.fixedDeltaTime;
 
@@ -104,18 +103,35 @@ public class Behavior_ZigZagMove : EnemyBehaviorData_Base
                 else
                 {
                     // 目標までの距離が十分近い場合、待機してから次の目的地へ
-                    if (toTarget.sqrMagnitude < 0.01f)
+                    if (toTarget.sqrMagnitude < 0.04f)
                     {
-                        if (ai.Rb != null) ai.Rb.velocity = Vector2.zero;
-                        currentTarget = GetRandomPositionInBounds(minBounds, maxBounds);
+                        if (ai.Rb != null)
+                        {
+                            ai.Rb.velocity = Vector2.zero;
+                            ai.Rb.position = currentTarget;
+                        }
+                        else
+                        {
+                            ai.transform.position = currentTarget;
+                        }
+
+                        currentTarget = GetClampedTarget(ai, minBounds, maxBounds);
                         isWaiting = true;
                         timer = waitTimeAtTarget;
                     }
                     else
                     {
-                        // 目標に向かってスムーズに移動
-                        ai.transform.position = Vector3.MoveTowards(currentPos, currentTarget, speed * Time.fixedDeltaTime);
-                        if (ai.Rb != null) ai.Rb.velocity = Vector2.zero;
+                        // 目標に向かってスムーズに移動 (Rigidbody2D.MovePosition で壁めり込み反発暴走を完全防止)
+                        Vector2 nextPos = Vector2.MoveTowards(currentPos, currentTarget, speed * Time.fixedDeltaTime);
+                        if (ai.Rb != null)
+                        {
+                            ai.Rb.velocity = Vector2.zero;
+                            ai.Rb.MovePosition(nextPos);
+                        }
+                        else
+                        {
+                            ai.transform.position = nextPos;
+                        }
                     }
                 }
 
@@ -132,10 +148,37 @@ public class Behavior_ZigZagMove : EnemyBehaviorData_Base
         }
     }
 
-    private Vector2 GetRandomPositionInBounds(Vector2 min, Vector2 max)
+    private Vector2 GetClampedTarget(Alpha_EnemyAI ai, Vector2 min, Vector2 max)
     {
         float x = Random.Range(min.x, max.x);
         float y = Random.Range(min.y, max.y);
-        return new Vector2(x, y);
+        Vector2 target = new Vector2(x, y);
+
+        // 画面外・壁へのめり込みを防ぐため、コライダーサイズを考慮したマージンでクランプ
+        if (Alpha.Core.ScreenBoundaryManager_Alpha.Instance != null)
+        {
+            float marginX = 2.5f;
+            float marginY = 4.2f;
+
+            if (ai != null)
+            {
+                var col = ai.GetComponent<BoxCollider2D>();
+                if (col != null)
+                {
+                    marginX = Mathf.Max(marginX, col.size.x * 0.5f + 0.5f);
+                    marginY = Mathf.Max(marginY, col.size.y * 0.5f + 0.5f);
+                }
+            }
+
+            float minX = Alpha.Core.ScreenBoundaryManager_Alpha.Instance.MinX + marginX;
+            float maxX = Alpha.Core.ScreenBoundaryManager_Alpha.Instance.MaxX - marginX;
+            float minY = Alpha.Core.ScreenBoundaryManager_Alpha.Instance.MinY + marginY;
+            float maxY = Alpha.Core.ScreenBoundaryManager_Alpha.Instance.MaxY - marginY;
+
+            target.x = Mathf.Clamp(target.x, minX, maxX);
+            target.y = Mathf.Clamp(target.y, minY, maxY);
+        }
+
+        return target;
     }
 }

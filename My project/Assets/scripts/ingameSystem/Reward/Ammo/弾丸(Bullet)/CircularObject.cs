@@ -9,6 +9,14 @@ public class CircularObject : Bullet_Base
     public float fireInterval = 0.5f;
     public GameObject subBulletPrefab;
 
+    [Header("Sub-Bullet Settings (短距離拘束弾)")]
+    [Tooltip("子弾の生存カウント(0.01秒単位)。例: 60 = 0.6秒。短距離で消滅")]
+    public float subBulletDestroyTime = 60f;
+    [Tooltip("子弾の弾速。未設定(<=0)の場合は350")]
+    public float subBulletSpeed = 350f;
+    [Tooltip("子弾ヒット時の拘束（スタン）時間（秒）。0で拘束なし")]
+    public float subBulletStunDuration = 0.8f;
+
     private float currentDeceleration = 0f;
     private float fireTimer = 0f;
     private bool hasStopped = false;
@@ -137,8 +145,12 @@ public class CircularObject : Bullet_Base
             bulletScript.sourcePrefab = subBulletPrefab;
             bulletScript.originalAimDirection = dir;
 
-            bulletScript.setStatus(dir, this.initialSpeed > 0 ? this.initialSpeed : 200f, this.dmg * this.secondaryDamageMultiplier);
-            bulletScript.DestroyTime = this.DestroyTime;
+            float speedToUse = subBulletSpeed > 0f ? subBulletSpeed : 350f;
+            bulletScript.setStatus(dir, speedToUse, this.dmg * this.secondaryDamageMultiplier);
+            
+            float destroyTimeToUse = subBulletDestroyTime > 0f ? subBulletDestroyTime : 60f;
+            bulletScript.DestroyTime = destroyTimeToUse;
+            bulletScript.stunDuration = subBulletStunDuration;
             bulletScript.piercingCount = this.piercingCount;
 
             List<Alpha_Effect_Base> clonedEffects = new List<Alpha_Effect_Base>();

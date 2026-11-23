@@ -54,11 +54,30 @@ public class Health : _Health_Base
     private const float MinGlobalEscapeSoundInterval = 0.08f;
     private static AudioClip cachedEscapeSEClip = null;
 
+    [Header("Visual Effects")]
+    public Alpha.Visual.BotanicalCharacterVisual_Alpha characterVisual;
+
     protected virtual void Start()
     {
         currentHP = HP;
         m_handler = gameObject.GetComponent<HPBar_Base>();
         setSlideHPBar();
+        SetupCharacterVisual();
+    }
+
+    protected virtual void SetupCharacterVisual()
+    {
+        if (characterVisual == null)
+        {
+            characterVisual = GetComponent<Alpha.Visual.BotanicalCharacterVisual_Alpha>();
+            if (characterVisual == null)
+            {
+                characterVisual = gameObject.AddComponent<Alpha.Visual.BotanicalCharacterVisual_Alpha>();
+                characterVisual.Preset = (isBoss || isMidBoss)
+                    ? Alpha.Visual.BotanicalCharacterVisual_Alpha.VisualPreset.Boss
+                    : Alpha.Visual.BotanicalCharacterVisual_Alpha.VisualPreset.Enemy;
+            }
+        }
     }
 
     public virtual void setSlideHPBar()
@@ -130,7 +149,11 @@ public class Health : _Health_Base
         }
     }
 
-    protected override void Awake() { base.Awake(); }
+    protected override void Awake()
+    {
+        base.Awake();
+        SetupCharacterVisual();
+    }
 
     protected override void OnEnable()
     {
@@ -332,6 +355,12 @@ public class Health : _Health_Base
         if (isDead) return;
 
         currentHP -= damage;
+        if (characterVisual == null) SetupCharacterVisual();
+        if (damage > 0f && characterVisual != null)
+        {
+            characterVisual.TriggerHitFlash();
+        }
+
         if (hpSlider != null)
         {
             SliderUpdate();

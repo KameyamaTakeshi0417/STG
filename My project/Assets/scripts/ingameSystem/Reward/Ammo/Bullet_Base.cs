@@ -90,7 +90,8 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
     public int piercingCount = 0;
     public int extraShotCount = 0; // サーキュラー等のサブバレット増加用
     public int voltTickReduceCount = 0; // 毒絡弾（Volt）のダメージTick短縮用
-    public float secondaryDamageMultiplier = 1.0f; // 派生ダメージ（Volt, Explosion, 子弾等）の威力倍率
+    public float secondaryDamageMultiplier = 1.0f;
+    public float stunDuration = 0f; // 敵ヒット時に付与する拘束（スタン）秒数 // 派生ダメージ（Volt, Explosion, 子弾等）の威力倍率
 
     // 雋ｫ騾壼・逅・畑繧ｹ繝・・繝・
     protected float initialDmg; // 貂幄｡ｰ險育ｮ励・繝ｼ繧ｹ縺ｮ蛻晄悄繝€繝｡繝ｼ繧ｸ
@@ -590,6 +591,10 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
                         Alpha.Result.RunStatsTracker_Alpha.Instance.RecordDamageDealt(finalImpactDamage);
                     }
                     health.ApplyDamage(finalImpactDamage, this);
+                    if (stunDuration > 0f)
+                    {
+                        health.ApplyStun(stunDuration);
+                    }
                     hitCountsPerEnemy[targetObj]++;
 
                     // 雋ｫ騾壽棧繧呈ｶ郁ｲｻ縺吶ｋ縲ゑｼ域怙蠕後・1繝偵ャ繝茨ｼ昴ｂ縺・ｲｫ騾壹〒縺阪↑縺・凾縺ｯ豸郁ｲｻ縺励↑縺・€√ｂ縺励￥縺ｯ0譛ｪ貅€縺ｫ縺ｪ繧具ｼ・

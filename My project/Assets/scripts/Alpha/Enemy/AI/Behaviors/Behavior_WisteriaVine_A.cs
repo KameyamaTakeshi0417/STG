@@ -30,7 +30,7 @@ public class Behavior_WisteriaVine_A : EnemyBehaviorData_Base
 {
     [Header("Wisteria Vine Settings")]
     [Tooltip("タレットの射撃開始タイミング（Synchronized=一斉射撃, Sequential=生成順に順次射撃）")]
-    public TurretActivationMode activationMode = TurretActivationMode.Synchronized;
+    public TurretActivationMode activationMode = TurretActivationMode.Sequential;
     [Header("Wisteria Vine Settings")]
     [Tooltip("ツタブロックのプレハブ")]
     public GameObject vineBlockPrefab;

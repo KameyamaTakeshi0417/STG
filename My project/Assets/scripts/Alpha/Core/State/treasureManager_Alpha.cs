@@ -19,6 +19,12 @@ public class treasureManager_Alpha : MonoBehaviour
     [Tooltip("自動装備する対象の武器グループ（0=枠0-2, 1=枠3-5, 2=枠6-8）。デフォルトは枠0-2")]
     public int autoEquipTargetGroup = 0;
 
+    [Header("First Drop Fixed Settings")]
+    [Tooltip("最初のオーブ（弾頭）をExplosionSeries（猛爆）に固定するかどうか。このシーンではtrue、今後実装する他モードではfalseに設定")]
+    public bool fixFirstBulletToExplosion = true;
+    [Tooltip("固定するシリーズ（未設定時はActiveSeriesPoolからExplosionSeriesを自動探索）")]
+    public WeaponSeriesData_Alpha fixedFirstBulletSeries;
+
     // 1個目:弾頭(Bullet/枠2) → 2個目:薬莢(Casing/枠1) → 3個目:雷管(Primer/枠0)
     private const int AutoEquipMaxOrbCount = 3;
     private int autoEquipCursor = 0;
@@ -125,7 +131,35 @@ public class treasureManager_Alpha : MonoBehaviour
 
         int slotIndex = targetGroup * 3 + slotOffset;
 
-        WeaponSeriesData_Alpha series = gen.GetRandomSeriesFromPool(targetRarity);
+        WeaponSeriesData_Alpha series = null;
+        // 最初のオーブ（弾頭）をExplosionSeries（猛爆）に固定する処理（チュートリアル用、シーン限定フラグ）
+        if (autoEquipCursor == 0 && fixFirstBulletToExplosion)
+        {
+            if (fixedFirstBulletSeries != null)
+            {
+                series = fixedFirstBulletSeries;
+            }
+            else
+            {
+                var pool = gen.ActiveSeriesPool;
+                if (pool != null)
+                {
+                    series = pool.Find(s => s != null && (s.name.IndexOf("Explosion", System.StringComparison.OrdinalIgnoreCase) >= 0 || s.seriesName.Contains("猛爆") || s.seriesName.Contains("爆発")));
+                }
+            }
+
+            if (series != null)
+            {
+                targetRarity = Mathf.Max(targetRarity, series.minQuality);
+                Debug.Log($"<color=#ffaa33>[TreasureManager]</color> Tutorial Fixed Drop: First bullet is fixed to '{series.seriesName}' (Quality {targetRarity})");
+            }
+        }
+
+        if (series == null)
+        {
+            series = gen.GetRandomSeriesFromPool(targetRarity);
+        }
+
         if (series == null)
         {
             Debug.LogWarning($"[TreasureManager] No series found in drop pool for rarity {targetRarity}.");

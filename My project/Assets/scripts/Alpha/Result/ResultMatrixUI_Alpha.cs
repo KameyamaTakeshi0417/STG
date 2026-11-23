@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -470,7 +470,7 @@ namespace Alpha.Result
 
         private void AttachClearStamp(GameObject cellObj)
         {
-            if (cellObj.transform.Find("ClearStamp") != null) return;
+            if (cellObj == null || cellObj.transform.Find("ClearStamp") != null) return;
 
             var stampObj = new GameObject("ClearStamp");
             stampObj.transform.SetParent(cellObj.transform, false);
@@ -481,7 +481,15 @@ namespace Alpha.Result
             sBg.color = new Color(0.06f, 0.14f, 0.10f, 0.90f);
             AddCornerAccents(sRect, new Color(0.80f, 0.68f, 0.44f, 0.9f), 6f, 1f);
 
-            var stampTmp = stampObj.AddComponent<TextMeshProUGUI>();
+            // TextMeshProUGUI は Image と同じ GameObject に追加できないため子オブジェクトに分離
+            var textObj = new GameObject("StampText");
+            textObj.transform.SetParent(stampObj.transform, false);
+            var tRect = textObj.AddComponent<RectTransform>();
+            tRect.anchorMin = Vector2.zero;
+            tRect.anchorMax = Vector2.one;
+            tRect.sizeDelta = Vector2.zero;
+
+            var stampTmp = textObj.AddComponent<TextMeshProUGUI>();
             if (customFontAsset != null) stampTmp.font = customFontAsset;
             stampTmp.text = "[ 条項承認 - RATIFIED ]";
             stampTmp.fontSize = 11;

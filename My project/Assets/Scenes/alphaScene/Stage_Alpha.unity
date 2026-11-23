@@ -1,4 +1,4 @@
-﻿%YAML 1.1
+%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!29 &1
 OcclusionCullingSettings:
@@ -6956,6 +6956,8 @@ MonoBehaviour:
   stageList:
   - {fileID: 11400000, guid: b541dc2f661c7e544bd2a98083ec388d, type: 2}
   - {fileID: 11400000, guid: 8d431ca05fb2e9f4da49b7bce9fa7190, type: 2}
+  - {fileID: 11400000, guid: 8993dff345b803d45a7b316ffe245da4, type: 2}
+  - {fileID: 11400000, guid: f7d60001000000000000000000000001, type: 2}
   currentStageIndex: 0
   spawnManager: {fileID: 781116461}
   sequenceBarUI: {fileID: 2134567316}

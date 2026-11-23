@@ -128,7 +128,7 @@ public class Alpha_EnemyAI : MonoBehaviour
         StartBehaviors(initialMovementBehavior, initialAttackBehavior, initialSummonBehavior);
     }
 
-    private void IgnorePlayerSolidCollisions(GameObject playerObj)
+    protected void IgnorePlayerSolidCollisions(GameObject playerObj)
     {
         // 自分（敵）のすべてのColliderを取得
         Collider2D[] myColliders = GetComponentsInChildren<Collider2D>();

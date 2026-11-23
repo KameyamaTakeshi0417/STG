@@ -98,10 +98,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 3312735464239202653, guid: 81f4479554461d140b5a13037f9c5553, type: 3}
-  fireInterval: 1
-  bulletSpeed: 5
+  fireInterval: 0.65
+  bulletSpeed: 5.5
   fireDirection: {x: 0, y: -1, z: 0}
-  numberOfBullets: 5
+  numberOfBullets: 6
   spreadAngle: 60
-  burstDelay: 0.1
+  burstDelay: 0.06
   firePoint: {fileID: 0}

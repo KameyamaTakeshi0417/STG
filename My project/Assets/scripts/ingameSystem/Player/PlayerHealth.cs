@@ -11,6 +11,8 @@ public class PlayerHealth : _Health_Base
     private int cachedMaxHPGauge = -1;
     public GameObject gaugeCanvas;
     public CircleHPBarManager circleHPBarManager;
+    [Header("Visual Effects")]
+    public Alpha.Visual.BotanicalCharacterVisual_Alpha characterVisual;
 
     void Start()
     {
@@ -61,6 +63,20 @@ public class PlayerHealth : _Health_Base
         }
         circleHPBarManager = gaugeCanvas.GetComponent<CircleHPBarManager>();
         circleHPBarManager.SetCircleBar(statusManager.HPGauge);
+        SetupCharacterVisual();
+    }
+
+    private void SetupCharacterVisual()
+    {
+        if (characterVisual == null)
+        {
+            characterVisual = GetComponent<Alpha.Visual.BotanicalCharacterVisual_Alpha>();
+            if (characterVisual == null)
+            {
+                characterVisual = gameObject.AddComponent<Alpha.Visual.BotanicalCharacterVisual_Alpha>();
+                characterVisual.Preset = Alpha.Visual.BotanicalCharacterVisual_Alpha.VisualPreset.Player;
+            }
+        }
     }
 
         protected override void Update()
@@ -134,6 +150,15 @@ public class PlayerHealth : _Health_Base
         if (damage > 0 && Alpha.Core.ProceduralJuiceManager_Alpha.Instance != null)
         {
             Alpha.Core.ProceduralJuiceManager_Alpha.Instance.TriggerPlayerDamageJuice();
+        }
+
+        if (damage > 0)
+        {
+            if (characterVisual == null) SetupCharacterVisual();
+            if (characterVisual != null)
+            {
+                characterVisual.TriggerHitFlash(0.12f, 0.9f, new Color(1f, 0.35f, 0.35f, 1f));
+            }
         }
 
         // 実際のダメージ適用はすべて一元化してマネージャーへ委譲

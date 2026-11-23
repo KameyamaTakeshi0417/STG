@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1892329032998698401}
   - component: {fileID: 8164464404984304022}
   m_Layer: 0
-  m_Name: CircularBullet
+  m_Name: 5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -57,7 +57,7 @@ MonoBehaviour:
   Objname: CircularBullet
   dmg: 0
   Speed: 50
-  DestroyTime: 10
+  DestroyTime: 5
   bullettype: 0
   rotate: {x: 0, y: 0, z: 0}
   rarelity: 0

@@ -186,3 +186,6 @@ MonoBehaviour:
   stoppingTime: 4
   fireInterval: 1
   subBulletPrefab: {fileID: 1895039100003720943, guid: 7e9679703673383438be626d8a3f2ccf, type: 3}
+  subBulletDestroyTime: 60
+  subBulletSpeed: 350
+  subBulletStunDuration: 0.8

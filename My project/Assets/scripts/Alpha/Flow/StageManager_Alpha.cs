@@ -179,19 +179,18 @@ namespace Alpha.Flow
                         {
                             SetState(StageState_Alpha.Transition);
                             StartCoroutine(WaitUntilAllOrbsCollected(() => {
-                                    // 郢晄㈱縺幄恆讎奇｣ｰ・ｱ鬩滂ｽｬ郢晁ｼ斐♂郢晢ｽｼ郢ｧ・ｺ郢ｧ雋橸ｽｱ證ｮ蟷・
                                     if (fadeController != null)
                                     {
                                         fadeController.FadeOut(() => {
                                             if (RewardSequenceManager_Alpha.Instance != null)
                                             {
                                                 RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
-                                                    StartPreBossADVAndFight();
+                                                    StartBossRestShopPhase();
                                                 });
                                             }
                                             else
                                             {
-                                                StartPreBossADVAndFight();
+                                                StartBossRestShopPhase();
                                             }
                                         });
                                     }
@@ -200,12 +199,12 @@ namespace Alpha.Flow
                                         if (RewardSequenceManager_Alpha.Instance != null)
                                         {
                                             RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
-                                                StartPreBossADVAndFight();
+                                                StartBossRestShopPhase();
                                             });
                                         }
                                         else
                                         {
-                                            StartPreBossADVAndFight();
+                                            StartBossRestShopPhase();
                                         }
                                     }
                             }));
@@ -771,6 +770,50 @@ namespace Alpha.Flow
             else
             {
                 ExecuteStageClearBackEnd();
+            }
+        }
+
+        /// <summary>
+        /// ボス前の休憩・商店フェーズを開始（全回復、パーツ・スキル購入、強化、売却）
+        /// </summary>
+        public void StartBossRestShopPhase()
+        {
+            Debug.Log("[StageManager] Starting Boss Rest & Shop Phase.");
+
+            // 画面を明転
+            if (fadeController != null)
+            {
+                fadeController.FadeIn(null);
+            }
+
+            // 鍛冶屋・商店UIを開く
+            if (Alpha.UI.BlacksmithManager_Alpha.Instance != null)
+            {
+                Alpha.UI.BlacksmithManager_Alpha.Instance.OpenBlacksmith();
+            }
+            else
+            {
+                Debug.LogWarning("[StageManager] BlacksmithManager_Alpha not found! Falling back to Boss Fight.");
+                StartPreBossADVAndFight();
+            }
+        }
+
+        /// <summary>
+        /// 商店フェーズ終了（プレイヤーが出発ボタンを押下）
+        /// </summary>
+        public void OnShopPhaseClosed()
+        {
+            Debug.Log("[StageManager] Shop Phase closed. Transitioning to Pre-Boss Sequence.");
+            
+            if (fadeController != null)
+            {
+                fadeController.FadeOut(() => {
+                    StartPreBossADVAndFight();
+                });
+            }
+            else
+            {
+                StartPreBossADVAndFight();
             }
         }
 

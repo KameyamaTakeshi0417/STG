@@ -9,9 +9,11 @@ namespace Alpha.Enemy.Wisteria
         [Tooltip("発射する弾のプレハブ")]
         public GameObject bulletPrefab;
         [Tooltip("弾を発射する間隔（秒）")]
-        public float fireInterval = 2.0f;
+        public float fireInterval = 0.65f;
         [Tooltip("弾の速度")]
-        public float bulletSpeed = 5f;
+        public float bulletSpeed = 7f;
+        [Tooltip("初回発射の待機ディレイ（0なら即時発射）")]
+        public float initialDelay = 0.15f;
         [Tooltip("弾の発射位置（指定がなければ自身の中央）")]
         public Transform firePoint;
 
@@ -37,14 +39,19 @@ namespace Alpha.Enemy.Wisteria
 
         private IEnumerator ShootingRoutine()
         {
+            if (initialDelay > 0f)
+            {
+                yield return new WaitForSeconds(initialDelay);
+            }
+
             while (true)
             {
-                yield return new WaitForSeconds(fireInterval);
-
                 if (bulletPrefab != null && playerTransform != null)
                 {
                     FireAtPlayer();
                 }
+
+                yield return new WaitForSeconds(fireInterval);
             }
         }
 
@@ -52,6 +59,7 @@ namespace Alpha.Enemy.Wisteria
         {
             Vector3 spawnPos = firePoint != null ? firePoint.position : transform.position;
             Vector3 direction = (playerTransform.position - spawnPos).normalized;
+            if (direction == Vector3.zero) direction = Vector3.down;
 
             GameObject bullet = null;
             if (Alpha_ObjectPoolManager.Instance != null)
@@ -65,18 +73,29 @@ namespace Alpha.Enemy.Wisteria
 
             if (bullet != null)
             {
-                // 弾のコンポーネント（Bullet_Base等）に速度や方向をセットする
-                // 既存の弾の仕様に合わせて適宜調整
-                Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
-                if (rb != null)
+                Bullet_Base bBase = bullet.GetComponent<Bullet_Base>();
+                if (bBase != null)
                 {
-                    rb.gravityScale = 0f;
-                    rb.velocity = direction * bulletSpeed;
+                    bBase.sourcePrefab = bulletPrefab;
+                    bBase.isEnemyBullet = true;
+                    float finalSpeed = (bulletSpeed > 50f) ? bulletSpeed : (bulletSpeed * 100f);
+                    bBase.setStatus(direction, finalSpeed, bBase.dmg > 0 ? bBase.dmg : 10f);
+                    bBase.setRotate(direction);
+                    bBase.DestroyTime = 3000f; // 30秒相当（壁衝突まで消滅しない）
+                    bBase.preventAutoDestroy = true; // 時間経過で消えず、壁(wall)接触または画面外で消滅
+                    bBase.shoot();
                 }
-                
-                // 弾の「上」方向を進行方向に向ける（弾の画像が上向き前提の場合）
-                bullet.transform.up = direction;
-                // ※もし画像が右向き前提なら bullet.transform.right = direction; となります
+                else
+                {
+                    // フォールバック
+                    Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
+                    if (rb != null)
+                    {
+                        rb.gravityScale = 0f;
+                        rb.velocity = direction * bulletSpeed;
+                    }
+                    bullet.transform.up = direction;
+                }
             }
         }
     }

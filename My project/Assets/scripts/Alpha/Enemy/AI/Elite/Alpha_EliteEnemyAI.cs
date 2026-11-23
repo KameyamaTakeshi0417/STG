@@ -61,11 +61,18 @@ public class Alpha_EliteEnemyAI : Alpha_EnemyAI
         // エリート遭遇時のチュートリアル表示
         if (Alpha.UI.TutorialManager_Alpha.Instance != null)
         {
-            Alpha.UI.TutorialManager_Alpha.Instance.ShowTutorial("Tutorial_Elite");
+            Alpha.UI.TutorialManager_Alpha.Instance.ShowTutorial("Tutorial_Elite", useFadeMode: true, displayDuration: 4.5f, pauseTimeline: false);
         }
         
         GameObject playerObj = GameObject.FindWithTag("Player");
-        if (playerObj != null) TargetTransform = playerObj.transform;
+        if (playerObj != null)
+        {
+            TargetTransform = playerObj.transform;
+            IgnorePlayerSolidCollisions(playerObj);
+        }
+
+        // 壁との不要な物理衝突・めり込み反発による異常高速移動を防止
+        IgnoreWallCollisions();
 
         if (eliteHealth != null)
         {
@@ -265,13 +272,39 @@ public class Alpha_EliteEnemyAI : Alpha_EnemyAI
         summonCoroutine = null;
         timerCoroutine = null;
 
-        if (Rb != null) Rb.velocity = Vector2.zero;
+        if (Rb != null)
+        {
+            Rb.velocity = Vector2.zero;
+            Rb.angularVelocity = 0f;
+        }
     }
 
     // 攻撃モジュール側からカットインなどを呼び出すためのフック
     public void TriggerAttackEvent(string attackName)
     {
         OnAttackStartEvent?.Invoke(attackName);
+    }
+
+    private void IgnoreWallCollisions()
+    {
+        Collider2D[] myColliders = GetComponentsInChildren<Collider2D>();
+        GameObject[] walls = GameObject.FindGameObjectsWithTag("wall");
+        if (walls != null && walls.Length > 0 && myColliders != null)
+        {
+            foreach (var myCol in myColliders)
+            {
+                if (myCol == null) continue;
+                foreach (var wall in walls)
+                {
+                    if (wall == null) continue;
+                    Collider2D wallCol = wall.GetComponent<Collider2D>();
+                    if (wallCol != null)
+                    {
+                        Physics2D.IgnoreCollision(myCol, wallCol, true);
+                    }
+                }
+            }
+        }
     }
 }
 
