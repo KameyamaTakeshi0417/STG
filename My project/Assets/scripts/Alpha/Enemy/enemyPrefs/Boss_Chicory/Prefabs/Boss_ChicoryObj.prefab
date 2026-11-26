@@ -195,8 +195,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4b5ecac39bf047409483f5cf786ce99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 3000
-  currentHP: 3000
+  HP: 1000
+  currentHP: 1000
   Exp: 200
   VulnerableTime: 0
   VulnerableFlg: 0
@@ -228,8 +228,8 @@ MonoBehaviour:
   canFlee: 1
   fleeTimeLimit: 999
   phaseHPs:
-  - 3000
-  - 4500
+  - 1000
+  - 1500
   aetherExplosionPrefab: {fileID: 7143777429072540398, guid: bf3d9a5e4dd24874cad16bf1f360f1a8, type: 3}
   defeatedSprite: {fileID: 0}
   targetSpriteRenderer: {fileID: 6612885051336644085}

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Alpha.Core;
 
 public class VoltBullet : Bullet_Base
 {
@@ -14,36 +15,15 @@ public class VoltBullet : Bullet_Base
     {
         if (!gameObject.activeInHierarchy) return;
 
-        if (collision.CompareTag("Enemy") || collision.CompareTag("Player"))
+        // 敵または壁に着弾した際、藤色の飛沫エフェクトを発生
+        if (collision.CompareTag("Enemy") || collision.CompareTag("Player") || collision.CompareTag("wall"))
         {
-            base.callHitEffect();
-
-            if (activeEffects != null)
-            {
-                foreach (var effect in activeEffects)
-                {
-                    effect.OnHit(this, collision);
-                }
-            }
-
-            Health health = collision.GetComponent<Health>();
-            if (health != null)
-            {
-                health.ApplyDamage(dmg);
-            }
-            DestroyCheck();
+            Vector3 hitPos = collision.ClosestPoint(transform.position);
+            Vector3 bulletDir = (rb != null && rb.velocity.sqrMagnitude > 0.01f) ? (Vector3)rb.velocity.normalized : rotate.normalized;
+            ProceduralPoisonSplash_Alpha.SpawnSplash(hitPos, bulletDir, 7);
         }
-        else if (collision.CompareTag("wall"))
-        {
-            base.callHitEffect();
-            if (activeEffects != null)
-            {
-                foreach (var effect in activeEffects)
-                {
-                    effect.OnHit(this, collision);
-                }
-            }
-            DestroyCheck();
-        }
+
+        // Bullet_Base の標準着弾処理（貫通・多段ヒット・SE・エフェクト呼び出し・消滅判定）を実行
+        base.OnTriggerEnter2D(collision);
     }
 }

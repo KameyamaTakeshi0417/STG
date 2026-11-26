@@ -189,6 +189,8 @@ public class Alpha_VoltArea : MonoBehaviour, IAlphaPoolable
             health.ApplyDamage(dmg);
 
             health.VoltCount += voltLevel;
+            // 毒（Volt）ダメージ時の藤色飛沫エフェクト
+            Alpha.Core.ProceduralPoisonSplash_Alpha.SpawnSplash(enemyObj.transform.position, Vector3.up, count: 4, scaleMultiplier: 0.75f);
             // Debug.Log($"[{enemyObj.name}] に帯電 {voltLevel} を付与。現在帯電数: {health.VoltCount}");
 
             if (canChain)

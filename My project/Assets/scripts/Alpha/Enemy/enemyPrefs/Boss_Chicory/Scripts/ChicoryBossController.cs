@@ -12,15 +12,15 @@ namespace Alpha.Enemy.Chicory
     public class ChicoryBossController : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private Alpha.Enemy.AI.Elite.Alpha_EliteHealth eliteHealth;
-        [SerializeField] private Alpha.Enemy.AI.Elite.Alpha_EliteEnemyAI eliteAI;
+        [SerializeField] private Alpha_EliteHealth eliteHealth;
+        [SerializeField] private Alpha_EliteEnemyAI eliteAI;
 
         private bool hasTriggeredCalmDown = false;
 
         private void Awake()
         {
-            if (eliteHealth == null) eliteHealth = GetComponent<Alpha.Enemy.AI.Elite.Alpha_EliteHealth>();
-            if (eliteAI == null) eliteAI = GetComponent<Alpha.Enemy.AI.Elite.Alpha_EliteEnemyAI>();
+            if (eliteHealth == null) eliteHealth = GetComponent<Alpha_EliteHealth>();
+            if (eliteAI == null) eliteAI = GetComponent<Alpha_EliteEnemyAI>();
         }
 
         private void Update()

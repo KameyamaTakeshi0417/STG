@@ -19,6 +19,9 @@ namespace Alpha.Data
         public RewardTableData_Alpha stageRewardTable;
 
         [Header("ADV Data")]
+        [Tooltip("前半戦の報酬フェーズ後に再生するADVデータ（中ボス前等、任意）")]
+        public ADVData_Alpha postFirstHalfRewardADV;
+
         [Tooltip("鍛冶フェーズ前に再生するADVデータ（任意）")]
         public ADVData_Alpha preBlacksmithADV;
 
@@ -43,6 +46,19 @@ namespace Alpha.Data
 
         [Tooltip("ステージクリアのテキスト表示時に鳴らすSE")]
         public AudioClip stageClearSE;
+
+        [Header("Stage Flow Customization (Optional)")]
+        [Tooltip("ステージ前半終了時の中ボス戦をスキップするかどうか（ステージ4の前半雑魚のみフロー用）")]
+        public bool skipFirstHalfMidBoss = false;
+
+        [Tooltip("ステージ後半開始時に道中雑魚を挟まず即座に中ボス戦を開始するかどうか（ステージ4用）")]
+        public bool startSecondHalfWithMidBoss = false;
+
+        [Tooltip("中ボスプレハブ（未設定時は firstHalf.bossPrefab を使用）")]
+        public GameObject midBossPrefab;
+
+        [Tooltip("大ボスプレハブ（未設定時は secondHalf.bossPrefab を使用）")]
+        public GameObject stageBossPrefab;
 
     }
 }

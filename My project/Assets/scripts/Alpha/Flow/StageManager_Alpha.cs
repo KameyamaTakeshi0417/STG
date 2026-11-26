@@ -182,7 +182,7 @@ namespace Alpha.Flow
                                     if (fadeController != null)
                                     {
                                         fadeController.FadeOut(() => {
-                                            if (RewardSequenceManager_Alpha.Instance != null)
+                                                                                                                if (RewardSequenceManager_Alpha.Instance != null)
                                             {
                                                 RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
                                                     StartBossRestShopPhase();
@@ -211,9 +211,38 @@ namespace Alpha.Flow
                         }
                         else
                         {
+                            // 前半終了時：中ボス戦をスキップするか中ボスプレハブがない場合は直接報酬＆後半戦へ
+                            bool skipMidBoss = (currentStageData != null && currentStageData.skipFirstHalfMidBoss);
+                            GameObject midBossToSpawn = (currentStageData != null && currentStageData.midBossPrefab != null)
+                                ? currentStageData.midBossPrefab
+                                : (activeSequence != null ? activeSequence.bossPrefab : null);
+
+                            if (skipMidBoss || midBossToSpawn == null)
+                            {
+                                SetState(StageState_Alpha.Transition);
+                                StartCoroutine(WaitUntilAllOrbsCollected(() => {
+                                    fadeController.FadeOut(() => {
+                                        if (Alpha.Core.SaveManager_Alpha.Instance != null)
+                                        {
+                                            Alpha.Core.SaveManager_Alpha.Instance.AutoSaveAtMidBossClear();
+                                        }
+                                        if (RewardSequenceManager_Alpha.Instance != null)
+                                        {
+                                            RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
+                                                ProceedFromFirstHalfReward();
+                                            });
+                                        }
+                                        else
+                                        {
+                                            ProceedFromFirstHalfReward();
+                                        }
+                                    });
+                                }));
+                                break;
+                            }
+
                             SetState(StageState_Alpha.Transition);
 
-                            // 雑魚戦終了：中ボス出現演出に向けてBGMをフェードアウト
                             if (Alpha.Audio.SoundManager_Alpha.Instance != null)
                             {
                                 Alpha.Audio.SoundManager_Alpha.Instance.StopBGM(midBossTransitionBGMFadeDuration);
@@ -222,7 +251,7 @@ namespace Alpha.Flow
                             if (midBossAppearEffectUI != null)
                             {
                                 midBossAppearEffectUI.PlayEffect(() => {
-                                    spawnManager.SpawnBoss(activeSequence.bossPrefab);
+                                    spawnManager.SpawnBoss(midBossToSpawn);
                                     SetState(StageState_Alpha.MidBossFight);
                                     if (Alpha.Result.RunStatsTracker_Alpha.Instance != null)
                                     {
@@ -236,7 +265,7 @@ namespace Alpha.Flow
                             }
                             else
                             {
-                                spawnManager.SpawnBoss(activeSequence.bossPrefab);
+                                spawnManager.SpawnBoss(midBossToSpawn);
                                 SetState(StageState_Alpha.MidBossFight);
                                 if (Alpha.Result.RunStatsTracker_Alpha.Instance != null)
                                 {
@@ -255,22 +284,28 @@ namespace Alpha.Flow
 
         public void RestartStageFromFirstHalf()
         {
-            // HP邵ｺ・ｪ邵ｺ・ｩ邵ｺ・ｮ郢晏干ﾎ樒ｹｧ・､郢晢ｽ､郢晢ｽｼ霑･・ｶ隲ｷ荵昴・陜玲ｧｫ・ｾ・ｩ
             if (playerStatusManager_Alpha.Instance != null)
             {
                 playerStatusManager_Alpha.Instance.currentHP = playerStatusManager_Alpha.Instance.HP;
             }
 
-            // 隰ｨ・ｵ陟托ｽｾ郢晢ｽｻ隰ｨ・ｵ邵ｺ・ｮ郢晢ｽｪ郢ｧ・ｻ郢昴・繝ｨ
             ClearAllEnemyBullets();
             spawnManager.ClearActiveRushes();
-            if (spawnManager != null)
-            {
-                // 陟｢繝ｻ・ｦ竏壺・陟｢諛環ｧ邵ｺ・ｦ隰ｨ・ｵ邵ｺ・ｮ陷茨ｽｨ雋翫・・・ｿ･・ｶ隲ｷ荵斟懃ｹｧ・ｻ郢昴・繝ｨ陷・ｽｦ騾・・
-            }
+            ClearAllEnemies();
 
-            // 郢ｧ・ｹ郢昴・繝ｻ郢ｧ・ｸ郢ｧ雋樒√陷企�大ｧｶ邵ｺ荵晢ｽ芽怙蝓ｼ蟷・
-            StartFirstHalf();
+            SetState(StageState_Alpha.WaitToStartFirstHalf);
+            wasMobCleared = false;
+
+            if (fadeController != null)
+            {
+                fadeController.FadeIn(() => {
+                    StartFirstHalf();
+                });
+            }
+            else
+            {
+                StartFirstHalf();
+            }
         }
 
         private bool isSequenceAnimating = false;
@@ -279,21 +314,16 @@ namespace Alpha.Flow
         {
             if (activeSequence == null) return;
 
-            // 繝昴・繧ｺ荳ｭ繧・メ繝･繝ｼ繝医Μ繧｢繝ｫ陦ｨ遉ｺ荳ｭ縺ｯ譎る俣繧帝ｲ繧√↑縺・
             if (Time.timeScale == 0f) return;
             if (Alpha.UI.TutorialManager_Alpha.Instance != null && Alpha.UI.TutorialManager_Alpha.Instance.IsPausingTimeline) return;
             if (isSequenceAnimating) return;
 
             currentSequenceTime += Time.deltaTime;
             
-            // 郢昶・ﾎ礼ｹ晢ｽｼ郢晏現ﾎ懃ｹｧ・｢郢晢ｽｫ邵ｺ・ｮ郢昶・縺臥ｹ昴・縺・
             CheckTutorials();
-
-            // 郢ｧ・ｦ郢ｧ・ｧ郢晢ｽｼ郢晄じ繝ｻ郢昶・縺臥ｹ昴・縺・
             spawnManager.CheckSpawn(currentSequenceTime);
             sequenceBarUI.UpdateProgress(currentSequenceTime / activeSequence.duration);
 
-            if (currentSequenceTime >= activeSequence.duration)
             if (currentSequenceTime >= activeSequence.duration)
             {
                 if (currentState == StageState_Alpha.FirstHalf)
@@ -309,22 +339,17 @@ namespace Alpha.Flow
 
         private void HandleWaveSkip()
         {
-            // ポーズ中のスキップを受け付けない
-            if (Time.timeScale == 0f || (Alpha.UI.PauseMenuManager_Alpha.Instance != null && Alpha.UI.PauseMenuManager_Alpha.Instance.IsPaused)) return;
+            if (currentState != StageState_Alpha.FirstHalf && currentState != StageState_Alpha.SecondHalf) return;
             if (isSequenceAnimating) return;
-            // ラッシュ中はスキップを受け付けない
-            if (spawnManager != null && spawnManager.IsRushActive()) return;
 
             bool isSkipInput = false;
             if (Alpha.Core.InputManager_Alpha.Instance != null)
             {
                 isSkipInput = Alpha.Core.InputManager_Alpha.Instance.GetActionDown(Alpha.Core.ActionType_Alpha.WaveSkip);
             }
-            
-            // Spaceキーおよび左右Shiftキーでのスキップを許容（ポーズ外でのみ発動）
-            if (!isSkipInput)
+            else
             {
-                isSkipInput = Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift);
+                isSkipInput = Input.GetKeyDown(KeyCode.Space);
             }
 
             if (isSkipInput)
@@ -342,8 +367,7 @@ namespace Alpha.Flow
                 }
 
                 {
-                    float skippedSeconds = Mathf.Max(0f, targetTime - currentSequenceTime);
-                    float skipRatio = activeSequence.duration > 0f ? skippedSeconds / activeSequence.duration : 0f;
+                    float skipRatio = activeSequence.duration > 0f ? (targetTime - currentSequenceTime) / activeSequence.duration : 0f;
                     
                     int pointsToGain = 0;
                     if (RewardManager_Alpha.Instance != null)
@@ -351,63 +375,45 @@ namespace Alpha.Flow
                         pointsToGain = Mathf.RoundToInt(RewardManager_Alpha.Instance.targetPoints * skipRatio);
                     }
 
-                    StartCoroutine(WaveSkipSequenceRoutine(targetTime, pointsToGain, skippedSeconds));
+                    StartCoroutine(WaveSkipSequenceRoutine(targetTime, pointsToGain));
                 }
             }
         }
 
-        private System.Collections.IEnumerator WaveSkipSequenceRoutine(float targetTime, int pointsToGain, float skippedSeconds)
+        private System.Collections.IEnumerator WaveSkipSequenceRoutine(float targetTime, int pointsToGain)
         {
             isSequenceAnimating = true;
 
-            // 1. 谺｡縺ｮ遘ｻ蜍穂ｽ咲ｽｮ縺ｫ繧ｷ繝ｼ繧ｯ繧ｨ繝ｳ繧ｹ繝舌・縺ｮ繝上Φ繝峨Ν繧堤ｧｻ蜍輔＆縺帙ｋ
-            float startProgress = activeSequence.duration > 0f ? currentSequenceTime / activeSequence.duration : 0f;
+            float startTime = currentSequenceTime;
+            float startProgress = activeSequence.duration > 0f ? startTime / activeSequence.duration : 0f;
             float endProgress = activeSequence.duration > 0f ? targetTime / activeSequence.duration : 1f;
-            
+
             PlayTimelineSkipMoveSE();
-            yield return StartCoroutine(sequenceBarUI.AnimateProgress(startProgress, endProgress, 0.5f));
+
+            float elapsed = 0f;
+            float animDuration = 0.25f;
+
+            while (elapsed < animDuration)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                float t = Mathf.Clamp01(elapsed / animDuration);
+                float curP = Mathf.Lerp(startProgress, endProgress, t);
+
+                sequenceBarUI.UpdateProgress(curP);
+                yield return null;
+            }
 
             currentSequenceTime = targetTime;
             sequenceBarUI.UpdateProgress(endProgress);
 
-            // 既存の未逃亡雑魚の残留（逃亡）ゲージを延長してから次ウェーブをスポーン
-            ExtendExistingMobsFleeGauge(skippedSeconds);
-
-            // 2. 敵のスポーン
             spawnManager.CheckSpawn(currentSequenceTime);
 
-            // 3. 繧ｹ繧ｳ繧｢陦ｨ遉ｺUI縺ｫ繧ｹ繧ｳ繧｢繧貞刈邂・
             if (RewardManager_Alpha.Instance != null && pointsToGain > 0)
             {
                 yield return StartCoroutine(RewardManager_Alpha.Instance.AddPointsSequence(pointsToGain));
             }
 
             isSequenceAnimating = false;
-        }
-
-        private void ExtendExistingMobsFleeGauge(float skippedSeconds)
-        {
-            float extendSec = extendFleeBySkippedTime
-                ? Mathf.Max(minFleeExtendSeconds, skippedSeconds)
-                : minFleeExtendSeconds;
-
-            if (extendSec <= 0f) return;
-
-            Health[] existingMobs = FindObjectsOfType<Health>();
-            int extendedCount = 0;
-            foreach (var mob in existingMobs)
-            {
-                if (mob != null && mob.gameObject.activeInHierarchy)
-                {
-                    mob.ExtendFleeTimer(extendSec);
-                    extendedCount++;
-                }
-            }
-
-            if (extendedCount > 0)
-            {
-                Debug.Log($"[StageManager] Extended flee timer by +{extendSec:F1}s for {extendedCount} existing mob(s).");
-            }
         }
 
         private void PlayTimelineSkipMoveSE()
@@ -441,19 +447,18 @@ namespace Alpha.Flow
         public void SetState(StageState_Alpha newState)
         {
             currentState = newState;
-            Debug.Log($"[StageManager] Changed State to: {currentState}");
+            Debug.Log($"[StageManager] State Changed to: {currentState}");
 
-            bool isCombat = (currentState != StageState_Alpha.Transition &&
-                             currentState != StageState_Alpha.StageClear &&
-                             currentState != StageState_Alpha.WaitToStartFirstHalf &&
-                             currentState != StageState_Alpha.WaitToStartSecondHalf);
-            
+            bool isCombat = (currentState == StageState_Alpha.FirstHalf ||
+                             currentState == StageState_Alpha.SecondHalf ||
+                             currentState == StageState_Alpha.MidBossFight ||
+                             currentState == StageState_Alpha.BossFight);
+
             if (Alpha.Core.Utils.CursorManager_Alpha.Instance != null)
             {
                 Alpha.Core.Utils.CursorManager_Alpha.Instance.SetCombatMode(isCombat);
             }
             
-            // 繝懊せ謌ｦ迥ｶ諷九・螟画峩繧帝夂衍
             OnBossBattleStateChanged?.Invoke(IsBossBattleActive);
         }
 
@@ -478,37 +483,6 @@ namespace Alpha.Flow
             currentSequenceTime = 0f;
             currentTutorialIndex = 0;
 
-            // ゲーム開始時（Stage 0）のみ実績トラッカーを全リセットし、3x3マトリクス盤面を新規生成
-            // （以降のステージでは盤面・累積実績を保持し、通算でパネルを開けていく）
-            if (currentStageIndex == 0)
-            {
-                if (Alpha.Result.RunStatsTracker_Alpha.Instance != null)
-                {
-                    Alpha.Result.RunStatsTracker_Alpha.Instance.ResetForNewRun();
-                }
-                if (Alpha.Result.ResultMatrixManager_Alpha.Instance != null)
-                {
-                    Alpha.Result.ResultMatrixManager_Alpha.Instance.InitializeGrid(3);
-                }
-            }
-            else
-            {
-                if (Alpha.Result.RunStatsTracker_Alpha.Instance != null)
-                {
-                    Alpha.Result.RunStatsTracker_Alpha.Instance.ResetForNewStage();
-                }
-            }
-
-            if (WeaponGenerator_Alpha.Instance != null && currentStageData.stageRewardTable != null)
-            {
-                WeaponGenerator_Alpha.Instance.SetRewardTable(currentStageData.stageRewardTable);
-            }
-
-            if (currentStageIndex == 0 && treasureManager_Alpha.Instance != null)
-            {
-                treasureManager_Alpha.Instance.ResetAutoEquipProgress();
-            }
-
             sequenceBarUI.Setup(activeSequence);
             spawnManager.SetupSequence(activeSequence);
             
@@ -516,20 +490,7 @@ namespace Alpha.Flow
             {
                 Alpha.Audio.SoundManager_Alpha.Instance.PlayBGM(currentStageData.stageBGM, 0.5f);
             }
-
-            SpawnWitheredGrassForHalf();
             SetState(StageState_Alpha.FirstHalf);
-        }
-
-        private void StartBossFight()
-        {
-            if (Alpha.Audio.SoundManager_Alpha.Instance != null && currentStageData.bossBGM != null)
-            {
-                Alpha.Audio.SoundManager_Alpha.Instance.PlayBGM(currentStageData.bossBGM, 0.5f);
-            }
-
-            SetState(StageState_Alpha.BossFight);
-            spawnManager.SpawnBoss(activeSequence.bossPrefab);
         }
 
         public void ClearAllEnemyBullets()
@@ -552,9 +513,6 @@ namespace Alpha.Flow
             Debug.Log("[StageManager] Cleared all enemy bullets.");
         }
 
-        /// <summary>
-        /// 衝撃波の広がりに合わせて、画面内の敵弾を光の粒＆花弁バーストへと変換しながら一掃する
-        /// </summary>
         public void ClearAllEnemyBulletsWithEffect(Vector3 originPos)
         {
             Bullet_Base[] bullets = FindObjectsOfType<Bullet_Base>();
@@ -568,7 +526,6 @@ namespace Alpha.Flow
                 {
                     Vector3 bPos = b.transform.position;
 
-                    // 衝撃波が届いた順（距離に応じた微小遅延）に花弁＆光粒バーストを散らす
                     if (juice != null && burstSpawned < maxBurstEffects)
                     {
                         float dist = Vector2.Distance(originPos, bPos);
@@ -577,7 +534,6 @@ namespace Alpha.Flow
                         burstSpawned++;
                     }
 
-                    // 敵弾の当たり判定は即座に消去（演出遅延中の事故被弾を防止）
                     if (Alpha_ObjectPoolManager.Instance != null && b.sourcePrefab != null)
                     {
                         Alpha_ObjectPoolManager.Instance.Return(b.gameObject, b.sourcePrefab);
@@ -598,7 +554,6 @@ namespace Alpha.Flow
             {
                 if (enemy != null && enemy.gameObject.activeInHierarchy)
                 {
-                    // 繝励Ξ繧､繝､繝ｼ閾ｪ霄ｫ縺ｯ豸医＆縺ｪ縺・ｈ縺・↓縺吶ｋ
                     if (enemy.gameObject.CompareTag("Player")) continue;
                     
                     Destroy(enemy.gameObject);
@@ -623,6 +578,32 @@ namespace Alpha.Flow
                     Alpha.Result.RunStatsTracker_Alpha.Instance.SetMidBossDefeated();
                 }
                 SetState(StageState_Alpha.Transition);
+
+                // ステージ4特例：中ボス戦から直接商店（鍛冶屋）フェーズへ進み、その後のボス戦へ繋ぐ
+                if (currentStageData != null && currentStageData.startSecondHalfWithMidBoss)
+                {
+                    StartCoroutine(WaitUntilAllOrbsCollected(() => 
+                    {
+                        fadeController.FadeOut(() => 
+                        {
+                            if (Alpha.Core.SaveManager_Alpha.Instance != null)
+                            {
+                                Alpha.Core.SaveManager_Alpha.Instance.AutoSaveAtMidBossClear();
+                            }
+                            if (RewardSequenceManager_Alpha.Instance != null)
+                            {
+                                RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
+                                    StartBossRestShopPhase();
+                                });
+                            }
+                            else
+                            {
+                                StartBossRestShopPhase();
+                            }
+                        });
+                    }));
+                    return;
+                }
                 
                 StartCoroutine(WaitUntilAllOrbsCollected(() => 
                 {
@@ -636,35 +617,15 @@ namespace Alpha.Flow
                             Alpha.Core.SaveManager_Alpha.Instance.AutoSaveAtMidBossClear();
                         }
                         
-                        // 闕ｳ・ｭ郢晄㈱縺幄ｬｦ繝ｻ・ｰ・ｴ陜｣・ｱ鬩滂ｽｬ邵ｺ・ｮ郢ｧ・ｪ郢晢ｽｼ郢晄じ・定叉ﾂ隴∬崟蟷戊氣繝ｻ
                         if (RewardSequenceManager_Alpha.Instance != null)
                         {
                             RewardSequenceManager_Alpha.Instance.StartRewardSequence(() => {
-                                // 陜｣・ｱ鬩滂ｽｬ騾包ｽｻ鬮ｱ・｢邵ｺ讙趣ｽｵ繧・ｽ冗ｸｺ・｣邵ｺ・ｦ邵ｺ荵晢ｽ芽�墓ぁ豼�陟輔・・ｩ貅倪・
-                                fadeController.FadeIn(() => 
-                                {
-                                    activeSequence = currentStageData.secondHalf;
-                                    if (activeSequence != null)
-                                    {
-                                        sequenceBarUI.Setup(activeSequence);
-                                        spawnManager.SetupSequence(activeSequence);
-                                        StartSecondHalf();
-                                    }
-                                });
+                                ProceedFromFirstHalfReward();
                             });
                         }
                         else
                         {
-                            fadeController.FadeIn(() => 
-                            {
-                                activeSequence = currentStageData.secondHalf;
-                                if (activeSequence != null)
-                                {
-                                    sequenceBarUI.Setup(activeSequence);
-                                    spawnManager.SetupSequence(activeSequence);
-                                    StartSecondHalf();
-                                }
-                            });
+                            ProceedFromFirstHalfReward();
                         }
                     });
                 }));
@@ -681,6 +642,34 @@ namespace Alpha.Flow
                 {
                     StartBossClearSequence();
                 }));
+            }
+        }
+
+                private void ProceedFromFirstHalfReward()
+        {
+            System.Action proceedToSecondHalf = () =>
+            {
+                fadeController.FadeIn(() =>
+                {
+                    activeSequence = currentStageData.secondHalf;
+                    if (activeSequence != null)
+                    {
+                        sequenceBarUI.Setup(activeSequence);
+                        spawnManager.SetupSequence(activeSequence);
+                        StartSecondHalf();
+                    }
+                });
+            };
+
+            if (currentStageData != null && currentStageData.postFirstHalfRewardADV != null &&
+                ADVManager_Alpha.Instance != null && currentStageData.postFirstHalfRewardADV.pages != null &&
+                currentStageData.postFirstHalfRewardADV.pages.Count > 0)
+            {
+                ADVManager_Alpha.Instance.StartADV(currentStageData.postFirstHalfRewardADV, proceedToSecondHalf);
+            }
+            else
+            {
+                proceedToSecondHalf();
             }
         }
 
@@ -815,6 +804,20 @@ namespace Alpha.Flow
             {
                 StartPreBossADVAndFight();
             }
+        }
+
+                private void StartBossFight()
+        {
+            if (Alpha.Audio.SoundManager_Alpha.Instance != null && currentStageData.bossBGM != null)
+            {
+                Alpha.Audio.SoundManager_Alpha.Instance.PlayBGM(currentStageData.bossBGM, 0.5f);
+            }
+
+            SetState(StageState_Alpha.BossFight);
+            GameObject bossToSpawn = (currentStageData != null && currentStageData.stageBossPrefab != null)
+                ? currentStageData.stageBossPrefab
+                : (activeSequence != null ? activeSequence.bossPrefab : null);
+            spawnManager.SpawnBoss(bossToSpawn);
         }
 
         public void StartPreBossADVAndFight()
@@ -1178,6 +1181,48 @@ namespace Alpha.Flow
             currentSequenceTime = 0f;
             currentTutorialIndex = 0;
             sequenceBarUI.UpdateProgress(0f);
+
+            // ステージ4特例：後半戦開始時に道中雑魚なしで直接中ボス戦へ
+            if (currentStageData != null && currentStageData.startSecondHalfWithMidBoss)
+            {
+                GameObject midBoss = (currentStageData.midBossPrefab != null)
+                    ? currentStageData.midBossPrefab
+                    : (currentStageData.firstHalf != null ? currentStageData.firstHalf.bossPrefab : null);
+
+                if (midBoss != null)
+                {
+                    SetState(StageState_Alpha.Transition);
+                    if (midBossAppearEffectUI != null)
+                    {
+                        midBossAppearEffectUI.PlayEffect(() => {
+                            spawnManager.SpawnBoss(midBoss);
+                            SetState(StageState_Alpha.MidBossFight);
+                            if (Alpha.Result.RunStatsTracker_Alpha.Instance != null)
+                            {
+                                Alpha.Result.RunStatsTracker_Alpha.Instance.SetMidBossState(true);
+                            }
+                            if (Alpha.Audio.SoundManager_Alpha.Instance != null && currentStageData.midBossBGM != null)
+                            {
+                                Alpha.Audio.SoundManager_Alpha.Instance.PlayBGM(currentStageData.midBossBGM, 0.5f);
+                            }
+                        });
+                    }
+                    else
+                    {
+                        spawnManager.SpawnBoss(midBoss);
+                        SetState(StageState_Alpha.MidBossFight);
+                        if (Alpha.Result.RunStatsTracker_Alpha.Instance != null)
+                        {
+                            Alpha.Result.RunStatsTracker_Alpha.Instance.SetMidBossState(true);
+                        }
+                        if (Alpha.Audio.SoundManager_Alpha.Instance != null && currentStageData.midBossBGM != null)
+                        {
+                            Alpha.Audio.SoundManager_Alpha.Instance.PlayBGM(currentStageData.midBossBGM, 0.5f);
+                        }
+                    }
+                    return;
+                }
+            }
             
             if (Alpha.Audio.SoundManager_Alpha.Instance != null && currentStageData != null && currentStageData.stageBGM != null)
             {

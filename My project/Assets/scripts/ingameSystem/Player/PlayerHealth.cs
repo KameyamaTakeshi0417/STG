@@ -14,6 +14,29 @@ public class PlayerHealth : _Health_Base
     [Header("Visual Effects")]
     public Alpha.Visual.BotanicalCharacterVisual_Alpha characterVisual;
 
+    [Header("Audio Settings")]
+    [Tooltip("プレイヤー被弾時のSE（未設定時は SE_Player_Graze_Ricochet を自動ロード）")]
+    public AudioClip playerDamageSE;
+    private static float lastPlayerDamageSETime = -1f;
+
+    private void PlayPlayerDamageSE()
+    {
+        if (Time.unscaledTime - lastPlayerDamageSETime < 0.045f) return;
+        lastPlayerDamageSETime = Time.unscaledTime;
+
+        AudioClip clipToPlay = playerDamageSE;
+        if (clipToPlay == null)
+        {
+            clipToPlay = Resources.Load<AudioClip>("SE/SE_Player_Graze_Ricochet");
+        }
+
+        if (clipToPlay != null && Alpha.Audio.SoundManager_Alpha.Instance != null)
+        {
+            float pitch = Random.Range(0.98f, 1.05f);
+            Alpha.Audio.SoundManager_Alpha.Instance.PlaySE(clipToPlay, 0.75f, pitch);
+        }
+    }
+
     void Start()
     {
         // ManagerオブジェクトからスチE�Eタスマネージャーを取得すめE
@@ -147,9 +170,14 @@ public class PlayerHealth : _Health_Base
         }
         
         // 被弾時演出（Juice）
-        if (damage > 0 && Alpha.Core.ProceduralJuiceManager_Alpha.Instance != null)
+        if (damage > 0)
         {
-            Alpha.Core.ProceduralJuiceManager_Alpha.Instance.TriggerPlayerDamageJuice();
+            PlayPlayerDamageSE(); // カツッと、深刻過ぎない被弾SE
+
+            if (Alpha.Core.ProceduralJuiceManager_Alpha.Instance != null)
+            {
+                Alpha.Core.ProceduralJuiceManager_Alpha.Instance.TriggerPlayerDamageJuice();
+            }
         }
 
         if (damage > 0)

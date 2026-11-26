@@ -73,8 +73,8 @@ SpriteRenderer:
   m_SortingLayerID: -226196017
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: b7c20001000000000000000000000001, type: 3}
-  m_Color: {r: 0.9, g: 0.3, b: 0.4, a: 1}
+  m_Sprite: {fileID: 21300000, guid: c8d10001000000000000000000000001, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -97,6 +97,7 @@ GameObject:
   - component: {fileID: 8796759954628399513}
   - component: {fileID: 152344651530666656}
   - component: {fileID: 2148960574998782843}
+  - component: {fileID: 3148960574998782844}
   m_Layer: 8
   m_Name: BOSS4_TsubakiObj
   m_TagString: Enemy
@@ -194,9 +195,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4b5ecac39bf047409483f5cf786ce99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 5000
-  currentHP: 5000
-  Exp: 300
+  HP: 4000
+  currentHP: 4000
+  Exp: 500
   VulnerableTime: 0
   VulnerableFlg: 0
   isDead: 0
@@ -205,7 +206,7 @@ MonoBehaviour:
   DropRateExp: 0
   contactDamage: 10
   LifeCount: 1
-  isNormalMob: 1
+  isNormalMob: 0
   VoltCount: 0
   StunResistance: 0
   BaseStunResistance: 0.5
@@ -216,19 +217,20 @@ MonoBehaviour:
   currentBarrierRespawnTime: 0
   barrierRespawnTimer: 0
   barrierVisualObject: {fileID: 0}
-  rewardPoints: 20
+  rewardPoints: 50
   orbDropChance: 1
   forceDropOrb: 0
   isMidBoss: 0
   isBoss: 1
-  bossId: 0
+  bossId: 4
   damageTextPrefab: {fileID: 3988437868621658341, guid: 5ccc0cd62017e7542bc9974c88b5c92d, type: 3}
   DamageUIMagnitude: 0.1
   canFlee: 1
   fleeTimeLimit: 999
   phaseHPs:
-  - 5000
-  - 7000
+  - 4000
+  - 6000
+  - 8000
   aetherExplosionPrefab: {fileID: 7143777429072540398, guid: bf3d9a5e4dd24874cad16bf1f360f1a8, type: 3}
   defeatedSprite: {fileID: 0}
   targetSpriteRenderer: {fileID: 6612885051336644085}
@@ -246,17 +248,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 467b3cbae22a01c458f097d473ee129c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialMovementBehavior: {fileID: 11400000, guid: 3f2a6441438320d41a7e67a26dc55cf2, type: 2}
+  initialMovementBehavior: {fileID: 11400000, guid: d8c40001000000000000000000000001, type: 2}
   initialAttackBehavior: {fileID: 0}
   initialSummonBehavior: {fileID: 0}
   spawnWithDelay: 1
   startDelayTime: 1.5
   PhaseSpawnedObjects: []
   phases:
-  - phaseName: "\u693F\u306E\u8A54\u308A"
+  - phaseName: "\u843D\u3061\u693F\u30FB\u6642\u9593\u5dee\u30C8\u30E9\u30C3\u30D7"
     useCutIn: 0
     cutInSprite: {fileID: 0}
-    timeLimit: 40
-    movementBehavior: {fileID: 11400000, guid: 4c6fdfbe2acfb8443b3d977eef3e744a, type: 2}
-    attackBehavior: {fileID: 0}
+    timeLimit: 45
+    movementBehavior: {fileID: 11400000, guid: d8c40001000000000000000000000001, type: 2}
+    attackBehavior: {fileID: 11400000, guid: d8c40001000000000000000000000002, type: 2}
     summonBehavior: {fileID: 0}
+  - phaseName: "\u591A\u5C64\u30FB\u96F6\u843D\u306E\u693F\u6ABB"
+    useCutIn: 0
+    cutInSprite: {fileID: 0}
+    timeLimit: 45
+    movementBehavior: {fileID: 11400000, guid: d8c40001000000000000000000000001, type: 2}
+    attackBehavior: {fileID: 11400000, guid: d8c40001000000000000000000000003, type: 2}
+    summonBehavior: {fileID: 0}
+  - phaseName: "\u96EA\u4E2D\u5BD2\u693F\u30FB\u51AC\u5439\u96EA"
+    useCutIn: 0
+    cutInSprite: {fileID: 0}
+    timeLimit: 50
+    movementBehavior: {fileID: 11400000, guid: d8c40001000000000000000000000001, type: 2}
+    attackBehavior: {fileID: 11400000, guid: d8c40001000000000000000000000004, type: 2}
+    summonBehavior: {fileID: 0}
+--- !u!114 &3148960574998782844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6065531961290889201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8c10001000000000000000000000007, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eliteHealth: {fileID: 152344651530666656}
+  eliteAI: {fileID: 2148960574998782843}
+  visualRenderer: {fileID: 6612885051336644085}
+  exhaustionHpRatio: 0.25
+  stallDuration: 2.2

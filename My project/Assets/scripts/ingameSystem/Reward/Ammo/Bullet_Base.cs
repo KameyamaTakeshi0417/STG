@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+using Alpha.Core;
 using Alpha.Core.Utils;
 
 public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
@@ -52,6 +53,15 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
 
     public virtual void OnRentFromPool()
     {
+        // 零落弾（椿弾）の場合、椿の花弁チリ軌跡エミッターを付与
+        if ((this is TsubakiObject) || (bulletName != null && bulletName.IndexOf("Tsubaki", System.StringComparison.OrdinalIgnoreCase) >= 0))
+        {
+            if (GetComponent<ProceduralCamelliaTrailEmitter>() == null)
+            {
+                gameObject.AddComponent<ProceduralCamelliaTrailEmitter>();
+            }
+        }
+
         // 蜀咲匳蝣ｴ譎ゅ↓繝ｪ繧ｻ繝・ヨ蜃ｦ逅・
         piercingCount = 0; // 邯呎価蜈茨ｼ・iercingBullet縺ｪ縺ｩ・峨〒蠢・ｦ√↓蠢懊§縺ｦ override 縺励※蜀崎ｨｭ螳壹☆繧九・繝ｼ繧ｹ縺ｨ縺励※0繧ｯ繝ｪ繧｢
         extraShotCount = 0; // 追加発射数のリセット
@@ -503,6 +513,7 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
 
     protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
+        int actualHitsCount = 0;
         // 雋ｫ騾壻ｸｭ・・gnoreCollision迥ｶ諷具ｼ峨・繧ｳ繝ｩ繧､繝€繝ｼ縺九ｉ縺ｮ繧､繝吶Φ繝医・辟｡隕悶☆繧・
         if (ignoredColliders.Contains(collision)) return;
 
@@ -540,6 +551,7 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
                 //   縺､縺ｾ繧翫ヲ繝・ヨ縺ｧ縺阪ｋ蝗樊焚縺ｯ piercingCount + 1 蝗・
                 int allowableHits = pVol - prevHitCount;
                 int actualHits = Mathf.Min(piercingCount + 1, allowableHits);
+                actualHitsCount = actualHits;
 
                 // 貂幄｡ｰ邇・ｒ蜿門ｾ・
                 float reductionRate = 0.25f;
@@ -597,6 +609,12 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
                     }
                     hitCountsPerEnemy[targetObj]++;
 
+                    // プレイヤー弾の場合、多段ヒットの各ヒットごとに火花・SE・毒飛沫フィードバックを実行
+                    if (!isEnemyBullet)
+                    {
+                        TriggerPlayerBulletHitFeedback(collision, hitIndex: i, totalHits: actualHits);
+                    }
+
                     // 雋ｫ騾壽棧繧呈ｶ郁ｲｻ縺吶ｋ縲ゑｼ域怙蠕後・1繝偵ャ繝茨ｼ昴ｂ縺・ｲｫ騾壹〒縺阪↑縺・凾縺ｯ豸郁ｲｻ縺励↑縺・€√ｂ縺励￥縺ｯ0譛ｪ貅€縺ｫ縺ｪ繧具ｼ・
                     piercingCount--;
 
@@ -614,6 +632,12 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
 
         if (hitSomething)
         {
+            // 着弾フィードバック（多段ヒットループ外のフォールバック）
+            if (!isEnemyBullet && collision.CompareTag("Enemy") && actualHitsCount <= 0)
+            {
+                TriggerPlayerBulletHitFeedback(collision, 0, 1);
+            }
+
             // 着弾効果を発動
             foreach (var effect in activeEffects)
             {
@@ -661,6 +685,56 @@ public class Bullet_Base : MonoBehaviour, IAlphaPoolable, IBombDestructible
             {
                 StartCoroutine(TemporaryDisableCollider(collision));
             }
+        }
+    }
+
+    private static float lastGlobalPlayerBulletHitSoundTime = -1f;
+    private const float MinPlayerBulletHitSoundInterval = 0.032f;
+    private static AudioClip cachedPlayerHitSE = null;
+
+    /// <summary>
+    /// プレイヤー攻撃着弾時のフィードバック演出（SE、アンコモン以下＆零落弾の跳ね火花、毒(Volt)弾の藤色飛沫）
+    /// </summary>
+    private void TriggerPlayerBulletHitFeedback(Collider2D target, int hitIndex = 0, int totalHits = 1)
+    {
+        bool isExplosion = (this is ExplosionBullet) || (GetComponent<Effect_Explosion>() != null);
+        bool isTsubaki = (this is TsubakiObject) || (bulletName != null && bulletName.IndexOf("Tsubaki", System.StringComparison.OrdinalIgnoreCase) >= 0);
+        bool isVoltOrPoison = (this is VoltBullet) || (GetComponent<Effect_Volt>() != null) || (bulletName != null && (bulletName.IndexOf("Volt", System.StringComparison.OrdinalIgnoreCase) >= 0 || bulletName.IndexOf("Poison", System.StringComparison.OrdinalIgnoreCase) >= 0));
+
+        // 1. ヒット時SE（プレイヤー側の攻撃すべて。爆発弾は爆発側で処理されるため除外）
+        if (!isExplosion)
+        {
+            float minInterval = (totalHits > 1) ? 0.02f : MinPlayerBulletHitSoundInterval;
+            if (Time.unscaledTime - lastGlobalPlayerBulletHitSoundTime >= minInterval || hitIndex > 0)
+            {
+                lastGlobalPlayerBulletHitSoundTime = Time.unscaledTime;
+                if (cachedPlayerHitSE == null)
+                {
+                    cachedPlayerHitSE = Resources.Load<AudioClip>("SE/SE_Hit_Enemy_01_LowZu");
+                }
+                if (cachedPlayerHitSE != null && Alpha.Audio.SoundManager_Alpha.Instance != null)
+                {
+                    // 多段ヒット時はピッチが少しずつ上がり連打感を演出
+                    float pitch = UnityEngine.Random.Range(0.96f, 1.04f) + (hitIndex * 0.04f);
+                    Alpha.Audio.SoundManager_Alpha.Instance.PlaySE(cachedPlayerHitSE, 0.65f, pitch);
+                }
+            }
+        }
+
+        Vector3 hitPos = target != null ? target.ClosestPoint(transform.position) : transform.position;
+        Vector3 bulletDir = (rb != null && rb.velocity.sqrMagnitude > 0.01f) ? (Vector3)rb.velocity.normalized : rotate.normalized;
+
+        // 2. 毒（Volt / Poison）弾: 藤色の飛沫エフェクト
+        if (isVoltOrPoison)
+        {
+            Vector3 splashPos = hitPos + (Vector3)(UnityEngine.Random.insideUnitCircle * 0.08f);
+            Alpha.Core.ProceduralPoisonSplash_Alpha.SpawnSplash(splashPos, bulletDir, count: 6);
+        }
+        // 3. 通常弾（アンコモン以下）および零落弾（椿弾）: 跳ね火花エフェクト
+        else if (!isExplosion && (rarelity <= 1 || isTsubaki))
+        {
+            Vector3 sparkPos = hitPos + (Vector3)(UnityEngine.Random.insideUnitCircle * 0.12f);
+            Alpha.Core.ProceduralHitSparks_Alpha.SpawnBounceSparks(sparkPos, bulletDir, count: 4);
         }
     }
 
